@@ -110,7 +110,10 @@ SARS-CoV-2 datasets were selected from the 2024 ECDC ESIB EQA to ensure comparab
 
 Only samples generated using the same ARTIC primer scheme (v4.1) were selected to avoid introducing variability associated with enrichment panel differences. This ensured that observed performance differences reflect analytical workflow characteristics rather than primer design heterogeneity.
 
-The table below summarises the correspondence between RELECOV EQA samples and their original source datasets, including ECDC ESIB references:
+Table 1 summarises the correspondence between RELECOV EQA samples and their original source datasets, including ECDC ESIB references.
+
+_**Table 1**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
+The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
 | Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout |
 |--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|------------|
@@ -167,4 +170,33 @@ This approach allowed precise control over:
 - Contamination levels
 - Platform-dependent error profiles
 
-The table below summarises the correspondence between RELECOV EQA or in-silico samples and their original source datasets, including ECDC ESIB references:
+Table 2 describes the design characteristics of in-silico samples, including virus composition and intended benchmarking challenges.
+
+_**Table 2**. Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking._
+
+| Sample | Influenza reads | Host reads | Additional Viral reads | Total reads | Analytical Challenge                |
+|--------|-----------------|------------------|------------------|-------------|-------------------------------------|
+| FLU2   | 1378764         | 462520 | 0                          | 1841284     | Baseline performance assessment     |
+| FLU4   | 181626          | 300000 | 200000 SARS-CoV-2 reads    | 681626      | False positive control              |
+| FLU5   | 1088000         | 100000 | 0                          | 1188000     | NA segment dropout                  |
+| FLU7   | 5677            | 100    | 255 Rhinovirus reads       | 6032        | Cross-virus contamination challenge |
+| FLU8   | 5380            | 300    | 0                          | 5680        | Baseline performance assessment     |
+| FLU9   | 19989           | 500    | 0                          | 20489       | HA segment dropout                  |
+
+Table 3 summarises the influenza datasets included in the EQA, detailing enrichment strategy, primer scheme, sequencing technology, and key analytical challenges.
+
+_**Table 3**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
+
+| Sample | Virus | Source | Platform | Sequencer | Enrichment Strategy | Primer Scheme | Primer Version | Read Layout | FASTQ Files | Ref_sample | Lineage | Clade | Key Feature |
+|--------|--------|--------|----------|------------|---------------------|---------------|----------------|-------------|-------------|------------|----------|--------|-------------|
+| FLU1  | Influenza virus | ESIB 2024 | Illumina | MiSeq | Amplicon | CommonUni12/13 (Van den Hoecke 2015) | v1.0 | Paired-end | FLU1_R1.fastq.gz / FLU1_R2.fastq.gz | INFL2.07 | A/H5N1 | 2.3.4.4.b | High-quality baseline sample (zoonotic) |
+| FLU2  | Influenza virus | In-silico | Illumina | MiSeq | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Paired-end | FLU2_R1.fastq.gz / FLU2_R2.fastq.gz | In-silico Sample1 | A/H1N1 | D.3.1.1 | High-quality baseline sample (human) |
+| FLU3  | Influenza virus | In-silico | Illumina | MiSeq | No enrichment | — | — | Paired-end | FLU3_R1.fastq.gz / FLU3_R2.fastq.gz | INFL2.04 | — | — | No influenza (Rhinovirus only) |
+| FLU4  | Influenza virus | In-silico | Illumina | MiSeq | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Paired-end | FLU4_R1.fastq.gz / FLU4_R2.fastq.gz | In-silico Sample3 | A/H3N2 | K | Contamination with SARS-CoV-2 |
+| FLU5  | Influenza virus | In-silico | Illumina | MiSeq | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Paired-end | FLU5_R1.fastq.gz / FLU5_R2.fastq.gz | In-silico Sample4 | A/H3N2 | J.2.2 | NA segment dropout |
+| FLU6  | Influenza virus | ESIB 2024 | Nanopore | MinION | No enrichment | — | — | Single-end | FLU6.fastq.gz | INFL1.02 | A/H5N6 | 2.3.4.4h | High-quality baseline sample (zoonotic) |
+| FLU7  | Influenza virus | In-silico | Nanopore | MinION | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Single-end | FLU7.fastq.gz | In-silico Sample2 | A/H1N1 | C.1.9.3 | Contamination with Rhinovirus |
+| FLU8  | Influenza virus | In-silico | Nanopore | MinION | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Single-end | FLU8.fastq.gz | In-silico Sample3 | A/H3N2 | K | High-quality baseline sample (human) |
+| FLU9  | Influenza virus | In-silico | Nanopore | MinION | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Single-end | FLU9.fastq.gz | In-silico Sample1 | A/H1N1 | D.3.1.1 | HA segment dropout |
+| FLU10 | Influenza virus | ESIB 2024 | Nanopore | MinION | Amplicon | CommonUni12/13 (Van den Hoecke 2015) | v1.0 | Single-end | FLU10.fastq.gz | INFL1.08 | A/H5N1 | 2.3.4.4b | High-quality baseline sample (zoonotic) |
+
