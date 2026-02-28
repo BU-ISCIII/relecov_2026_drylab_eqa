@@ -187,16 +187,16 @@ Table 3 summarises the influenza datasets included in the EQA, detailing enrichm
 
 _**Table 3**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
 
-| Sample | Virus | Source | Platform | Sequencer | Enrichment Strategy | Primer Scheme | Primer Version | Read Layout | FASTQ Files | Ref_sample | Lineage | Clade | Key Feature |
-|--------|--------|--------|----------|------------|---------------------|---------------|----------------|-------------|-------------|------------|----------|--------|-------------|
-| FLU1  | Influenza virus | ESIB 2024 | Illumina | MiSeq | Amplicon | CommonUni12/13 (Van den Hoecke 2015) | v1.0 | Paired-end | FLU1_R1.fastq.gz / FLU1_R2.fastq.gz | INFL2.07 | A/H5N1 | 2.3.4.4.b | High-quality baseline sample (zoonotic) |
-| FLU2  | Influenza virus | In-silico | Illumina | MiSeq | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Paired-end | FLU2_R1.fastq.gz / FLU2_R2.fastq.gz | In-silico Sample1 | A/H1N1 | D.3.1.1 | High-quality baseline sample (human) |
-| FLU3  | Influenza virus | In-silico | Illumina | MiSeq | No enrichment | — | — | Paired-end | FLU3_R1.fastq.gz / FLU3_R2.fastq.gz | INFL2.04 | — | — | No influenza (Rhinovirus only) |
-| FLU4  | Influenza virus | In-silico | Illumina | MiSeq | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Paired-end | FLU4_R1.fastq.gz / FLU4_R2.fastq.gz | In-silico Sample3 | A/H3N2 | K | Contamination with SARS-CoV-2 |
-| FLU5  | Influenza virus | In-silico | Illumina | MiSeq | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Paired-end | FLU5_R1.fastq.gz / FLU5_R2.fastq.gz | In-silico Sample4 | A/H3N2 | J.2.2 | NA segment dropout |
-| FLU6  | Influenza virus | ESIB 2024 | Nanopore | MinION | No enrichment | — | — | Single-end | FLU6.fastq.gz | INFL1.02 | A/H5N6 | 2.3.4.4h | High-quality baseline sample (zoonotic) |
-| FLU7  | Influenza virus | In-silico | Nanopore | MinION | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Single-end | FLU7.fastq.gz | In-silico Sample2 | A/H1N1 | C.1.9.3 | Contamination with Rhinovirus |
-| FLU8  | Influenza virus | In-silico | Nanopore | MinION | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Single-end | FLU8.fastq.gz | In-silico Sample3 | A/H3N2 | K | High-quality baseline sample (human) |
-| FLU9  | Influenza virus | In-silico | Nanopore | MinION | Amplicon | Zhou 2009 single-reaction genomic amplification | v1.0 | Single-end | FLU9.fastq.gz | In-silico Sample1 | A/H1N1 | D.3.1.1 | HA segment dropout |
-| FLU10 | Influenza virus | ESIB 2024 | Nanopore | MinION | Amplicon | CommonUni12/13 (Van den Hoecke 2015) | v1.0 | Single-end | FLU10.fastq.gz | INFL1.08 | A/H5N1 | 2.3.4.4b | High-quality baseline sample (zoonotic) |
+| Sample | Source    | Platform | Enrichment Strategy | Primer Scheme                                   | Read Layout | Ref_sample       | Type   | Clade     | Key Feature                             |
+|--------|-----------|----------|---------------------|-------------------------------------------------|-------------|------------------|--------|-----------|-----------------------------------------|
+| FLU1   | ESIB 2024 | Illumina | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Paired-end | INFL2.07          | A/H5N1 | 2.3.4.4.b | High-quality baseline sample (zoonotic) |
+| FLU2   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample1 | A/H1N1 | D.3.1.1   | High-quality baseline sample (human)    |
+| FLU3   | In-silico | Illumina | No enrichment       | —                                               | Paired-end | INFL2.04          | —      | —         | No influenza (Rhinovirus only)          |
+| FLU4   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample3 | A/H3N2 | K         | Contamination with SARS-CoV-2           |
+| FLU5   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample4 | A/H3N2 | J.2.2     | NA segment dropout                      |
+| FLU6   | ESIB 2024 | Nanopore | No enrichment       | —                                               | Single-end | INFL1.02          | A/H5N6 | 2.3.4.4h  | High-quality baseline sample (zoonotic) |
+| FLU7   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample2 | A/H1N1 | C.1.9.3   | Contamination with Rhinovirus           |
+| FLU8   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample3 | A/H3N2 | K         | High-quality baseline sample (human)    |
+| FLU9   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample1 | A/H1N1 | D.3.1.1   | HA segment dropout                      |
+| FLU10  | ESIB 2024 | Nanopore | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Single-end | INFL1.08          | A/H5N1 | 2.3.4.4b  | High-quality baseline sample (zoonotic) |
 
