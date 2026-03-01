@@ -626,106 +626,195 @@ A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ c
 
 #### 6.{{ loop.index }}.2 Consensus Genome Reconstruction
 
-Consensus sequences were evaluated against the corresponding gold standard references.
+Consensus sequences were evaluated against the corresponding curated gold standard references for each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.consensus.median_identity) }}, with a median of {{ comp_net.consensus.median_discrepancies }} nucleotide discrepancies per sample (range: [{{ comp_net.consensus.min_discrepancies }}–{{ comp_net.consensus.max_discrepancies }}]).
+Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.consensus.median_identity, 2) }}, with a median of {{ comp_net.consensus.median_discrepancies }} nucleotide discrepancies per sample (range: {{ comp_net.consensus.min_discrepancies }}–{{ comp_net.consensus.max_discrepancies }}).
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level consensus reconstruction metrics per sample for {{ comp_code }}.**
+
+| Sample ID | Median genome identity (%) | Median discrepancies | IQR discrepancies |
+|---|---:|---:|---:|
+{% for s in comp_net.consensus.samples %}
+| {{ s.sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.iqr_discrepancies[0] }}–{{ s.iqr_discrepancies[1] }} |
+{% endfor %}
+
+Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.consensus.fig_discrepancies_boxplot_by_sample,
+  "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 Discrepancy type composition (aggregated across all submitted consensus sequences for {{ comp_code }}):
 
-- Incorrect substitutions: {{ pct(comp_net.consensus.incorrect_nt_pct) }} of discrepancies
-- Excess Ns / ambiguous bases: {{ pct(comp_net.consensus.excess_ambiguos_pct) }}
+- Incorrect substitutions: {{ pct(comp_net.consensus.incorrect_nt_pct) }} of discrepancies  
+- Excess Ns / ambiguous bases: {{ pct(comp_net.consensus.excess_ambiguous_pct) }}  
 - Indels: {{ pct(comp_net.consensus.indels_pct) }}
 
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
+
+| Discrepancy type | Network median per sample | Network IQR per sample |
+|---|---:|---:|
+| Incorrect substitutions | {{ comp_net.consensus.by_type.substitutions.median }} | {{ comp_net.consensus.by_type.substitutions.iqr[0] }}–{{ comp_net.consensus.by_type.substitutions.iqr[1] }} |
+| Excess Ns / ambiguous bases | {{ comp_net.consensus.by_type.excess_Ns.median }} | {{ comp_net.consensus.by_type.excess_Ns.iqr[0] }}–{{ comp_net.consensus.by_type.excess_Ns.iqr[1] }} |
+| Missing Ns (expected Ns not reported) | {{ comp_net.consensus.by_type.missing_Ns.median }} | {{ comp_net.consensus.by_type.missing_Ns.iqr[0] }}–{{ comp_net.consensus.by_type.missing_Ns.iqr[1] }} |
+| Insertions | {{ comp_net.consensus.by_type.insertions.median }} | {{ comp_net.consensus.by_type.insertions.iqr[0] }}–{{ comp_net.consensus.by_type.insertions.iqr[1] }} |
+| Deletions | {{ comp_net.consensus.by_type.deletions.median }} | {{ comp_net.consensus.by_type.deletions.iqr[0] }}–{{ comp_net.consensus.by_type.deletions.iqr[1] }} |
+
+The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.most_frequent_discrepancy_pattern }}.
+
+Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
+
 {% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.consensus.fig_discrepancy_type_barplot,
+  "Composition of consensus discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
+) }}
 
-The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.max_discrepancy }}. Figure {{ fig_counter.value }} summarises the composition of consensus-level discrepancy types observed in {{ comp_code }} relative to the gold standard.
-
-{{ render_figure({{ comp_net.consensus.barplot_discrepancies }},
-  "Composition of consensus discrepancy types for " ~ comp_code ~ "") }}
-{{ fig_counter.value }}
-
-**_Figure _. Composition of consensus discrepancy types relative to the gold standard for {{ comp_code }}.** Bars represent the total number of discrepancies aggregated across all submitted consensus sequences, stratified by discrepancy type (incorrect substitutions, excess ambiguous bases, and indels).
+**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Bars represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels).
 
 #### 6.{{ loop.index }}.3 Variant Detection Performance
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample.
 
-Across all participating laboratories, variant detection showed a median sensitivity of {{ comp_net.variant.median_sensitivity }} and a median precission of {{ comp_net.variant.median_precission }}.
+Overall, {{ comp_code }} showed a median sensitivity of {{ pct(comp_net.variant.median_sensitivity, 2) }} and a median precision of {{ pct(comp_net.variant.median_precision, 2) }} across participating laboratories.
 
-The median number of false positives per sample was {{ comp_net.variant.median_false_positives }} (range: [{{ comp_net.variant.min_false_positives }}–{{ comp_net.variant.max_false_positives }}]), while the median number of missed expected variants was {{ comp_net.variant.median_false_negatives }}.
+The median number of false positives per sample was {{ comp_net.variant.median_false_positives }} (range: {{ comp_net.variant.min_false_positives }}–{{ comp_net.variant.max_false_positives }}), while the median number of missed expected variants (false negatives) was {{ comp_net.variant.median_false_negatives }}.
 
-Distribution of Performance:
+- {{ pct(comp_net.variant.no_false_positives_pct) }} of submissions reported no false positive variants.
+- {{ pct(comp_net.variant.at_least_one_fn_pct) }} showed at least one missed expected variant.
 
-- {{ pct(comp_net.variant.no_false_positives_pct) }} reported no false positive variants.
-- {{ pct(comp_net.variant.at_least_one_fn_pct) }} showed at least one missed expected mutation.
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level variant detection performance per sample for {{ comp_code }}.**
+
+| Sample ID | Median sensitivity (%) | Median precision (%) | Median TP | Median FP | Median FN | Median total differences | IQR total differences |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for s in comp_net.variant.samples %}
+| {{ s.sample_id }} | {{ "%.2f"|format(s.median_sensitivity_pct) }} | {{ "%.2f"|format(s.median_precision_pct) }} | {{ s.median_tp }} | {{ s.median_fp }} | {{ s.median_fn }} | {{ s.median_total_differences }} | {{ s.iqr_total_differences[0] }}–{{ s.iqr_total_differences[1] }} |
+{% endfor %}
+
+Figure {{ fig_counter.value + 1 }} presents the distribution of variant detection discrepancies per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.variant.fig_total_differences_boxplot_by_sample,
+  "Variant detection discrepancies per sample for " ~ comp_code ~ " relative to the curated reference variant set."
+) }}
 
-Figure {{ fig_counter.value }} illustrates the distribution of variant detection metrics across participating laboratories for each sample in {{ comp_code }}. Variant detection performance was generally consistent across high-quality samples. (TODO revisar si es verdad) Greater variability was observed in samples characterised by:
+**Figure {{ fig_counter.value }}. Distribution of variant detection discrepancies per sample for {{ comp_code }}.**  
+Boxplots represent the distribution of total differences (FP + FN) relative to the curated reference variant set across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
-- Low read depth
-- Mixed sites
-- Regions adjacent to homopolymeric stretches
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level summary of variant detection performance metrics for {{ comp_code }}.**
 
-In these cases, discrepancies were primarily attributable to differences in allele frequency thresholds and indel filtering strategies (TODO revisar si es verdad).
+| Metric | Network median | Network IQR |
+|---|---:|---:|
+| Sensitivity (%) | {{ "%.2f"|format(comp_net.variant.metrics.sensitivity.median_pct) }} | {{ comp_net.variant.metrics.sensitivity.iqr_pct[0] }}–{{ comp_net.variant.metrics.sensitivity.iqr_pct[1] }} |
+| Precision (%) | {{ "%.2f"|format(comp_net.variant.metrics.precision.median_pct) }} | {{ comp_net.variant.metrics.precision.iqr_pct[0] }}–{{ comp_net.variant.metrics.precision.iqr_pct[1] }} |
+| True positives (TP) | {{ comp_net.variant.metrics.tp.median }} | {{ comp_net.variant.metrics.tp.iqr[0] }}–{{ comp_net.variant.metrics.tp.iqr[1] }} |
+| False positives (FP) | {{ comp_net.variant.metrics.fp.median }} | {{ comp_net.variant.metrics.fp.iqr[0] }}–{{ comp_net.variant.metrics.fp.iqr[1] }} |
+| False negatives (FN) | {{ comp_net.variant.metrics.fn.median }} | {{ comp_net.variant.metrics.fn.iqr[0] }}–{{ comp_net.variant.metrics.fn.iqr[1] }} |
+| Total differences (FP + FN) | {{ comp_net.variant.metrics.total_differences.median }} | {{ comp_net.variant.metrics.total_differences.iqr[0] }}–{{ comp_net.variant.metrics.total_differences.iqr[1] }} |
 
-**_Figure {{ fig_counter.value }}_. Variant detection performance across samples for {{ comp_code }}.** Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key variant detection metrics across participating laboratories for {{ comp_code }}.
 
-{{ render_figure(comp_net.variant.performance_distribution_fig,
-  "Variant detection performance across samples for " ~ comp_code ~ " relative to the curated reference variant set.") }}
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.variant.fig_metric_boxplots_by_pipeline_or_overall,
+  "Distribution of key variant detection metrics across laboratories for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of key variant detection metrics across laboratories for {{ comp_code }}.**  
+The figure summarises laboratory-level distributions of sensitivity, precision, and discrepancy counts relative to the curated reference variant set.
 
 #### 6.{{ loop.index }}.4 Lineage/Type and Clade Assignment
 
-Lineage/Type and clade assignments were evaluated for concordance with the gold standard classification.
+Lineage/Type and clade assignments submitted for the {{ comp_code }} component were evaluated for concordance with the curated gold standard classifications.
 
-- Exact concordance (lineage/type + clade correct): {{ pct(comp_net.typing.exact_concordance_pct) }}
+Across all participating laboratories:
+
+- Exact concordance (lineage/type and clade correct): {{ pct(comp_net.typing.exact_concordance_pct) }}
 - Partial concordance (only lineage/type or clade correct): {{ pct(comp_net.typing.partial_concordance_pct) }}
 - Discordant classification: {{ pct(comp_net.typing.discordance_pct) }}
 
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level classification outcomes per sample for {{ comp_code }}.**
+
+| Sample ID | Exact concordance (%) | Partial concordance (%) | Discordant (%) |
+|---|---:|---:|---:|
+{% for s in comp_net.typing.samples %}
+| {{ s.sample_id }} | {{ "%.2f"|format(s.exact_pct) }} | {{ "%.2f"|format(s.partial_pct) }} | {{ "%.2f"|format(s.discordant_pct) }} |
+{% endfor %}
+
+Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
+
 {% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.typing.fig_stacked_bar_by_sample,
+  "Classification outcome distribution per sample for " ~ comp_code ~ "."
+) }}
 
-Figure {{ fig_counter.value }} summarises the proportion of exact, partial, and discordant typing assignments for {{ comp_code }} relative to the gold standard classification.
+**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.**  
+Stacked bars represent the proportion of Exact, Partial, and Discordant lineage/type and clade assignments across participating laboratories for each sample relative to the curated gold standard classification.
 
-Most discordances were associated with (TODO revisar si está bien y poner) [outdated database versions / incomplete consensus sequences / ambiguity handling].
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level classification error counts for {{ comp_code }}.**
 
-{{ render_figure(comp_net.typing.outcome_distribution_fig,
-  "Classification outcome distribution for " ~ comp_code ~ " relative to the gold standard (exact, partial, discordant).") }}
+| Error type | Network median per sample | Network IQR per sample |
+|---|---:|---:|
+| Number of lineage/type errors | {{ comp_net.typing.errors.lineage.median }} | {{ comp_net.typing.errors.lineage.iqr[0] }}–{{ comp_net.typing.errors.lineage.iqr[1] }} |
+| Number of clade errors | {{ comp_net.typing.errors.clade.median }} | {{ comp_net.typing.errors.clade.iqr[0] }}–{{ comp_net.typing.errors.clade.iqr[1] }} |
 
-**_Figure {{ fig_counter.value }}_. Classification outcome distribution for {{ comp_code }} relative to the gold standard.** The stacked bars represent the proportion of submissions with exact concordance (lineage and clade correct), partial concordance (only lineage or clade correct), and discordant classification.
+Figure {{ fig_counter.value + 1 }} compares the distribution of lineage/type and clade assignment errors across participating laboratories.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.typing.fig_error_distribution,
+  "Distribution of lineage/type and clade assignment errors for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of lineage/type and clade assignment errors for {{ comp_code }}.**  
+Boxplots represent the number of lineage/type and clade errors per sample across participating laboratories. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 #### 6.{{ loop.index }}.5 Declared Software and Pipeline Summary
 
 Based on metadata submissions, {{ comp_net.pipeline.total_number }} distinct pipeline/software configurations were reported for the {{ comp_code }} component.
 
-The most frequently declared configurations are summarised in Table {{ table_counter.value }}.
-
-Comparative performance was evaluated across declared software/pipeline configurations within the {{ comp_code }} component.
-
-The primary benchmarking metrics considered were:
-
-- Median genome identity relative to the gold standard
-- Median discrepancy count
-- Median metadata completeness
-- Exact classification concordance (lineage/clade)
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-Performance differences across pipeline configurations are illustrated in Figure {{ fig_counter.value }}.
-
 {% set table_counter.value = table_counter.value + 1 %}
-
 **Table {{ table_counter.value }}. Performance summary of declared software/pipeline configurations for {{ comp_code }}.**
 
 | Pipeline / Software | N labs | Median genome identity (%) | Median discrepancies | Median metadata completeness (%) | Exact classification concordance (%) |
-|---------------------|-------:|---------------------------:|---------------------:|----------------------------------:|-------------------------------------:|
+|---|---:|---:|---:|---:|---:|
 {% for p in comp_net.pipeline.configurations %}
-| {{ p.name }} | {{ p.n_labs }} | {{ "%.2f"|format(p.median_identity) }} | {{ p.median_discrepancies }} | {{ "%.1f"|format(p.median_metadata_completeness) }} | {{ "%.1f"|format(p.exact_classification_pct) }} |
+| {{ p.name }} | {{ p.n_labs }} | {{ "%.2f"|format(p.median_identity_pct) }} | {{ p.median_discrepancies }} | {{ "%.1f"|format(p.median_metadata_completeness_pct) }} | {{ "%.1f"|format(p.exact_classification_pct) }} |
 {% endfor %}
 
-{{ render_figure(comp_net.pipeline.discrepancy_boxplot_fig,
-  "Distribution of consensus discrepancies by performance metric " ~ comp_code ~ ".") }}
+The comparative positioning of declared workflows within the {{ comp_code }} component is shown in Figure {{ fig_counter.value + 1 }}.
 
-**_Figure {{ fig_counter.value }}_. Distribution of consensus discrepancies by pipeline configuration for {{ comp_code }}**. Boxplots represent the distribution of discrepancy counts across laboratories using each declared pipeline configuration. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.pipeline.fig_scatter_positioning,
+  "Comparative positioning of declared workflows for " ~ comp_code ~ " based on consensus accuracy and classification concordance."
+) }}
+
+**Figure {{ fig_counter.value }}. Positioning of declared workflows for {{ comp_code }}.**  
+Each point represents a distinct pipeline/software configuration. The x-axis indicates median genome identity relative to the curated gold standard, and the y-axis indicates exact lineage/type and clade concordance. Point size reflects the number of laboratories reporting each configuration.
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared pipeline configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.pipeline.fig_metric_boxplots_by_pipeline,
+  "Distribution of performance metrics by pipeline configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.**  
+Multi-panel boxplots summarise laboratory-level performance stratified by pipeline/software configuration. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
 
   {% endif %}
 {% endfor %}
