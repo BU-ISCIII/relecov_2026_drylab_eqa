@@ -134,9 +134,11 @@ SARS-CoV-2 datasets were selected from the 2024 ECDC ESIB EQA to ensure comparab
 
 Only samples generated using the same ARTIC primer scheme (v4.1) were selected to avoid introducing variability associated with enrichment panel differences. This ensured that observed performance differences reflect analytical workflow characteristics rather than primer design heterogeneity.
 
-Table 1 summarises the correspondence between RELECOV EQA samples and their original source datasets, including ECDC ESIB references.
+{% set table_counter.value = table_counter.value + 1 %}
 
-_**Table 1**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
+Table {{ table_counter.value }} summarises the correspondence between RELECOV EQA samples and their original source datasets, including ECDC ESIB references.
+
+_**Table {{ table_counter.value }}**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
 The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
 | Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout |
@@ -194,9 +196,11 @@ This approach allowed precise control over:
 - Contamination levels
 - Platform-dependent error profiles
 
-Table 2 describes the design characteristics of in-silico samples, including virus composition and intended benchmarking challenges.
+{% set table_counter.value = table_counter.value + 1 %}
 
-_**Table 2**. Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking._
+Table {{ table_counter.value }} describes the design characteristics of in-silico samples, including virus composition and intended benchmarking challenges.
+
+_**Table {{ table_counter.value }}**. Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking._
 
 | Sample | Influenza reads | Host reads | Additional Viral reads | Total reads | Analytical Challenge                |
 |--------|-----------------|------------------|------------------|-------------|-------------------------------------|
@@ -207,9 +211,11 @@ _**Table 2**. Viral, host and contaminant composition design of in-silico influe
 | FLU8   | 5380            | 300    | 0                          | 5680        | Baseline performance assessment     |
 | FLU9   | 19989           | 500    | 0                          | 20489       | HA segment dropout                  |
 
-Table 3 summarises the influenza datasets included in the EQA, detailing enrichment strategy, primer scheme, sequencing technology, and key analytical challenges.
+{% set table_counter.value = table_counter.value + 1 %}
 
-_**Table 3**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
+Table {{ table_counter.value }} summarises the influenza datasets included in the EQA, detailing enrichment strategy, primer scheme, sequencing technology, and key analytical challenges.
+
+_**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
 
 | Sample | Source    | Platform | Enrichment Strategy | Primer Scheme                                   | Read Layout | Ref_sample       | Type   | Clade     | Key Feature                             |
 |--------|-----------|----------|---------------------|-------------------------------------------------|-------------|------------------|--------|-----------|-----------------------------------------|
@@ -635,10 +641,91 @@ Discrepancy type composition (aggregated across all submitted consensus sequence
 The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.max_discrepancy }}. Figure {{ fig_counter.value }} summarises the composition of consensus-level discrepancy types observed in {{ comp_code }} relative to the gold standard.
 
 {{ render_figure({{ comp_net.consensus.barplot_discrepancies }},
-  "Composition of consensus discrepancy types for {{ comp_code }}") }}
+  "Composition of consensus discrepancy types for " ~ comp_code ~ "") }}
+{{ fig_counter.value }}
 
-**_Figure {{ fig_counter.value }}_. Composition of consensus discrepancy types relative to the gold standard for {{ comp_code }}.** Bars represent the total number of discrepancies aggregated across all submitted consensus sequences, stratified by discrepancy type (incorrect substitutions, excess ambiguous bases, and indels).
+**_Figure _. Composition of consensus discrepancy types relative to the gold standard for {{ comp_code }}.** Bars represent the total number of discrepancies aggregated across all submitted consensus sequences, stratified by discrepancy type (incorrect substitutions, excess ambiguous bases, and indels).
 
+#### 6.{{ loop.index }}.3 Variant Detection Performance
+
+Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample.
+
+Across all participating laboratories, variant detection showed a median sensitivity of {{ comp_net.variant.median_sensitivity }} and a median precission of {{ comp_net.variant.median_precission }}.
+
+The median number of false positives per sample was {{ comp_net.variant.median_false_positives }} (range: [{{ comp_net.variant.min_false_positives }}–{{ comp_net.variant.max_false_positives }}]), while the median number of missed expected variants was {{ comp_net.variant.median_false_negatives }}.
+
+Distribution of Performance:
+
+- {{ pct(comp_net.variant.no_false_positives_pct) }} reported no false positive variants.
+- {{ pct(comp_net.variant.at_least_one_fn_pct) }} showed at least one missed expected mutation.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value }} illustrates the distribution of variant detection metrics across participating laboratories for each sample in {{ comp_code }}. Variant detection performance was generally consistent across high-quality samples. (TODO revisar si es verdad) Greater variability was observed in samples characterised by:
+
+- Low read depth
+- Mixed sites
+- Regions adjacent to homopolymeric stretches
+
+In these cases, discrepancies were primarily attributable to differences in allele frequency thresholds and indel filtering strategies (TODO revisar si es verdad).
+
+**_Figure {{ fig_counter.value }}_. Variant detection performance across samples for {{ comp_code }}.** Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+
+{{ render_figure(comp_net.variant.performance_distribution_fig,
+  "Variant detection performance across samples for " ~ comp_code ~ " relative to the curated reference variant set.") }}
+
+#### 6.{{ loop.index }}.4 Lineage/Type and Clade Assignment
+
+Lineage/Type and clade assignments were evaluated for concordance with the gold standard classification.
+
+- Exact concordance (lineage/type + clade correct): {{ pct(comp_net.typing.exact_concordance_pct) }}
+- Partial concordance (only lineage/type or clade correct): {{ pct(comp_net.typing.partial_concordance_pct) }}
+- Discordant classification: {{ pct(comp_net.typing.discordance_pct) }}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value }} summarises the proportion of exact, partial, and discordant typing assignments for {{ comp_code }} relative to the gold standard classification.
+
+Most discordances were associated with (TODO revisar si está bien y poner) [outdated database versions / incomplete consensus sequences / ambiguity handling].
+
+{{ render_figure(comp_net.typing.outcome_distribution_fig,
+  "Classification outcome distribution for " ~ comp_code ~ " relative to the gold standard (exact, partial, discordant).") }}
+
+**_Figure {{ fig_counter.value }}_. Classification outcome distribution for {{ comp_code }} relative to the gold standard.** The stacked bars represent the proportion of submissions with exact concordance (lineage and clade correct), partial concordance (only lineage or clade correct), and discordant classification.
+
+#### 6.{{ loop.index }}.5 Declared Software and Pipeline Summary
+
+Based on metadata submissions, {{ comp_net.pipeline.total_number }} distinct pipeline/software configurations were reported for the {{ comp_code }} component.
+
+The most frequently declared configurations are summarised in Table {{ table_counter.value }}.
+
+Comparative performance was evaluated across declared software/pipeline configurations within the {{ comp_code }} component.
+
+The primary benchmarking metrics considered were:
+
+- Median genome identity relative to the gold standard
+- Median discrepancy count
+- Median metadata completeness
+- Exact classification concordance (lineage/clade)
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Performance differences across pipeline configurations are illustrated in Figure {{ fig_counter.value }}.
+
+{% set table_counter.value = table_counter.value + 1 %}
+
+**Table {{ table_counter.value }}. Performance summary of declared software/pipeline configurations for {{ comp_code }}.**
+
+| Pipeline / Software | N labs | Median genome identity (%) | Median discrepancies | Median metadata completeness (%) | Exact classification concordance (%) |
+|---------------------|-------:|---------------------------:|---------------------:|----------------------------------:|-------------------------------------:|
+{% for p in comp_net.pipeline.configurations %}
+| {{ p.name }} | {{ p.n_labs }} | {{ "%.2f"|format(p.median_identity) }} | {{ p.median_discrepancies }} | {{ "%.1f"|format(p.median_metadata_completeness) }} | {{ "%.1f"|format(p.exact_classification_pct) }} |
+{% endfor %}
+
+{{ render_figure(comp_net.pipeline.discrepancy_boxplot_fig,
+  "Distribution of consensus discrepancies by performance metric " ~ comp_code ~ ".") }}
+
+**_Figure {{ fig_counter.value }}_. Distribution of consensus discrepancies by pipeline configuration for {{ comp_code }}**. Boxplots represent the distribution of discrepancy counts across laboratories using each declared pipeline configuration. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
   {% endif %}
 {% endfor %}
