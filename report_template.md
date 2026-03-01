@@ -13,7 +13,7 @@ Version: v0.0.1 (25/02/2026)
   - [3.3 Influenza Dataset Selection](#33-influenza-dataset-selection)
     - [In-Silico Influenza Dataset Construction](#in-silico-influenza-dataset-construction)
 - [4. Methodology of Evaluation](#4-methodology-of-evaluation)
-  - [4.1 Evaluation of Consensus Genome Sequences (.fasta)](#41-evaluation-of-consensus-genome-sequences-fasta)
+  - [4.1 Evaluation of Consensus Genome Sequences](#41-evaluation-of-consensus-genome-sequences)
   - [4.2 Evaluation of Variant Detection](#42-evaluation-of-variant-detection)
   - [4.3 Evaluation of Taxonomic and Phylogenetic Classification](#43-evaluation-of-taxonomic-and-phylogenetic-classification)
   - [4.4 Evaluation of Metadata Completeness and Compliance](#44-evaluation-of-metadata-completeness-and-compliance)
@@ -199,4 +199,182 @@ _**Table 3**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, incl
 | FLU8   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample3 | A/H3N2 | K         | High-quality baseline sample (human)    |
 | FLU9   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample1 | A/H1N1 | D.3.1.1   | HA segment dropout                      |
 | FLU10  | ESIB 2024 | Nanopore | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Single-end | INFL1.08          | A/H5N1 | 2.3.4.4b  | High-quality baseline sample (zoonotic) |
+
+## 4. Methodology of Evaluation
+
+The evaluation framework was designed to ensure objective, reproducible, and comparable assessment of analytical performance across participating laboratories. Submitted outputs were benchmarked against curated gold standard datasets from ECDC ESIB or generated in-silico.
+
+The evaluation was structured into four independent analytical domains:
+
+- Consensus genome reconstruction
+- Variant detection
+- Taxonomic and phylogenetic classification
+- Metadata completeness and compliance
+
+Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking.
+
+
+### 4.1 Evaluation of Consensus Genome Sequences</h3>
+
+For each sample, a curated gold standard consensus genome was provided by the ECDC or generated internally. These reference sequences served as the ground truth for comparative analysis.
+
+All submitted consensus sequences (.fasta) were:
+
+- Aligned against the corresponding gold standard sequence using Mafft (TODO add version).
+- Compared position-by-position relative to the declared reference genome coordinate system.
+
+Differences between submitted sequences and gold standard sequences were categorised into the following classes: (TODO verificar que es verdad)
+
+- Incorrect nucleotide substitution: A nucleotide different from the allowed reference or ambiguity code.
+- Excess ambiguity: Ambiguity codes introduced where a defined nucleotide was expected.
+- Missing ambiguity: Defined nucleotide provided where an ambiguity code was expected.
+- Excess N stretch: Continuous region of Ns where defined bases were expected.
+- Missing N stretch: Defined bases provided where Ns were expected.
+- Insertion relative to gold standard
+- Deletion relative to gold standard
+- Each insertion, deletion, or contiguous stretch of Ns was counted as a single event.
+
+For each laboratory and sample, the following metrics were calculated: (TODO verificar que es verdad)
+
+- Total number of nucleotide discrepancies
+- Percentage genome identity
+- Number of indel events
+- Proportion of ambiguous bases (Ns and IUPAC codes)
+- Genome completeness (non-N positions / total genome length)
+
+### 4.2 Evaluation of Variant Detection
+
+A curated reference variant set was generated for each sample. Variant positions were standardized relative to a defined coordinate system referred to the references used by Nextclade.
+
+Submitted .vcf files were: (TODO verificar si es verdad)
+
+- Converted to a standardised long table format
+- Compared position-by-position with the reference variant set
+
+Each reported variant was categorised as: (TODO verificar si es verdad)
+
+- True Positive (TP): Variant correctly identified.
+- False Positive (FP): Variant reported but absent in gold standard.
+- False Negative (FN): Variant present in gold standard but not reported.
+
+For each laboratory and sample we calculated the following performance metrics: (TODO verificar si es verdad)
+- Sensitivity = TP / (TP + FN)
+- Precission = TP / (TP + FP)
+
+Comparative analyses were performed to assess the influence of: (TODO verificar si es verdad)
+- Allele frequency thresholds
+- Minimum coverage thresholds
+- Variant filtering criteria
+- Reference genome selection
+
+
+### 4.3 Evaluation of Taxonomic and Phylogenetic Classification
+
+Classification outputs were evaluated separately according to virus type.
+
+#### SARS-CoV-2
+
+For each SARS-CoV-2 sample:
+
+- Lineage assignment was compared to the gold standard lineage designation from the ECDC in 2024.
+- Clade assignment was compared to the gold standard clade classification from the ECDC in 2024.
+
+#### Influenza virus
+
+For influenza samples, evaluation included:
+
+- Virus type and subtype identification (e.g., Influenza A/HxNy) compared to the gold standard subtype of the ECDC or the reference genome’s subtype used to generate in-silico reads.
+- Clade assignment compared to the gold standard subtype of the ECDC or the reference genome’s subtype used to generate in-silico reads.
+
+#### Both viruses
+
+For SARS-CoV-2 and Influenza viruses, concordance was assessed as: (TODO verificar si es verdad)
+
+- Exact match, when both lineage/subtype and clade were correct.
+- Half match, when one of the classifications is correct but not the other.
+- Discordant classification, when both classifications were incorrect.
+
+Discrepancies were investigated to determine whether they resulted from: (TODO verificar si es verdad)
+
+- Use of outdated lineage databases
+- Differences in software versioning
+- Incomplete consensus sequences
+- Excess ambiguous positions
+
+Failure to identify virus presence in positive samples, or misclassification of negative samples, was recorded separately.
+
+
+### 4.4 Evaluation of Metadata Completeness and Compliance
+
+Metadata assessment focused on analytical transparency and interoperability rather than biological correctness.
+
+For each laboratory, metadata completeness was calculated as: (TODO verificar si es verdad)
+
+$$
+\text{Metadata completeness} =
+\frac{\text{Number of correctly populated fields}}
+{\text{Total number of applicable fields}}
+$$
+
+Fields were evaluated for:
+
+ -Completion
+- Compliance with controlled vocabularies
+- Logical consistency (e.g., software declared vs tool-specific version fields completed)
+- Valid file path reporting
+
+Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
+Metadata entries were considered non-compliant when:
+
+- Controlled vocabulary options were bypassed
+- Free-text substitutions replaced defined values
+- Inconsistent analytical parameter reporting was observed
+
+This evaluation allowed quantification of metadata standardisation and reproducibility readiness across the network.
+
+### 4.5 Pipeline Benchmarking
+
+The pipeline benchmarking analysis was designed to evaluate analytical performance at the pipeline and software level, rather than solely at the individual laboratory level. The objective was to identify which analytical workflows most consistently generate results that closely match the curated gold standard datasets.
+
+For each declared pipeline or analytical workflow (including software combinations and parameter configurations), performance was aggregated across all laboratories using that approach.
+
+The primary benchmarking criterion was the degree of similarity between submitted consensus genome sequences (.fasta files) and the corresponding gold standard reference sequences, which were derived from:
+
+- The official ECDC reference datasets (for reused samples)
+- The known reference genomes used to generate the in-silico simulated datasets.
+
+Consensus-level identity was considered the central indicator of overall analytical robustness, as accurate genome reconstruction underpins downstream taxonomic classification.
+
+For each pipeline/software group, the following metrics were calculated:
+
+- Mean number of nucleotide discrepancies relative to the gold standard
+- Median percentage genome identity
+- Genome completeness
+
+Pipelines were ranked according to their ability to generate consensus sequences with:
+
+- Minimal nucleotide divergence
+- Maximum genome identity
+- High genome completeness
+
+Although consensus similarity was the primary benchmarking criterion, additional performance dimensions were integrated to contextualise overall workflow robustness:
+
+- Lineage assignment concordance (SARS-CoV-2)
+- Type/subtype and clade assignment concordance (influenza)
+- Metadata completeness and compliance
+
+These metrics were analysed to determine whether pipelines achieving high consensus similarity also demonstrated consistent downstream analytical accuracy.
+
+Benchmarking results were interpreted to identify:
+
+- Pipelines demonstrating consistently low divergence from gold standards
+- Parameter configurations associated with systematic discrepancies
+- The impact of software versioning and reference genome selection
+
+The benchmarking framework therefore provides an empirical basis for:
+
+- Identifying best-performing analytical workflows
+- Defining minimum performance criteria for network harmonisation
+- Informing recommendations for standardisation within the RELECOV analytical platform
+
 
