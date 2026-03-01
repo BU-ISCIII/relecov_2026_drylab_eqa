@@ -1,3 +1,27 @@
+{# =========================
+  JINJA2 TEMPLATE: RELECOV EQA REPORT
+  Context expected:
+    - general: dict (from general.json)
+    - labdata: dict (from lab_<LAB_COD>.json)
+========================= #}
+
+{# ---------- Helpers / macros ---------- #}
+{% macro pct(x, decimals=1) -%}
+  {{ "%.{}f".format(decimals)|format(x) }}%
+{%- endmacro %}
+{% macro render_figure(path, caption=None) -%}
+  {% if path %}
+    <figure>
+      <img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="max-width: 100%;"/>
+      {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+    </figure>
+  {% endif %}
+{%- endmacro %}
+
+{% macro network_iqr(iqr_list, decimals=2) -%}
+{% set fig_counter = namespace(value=0) %}
+{% set table_counter = namespace(value=0) %}
+
 # RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network</h1>
 Authors: Sarai Varona Fernánez
 Version: v0.0.1 (25/02/2026)
