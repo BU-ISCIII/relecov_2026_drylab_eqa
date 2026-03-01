@@ -378,3 +378,101 @@ The benchmarking framework therefore provides an empirical basis for:
 - Informing recommendations for standardisation within the RELECOV analytical platform
 
 
+
+## 7. Discussion
+
+(TODO verificar si tiene sentido)
+
+The 2026 RELECOV Dry-Lab EQA represents the first drylab benchmarking exercise focused only on bioinformatic analytical performance across the RELECOV network. By integrating internationally validated ECDC datasets with purpose-designed in-silico scenarios reflecting routine clinical surveillance, this exercise provides a comprehensive overview of the current analytical landscape within RELECOV.
+
+### 7.1. Overall Analytical Robustness
+
+Across components, consensus genome reconstruction showed high overall concordance with curated gold standards, particularly for Illumina-based datasets. This indicates that most laboratories possess mature workflows for routine SARS-CoV-2 genome reconstruction.
+However, increased variability observed in Nanopore-based datasets highlights persistent challenges related to:
+
+- Homopolymer-associated indels
+- Coverage threshold policies
+- Ambiguity handling
+- Segment-specific dropout in influenza
+
+These findings are consistent with the known technical characteristics of long-read sequencing technologies and underscore the importance of platform-specific optimisation rather than universal parameter application.
+
+### 7.2. Variant Detection Variability
+
+Variant detection demonstrated generally high sensitivity and Precission in high-quality samples. Nonetheless, variability increased in analytically challenging scenarios, including low read depth and mixed-site samples.
+
+The observed differences were primarily associated with:
+
+- Divergent allele frequency thresholds
+- Inconsistent filtering criteria
+- Reference genome selection
+
+Although variant detection was not incorporated into cross-pipeline ranking, the variability observed indicates that harmonised minimal variant reporting criteria would enhance inter-laboratory comparability.
+
+### 7.3. Classification Accuracy and Database Versioning
+
+Lineage, type, and clade assignment performance was high overall. Most discrepancies were attributable to outdated lineage databases or incomplete consensus reconstruction rather than fundamental classification errors.
+
+This finding suggests that classification performance is less dependent on core algorithmic differences and more sensitive to:
+
+- Version control practices
+- Regular database updates
+- Consensus sequence completeness
+
+Thus, governance and update policies may have a greater impact on classification accuracy than software selection alone.
+
+### 7.4. Workflow Diversity and Standardisation Balance
+A high diversity of declared analytical workflows was observed across the network. This heterogeneity reflects distributed expertise and technical autonomy within participating laboratories.
+
+However, diversity in:
+
+- Reference genome selection
+- Coverage thresholds
+- Allele frequency cut-offs
+- Indel handling strategies
+
+introduces measurable inter-laboratory variability.
+
+The results indicate that harmonisation efforts should focus on defining minimum performance and parameter standards rather than enforcing a single analytical pipeline.
+
+### 7.5 Implications for RELECOV 2.0
+
+The benchmarking exercise directly informs the development of the RELECOV analytical platform. The findings support:
+
+- Definition of minimum consensus accuracy thresholds
+- Establishment of recommended allele frequency cut-offs
+- Mandatory version control reporting
+- Standardised metadata schema enforcement
+
+Importantly, no single pipeline demonstrated universal superiority across all components. Instead, analytical robustness emerged from the interaction between software choice, parameter configuration, and sequencing platform characteristics.
+
+Therefore, harmonisation within RELECOV 2.0 should prioritise:
+
+- Performance-based criteria
+- Metadata interoperability
+- Transparent version control
+- Platform-aware optimisation
+
+## 8. Conclusions
+
+(TODO verificar si tiene sentido)
+
+The 2026 RELECOV Dry-Lab EQA demonstrates that the network possesses strong bioinformatic capacity for respiratory virus genomic surveillance, with high overall concordance in consensus genome reconstruction and classification tasks.
+
+Illumina-based workflows showed highly consistent performance across laboratories. Nanopore-based analyses exhibited greater variability, particularly in challenging genomic regions, indicating the need for platform-specific harmonisation guidance.
+
+Variant detection performance was generally robust but sensitive to threshold and filtering heterogeneity, supporting the definition of minimal reporting standards.
+
+Metadata evaluation revealed that while core analytical information is routinely reported, variability in parameter documentation and controlled vocabulary compliance remains a limiting factor for full interoperability.
+
+No single analytical workflow was universally optimal. Performance was influenced by the interaction between software selection, parameter configuration, and sequencing technology.
+
+Collectively, these findings provide a technical foundation for:
+
+- Defining minimum analytical performance criteria
+- Establishing harmonised metadata standards
+- Guiding workflow standardisation within RELECOV 2.0
+- Supporting long-term sustainability of national genomic surveillance infrastructure
+
+The EQA therefore provides a robust technical basis for harmonised, performance-driven genomic surveillance within RELECOV 2.0.
+
