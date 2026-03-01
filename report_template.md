@@ -575,7 +575,49 @@ At a network level, no single analytical software solution was universally optim
 
 These findings highlight the importance of harmonising minimum analytical criteria while preserving methodological flexibility within the network.
 
+## 6. Component-specific Results
 
+This section presents the analytical results disaggregated by component, allowing a detailed assessment of performance within each dataset and sequencing technology. For each component, results are structured according to participation and submission metrics, consensus genome reconstruction performance, variant detection accuracy, and lineage, type or clade assignment concordance, as applicable.
+
+Component-level analyses enable identification of platform-specific patterns, dataset-dependent challenges, and variability associated with particular sample characteristics. This approach facilitates a more granular interpretation of performance differences observed at the network level and supports targeted harmonisation recommendations.
+
+{% for comp_code in global.components %}
+  {% set comp_net = global.components_detail.get(comp_code) %}
+  {% if comp_net %}
+### 6.{{ loop.index }} {{ comp_code }} ({{ comp_net.name }})
+
+#### 6.{{ loop.index }}.1 Participation and Submissions
+
+A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ comp_code }} component.
+
+- {{ comp_net.total_fasta }} submitted consensus genome sequences (.fasta), where applicable.
+- {{ comp_net.total_vcf }} submitted variant call files (.vcf), where applicable.
+- The metadata template completeness for {{ comp_code }} submissions had a mean of {{ pct(comp_net.metadata_completeness_mean) }}.
+
+#### 6.{{ loop.index }}.2 Consensus Genome Reconstruction
+
+Consensus sequences were evaluated against the corresponding gold standard references.
+
+Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.consensus.median_identity) }}, with a median of {{ comp_net.consensus.median_discrepancies }} nucleotide discrepancies per sample (range: [{{ comp_net.consensus.min_discrepancies }}–{{ comp_net.consensus.max_discrepancies }}]).
+
+Discrepancy type composition (aggregated across all submitted consensus sequences for {{ comp_code }}):
+
+- Incorrect substitutions: {{ pct(comp_net.consensus.incorrect_nt_pct) }} of discrepancies
+- Excess Ns / ambiguous bases: {{ pct(comp_net.consensus.excess_ambiguos_pct) }}
+- Indels: {{ pct(comp_net.consensus.indels_pct) }}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.max_discrepancy }}. Figure {{ fig_counter.value }} summarises the composition of consensus-level discrepancy types observed in {{ comp_code }} relative to the gold standard.
+
+{{ render_figure({{ comp_net.consensus.barplot_discrepancies }},
+  "Composition of consensus discrepancy types for {{ comp_code }}") }}
+
+**_Figure {{ fig_counter.value }}_. Composition of consensus discrepancy types relative to the gold standard for {{ comp_code }}.** Bars represent the total number of discrepancies aggregated across all submitted consensus sequences, stratified by discrepancy type (incorrect substitutions, excess ambiguous bases, and indels).
+
+
+  {% endif %}
+{% endfor %}
 
 ## 7. Discussion
 
