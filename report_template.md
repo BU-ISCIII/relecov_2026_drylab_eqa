@@ -66,6 +66,8 @@ Version: v0.0.1 (25/02/2026)
 ## Executive Summary</h2>
 To be completed after final results are consolidated.
 
+This EQA provides the first fully drylab benchmarking of bioinformatic workflows across the RELECOV network, integrating both internationally validated datasets and purpose-designed in-silico scenarios.
+
 ## 1. Introduction
 The RELECOV Network aims to strengthen genomic surveillance of respiratory viruses by developing and harmonising analytical capacities across the participating laboratories. In this context, it is essential to **assess the consistency, reproducibility and maturity of the bioinformatics workflows implemented within the network**.
 
@@ -409,7 +411,7 @@ The benchmarking framework therefore provides an empirical basis for:
 
 ## 5. General Results
 
-A total of 52 laboratories comprising all the network were invited to participate. Of these, {{ general.total_participants }} laboratories {{ pct(general.total_participants_pct) }} submitted results for one or more components with the following distribution:
+A total of 52 laboratories within the RELECOV network were invited to participate. Of these, {{ general.total_participants }} laboratories {{ pct(general.total_participants_pct) }} submitted results for one or more components with the following distribution:
 
 - SARS1 (SARS-CoV-2, Illumina): {{ general.participation_per_component.SARS1 }} laboratories.
 - SARS2 (SARS-CoV-2, Oxford Nanopore Technologies): {{ general.participation_per_component.SARS2 }} laboratories.
@@ -418,25 +420,16 @@ A total of 52 laboratories comprising all the network were invited to participat
 
 The median number of components analysed per laboratory was {{ general.median_components_analysed_per_lab }}.
 
-This EQA provides the first fully drylab benchmarking of bioinformatic workflows across the RELECOV network, integrating both internationally validated datasets and purpose-designed in-silico scenarios.
-
 ### 5.1 Submission Completeness
 
 Across all components:
 
-- {{ pct(general.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable
-- {{ pct(general.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable
-- The metadata template was completed at a mean completeness rate of {{ pct(general.metadata_completeness.mean_pct) }} per laboratory, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}.
+- {{ pct(network.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable.
+- {{ pct(network.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
+The median number of components analysed per participating laboratory was {{ network.median_components_analysed_per_lab }}.
 
-As illustrated in Figure {{ fig_counter.value }}, metadata completeness varied across laboratories, with a mean completeness of {{ pct(general.metadata_completeness.mean_pct) }}.
-
-{{ render_figure(network.figures.metadata_completeness_distribution,
-  "Distribution of metadata completeness across participating laboratories.") }}
-
-**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**.
-Boxplots represent the median and interquartile range of metadata completeness percentages. Whiskers denote the full observed range. The distribution reflects variability in reporting of analytical parameters, software versions, and controlled vocabulary adherence.
+Submission rates were consistent across components, with minor variability reflecting differences in analytical scope and local implementation strategies.
 
 ### 5.2 Consensus Genome Reconstruction Performance
 
@@ -460,7 +453,7 @@ The most common discrepancies were: (TODO verificar si es verdad)
 
 Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components, stratified by sequencing platform.
 
-{{ render_figure(network.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
+{{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per genome across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
 
@@ -478,7 +471,7 @@ Illumina-based analyses generally demonstrated higher concordance and lower fals
 - Reference genome selection
 - Variant normalization practices
 
-{{ render_figure(network.figures.variant_summary, "Network-level variant detection performance summary.") }}
+{{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
 **_Figure {{ fig_counter.value }}_. Network-level variant detection performance across components**.
 Boxplots display the distribution of nucleotide discrepancies between submitted VCF files and the curated reference variant set. The central line represents the median, boxes indicate the interquartile range, and whiskers denote the full observed range across participating laboratories.
@@ -498,16 +491,16 @@ As shown in Figure {{ fig_counter.value }}, classification concordance was high 
 - Use of outdated lineage database versions
 - Differences in handling ambiguous consensus positions
 
-Across components, median consensus concordance exceeded {{ pct(general.general_results.classification.median_assignment_concordance) }}, and classification accuracy remained above {{ pct(general.general_results.classification.median_assignment_accuracy) }}.
+Across components, median classification concordance exceeded {{ pct(general.general_results.classification.median_assignment_concordance) }}, and classification accuracy remained above {{ pct(general.general_results.classification.median_assignment_accuracy) }}.
 
-{{ render_figure(network.figures.classification_summary, "Network-level classification performance summary.") }}
+{{ render_figure(general.figures.classification_summary, "Network-level classification performance summary.") }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories**.
 Stacked bars represent the proportion of exact matches, minor discrepancies, and incorrect assignments relative to curated gold standard classifications for each component.
 
 ### 5.5 Metadata Quality and Interoperability
 
-The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network. Completeness and compliance were assessed according to the criteria defined in Section 6.4, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
+The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network. Completeness and compliance were assessed according to the criteria defined in Section 4.4, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
 
 #### Overall Completeness
 
@@ -517,9 +510,11 @@ Across all participating laboratories, the metadata template was completed at a 
 
 Optional analytical fields contributed disproportionately to incompleteness (TODO comprobar si es verdad), particularly those related to parameter specification and software versioning.
 
-[Insert figure: Distribution of metadata completeness per laboratory]
+{{ render_figure(general.figures.metadata_completeness_distribution,
+  "Distribution of metadata completeness across participating laboratories.") }}
 
-**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories.** Bars represent the proportion of laboratories within different completeness ranges. These ranges reflect overall reporting quality and readiness for automated interoperability.
+**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**.
+Boxplots represent the median and interquartile range of metadata completeness percentages. Whiskers denote the full observed range. The distribution reflects variability in reporting of analytical parameters, software versions, and controlled vocabulary adherence.
 
 #### Reporting of Analytical Parameters
 
@@ -538,7 +533,7 @@ Incomplete parameter reporting limited the ability to fully reconstruct or repro
 Compliance with predefined controlled vocabularies was evaluated to assess standardisation readiness:
 
 - {{ pct(general.metadata_completeness.fully_compliant_pct) }} of submissions were fully compliant with controlled vocabulary requirements.
-- {{ pct(general.metadata_completeness.free_text_predefine-pct) }} contained at least one free-text substitution where a predefined option was required.
+- {{ pct(general.metadata_completeness.free_text_predefine_pct) }} contained at least one free-text substitution where a predefined option was required.
 - {{ pct(general.metadata_completeness.inconsistent_tool_version) }} presented inconsistencies between declared tools and version fields.
 
 The most common compliance issues included (TODO revisar si es cierto):
@@ -557,7 +552,7 @@ Instances of inconsistency included:
 - Missing file paths for submitted consensus or variant files.
 - Discrepancies between declared reference genome and variant coordinate system.
 
-Metadata was complete in {{ general.metadata_completeness.fully_compliant_pct }} of submissions, while {{ general.metadata_completeness.carification }} required clarification or correction during validation.
+Metadata was complete in {{ general.metadata_completeness.fully_compliant_pct }} of submissions, while {{ general.metadata_completeness.clarification_pct }} required clarification or correction during validation.
 
 #### Diversity of Analytical Workflows
 
@@ -591,6 +586,7 @@ Substantial heterogeneity was observed in:
 - Lineage and clade assignment tools
 - Reference genome selection
 - Coverage and allele frequency thresholds
+
 
 This diversity reflects the decentralised analytical capacity of the RELECOV network (TODO revisar si es verdad).
 
