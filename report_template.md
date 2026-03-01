@@ -39,7 +39,7 @@ Version: v0.0.1 (25/02/2026)
 - [4. Methodology of Evaluation](#4-methodology-of-evaluation)
   - [4.1 Evaluation of Consensus Genome Sequences](#41-evaluation-of-consensus-genome-sequences)
   - [4.2 Evaluation of Variant Detection](#42-evaluation-of-variant-detection)
-  - [4.3 Evaluation of Taxonomic and Phylogenetic Classification](#43-evaluation-of-taxonomic-and-phylogenetic-classification)
+  - [4.3 Evaluation of Lineage/Type and Clade Assignment](#43-evaluation-of-taxonomic-and-phylogenetic-classification)
   - [4.4 Evaluation of Metadata Completeness and Compliance](#44-evaluation-of-metadata-completeness-and-compliance)
   - [4.5 Pipeline Benchmarking](#45-pipeline-benchmarking)
 - [5. General Results](#5-general-results)
@@ -242,7 +242,7 @@ The evaluation was structured into four independent analytical domains:
 
 - Consensus genome reconstruction
 - Variant detection
-- Taxonomic and phylogenetic classification
+- Lineage/Type and Clade Assignment
 - Metadata completeness and compliance
 
 Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking.
@@ -290,10 +290,11 @@ Each reported variant was categorised as: (TODO verificar si es verdad)
 - True Positive (TP): Variant correctly identified.
 - False Positive (FP): Variant reported but absent in gold standard.
 - False Negative (FN): Variant present in gold standard but not reported.
+- Total variant discrepancies were calculated as FP + FN.
 
 For each laboratory and sample we calculated the following performance metrics: (TODO verificar si es verdad)
 - Sensitivity = TP / (TP + FN)
-- Precission = TP / (TP + FP)
+- Precision = TP / (TP + FP)
 
 Comparative analyses were performed to assess the influence of: (TODO verificar si es verdad)
 - Allele frequency thresholds
@@ -302,7 +303,7 @@ Comparative analyses were performed to assess the influence of: (TODO verificar 
 - Reference genome selection
 
 
-### 4.3 Evaluation of Taxonomic and Phylogenetic Classification
+### 4.3 Evaluation of Lineage/Type and Clade Assignment
 
 Classification outputs were evaluated separately according to virus type.
 
@@ -381,7 +382,7 @@ Consensus-level identity was considered the central indicator of overall analyti
 
 For each pipeline/software group, the following metrics were calculated:
 
-- Mean number of nucleotide discrepancies relative to the gold standard
+- Median number of nucleotide discrepancies relative to the gold standard
 - Median percentage genome identity
 - Genome completeness
 
@@ -517,6 +518,8 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 
 **_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**.
 Boxplots represent the median and interquartile range of metadata completeness percentages. Whiskers denote the full observed range. The distribution reflects variability in reporting of analytical parameters, software versions, and controlled vocabulary adherence.
+
+Additionally, component-level reporting rates for key analytical parameters (e.g., software name, software version, coverage thresholds, allele frequency thresholds, reference genome declaration) were quantified as the proportion of laboratories providing valid entries.
 
 #### Reporting of Analytical Parameters
 
@@ -837,7 +840,7 @@ These findings are consistent with the known technical characteristics of long-r
 
 ### 7.2. Variant Detection Variability
 
-Variant detection demonstrated generally high sensitivity and Precission in high-quality samples. Nonetheless, variability increased in analytically challenging scenarios, including low read depth and mixed-site samples.
+Variant detection demonstrated generally high sensitivity and Precision in high-quality samples. Nonetheless, variability increased in analytically challenging scenarios, including low read depth and mixed-site samples.
 
 The observed differences were primarily associated with:
 
