@@ -1,0 +1,363 @@
+{
+  "general": {
+    "eqa_name": "RELECOV 2026 Dry Lab EQA",
+    "invited_labs": 52
+  },
+  "components": {
+    "SARS1": {
+      "component_code": "SARS1",
+      "virus": "SARS-CoV-2",
+      "platform": "Illumina",
+      "read_layout": "Paired-end",
+      "enrichment_strategy": "Amplicon",
+      "primer_scheme": "ARTIC",
+      "primer_version": "v4.1",
+      "files": {
+        "expected_fastq_files_per_sample": 2,
+        "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
+      },
+      "samples": {
+        "SARS1": {
+          "sample_id": "SARS1",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.04",
+          "fastq_files": ["SARS1_R1.fastq.gz", "SARS1_R2.fastq.gz"],
+          "expected_lineage": null,
+          "expected_clade": null,
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads"
+        },
+
+        "SARS2": {
+          "sample_id": "SARS2",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.01",
+          "fastq_files": ["SARS2_R1.fastq.gz", "SARS2_R2.fastq.gz"],
+          "expected_lineage": "BA.1.13",
+          "expected_clade": "outgroup (BA.1)",
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "High-quality baseline sample"
+        },
+
+        "SARS3": {
+          "sample_id": "SARS3",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.16",
+          "fastq_files": ["SARS3_R1.fastq.gz", "SARS3_R2.fastq.gz"],
+          "expected_lineage": "XBB.1.5",
+          "expected_clade": "23A",
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "XBB sample, insertion challenge"
+        },
+
+        "SARS4": {
+          "sample_id": "SARS4",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.20",
+          "fastq_files": ["SARS4_R1.fastq.gz", "SARS4_R2.fastq.gz"],
+          "expected_lineage": "BQ.1.1",
+          "expected_clade": "22E",
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "Very low read depth"
+        },
+
+        "SARS5": {
+          "sample_id": "SARS5",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.13",
+          "fastq_files": ["SARS5_R1.fastq.gz", "SARS5_R2.fastq.gz"],
+          "expected_lineage": "BA.1.1",
+          "expected_clade": "outgroup (BA.1)",
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": ">10 mixed sites"
+        }
+      }
+    },
+    "SARS2": {
+      "component_code": "SARS2",
+      "virus": "SARS-CoV-2",
+      "platform": "Oxford Nanopore Technologies",
+      "read_layout": "Single-end",
+      "source": "ECDC_ESIB_2024",
+      "enrichment_strategy": "Amplicon",
+      "primer_scheme": "ARTIC",
+      "primer_version": "v4.1",
+      "files": {
+        "expected_fastq_files_per_sample": 1,
+        "fastq_naming_pattern": "{SAMPLE_ID}.fastq.gz"
+      },
+      "samples": {
+        "SARS6": {
+          "sample_id": "SARS6",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.01",
+          "fastq_files": ["SARS6.fastq.gz"],
+          "expected_lineage": "XCH.1",
+          "expected_clade": "recombinant (XCH.1)",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "High-quality baseline sample"
+        },
+        "SARS7": {
+          "sample_id": "SARS7",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.09",
+          "fastq_files": ["SARS7.fastq.gz"],
+          "expected_lineage": "XBB.1.5.24",
+          "expected_clade": "23A",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "XBB sample, ambiguity next to a deletion"
+        },
+        "SARS8": {
+          "sample_id": "SARS8",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.15",
+          "fastq_files": ["SARS8.fastq.gz"],
+          "expected_lineage": "EG.5",
+          "expected_clade": "23D (XBB.1.9.1)",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": ">10 mixed sites"
+          }
+        },
+        "SARS9": {
+          "sample_id": "SARS9",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.12",
+          "fastq_files": ["SARS9.fastq.gz"],
+          "expected_lineage": "XBB.1.9",
+          "expected_clade": "Unable to align",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads"
+        },
+        "SARS10": {
+          "sample_id": "SARS10",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.05",
+          "fastq_files": ["SARS10.fastq.gz"],
+          "expected_lineage": "Unassigned",
+          "expected_clade": "23D (FL.15)",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "Very low read depth"
+        }
+    },
+    "FLU1": {
+      "component_code": "FLU1",
+      "virus": "Influenza virus",
+      "platform": "Illumina",
+      "read_layout": "Paired-end",
+      "files": {
+        "expected_fastq_files_per_sample": 2,
+        "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
+      },
+      "samples": {
+        "FLU1": {
+          "sample_id": "FLU1",
+          "source": "ECDC_ESIB_2024",
+          "platform": "Illumina MiSeq",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "CommonUni12/13 universal primers (Van den Hoecke 2015)",
+          "primer_version": "v1.0",
+          "ref_sample": "INFL2.07",
+          "expected_lineage": "A/H5N1",
+          "expected_clade": "2.3.4.4.b",
+          "fastq_files": ["FLU1_R1.fastq.gz", "FLU1_R2.fastq.gz"],
+          "key_feature": "High-quality baseline sample (zoonotic)"
+        },
+        "FLU2": {
+          "sample_id": "FLU2",
+          "source": "IN_SILICO_RELECOV_2026",
+          "platform": "Illumina MiSeq",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "Zhou 2009 single-reaction genomic amplification (in-silico)",
+          "primer_version": "v1.0",
+          "ref_sample": "In-silico Sample1",
+          "expected_lineage": "A/H1N1",
+          "expected_clade": "D.3.1.1",
+          "fastq_files": ["FLU2_R1.fastq.gz", "FLU2_R2.fastq.gz"],
+          "design": {
+            "influenza_reads": 1378764,
+            "host_reads": 462520,
+            "total_reads": 1841284
+          },
+          "key_feature": "High-quality baseline sample (human)"
+        },
+        "FLU3": {
+          "sample_id": "FLU3",
+          "source": "ECDC_ESIB_2024",
+          "platform": "Illumina MiSeq",
+          "enrichment_strategy": "No enrichment",
+          "primer_scheme": null,
+          "primer_version": null,
+          "ref_sample": "INFL2.04",
+          "expected_lineage": null,
+          "expected_clade": null,
+          "fastq_files": ["FLU3_R1.fastq.gz", "FLU3_R2.fastq.gz"],
+          "key_feature": "No influenza (Rhinovirus only)."
+        },
+        "FLU4": {
+          "sample_id": "FLU4",
+          "source": "IN_SILICO_RELECOV_2026",
+          "platform": "Illumina MiSeq",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "Zhou 2009 single-reaction genomic amplification (in-silico)",
+          "primer_version": "v1.0",
+          "ref_sample": "In-silico Sample3",
+          "expected_lineage": "A/H3N2",
+          "expected_clade": "K",
+          "fastq_files": ["FLU4_R1.fastq.gz", "FLU4_R2.fastq.gz"],
+          "design": {
+            "influenza_reads": 181626,
+            "host_reads": 300000,
+            "additional_viral_reads": {
+            "SARS-CoV-2": 200000
+            },
+            "total_reads": 681626
+          },
+          "key_feature": "Contamination with SARS-CoV-2 reads."
+        },
+        "FLU5": {
+          "sample_id": "FLU5",
+          "source": "IN_SILICO_RELECOV_2026",
+          "platform": "Illumina MiSeq",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "Zhou 2009 single-reaction genomic amplification (in-silico)",
+          "primer_version": "v1.0",
+          "ref_sample": "In-silico Sample4",
+          "expected_lineage": "A/H3N2",
+          "expected_clade": "J.2.2",
+          "fastq_files": ["FLU5_R1.fastq.gz", "FLU5_R2.fastq.gz"],
+          "design": {
+            "influenza_reads": 1088000,
+            "host_reads": 100000,
+            "total_reads": 1188000
+          },
+          "key_feature": "NA segment dropout."
+        }
+      }
+    },
+    "FLU2": {
+      "component_code": "FLU2",
+      "virus": "Influenza virus",
+      "platform": "Oxford Nanopore Technologies",
+      "read_layout": "Single-end",
+      "files": {
+        "expected_fastq_files_per_sample": 1,
+        "fastq_naming_pattern": "{SAMPLE_ID}.fastq.gz"
+      },
+      "samples": {
+        "FLU6": {
+          "sample_id": "FLU6",
+          "source": "ECDC_ESIB_2024",
+          "platform": "Oxford Nanopore MinION",
+          "enrichment_strategy": "No enrichment",
+          "primer_scheme": null,
+          "primer_version": null,
+          "ref_sample": "INFL1.02",
+          "expected_lineage": "A/H5N6",
+          "expected_clade": "2.3.4.4h",
+          "fastq_files": ["FLU6.fastq.gz"],
+          "key_feature": "High-quality baseline sample (zoonotic)"
+        },
+        "FLU7": {
+          "sample_id": "FLU7",
+          "source": "IN_SILICO_RELECOV_2026",
+          "platform": "Oxford Nanopore MinION",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "Zhou 2009 single-reaction genomic amplification (in-silico)",
+          "primer_version": "v1.0",
+          "ref_sample": "In-silico Sample2",
+          "expected_lineage": "A/H1N1",
+          "expected_clade": "C.1.9.3",
+          "fastq_files": ["FLU7.fastq.gz"],
+          "design": {
+            "influenza_reads": 5677,
+            "host_reads": 100,
+            "additional_viral_reads": {
+              "Rhinovirus": 255
+            },
+            "total_reads": 6032
+          },
+          "key_feature": "Contamination with Rhinovirus reads."
+        },
+        "FLU8": {
+          "sample_id": "FLU8",
+          "source": "IN_SILICO_RELECOV_2026",
+          "platform": "Oxford Nanopore MinION",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "Zhou 2009 single-reaction genomic amplification (in-silico)",
+          "primer_version": "v1.0",
+          "ref_sample": "In-silico Sample3",
+          "expected_lineage": "A/H3N2",
+          "expected_clade": "K",
+          "fastq_files": ["FLU8.fastq.gz"],
+          "design": {
+            "influenza_reads": 5380,
+            "host_reads": 300,
+            "total_reads": 5680
+          },
+          "key_feature": "High-quality baseline sample (human)"
+        },
+        "FLU9": {
+          "sample_id": "FLU9",
+          "source": "IN_SILICO_RELECOV_2026",
+          "platform": "Oxford Nanopore MinION",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "Zhou 2009 single-reaction genomic amplification (in-silico)",
+          "primer_version": "v1.0",
+          "ref_sample": "In-silico Sample1",
+          "expected_lineage": "A/H1N1",
+          "expected_clade": "D.3.1.1",
+          "fastq_files": ["FLU9.fastq.gz"],
+          "design": {
+            "influenza_reads": 19989,
+            "host_reads": 500,
+            "total_reads": 20489
+          },
+          "key_feature": "HA segment dropout."
+        },
+        "FLU10": {
+          "sample_id": "FLU10",
+          "source": "ECDC_ESIB_2024",
+          "platform": "Oxford Nanopore MinION",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "CommonUni12/13 universal primers (Van den Hoecke 2015)",
+          "primer_version": "v1.0",
+          "ref_sample": "INFL1.08",
+          "expected_lineage": "A/H5N1",
+          "expected_clade": "2.3.4.4b",
+          "fastq_files": ["FLU10.fastq.gz"],
+          "key_feature": "High-quality baseline sample (zoonotic)"
+        }
+      }
+    }
+  }
+}
