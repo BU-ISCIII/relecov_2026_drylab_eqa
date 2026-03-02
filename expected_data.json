@@ -12,6 +12,8 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
+      "expected_submitted_files": 4,
+      "total_expected_fields": 74,
       "files": {
         "expected_fastq_files_per_sample": 2,
         "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
@@ -30,7 +32,6 @@
           "primer_version": "v4.1",
           "key_feature": "Influenza virus sample with some SARS-CoV-2 reads"
         },
-
         "SARS2": {
           "sample_id": "SARS2",
           "source": "ECDC_ESIB_2024",
@@ -44,7 +45,6 @@
           "primer_version": "v4.1",
           "key_feature": "High-quality baseline sample"
         },
-
         "SARS3": {
           "sample_id": "SARS3",
           "source": "ECDC_ESIB_2024",
@@ -58,7 +58,6 @@
           "primer_version": "v4.1",
           "key_feature": "XBB sample, insertion challenge"
         },
-
         "SARS4": {
           "sample_id": "SARS4",
           "source": "ECDC_ESIB_2024",
@@ -72,7 +71,6 @@
           "primer_version": "v4.1",
           "key_feature": "Very low read depth"
         },
-
         "SARS5": {
           "sample_id": "SARS5",
           "source": "ECDC_ESIB_2024",
@@ -97,6 +95,8 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
+      "expected_submitted_files": 4,
+      "total_expected_fields": 74,
       "files": {
         "expected_fastq_files_per_sample": 1,
         "fastq_naming_pattern": "{SAMPLE_ID}.fastq.gz"
@@ -174,6 +174,8 @@
       "virus": "Influenza virus",
       "platform": "Illumina",
       "read_layout": "Paired-end",
+      "expected_submitted_files": 4,
+      "total_expected_fields": 73,
       "files": {
         "expected_fastq_files_per_sample": 2,
         "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
@@ -269,6 +271,8 @@
       "virus": "Influenza virus",
       "platform": "Oxford Nanopore Technologies",
       "read_layout": "Single-end",
+      "expected_submitted_files": 5,
+      "total_expected_fields": 73,
       "files": {
         "expected_fastq_files_per_sample": 1,
         "fastq_naming_pattern": "{SAMPLE_ID}.fastq.gz"
