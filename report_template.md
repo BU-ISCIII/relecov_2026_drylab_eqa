@@ -22,8 +22,8 @@
 {% set table_counter = namespace(value=0) %}
 
 # RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network
-Authors: Sarai Varona Fernánez
-Version: v0.0.1 (25/02/2026)
+
+##### Sarai Varona, Enrique Sapena, Pablo Mata, Alejandro Bernabéu, Pau Pascual, Magdalena Matito, Juan Ledesma, Sara Monzón, Isabel Cuesta
 
 ## Table of Contents
 
@@ -31,37 +31,34 @@ Version: v0.0.1 (25/02/2026)
 - [1. Introduction](#1-introduction)
 - [2. Scope of the EQA](#2-scope-of-the-eqa)
 - [3. Dataset Design and Sample Selection Criteria](#3-dataset-design-and-sample-selection-criteria)
-  - [3.1 Rationale for Dataset Selection](#31-rationale-for-dataset-selection)
-  - [3.2 SARS-CoV-2 Dataset Selection](#32-sars-cov-2-dataset-selection)
-  - [3.3 Influenza Dataset Selection](#33-influenza-dataset-selection)
+  - [3.1. Rationale for Dataset Selection](#31-rationale-for-dataset-selection)
+  - [3.2. SARS-CoV-2 Dataset Selection](#32-sars-cov-2-dataset-selection)
+  - [3.3. Influenza Dataset Selection](#33-influenza-dataset-selection)
     - [In-Silico Influenza Dataset Construction](#in-silico-influenza-dataset-construction)
 - [4. Methodology of Evaluation](#4-methodology-of-evaluation)
-  - [4.1 Evaluation of Consensus Genome Sequences](#41-evaluation-of-consensus-genome-sequences)
-  - [4.2 Evaluation of Variant Detection](#42-evaluation-of-variant-detection)
-  - [4.3 Evaluation of Lineage/Type and Clade Assignment](#43-evaluation-of-taxonomic-and-phylogenetic-classification)
-  - [4.4 Evaluation of Metadata Completeness and Compliance](#44-evaluation-of-metadata-completeness-and-compliance)
-  - [4.5 Pipeline Benchmarking](#45-pipeline-benchmarking)
+  - [4.1. Submission Completeness](#41-submission-completeness)
+  - [4.2. Evaluation of Consensus Genome Reconstruction Performance](#42-evaluation-of-consensus-genome-reconstruction-performance)
+  - [4.3. Evaluation of Variant Detection Accuracy](#43-evaluation-of-variant-detectio-accuracy)
+  - [4.4. Evaluation of Lineage, Type and Clade Assignment](#44-evaluation-of-lineage-type-and-clade-assignment)
+  - [4.5. Evaluation of Metadata Completeness and Compliance](#45-evaluation-of-metadata-completeness-and-compliance)
+  - [4.6. Pipeline Benchmarking and Comparative Performance](#46-pipeline-benchmarking-and-comparative-performance)
 - [5. General Results](#5-general-results)
-  - [5.1 Submission Completeness](#51-submission-completeness)
-  - [5.2 Consensus Genome Reconstruction Performance](#52-consensus-genome-reconstruction-performance)
-  - [5.3 Variant Detection Accuracy](#53-variant-detection-accuracy)
-  - [5.4 Lineage, Type and Clade Assignment](#54-lineage-type-and-clade-assignment)
-  - [5.5 Metadata Quality and Interoperability](#55-metadata-quality-and-interoperability)
-  - [5.6 Pipeline Benchmarking and Comparative Performance](#56-pipeline-benchmarking-and-comparative-performance)
+  - [5.1. Submission Completeness](#51-submission-completeness)
+  - [5.2. Consensus Genome Reconstruction Performance](#52-consensus-genome-reconstruction-performance)
+  - [5.3. Variant Detection Accuracy](#53-variant-detection-accuracy)
+  - [5.4. Lineage, Type and Clade Assignment](#54-lineage-type-and-clade-assignment)
+  - [5.5. Metadata completeness and compliance](#55-metadata-completeness-and-compliance)
+  - [5.6. Pipeline Benchmarking and Comparative Performance](#56-pipeline-benchmarking-and-comparative-performance)
 - [6. Component-specific Results](#6-component-specific-results)
-  - [6.1 SARS1 (SARS-CoV-2, Illumina)](#61-sars1-sars-cov-2-illumina)
-  - [6.2 SARS2 (SARS-CoV-2, Nanopore)](#62-sars2-sars-cov-2-nanopore)
-  - [6.3 FLU1 (Influenza, Illumina)](#63-flu1-influenza-illumina)
-  - [6.4 FLU2 (Influenza, Nanopore)](#64-flu2-influenza-nanopore)
+  - [6.1. SARS1 (SARS-CoV-2, Illumina)](#61-sars1-sars-cov-2-illumina)
+  - [6.2. SARS2 (SARS-CoV-2, Nanopore)](#62-sars2-sars-cov-2-nanopore)
+  - [6.3. FLU1 (Influenza, Illumina)](#63-flu1-influenza-illumina)
+  - [6.4. FLU2 (Influenza, Nanopore)](#64-flu2-influenza-nanopore)
 - [7. Discussion](#7-discussion)
 - [8. Conclusions](#8-conclusions)
 {% if labdata %}
 - [9. Individual Laboratory Technical Report](#9-individual-laboratory-technical-report)
-  - [9.1 Participation Overview](#91-participation-overview)
-  - [9.2 SARS1 (SARS-CoV-2, Illumina)](#92-sars1-sars-cov-2-illumina)
-  - [9.3 SARS2 (SARS-CoV-2, Nanopore)](#93-sars2-sars-cov-2-nanopore)
-  - [9.4 FLU1 (Influenza, Illumina)](#94-flu1-influenza-illumina)
-  - [9.5 FLU2 (Influenza, Nanopore)](#95-flu2-influenza-nanopore)
+  - [9.1. Participation Overview](#91-participation-overview)
 {% endif %}
 
 ## Executive Summary
@@ -71,6 +68,7 @@ To be completed after final results are consolidated.
 This EQA provides the first fully drylab benchmarking of bioinformatic workflows across the RELECOV network, integrating both internationally validated datasets and purpose-designed in-silico scenarios.
 
 ## 1. Introduction
+
 The RELECOV Network aims to strengthen genomic surveillance of respiratory viruses by developing and harmonising analytical capacities across the participating laboratories. In this context, it is essential to **assess the consistency, reproducibility and maturity of the bioinformatics workflows implemented within the network**.
 
 To this end, an **external quality assessment (EQA) exercise in dry lab format** will be conducted, inspired by the ECDC’s 2024 dry-lab EQA. The exercise will focus on the bioinformatic characterisation of respiratory viruses, testing key analytical tasks including viral genome reconstruction, variant identification, and lineage and clade assignment.
@@ -84,6 +82,7 @@ Beyond workflow harmonisation, the EQA contributes to capacity-building and perf
 The overall objective of the exercise is to **assess the bioinformatic performance of the participating laboratories, identify areas for improvement, and promote the adoption of consistent and comparable analytical practices across the network**. The outcomes will enhance RELECOV’s preparedness and response capacity in routine surveillance and public health emergencies, ensuring the quality and robustness of genomic analyses performed throughout the network and contributing directly to the fulfilment of key project objectives, milestones and deliverables.
 
 ## 2. Scope of the EQA
+
 The 2026 RELECOV Dry-Lab External Quality Assessment (EQA) was designed to evaluate the bioinformatic analytical performance of laboratories participating in the RELECOV Network in the context of respiratory virus genomic surveillance.
 
 Participating laboratories were provided with raw sequencing datasets corresponding to four independent analytical components:
@@ -109,7 +108,8 @@ The primary objective of the exercise was to assess the consistency, reproducibi
 - **Metadata reporting and interoperability**: Completion of a harmonised metadata template capturing software versions, analytical parameters, reference genome selection, and file traceability, ensuring compatibility with automated validation and integration into the RELECOV analytical platform.
 
 ## 3. Dataset Design and Sample Selection Criteria
-### 3.1 Rationale for Dataset Selection
+
+### 3.1. Rationale for Dataset Selection
 
 The 2026 RELECOV Dry-Lab EQA was specifically designed for laboratories operating in a clinical and hospital-based diagnostic context, where routine genomic surveillance primarily involves human respiratory samples.
 
@@ -126,7 +126,7 @@ Datasets were derived from two sources:
 
 The integration of both sources allowed alignment with internationally validated materials while tailoring the exercise to the operational reality of RELECOV clinical laboratories.
 
-### 3.2 SARS-CoV-2 Dataset Selection
+### 3.2. SARS-CoV-2 Dataset Selection
 
 SARS-CoV-2 datasets were selected from the 2024 ECDC ESIB EQA to ensure comparability with internationally benchmarked material. Both Illumina and Nanopore panels included samples representing:
 
@@ -145,20 +145,20 @@ Table {{ table_counter.value }} summarises the correspondence between RELECOV EQ
 _**Table {{ table_counter.value }}**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
 The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
-| Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout |
-|--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|------------|
-| SARS1  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end |
-| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end |
-| SARS3  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end |
-| SARS4  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.20   | Very low read depth                               | 2           | Paired-end |
-| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end |
-| SARS6  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.01   | High-quality baseline sample                      | 1           | Single-end |
-| SARS7  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end |
-| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end |
-| SARS9  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end |
-| SARS10 | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.05   | Very low read depth                               | 1           | Single-end |
+| Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout | Clade Assignment | Lineage Assignment |
+|--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|-------------|------------------|--------------------|
+| SARS1  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end  | Unable to align  | Unassigned         |
+| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | outgroup (BA.1)  | BA.1.13            |
+| SARS3  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end  | 23A              | XBB.1.5            |
+| SARS4  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.20   | Very low read depth                               | 2           | Paired-end  | 22E              | BQ.1.1             |
+| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | outgroup (BA.1)  | BA.1.1             |
+| SARS6  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.01   | High-quality baseline sample                      | 1           | Single-end  | recombinant      | XCH.1              |
+| SARS7  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end  | 23A              | XBB.1.5.24         |
+| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D (XBB.1.9.1)  | EG.5               |
+| SARS9  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end  | Unable to align  | XBB.1.9            |
+| SARS10 | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.05   | Very low read depth                               | 1           | Single-end  | 23D (FL.15)      | Unassigned         |
 
-### 3.3 Influenza Dataset Selection
+### 3.3. Influenza Dataset Selection
 
 The influenza datasets provided in the 2024 ECDC ESIB EQA predominantly correspond to zoonotic influenza strains of animal origin, including H5N1, H5N6, and reassortant genomes.
 
@@ -191,7 +191,7 @@ To simulate realistic clinical complexity, the in-silico design incorporated:
 - Simulation of human background reads
 - Introduction of contamination (e.g., SARS-CoV-2 or rhinovirus reads in selected samples).
 - Segment-specific coverage dropouts (e.g., HA or NA depletion).
-- Platform-specific read simulation using ART (Illumina) and Badread (Nanopore).
+- Platform-specific read simulation using [ART (Illumina) v2016.06.05](https://surveillance.cancer.gov/genetic-simulation-resources/packages/art/) and [Badread (Nanopore) v0.4.1](https://github.com/rrwick/Badread).
 
 This approach allowed precise control over:
 
@@ -206,14 +206,14 @@ Table {{ table_counter.value }} describes the design characteristics of in-silic
 
 _**Table {{ table_counter.value }}**. Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking._
 
-| Sample | Influenza reads | Host reads | Additional Viral reads | Total reads | Analytical Challenge                |
-|--------|-----------------|------------------|------------------|-------------|-------------------------------------|
-| FLU2   | 1378764         | 462520 | 0                          | 1841284     | Baseline performance assessment     |
-| FLU4   | 181626          | 300000 | 200000 SARS-CoV-2 reads    | 681626      | False positive control              |
-| FLU5   | 1088000         | 100000 | 0                          | 1188000     | NA segment dropout                  |
-| FLU7   | 5677            | 100    | 255 Rhinovirus reads       | 6032        | Cross-virus contamination challenge |
-| FLU8   | 5380            | 300    | 0                          | 5680        | Baseline performance assessment     |
-| FLU9   | 19989           | 500    | 0                          | 20489       | HA segment dropout                  |
+| Sample | Influenza reads | Host reads | Additional Viral reads  | Total reads | Analytical Challenge                |
+|--------|-----------------|------------|-------------------------|-------------|-------------------------------------|
+| FLU2   | 1378764         | 462520     | 0                       | 1841284     | Baseline performance assessment     |
+| FLU4   | 181626          | 300000     | 200000 SARS-CoV-2 reads | 681626      | Contamination with SARS-CoV-2       |
+| FLU5   | 1088000         | 100000     | 0                       | 1188000     | NA segment dropout                  |
+| FLU7   | 5677            | 100        | 255 Rhinovirus reads    | 6032        | Cross-virus contamination challenge |
+| FLU8   | 5380            | 300        | 0                       | 5680        | Baseline performance assessment     |
+| FLU9   | 19989           | 500        | 0                       | 20489       | HA segment dropout                  |
 
 {% set table_counter.value = table_counter.value + 1 %}
 
@@ -225,7 +225,7 @@ _**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECO
 |--------|-----------|----------|---------------------|-------------------------------------------------|-------------|------------------|--------|-----------|-----------------------------------------|
 | FLU1   | ESIB 2024 | Illumina | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Paired-end | INFL2.07          | A/H5N1 | 2.3.4.4.b | High-quality baseline sample (zoonotic) |
 | FLU2   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample1 | A/H1N1 | D.3.1.1   | High-quality baseline sample (human)    |
-| FLU3   | In-silico | Illumina | No enrichment       | —                                               | Paired-end | INFL2.04          | —      | —         | No influenza (Rhinovirus only)          |
+| FLU3   | ESIB 2024 | Illumina | No enrichment       | —                                               | Paired-end | INFL2.04          | —      | —         | No influenza (Rhinovirus only)          |
 | FLU4   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample3 | A/H3N2 | K         | Contamination with SARS-CoV-2           |
 | FLU5   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample4 | A/H3N2 | J.2.2     | NA segment dropout                      |
 | FLU6   | ESIB 2024 | Nanopore | No enrichment       | —                                               | Single-end | INFL1.02          | A/H5N6 | 2.3.4.4h  | High-quality baseline sample (zoonotic) |
@@ -238,47 +238,79 @@ _**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECO
 
 The evaluation framework was designed to ensure objective, reproducible, and comparable assessment of analytical performance across participating laboratories. Submitted outputs were benchmarked against curated gold standard datasets from ECDC ESIB or generated in-silico.
 
-The evaluation was structured into four independent analytical domains:
+The evaluation was structured into five independent analytical domains:
 
-- Consensus genome reconstruction
-- Variant detection
-- Lineage/Type and Clade Assignment
+- Submission Completeness
+- Consensus genome reconstruction performance
+- Variant detection accuracy
+- Lineage, Type and Clade Assignment
 - Metadata completeness and compliance
+- Pipeline Benchmarking and Comparative Performance
 
 Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking. Participation metrics were calculated at both component and laboratory level.
 
+### 4.1. Submission Completeness
 
-### 4.1 Evaluation of Consensus Genome Sequences
+Submission completeness was evaluated to quantify the extent to which participating laboratories provided the expected analytical outputs for the components they chose to analyse.
+
+This assessment focused exclusively on:
+
+- Number of components analysed per laboratory
+- Number of consensus genome files (.fasta) submitted
+- Number of variant call files (.vcf) submitted
+
+Laboratories were free to analyse any subset of the four available components (SARS1, SARS2, FLU1, FLU2).
+
+Network-level participation was summarised using:
+
+- Total number of participating laboratories
+- Number of laboratories per component
+- Median number of components analysed per laboratory
+
+For each analysed component, laboratories were expected to submit:
+
+- One consensus genome file (.fasta) per sample
+- One variant call file (.vcf) per sample
+
+Submission completeness was calculated as:
+
+$$
+\text{File submission rate} =
+\frac{\text{Number of submitted files}}
+{\text{Total number of expected files}}
+$$
+
+Missing files were recorded but not penalised beyond descriptive reporting, as laboratories were allowed to participate selectively according to local analytical capacity.
+
+### 4.2. Evaluation of Consensus Genome Reconstruction Performance
 
 For each sample, a curated gold standard consensus genome was provided by the ECDC or generated internally. These reference sequences served as the ground truth for comparative analysis.
 
 All submitted consensus sequences (.fasta) were:
 
-- Aligned against the corresponding gold standard sequence using Mafft (TODO add version).
+- Aligned against the corresponding gold standard sequence using [Mafft v7.475](https://mafft.cbrc.jp/alignment/software/).
 - Compared position-by-position relative to the declared reference genome coordinate system.
 
 Differences between submitted sequences and gold standard sequences were categorised into the following classes: (TODO verificar que es verdad)
 
-- Incorrect nucleotide substitution: A nucleotide different from the allowed reference or ambiguity code.
-- Excess ambiguity: Ambiguity codes introduced where a defined nucleotide was expected.
-- Missing ambiguity: Defined nucleotide provided where an ambiguity code was expected.
-- Excess N stretch: Continuous region of Ns where defined bases were expected.
-- Missing N stretch: Defined bases provided where Ns were expected.
-- Insertion relative to gold standard
-- Deletion relative to gold standard
-- Each insertion, deletion, or contiguous stretch of Ns was counted as a single event.
+- **Incorrect nucleotide substitution**: A nucleotide different from the allowed reference or ambiguity code.
+- **Excess ambiguity**: Ambiguity codes introduced where a defined nucleotide was expected.
+- **Missing ambiguity**: Defined nucleotide provided where an ambiguity code was expected.
+- **Excess N stretch**: Continuous region of Ns where defined bases were expected.
+- **Missing N stretch**: Defined bases provided where Ns were expected.
+- **Insertion relative to gold standard**
+- **Deletion relative to gold standard**
+
+Each insertion, deletion, or contiguous stretch of Ns was counted as a single event.
 
 For each laboratory and sample, the following metrics were calculated: (TODO verificar que es verdad)
 
 - Total number of nucleotide discrepancies
 - Percentage genome identity. Calculated as the proportion of identical positions over the aligned genome length excluding ambiguous bases (specify).
-- Number of indel events
-- Proportion of ambiguous bases (Ns and IUPAC codes)
-- Genome completeness (non-N positions / total genome length)
 
 The proportional contribution of each discrepancy category was calculated relative to the total number of discrepancies observed per component.
 
-### 4.2 Evaluation of Variant Detection
+### 4.3. Evaluation of Variant Detection Accuracy
 
 A curated reference variant set was generated for each sample. Variant positions were standardized relative to a defined coordinate system referred to the references used by Nextclade.
 
@@ -306,7 +338,7 @@ Comparative analyses were performed to assess the influence of: (TODO verificar 
 - Variant filtering criteria
 - Reference genome selection
 
-### 4.3 Evaluation of Lineage/Type and Clade Assignment
+### 4.4. Evaluation of Lineage, Type and Clade Assignment
 
 Classification outputs were evaluated separately according to virus type.
 
@@ -328,9 +360,9 @@ For influenza samples, evaluation included:
 
 For SARS-CoV-2 and Influenza viruses, concordance was assessed as: (TODO verificar si es verdad)
 
-- Exact match, when both lineage/subtype and clade were correct.
-- Partial concordance, when one of the classifications is correct but not the other.
-- Discordant classification, when both classifications were incorrect.
+- **Exact**, when both lineage/subtype and clade were correct.
+- **Partial**, when one of the classifications is correct but not the other.
+- **Discordant**, when both classifications were incorrect.
 
 Discrepancies were investigated to determine whether they resulted from: (TODO verificar si es verdad)
 
@@ -341,8 +373,7 @@ Discrepancies were investigated to determine whether they resulted from: (TODO v
 
 Failure to identify virus presence in positive samples, or misclassification of negative samples, was recorded separately.
 
-
-### 4.4 Evaluation of Metadata Completeness and Compliance
+### 4.5. Evaluation of Metadata Completeness and Compliance
 
 Metadata assessment focused on analytical transparency and interoperability rather than biological correctness.
 
@@ -354,14 +385,14 @@ $$
 {\text{Total number of applicable fields}}
 $$
 
-Fields were evaluated for:
+Fields were evaluated for: (TODO revisar si es verdad)
 
- -Completion
+- Completion
 - Compliance with controlled vocabularies
-- Logical consistency (e.g., software declared vs tool-specific version fields completed)
 - Valid file path reporting
 
 Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
+
 Metadata entries were considered non-compliant when:
 
 - Controlled vocabulary options were bypassed
@@ -370,7 +401,7 @@ Metadata entries were considered non-compliant when:
 
 This evaluation allowed quantification of metadata standardisation and reproducibility readiness across the network.
 
-### 4.5 Pipeline Benchmarking
+### 4.6. Pipeline Benchmarking and Comparative Performance
 
 The pipeline benchmarking analysis was designed to evaluate analytical performance at the pipeline and software level, rather than solely at the individual laboratory level. The objective was to identify which analytical workflows most consistently generate results that closely match the curated gold standard datasets.
 
@@ -408,7 +439,7 @@ A total of 52 laboratories within the RELECOV network were invited to participat
 
 The median number of components analysed per laboratory was {{ general.median_components_analysed_per_lab }}.
 
-### 5.1 Submission Completeness
+### 5.1. Submission Completeness
 
 Across all components:
 
@@ -419,7 +450,7 @@ The median number of components analysed per participating laboratory was {{ gen
 
 Submission rates were consistent across components, with minor variability reflecting differences in analytical scope and local implementation strategies.
 
-### 5.2 Consensus Genome Reconstruction Performance
+### 5.2. Consensus Genome Reconstruction Performance
 
 Overall performance was high for Illumina-based components (TODO verificar que es verdad), with a median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} for both Illumina components (TODO verificar que es veredad) and median genome identity of {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} for Nanopore components. For Nanopore-based datasets, greater inter-laboratory variability was observed (TODO verificar si es verdad).
 
@@ -445,7 +476,7 @@ Figure {{ fig_counter.value }} summarises consensus genome reconstruction perfor
 
 **_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per genome across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
 
-### 5.3 Variant Detection Accuracy
+### 5.3. Variant Detection Accuracy
 
 Variant detection accuracy was assessed against curated reference variant sets.
 Overall, {{ pct(general.general_results.variants.pct_vcfs_below_discrepancy_threshold) }} of submitted VCFs showed fewer than {{ general.general_results.variants.discrepancy_threshold }} discrepancies relative to the reference variant set.
@@ -464,7 +495,7 @@ Illumina-based analyses generally demonstrated higher concordance and lower fals
 **_Figure {{ fig_counter.value }}_. Network-level variant detection performance across components**.
 Boxplots display the distribution of nucleotide discrepancies between submitted VCF files and the curated reference variant set. The central line represents the median, boxes indicate the interquartile range, and whiskers denote the full observed range across participating laboratories.
 
-### 5.4 Lineage, Type and Clade Assignment
+### 5.4. Lineage, Type and Clade Assignment
 
 Lineage, type and clade assignments were evaluated for concordance with gold standard classifications. Overall concordance rates were:
 
@@ -486,7 +517,7 @@ Across components, median classification concordance exceeded {{ pct(general.gen
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories**.
 Stacked bars represent the proportion of exact matches, minor discrepancies, and incorrect assignments relative to curated gold standard classifications for each component.
 
-### 5.5 Metadata Quality and Interoperability
+### 5.5. Metadata completeness and compliance
 
 The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network. Completeness and compliance were assessed according to the criteria defined in Section 4.4, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
 
@@ -506,6 +537,8 @@ Boxplots represent the median and interquartile range of metadata completeness p
 
 Additionally, component-level reporting rates for key analytical parameters (e.g., software name, software version, coverage thresholds, allele frequency thresholds, reference genome declaration) were quantified as the proportion of laboratories providing valid entries.
 
+Metadata was complete in {{ general.metadata_completeness.fully_compliant_pct }} of submissions, while {{ general.metadata_completeness.clarification_pct }} required clarification or correction during validation.
+
 #### Reporting of Analytical Parameters
 
 Although core pipeline tools were generally reported, variability was observed in the level of parameter detail provided.
@@ -524,7 +557,6 @@ Compliance with predefined controlled vocabularies was evaluated to assess stand
 
 - {{ pct(general.metadata_completeness.fully_compliant_pct) }} of submissions were fully compliant with controlled vocabulary requirements.
 - {{ pct(general.metadata_completeness.free_text_predefine_pct) }} contained at least one free-text substitution where a predefined option was required.
-- {{ pct(general.metadata_completeness.inconsistent_tool_version) }} presented inconsistencies between declared tools and version fields.
 
 The most common compliance issues included (TODO revisar si es cierto):
 
@@ -532,17 +564,17 @@ The most common compliance issues included (TODO revisar si es cierto):
 - Inconsistent declaration of lineage assignment tools.
 - Ambiguous reporting of reference genome identifiers.
 
-#### Logical Consistency and File Traceability
+### 5.6. Pipeline Benchmarking and Comparative Performance
 
-Logical consistency checks were performed to ensure coherence between declared metadata and submitted outputs.
+The benchmarking framework was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
 
-Instances of inconsistency included:
+Substantial heterogeneity was observed in:
 
-- Declared tools not matching file output format.
-- Missing file paths for submitted consensus or variant files.
-- Discrepancies between declared reference genome and variant coordinate system.
-
-Metadata was complete in {{ general.metadata_completeness.fully_compliant_pct }} of submissions, while {{ general.metadata_completeness.clarification_pct }} required clarification or correction during validation.
+- Choice of consensus reconstruction software
+- Variant calling strategies
+- Lineage and clade assignment tools
+- Reference genome selection
+- Coverage and allele frequency thresholds
 
 #### Diversity of Analytical Workflows
 
@@ -556,40 +588,19 @@ Substantial diversity was observed in the selection of core analytical tools:
 - Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct tools or configurations )
 - Lineage/type and clade assignment software ( {{ general.metadata_completeness.total_lineage_softwares }} tools or database versions )
 
-Variation was not limited to tool choice, but extended to: (TODO revisar si es verdad)
-
-- Reference genome selection
-- Coverage thresholds
-- Allele frequency cut-offs
-- Indel filtering strategies
-
-This diversity provides a descriptive overview of the analytical landscape within the network and forms the basis for the component-specific benchmarking analyses presented in Section 5.
-
-### 5.6 Pipeline Benchmarking and Comparative Performance
-
-The benchmarking framework was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
-
-Substantial heterogeneity was observed in:
-
-- Choice of consensus reconstruction software
-- Variant calling strategies
-- Lineage and clade assignment tools
-- Reference genome selection
-- Coverage and allele frequency thresholds
-
-
-This diversity reflects the decentralised analytical capacity of the RELECOV network (TODO revisar si es verdad).
-
 Comparative performance analyses stratified by component are presented in Section 6, where software-level differences are evaluated within homogeneous analytical contexts (SARS-CoV-2 Illumina, SARS-CoV-2 Nanopore, Influenza Illumina, Influenza Nanopore).
 
 At a network level, no single analytical software solution was universally optimal across all components. (TODO revisar si es verdad) Instead, performance was influenced by the interaction between:
 
 - Software selection
-- Parameter configuration
+- Coverage thresholds
+- Allele frequency cut-offs
 - Sequencing platform characteristics
 - Sample complexity
+- Reference genome selection
+- Coverage thresholds
 
-These findings highlight the importance of harmonising minimum analytical criteria while preserving methodological flexibility within the network.
+This diversity reflects the decentralised analytical capacity of the RELECOV network (TODO revisar si es verdad). These findings highlight the importance of harmonising minimum analytical criteria while preserving methodological flexibility within the network.
 
 ## 6. Component-specific Results
 
@@ -600,9 +611,9 @@ Component-level analyses enable identification of platform-specific patterns, da
 {% for comp_code in general.components %}
   {% set comp_net = general.components_detail.get(comp_code) %}
   {% if comp_net %}
-### 6.{{ loop.index }} {{ comp_code }} ({{ comp_net.name }})
+### 6.{{ loop.index }}. {{ comp_code }} ({{ comp_net.name }})
 
-#### 6.{{ loop.index }}.1 Participation and Submissions
+#### 6.{{ loop.index }}.1. Participation and Submissions
 
 A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ comp_code }} component.
 
@@ -610,7 +621,7 @@ A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ c
 - {{ comp_net.total_vcf }} submitted variant call files (.vcf), where applicable.
 - The metadata template completeness for {{ comp_code }} submissions had a median of {{ pct(comp_net.metadata_completeness_median) }}.
 
-#### 6.{{ loop.index }}.2 Consensus Genome Reconstruction
+#### 6.{{ loop.index }}.2. Consensus Genome Reconstruction Performance
 
 Consensus sequences were evaluated against the corresponding curated gold standard references for each sample in the {{ comp_code }} component.
 
@@ -664,7 +675,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 **Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Bars represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels).
 
-#### 6.{{ loop.index }}.3 Variant Detection Performance
+#### 6.{{ loop.index }}.3. Variant Detection Accuracy
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample.
 
@@ -718,9 +729,9 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key variant de
 **Figure {{ fig_counter.value }}. Distribution of key variant detection metrics across laboratories for {{ comp_code }}.**  
 The figure summarises laboratory-level distributions of sensitivity, precision, and discrepancy counts relative to the curated reference variant set.
 
-#### 6.{{ loop.index }}.4 Lineage/Type and Clade Assignment
+#### 6.{{ loop.index }}.4. Lineage, Type and Clade Assignment
 
-Lineage/Type and clade assignments submitted for the {{ comp_code }} component were evaluated for concordance with the curated gold standard classifications.
+Lineage, Type and clade assignments submitted for the {{ comp_code }} component were evaluated for concordance with the curated gold standard classifications.
 
 Across all participating laboratories:
 
@@ -767,7 +778,7 @@ Figure {{ fig_counter.value + 1 }} compares the distribution of lineage/type and
 **Figure {{ fig_counter.value }}. Distribution of lineage/type and clade assignment errors for {{ comp_code }}.**  
 Boxplots represent the number of lineage/type and clade errors per sample across participating laboratories. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
-#### 6.{{ loop.index }}.5 Declared Software and Pipeline Summary
+#### 6.{{ loop.index }}.5. Pipeline Benchmarking and Comparative Performance
 
 Based on metadata submissions, {{ comp_net.pipeline.total_number }} distinct pipeline/software configurations were reported for the {{ comp_code }} component.
 
@@ -823,7 +834,7 @@ However, increased variability observed in Nanopore-based datasets highlights pe
 
 These findings are consistent with the known technical characteristics of long-read sequencing technologies and underscore the importance of platform-specific optimisation rather than universal parameter application.
 
-### 7.2. Variant Detection Variability
+### 7.2. Variant Detection Accuracy
 
 Variant detection demonstrated generally high sensitivity and Precision in high-quality samples. Nonetheless, variability increased in analytically challenging scenarios, including low read depth and mixed-site samples.
 
@@ -861,7 +872,7 @@ introduces measurable inter-laboratory variability.
 
 The results indicate that harmonisation efforts should focus on defining minimum performance and parameter standards rather than enforcing a single analytical pipeline.
 
-### 7.5 Implications for RELECOV 2.0
+### 7.5. Implications for RELECOV 2.0
 
 The benchmarking exercise directly informs the development of the RELECOV analytical platform. The findings support:
 
@@ -910,7 +921,7 @@ This section provides a detailed technical assessment of the analytical results 
 
 The purpose of this section is to support technical optimisation, parameter harmonisation, and alignment with the analytical standards defined within RELECOV 2.0.
 
-## 9.1 Participation Overview
+## 9.1. Participation Overview
 
 The laboratory analysed **{{ labdata.lab_overview.components_analysed_count }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
 
@@ -946,11 +957,11 @@ No missing sample-level submissions were observed for the analysed components.
 
 {% for comp_code, comp in labdata.components.items() %}
 
-# 9.{{ loop.index + 1 }} {{ comp_code }} ({{ comp.display_name }})
+# 9.{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})
 
 The laboratory submitted results for the **{{ comp_code }}** component{% if comp.source %} ({{ comp.source }}){% endif %}.
 
-## 9.{{ loop.index + 1 }}.1 Consensus Genome Reconstruction
+## 9.{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance
 
 Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated gold standard reference for each sample included in the {{ comp_code }} component.
 
@@ -992,7 +1003,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of median nucleotide
 **Figure {{ fig_counter.value }}. Distribution of median consensus discrepancies per sample across participating laboratories ({{ comp_code }}).**  
 Boxplots represent the distribution of nucleotide discrepancies relative to the curated gold standard across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
-## 9.{{ loop.index + 1 }}.2 Variant Detection Performance
+## 9.{{ loop.index + 1 }}.2. Variant Detection Performance
 
 Variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated reference variant set for each sample included in the {{ comp_code }} component.
 
@@ -1019,7 +1030,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of variant detection
 **Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).**  
 Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range across the network. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
-## 9.{{ loop.index + 1 }}.3 Lineage/Type and Clade Assignment
+## 9.{{ loop.index + 1 }}.3. Lineage, Type and Clade Assignment
 
 Lineage/type and clade assignments submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated gold standard classifications for each sample included in the {{ comp_code }} component.
 
@@ -1062,7 +1073,7 @@ Table {{ table_counter.value }} compares the number of lineage/type and clade as
 
 {% endif %}
 
-## 9.{{ loop.index + 1 }}.4 Pipeline Performance Positioning within the Network
+## 9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance
 
 The analytical workflow declared by **{{ labdata.lab.lab_cod }}** was benchmarked against other workflows implemented across the RELECOV network for the {{ comp_code }} component.
 
@@ -1093,7 +1104,7 @@ Figure {{ fig_counter.value }} illustrates the comparative positioning of declar
 **Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.**  
 Each point represents a declared analytical workflow reported by participating laboratories. The x-axis indicates median consensus genome identity relative to the curated gold standard, and the y-axis indicates exact lineage/type and clade classification concordance. Grey markers represent network workflows, while the red marker corresponds to the workflow declared by **{{ labdata.lab.lab_cod }}**.
 
-## 9.{{ loop.index + 1 }}.5 Metadata-Derived Analytical Metrics (per sample)
+## 9.{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)
 
 This section summarises selected quantitative analytical metrics declared in the metadata submission of **{{ labdata.lab.lab_cod }}**, disaggregated by sample within the {{ comp_code }} component.
 
@@ -1144,7 +1155,7 @@ Panels summarise the distribution of selected quantitative analytical parameters
 
 {% endfor %}
 
-# Acknowledgement
+## Acknowledgement
 
 We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 2026 RELECOV Dry-Lab EQA. The contribution of each laboratory is fundamental to maintaining analytical comparability, reproducibility, and interoperability across the network.
 
