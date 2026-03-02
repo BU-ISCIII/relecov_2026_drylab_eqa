@@ -18,11 +18,10 @@
   {% endif %}
 {%- endmacro %}
 
-{% macro network_iqr(iqr_list, decimals=2) -%}
 {% set fig_counter = namespace(value=0) %}
 {% set table_counter = namespace(value=0) %}
 
-# RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network</h1>
+# RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network
 Authors: Sarai Varona Fernánez
 Version: v0.0.1 (25/02/2026)
 
@@ -63,9 +62,10 @@ Version: v0.0.1 (25/02/2026)
   - [9.3 SARS2 (SARS-CoV-2, Nanopore)](#93-sars2-sars-cov-2-nanopore)
   - [9.4 FLU1 (Influenza, Illumina)](#94-flu1-influenza-illumina)
   - [9.5 FLU2 (Influenza, Nanopore)](#95-flu2-influenza-nanopore)
-{ endif }
+{% endif %}
 
-## Executive Summary</h2>
+## Executive Summary
+
 To be completed after final results are consolidated.
 
 This EQA provides the first fully drylab benchmarking of bioinformatic workflows across the RELECOV network, integrating both internationally validated datasets and purpose-designed in-silico scenarios.
@@ -245,10 +245,10 @@ The evaluation was structured into four independent analytical domains:
 - Lineage/Type and Clade Assignment
 - Metadata completeness and compliance
 
-Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking.
+Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking. Participation metrics were calculated at both component and laboratory level.
 
 
-### 4.1 Evaluation of Consensus Genome Sequences</h3>
+### 4.1 Evaluation of Consensus Genome Sequences
 
 For each sample, a curated gold standard consensus genome was provided by the ECDC or generated internally. These reference sequences served as the ground truth for comparative analysis.
 
@@ -271,10 +271,12 @@ Differences between submitted sequences and gold standard sequences were categor
 For each laboratory and sample, the following metrics were calculated: (TODO verificar que es verdad)
 
 - Total number of nucleotide discrepancies
-- Percentage genome identity
+- Percentage genome identity. Calculated as the proportion of identical positions over the aligned genome length excluding ambiguous bases (specify).
 - Number of indel events
 - Proportion of ambiguous bases (Ns and IUPAC codes)
 - Genome completeness (non-N positions / total genome length)
+
+The proportional contribution of each discrepancy category was calculated relative to the total number of discrepancies observed per component.
 
 ### 4.2 Evaluation of Variant Detection
 
@@ -282,7 +284,7 @@ A curated reference variant set was generated for each sample. Variant positions
 
 Submitted .vcf files were: (TODO verificar si es verdad)
 
-- Converted to a standardised long table format
+- Converted to a standardised long table format for coordinate comparison
 - Compared position-by-position with the reference variant set
 
 Each reported variant was categorised as: (TODO verificar si es verdad)
@@ -290,18 +292,19 @@ Each reported variant was categorised as: (TODO verificar si es verdad)
 - True Positive (TP): Variant correctly identified.
 - False Positive (FP): Variant reported but absent in gold standard.
 - False Negative (FN): Variant present in gold standard but not reported.
-- Total variant discrepancies were calculated as FP + FN.
 
 For each laboratory and sample we calculated the following performance metrics: (TODO verificar si es verdad)
+
 - Sensitivity = TP / (TP + FN)
 - Precision = TP / (TP + FP)
+- Total variant discrepancies were calculated as FP + FN.
 
 Comparative analyses were performed to assess the influence of: (TODO verificar si es verdad)
+
 - Allele frequency thresholds
 - Minimum coverage thresholds
 - Variant filtering criteria
 - Reference genome selection
-
 
 ### 4.3 Evaluation of Lineage/Type and Clade Assignment
 
@@ -326,7 +329,7 @@ For influenza samples, evaluation included:
 For SARS-CoV-2 and Influenza viruses, concordance was assessed as: (TODO verificar si es verdad)
 
 - Exact match, when both lineage/subtype and clade were correct.
-- Half match, when one of the classifications is correct but not the other.
+- Partial concordance, when one of the classifications is correct but not the other.
 - Discordant classification, when both classifications were incorrect.
 
 Discrepancies were investigated to determine whether they resulted from: (TODO verificar si es verdad)
@@ -373,30 +376,12 @@ The pipeline benchmarking analysis was designed to evaluate analytical performan
 
 For each declared pipeline or analytical workflow (including software combinations and parameter configurations), performance was aggregated across all laboratories using that approach.
 
-The primary benchmarking criterion was the degree of similarity between submitted consensus genome sequences (.fasta files) and the corresponding gold standard reference sequences, which were derived from:
+The primary benchmarking criterion was based on these performance indicators:
 
-- The official ECDC reference datasets (for reused samples)
-- The known reference genomes used to generate the in-silico simulated datasets.
-
-Consensus-level identity was considered the central indicator of overall analytical robustness, as accurate genome reconstruction underpins downstream taxonomic classification.
-
-For each pipeline/software group, the following metrics were calculated:
-
-- Median number of nucleotide discrepancies relative to the gold standard
-- Median percentage genome identity
-- Genome completeness
-
-Pipelines were ranked according to their ability to generate consensus sequences with:
-
-- Minimal nucleotide divergence
-- Maximum genome identity
-- High genome completeness
-
-Although consensus similarity was the primary benchmarking criterion, additional performance dimensions were integrated to contextualise overall workflow robustness:
-
-- Lineage assignment concordance (SARS-CoV-2)
-- Type/subtype and clade assignment concordance (influenza)
-- Metadata completeness and compliance
+- Median consensus genome identity relative to the curated gold standard.
+- Median number of discrepancies relative to the curated gold standard.
+- Exact lineage/type and clade classification concordance.
+- Median metadata completeness
 
 These metrics were analysed to determine whether pipelines achieving high consensus similarity also demonstrated consistent downstream analytical accuracy.
 
@@ -427,8 +412,8 @@ The median number of components analysed per laboratory was {{ general.median_co
 
 Across all components:
 
-- {{ pct(network.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable.
-- {{ pct(network.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable.
+- {{ pct(general.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable.
+- {{ pct(general.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable.
 
 The median number of components analysed per participating laboratory was {{ general.median_components_analysed_per_lab }}.
 
@@ -509,7 +494,7 @@ The evaluation of metadata focused on analytical transparency, reproducibility, 
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Across all participating laboratories, the metadata template was completed at a mean completeness rate of {{ pct(general.metadata_completeness.mean_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. As illustrated in Figure {{ fig_counter.value }}, metadata completeness varied across participating laboratories, with a heterogeneous distribution across predefined completeness ranges.
+Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. As illustrated in Figure {{ fig_counter.value }}, metadata completeness varied across participating laboratories, with a heterogeneous distribution across predefined completeness ranges.
 
 Optional analytical fields contributed disproportionately to incompleteness (TODO comprobar si es verdad), particularly those related to parameter specification and software versioning.
 
@@ -612,8 +597,8 @@ This section presents the analytical results disaggregated by component, allowin
 
 Component-level analyses enable identification of platform-specific patterns, dataset-dependent challenges, and variability associated with particular sample characteristics. This approach facilitates a more granular interpretation of performance differences observed at the network level and supports targeted harmonisation recommendations.
 
-{% for comp_code in global.components %}
-  {% set comp_net = global.components_detail.get(comp_code) %}
+{% for comp_code in general.components %}
+  {% set comp_net = general.components_detail.get(comp_code) %}
   {% if comp_net %}
 ### 6.{{ loop.index }} {{ comp_code }} ({{ comp_net.name }})
 
@@ -623,7 +608,7 @@ A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ c
 
 - {{ comp_net.total_fasta }} submitted consensus genome sequences (.fasta), where applicable.
 - {{ comp_net.total_vcf }} submitted variant call files (.vcf), where applicable.
-- The metadata template completeness for {{ comp_code }} submissions had a mean of {{ pct(comp_net.metadata_completeness_mean) }}.
+- The metadata template completeness for {{ comp_code }} submissions had a median of {{ pct(comp_net.metadata_completeness_median) }}.
 
 #### 6.{{ loop.index }}.2 Consensus Genome Reconstruction
 
@@ -943,8 +928,8 @@ Submitted outputs (analysed components):
 Regarding metadata completeness:
 
 - Metadata completeness for **{{ labdata.lab.lab_cod }}**: **{{ pct(labdata.lab_overview.metadata.completeness_pct) }}**
-- Network median metadata completeness: **{{ pct(network.metadata_completeness.median_pct) }}**  
-- Network range: **{{ pct(network.metadata_completeness.min_pct) }}–{{ pct(network.metadata_completeness.max_pct) }}**
+- Network median metadata completeness: **{{ pct(general.metadata_completeness.median_pct) }}**  
+- Network range: **{{ pct(general.metadata_completeness.min_pct) }}–{{ pct(general.metadata_completeness.max_pct) }}**
 
 {% if labdata.lab_overview.metadata.primary_incompleteness_drivers %}
 Primary contributors to incompleteness:
@@ -997,14 +982,14 @@ Table {{ table_counter.value }} provides a detailed characterisation of discrepa
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the distribution of mean nucleotide discrepancies per sample across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
+Figure {{ fig_counter.value }} illustrates the distribution of median nucleotide discrepancies per sample across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
 
-{{ render_fig(
+{{ render_figure(
   comp.component_figures.consensus_discrepancy_distribution,
-  comp_code ~ ": distribution of mean discrepancies per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
+  comp_code ~ ": distribution of median discrepancies per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of mean consensus discrepancies per sample across participating laboratories ({{ comp_code }}).**  
+**Figure {{ fig_counter.value }}. Distribution of median consensus discrepancies per sample across participating laboratories ({{ comp_code }}).**  
 Boxplots represent the distribution of nucleotide discrepancies relative to the curated gold standard across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 ## 9.{{ loop.index + 1 }}.2 Variant Detection Performance
@@ -1026,7 +1011,7 @@ The metrics presented in Table {{ table_counter.value }} summarise per-sample va
 
 Figure {{ fig_counter.value }} illustrates the distribution of variant detection performance metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
 
-{{ render_fig(
+{{ render_figure(
   comp.component_figures.variant_metrics_distribution,
   comp_code ~ ": distribution of variant detection metrics across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
@@ -1053,7 +1038,7 @@ Table {{ table_counter.value }} summarises the concordance between expected and 
 
 Figure {{ fig_counter.value }} illustrates the distribution of classification outcomes per sample across participating laboratories, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
 
-{{ render_fig(
+{{ render_figure(
   comp.component_figures.classification_stackedbars,
   comp_code ~ ": distribution of classification outcomes per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
@@ -1100,7 +1085,7 @@ Table {{ table_counter.value }} contextualises the performance of the declared w
 
 Figure {{ fig_counter.value }} illustrates the comparative positioning of declared workflows within the network for the {{ comp_code }} component.
 
-{{ render_fig(
+{{ render_figure(
   comp.workflow_positioning.scatter_fig,
   comp_code ~ ": workflow positioning across the network (grey), with " ~ labdata.lab.lab_cod ~ " highlighted (red)."
 ) }}
@@ -1149,7 +1134,7 @@ Table {{ table_counter.value }} contextualises laboratory-reported analytical pa
 
 Figure {{ fig_counter.value }} illustrates the distribution of metadata-derived analytical metrics across participating laboratories for the {{ comp_code }} component.
 
-{{ render_fig(
+{{ render_figure(
   comp.component_figures.metadata_metrics_panel,
   comp_code ~ ": distribution of metadata-derived analytical metrics across the network per sample; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
@@ -1164,4 +1149,4 @@ Panels summarise the distribution of selected quantitative analytical parameters
 We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 2026 RELECOV Dry-Lab EQA. The contribution of each laboratory is fundamental to maintaining analytical comparability, reproducibility, and interoperability across the network.
 
 For any questions, technical clarifications, or follow-up discussions regarding this report, please contact the RELECOV WP.6 coordination team at bioinformatica@isciii.es.
-{ endif }
+{% endif %}
