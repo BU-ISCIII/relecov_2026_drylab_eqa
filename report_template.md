@@ -312,6 +312,8 @@ The proportional contribution of each discrepancy category was calculated relati
 
 ### 4.3. Evaluation of Variant Detection Accuracy
 
+#### 4.3.1. SARS-CoV-2
+
 A curated reference variant set was generated for each sample. Variant positions were standardized relative to a defined coordinate system referred to the references used by Nextclade.
 
 Submitted .vcf files were: (TODO verificar si es verdad)
@@ -337,6 +339,32 @@ Comparative analyses were performed to assess the influence of: (TODO verificar 
 - Minimum coverage thresholds
 - Variant filtering criteria
 - Reference genome selection
+
+#### 4.3.2. Influenza
+
+For influenza virus datasets, direct position-by-position comparison of reported variants against the curated reference variant set was not feasible under the same framework applied to SARS-CoV-2.
+
+Unlike SARS-CoV-2, where laboratories predominantly use a shared and globally standardised reference genomes (either MN908947.3 or NC_045512.2), influenza virus analyses exhibited substantial heterogeneity in reference genome selection. Participating laboratories employed distinct segment-specific reference sequences. As a result:
+
+- Variant coordinates were reported relative to different reference accessions.
+- Segment boundaries and numbering schemes varied.
+- Insertions and deletions were represented inconsistently across reference backbones.
+
+This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artefacts and interpretation bias. Therefore, a strict True Positive / False Positive / False Negative comparison framework was not applied to influenza variant datasets. Instead, influenza variant evaluation focused on descriptive and structural reporting metrics, including:
+
+- Number of laboratories reporting high-frequency variants.
+- Number of laboratories reporting both high- and low-frequency variants.
+- Number of laboratories reporting exclusively low-frequency variants.
+- Total number of distinct reference genomes employed for variant calling, disaggregated by influenza segment.
+
+These metrics provide insight into:
+
+- Variant reporting practices across laboratories.
+- Heterogeneity in allele frequency thresholds.
+- Diversity of reference genome usage.
+- Degree of methodological standardisation within the network.
+
+This alternative evaluation approach allows characterisation of variant reporting behaviour in influenza while acknowledging the inherent reference-dependent complexity of segmented viral genomes.
 
 ### 4.4. Evaluation of Lineage, Type and Clade Assignment
 
@@ -466,7 +494,7 @@ A total of 52 laboratories within the RELECOV network were invited to participat
 - FLU1 (Influenza virus, Illumina): {{ general.participation_per_component.FLU1 }} laboratories.
 - FLU2 (Influenza virus, Oxford Nanopore Technologies): {{ general.participation_per_component.FLU2 }} laboratories.
 
-The median number of components analysed per laboratory was {{ general.median_components_analysed_per_lab }}.
+The median number of components analysed per participating laboratory was {{ general.median_components_analysed_per_lab }}.
 
 ### 5.1. Submission Completeness
 
@@ -475,9 +503,7 @@ Across all components:
 - {{ pct(general.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable.
 - {{ pct(general.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable.
 
-The median number of components analysed per participating laboratory was {{ general.median_components_analysed_per_lab }}.
-
-Submission rates were consistent across components, with minor variability reflecting differences in analytical scope and local implementation strategies.
+Submission rates were consistent across components, with minor variability reflecting differences in analytical scope and local implementation strategies (TODO revisar esta frase).
 
 ### 5.2. Consensus Genome Reconstruction Performance
 
@@ -489,10 +515,6 @@ The main sources of variation included: (TODO verificar si es verdad)
 - Indel filtering strategies
 - Ambiguity and N masking policies
 
-Across all laboratories and components, {{ pct(general.general_results.consensus.pct_genomes_below_discrepancy_threshold) }}
-of submitted genomes showed fewer than {{ general.general_results.consensus.discrepancy_threshold }}
-nucleotide discrepancies relative to the gold standard.
-
 The most common discrepancies were: (TODO verificar si es verdad)
 - Excess Ns in low-coverage regions
 - Unfiltered indels in homopolymer stretches.
@@ -501,18 +523,21 @@ The most common discrepancies were: (TODO verificar si es verdad)
 
 Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
 
+![consensus_summary](./example_images/consensus_summary.png)
+
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
-**_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per genome across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
+**_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
 
 ### 5.3. Variant Detection Accuracy
 
-Variant detection accuracy was assessed against curated reference variant sets.
-Overall, {{ pct(general.general_results.variants.pct_vcfs_below_discrepancy_threshold) }} of submitted VCFs showed fewer than {{ general.general_results.variants.discrepancy_threshold }} discrepancies relative to the reference variant set.
+#### 5.3.1. SARS-CoV-2
+
+For SARS-CoV-2 compoents (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ general.general_results.variants.median_discrepancy_illumina }} for Illumina component and a median number of {{ general.general_results.variants.median_discrepancy_nanopore }} for Nanopore component, discrepancies relative to the reference variant set.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Illumina-based analyses generally demonstrated higher concordance and lower false-positive rates compared to Nanopore-based analyses (TODO verificar si es verdad). The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Observed variability in variant detection performance was associated with:
+Illumina-based analysis generally demonstrated higher concordance and lower false-positive rates compared to Nanopore-based analysis (TODO verificar si es verdad). The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Observed variability in variant detection performance was associated with:
 
 - Allele frequency thresholds used for consensus incorporation
 - Filtering of low-frequency variants
@@ -521,8 +546,56 @@ Illumina-based analyses generally demonstrated higher concordance and lower fals
 
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
-**_Figure {{ fig_counter.value }}_. Network-level variant detection performance across components**.
-Boxplots display the distribution of nucleotide discrepancies between submitted VCF files and the curated reference variant set. The central line represents the median, boxes indicate the interquartile range, and whiskers denote the full observed range across participating laboratories.
+![variant_summary](./example_images/variant_summary.png)
+
+#### 5.3.2. Influenza virus
+
+For influenza virus components (FLU1 and FLU2), variant evaluation focused on structural reporting characteristics and methodological heterogeneity.
+
+At network level:
+
+- {{ general.general_results.influenza_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants.
+- {{ general.general_results.influenza_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
+- {{ general.general_results.influenza_variants.no_low_freq_pct }} reported only high-frequency variants.
+
+Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across influenza components, aggregated by viral segment. When stratified by genomic segment, the number of distinct reference sequences used was:
+
+- PB1: {{ general.general_results.influenza_variants.total_distinct_references_PB1 }}
+- PB2: {{ general.general_results.influenza_variants.total_distinct_references_PB2 }}
+- PA: {{ general.general_results.influenza_variants.total_distinct_references_PA }}
+- HA: {{ general.general_results.influenza_variants.total_distinct_references_HA }}
+- NP: {{ general.general_results.influenza_variants.total_distinct_references_NP }}
+- NA: {{ general.general_results.influenza_variants.total_distinct_references_NA }}
+- M: {{ general.general_results.influenza_variants.total_distinct_references_M }}
+- NS: {{ general.general_results.influenza_variants.total_distinct_references_NS }}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figures {{ fig_counter.value }} and {{ fig_counter.value + 1 }} summarize the distribution of variant reporting practices and reference genome usage across participating laboratories for influenza components.
+
+{{ render_figure(
+general.figures.influenza_variant_reporting_summary,
+"Influenza variant reporting practices across the network."
+) }}
+
+![influenza_variant_reporting_summary](./example_images/influenza_variant_reporting_summary.png)
+
+**_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+{{ render_figure(
+general.figures.influenza_reference_summary,
+"Influenza reference genome heterogeneity by fragment across the network."
+) }}
+
+![influenza_reference_summary](./example_images/influenza_reference_summary.png)
+
+**_Figure {{ fig_counter.value }}_. Influenza reference genome heterogeneity by fragment across the network**. Summarise the number of distinct reference genomes used per influenza segment for variant calling.
+
+These findings highlight considerable methodological heterogeneity in influenza variant analysis within the network. (TODO revisar) Differences in allele frequency thresholds and reference genome selection represent key drivers of inter-laboratory variability and limit direct comparability of variant-level results under a unified coordinate framework.
+
+**_Figure {{ fig_counter.value }}_. Network-level variant detection performance across components**. Boxplots display the distribution of nucleotide discrepancies between submitted VCF files and the curated reference variant set. The central line represents the median, boxes indicate the interquartile range, and whiskers denote the full observed range across participating laboratories.
 
 ### 5.4. Lineage, Type and Clade Assignment
 
@@ -1031,12 +1104,6 @@ Primary contributors to incompleteness:
 {% for d in labdata.lab_overview.metadata.primary_incompleteness_drivers %}
 - {{ d }}
 {% endfor %}
-{% endif %}
-
-{% if labdata.lab_overview.metadata.missing_sample_ids and labdata.lab_overview.metadata.missing_sample_ids|length > 0 %}
-Missing submissions were observed in: {{ labdata.lab_overview.metadata.missing_sample_ids|join(", ") }}.
-{% else %}
-No missing sample-level submissions were observed for the analysed components.
 {% endif %}
 
 ## 9.{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance

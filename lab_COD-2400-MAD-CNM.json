@@ -6,19 +6,23 @@
 
   "lab_overview": {
     "submitted_files": {
-      "fasta_submitted": 10,
-      "fasta_expected": 10,
-      "vcf_submitted": 8,
-      "vcf_expected": 10
+      "fasta_submitted": 18,
+      "fasta_expected": 17,
+      "vcf_submitted": 18,
+      "vcf_expected": 17
     },
+
+  "submission_rates_pct": {
+    "fasta": 105.88,
+    "vcf": 105.88
+  },
 
     "metadata": {
       "completeness_pct": 92.0,
       "primary_incompleteness_drivers": [
         "Missing software version fields",
         "Missing allele frequency threshold field"
-      ],
-      "missing_sample_ids": []
+      ]
     }
   },
 

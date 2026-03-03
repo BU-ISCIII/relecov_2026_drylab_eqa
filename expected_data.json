@@ -1,8 +1,16 @@
 {
   "general": {
     "eqa_name": "RELECOV 2026 Dry Lab EQA",
-    "invited_labs": 52,
-    "participating_labs": 17
+    "total_invited": 52,
+    "total_participants": 17,
+    "total_participants_pct": 32.69,
+    "median_components_analysed_per_lab": 2.47,
+    "fasta_expected": 17,
+    "vcf_expected": 17,
+    "submission_rates_pct": {
+      "fasta": 100,
+      "vcf": 94.12
+    }
   },
   "components": {
     "SARS1": {
@@ -13,7 +21,7 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
-      "participating_labs": 15,
+      "total_participants": 15,
       "fasta_expected": 4,
       "vcf_expected": 4,
       "total_expected_fields": 74,
@@ -103,7 +111,7 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
-      "participating_labs": 8,
+      "total_participants": 8,
       "fasta_expected": 4,
       "vcf_expected": 4,
       "total_expected_fields": 74,
@@ -189,7 +197,7 @@
       "virus": "Influenza virus",
       "platform": "Illumina",
       "read_layout": "Paired-end",
-      "participating_labs": 11,
+      "total_participants": 11,
       "fasta_expected": 4,
       "vcf_expected": 4,
       "total_expected_fields": 73,
@@ -295,7 +303,7 @@
       "read_layout": "Single-end",
       "fasta_expected": 5,
       "vcf_expected": 5,
-      "participating_labs": 8,
+      "total_participants": 8,
       "total_expected_fields": 73,
       "files": {
         "expected_fastq_files_per_sample": 1,

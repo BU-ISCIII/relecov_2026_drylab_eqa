@@ -1,25 +1,29 @@
 {
+  "eqa_name": "RELECOV 2026 Dry Lab EQA",
+
   "total_invited": 52,
-  "total_participants": 14,
-  "total_participants_pct": 26.9,
+  "total_participants": 17,
+  "total_participants_pct": 32.69,
 
   "participation_per_component": {
-    "SARS1": 10,
-    "SARS2": 5,
-    "FLU1": 10,
-    "FLU2": 2
+    "SARS1": 15,
+    "SARS2": 8,
+    "FLU1": 11,
+    "FLU2": 8
   },
 
-  "median_components_analysed_per_lab": 2,
+  "median_components_analysed_per_lab": 2.47,
 
   "submission_rates_pct": {
-    "fasta": 95.0,
-    "vcf": 82.5
+    "fasta": 100,
+    "vcf": 94.12
   },
 
   "figures": {
     "consensus_summary": "figures/network/consensus_summary.png",
     "variant_summary": "figures/network/variant_summary.png",
+    "influenza_variant_reporting_summary": "figures/network/influenza_variant_reporting_summary.png",
+    "influenza_reference_summary": "figures/network/influenza_reference_summary.png",
     "classification_summary": "figures/network/classification_summary.png",
     "metadata_completeness_distribution": "figures/network/metadata_completeness_distribution.png",
     "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png"
@@ -28,13 +32,25 @@
   "general_results": {
     "consensus": {
       "median_identity_illumina_pct": 99.92,
-      "median_identity_nanopore_pct": 99.10,
-      "pct_genomes_below_discrepancy_threshold": 85.0,
-      "discrepancy_threshold": 10
+      "median_identity_nanopore_pct": 99.10
     },
     "variants": {
-      "pct_vcfs_below_discrepancy_threshold": 70.0,
-      "discrepancy_threshold": 5
+      "median_discrepancy_illumina": 10,
+      "median_discrepancy_nanopore": 20
+    },
+    "influenza_variants": {
+      "high_and_low_freq_pct": 5,
+      "low_freq_only_pct": 20,
+      "no_low_freq_pct": 75,
+      "total_distinct_references": 5,
+      "total_distinct_references_PB1": 2,
+      "total_distinct_references_PB2": 1,
+      "total_distinct_references_PA": 2,
+      "total_distinct_references_HA": 3,
+      "total_distinct_references_NP": 2,
+      "total_distinct_references_NA": 2,
+      "total_distinct_references_M": 1,
+      "total_distinct_references_NS": 1
     },
     "classification": {
       "sars_cov_2_concordance_pct": 95.0,
