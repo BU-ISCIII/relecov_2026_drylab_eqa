@@ -1,0 +1,248 @@
+#!/bin/bash
+
+: '
+LABLOG FILE TO CREATE THE NECESSARY ANALYIS STEPS FOR THE EQA.
+
+Steps of the process:
+
+1. Read validated JSON file and prepare the folders and the files (Lablog)
+2. Move consensus fasta to 00-consensus and rename to standard name (sample_id) (Lablog)
+Per each VCF file:
+    3. Move VCF files, fix them (Add columns, correct values) and provide them a standard name (sample_id + index) (_00_create_vcf_files.sh --> Calls aux_rewrite_common_vcf_errors.py )
+        3.1. In parallel, keep record of original filenames to standard filenames, both for VCF and Fasta (Lablog)
+    4. Create script to sort the VCFs with bcftools ( _01_bcftools_sort.sh )
+    5. Create script to create snpeff databases for each vcf ( _02_snpeff_build.sh --> calls aux_create_snpeff_db.sh )
+    6. Create script to annotate with snpeff ( _03_snpeff_annotate.sh )
+    7. Create script to query with bcftools ( _04_bcftools_query.sh )
+    8. Create script to extract fields with snpSift (_05_snpsift)
+    9. Create script to merge VCF files into variant_long_table (1 per organism + seq technology) ( _06_variants_long_table.sh )
+
+It also creates samples_files_map.tsv with info extracted from the JSON file
+
+'
+
+export BASE_RESULTS_FOLDER=../RAW/
+export BASE_RESULTS_FOlDER_RP=$( realpath ../ )
+validated_metadata_lab_file=$( find $BASE_RESULTS_FOLDER -name "*.json" )
+
+# REMOVE PREVIOUS FOLDERS
+rm -r 00-* sorted_vcf annotated_vcf queried_vcf snpsift
+
+# REMOVE SCRIPTS
+rm _0* _99_rewrite_vcf_refs.sh
+
+# micromamba activate biopython_v1.84
+# First, create the samples_files_map.tsv from the validated JSON file generated from the relecov tools
+> samples_files_map.tsv
+echo "Creating samples_files_map.tsv with the following headers: "
+echo -e 'sample_id\tconsensus_fasta_file\tvcf_files'
+cat $validated_metadata_lab_file  | jq --raw-output ' .[] | [.collecting_lab_sample_id, .consensus_sequence_filename, .vcf_filename, .reference_genome_accession, .variant_calling_software_name] | @tsv ' >> samples_files_map.tsv
+
+# Now, for each sample, we want to create the symbolic links to the consensus fasta, adding some checks
+mkdir -p 00-consensus 00-vcf 
+
+# Create empty list of references used to create VCFs
+> ref_tmp.txt
+
+# Create empty tsv files for original_filename mappings
+## Consensus Fasta
+> fasta_filename_mapping.tsv
+## VCF files
+> vcf_filename_mapping.tsv
+
+
+
+# While loop called twice - First time execution for when files still do not have standard names
+while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
+    if [ -z $sample_id ]; then echo "Something went wrong; A line contains no sample ID"; continue; fi
+    if [ -z $consensus_fasta_file ]; then echo "Consensus fasta file not found; skipping sample "$sample_id;continue;fi
+    
+    ### Consensus fasta
+    fasta_find_result=$( find $BASE_RESULTS_FOLDER -name $consensus_fasta_file)
+    fasta_find_result_fp=$( realpath $fasta_find_result )
+    if [ -z $fasta_find_result_fp ]; then echo "Failed to find consensus fasta for sample "$sample_id; fi
+    ln -s $fasta_find_result_fp 00-consensus/$sample_id".fa"
+    #### fasta filename mapping
+    echo -e "${consensus_fasta_file}\t${sample_id}" >> fasta_filename_mapping.tsv
+
+
+    ### Add references to temporal file
+    sed 's/,/\n/g' <<< $reference >> ref_tmp.txt
+
+    if [ -z $vcf_files ]; then echo "[red]VCF files not found for sample " $sample_id;continue;fi
+    IFS=',' read -r -a ref_array <<< "$reference"
+    IFS=',' read -r -a vcf_files_array <<< "$vcf_files"
+    i=1
+    for vcf in ${vcf_files_array[@]}; do
+        vcf_find_result=$( find $BASE_RESULTS_FOLDER -name $vcf)
+        if [ -z $vcf_find_result ]; then echo "Failed to find vcf file " $vcf " for sample " $sample_id;exit 1;fi
+        vcf_find_result_fp=$( realpath $vcf_find_result )
+        ## ALSO - Since there are issues with the original VCFs, I am fixing the headers here. Punto y pelota. For the testing. Esto luego se va y tiene que hacerse bien
+        echo \
+        "srun \
+        --chdir ${PWD} \
+        --partition short_idx \
+        --mem 2G \
+        --time 01:00:00 \
+        --cpus-per-task 1 \
+        --job-name fix_vcf_${vcf} \
+        --output logs/VCF_FIX_${vcf} \
+        python3 aux_rewrite_common_vcf_errors.py $vcf_find_result_fp 00-vcf/$sample_id\"_\"$i\".vcf\" ${ref_array[${i} -1]} &" >> _00_create_vcf_files.sh
+        i=$((i+1))
+    done
+
+
+done < samples_files_map.tsv
+
+# Unique references used to create VCF go to DOC
+cat ref_tmp.txt | sort | uniq > ../DOC/vcf_references.txt
+rm ref_tmp.txt
+
+# For each unique reference, we need to create a snpeff DB. It doesn't take long (For viral genomes), so we create one per "service". In the future, we could point out to a common SNPEFF_DB folder
+for uniq_ref in $( cat ../DOC/vcf_references.txt ); do
+    echo \
+        "srun \
+        --chdir ${PWD} \
+        --partition middle_idx \
+        --mem 48G \
+        --time 24:00:00 \
+        --cpus-per-task 4 \
+        --job-name BUILD_DB_${uniq_ref} \
+        --output logs/build_db_${uniq_ref} \
+        singularity exec -B ${BASE_RESULTS_FOlDER_RP} \
+        /data/ucct/bi/pipelines/singularity-images/snpeff:5.2--hdfd78af_1.1 \
+        bash -c 'bash aux_create_snpeff_db.sh ${uniq_ref}' &" >> _02_snpeff_build.sh
+done
+
+# GENERATE A VCF --> REFERENCE file
+> vcf_to_ref.tsv
+while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
+
+IFS=',' read -r -a ref_array <<< "$reference"
+    i=1
+    for ref in ${ref_array[@]}; do
+        echo -e "${sample_id}_${i}\t${ref}" >> vcf_to_ref.tsv
+        i=$((i+1))
+    done
+done < samples_files_map.tsv
+## Create an aux script to re-write the SNPEFF step using the file
+echo "while IFS=$'\t' read -r vcf_filename reference; do; sed -E -i \"/${vcf_filename}/ s/g (.+)( +-config)/g ${reference}\2/g\" _03_snpeff_annotate.sh; done < ../DOC/vcf_to_ref.tsv" >> _99_rewrite_vcf_refs.sh
+
+# GENERATE THE NECESSARY FOLDERS FOR THE STEPS
+mkdir sorted_vcf
+mkdir annotated_vcf
+mkdir queried_vcf
+mkdir snpsift
+
+## GENERATE SCRIPTS for each vcf file
+while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
+
+if [ -z $consensus_fasta_file ]; then continue;fi
+
+i=1
+IFS=',' read -r -a vcf_files_array <<< "$vcf_files"
+IFS=',' read -r -a reference_array <<< "$reference"
+for vcf in ${vcf_files_array[@]}; do
+
+echo \
+    "srun \
+    --chdir ${PWD} \
+    --partition short_idx \
+    --mem 8G \
+    --time 02:00:00 \
+    --cpus-per-task 2 \
+    --output logs/BCFTOOLS_sort_${sample_id}_${i}.log \
+    --job-name BCFTOOLS_${sample_id}_${i}.vcf \
+    singularity exec -B ${BASE_RESULTS_FOlDER_RP} \
+    /data/ucct/bi/pipelines/singularity-images/bcftools:1.22--h3a4d415_1 \
+    bash -c 'bcftools sort \
+    --output sorted_vcf/${sample_id}_${i}.vcf.gz \
+    --output-type z 00-vcf/${sample_id}_${i}.vcf && \
+    tabix -p vcf sorted_vcf/${sample_id}_${i}.vcf.gz' &" >> _01_bcftools_sort.sh
+
+# CAN'T OUTPUT HERE - THE LOG EATS THE OUTPUT FROM NEXT STEP
+echo \
+    "srun \
+    --chdir ${PWD} \
+    --partition short_idx \
+    --mem 8G \
+    --time 02:00:00 \
+    --cpus-per-task 2 \
+    --job-name SNPEFF_${sample_id}_${i} \
+    singularity exec -B ${BASE_RESULTS_FOlDER_RP} -B /data/ucct/bi/references/refgenie/ \
+    /data/ucct/bi/pipelines/singularity-images/snpeff:5.2--hdfd78af_1.1 \
+    snpEff -Xmx36g \
+    ${reference_array[${i} - 1]} \
+    -config ${BASE_RESULTS_FOlDER_RP}/DOC/snpeff.config \
+    -dataDir ${BASE_RESULTS_FOlDER_RP}/DOC/snpeff_db \
+    sorted_vcf/${sample_id}_${i}.vcf.gz \
+    -csvStats annotated_vcf/${sample_id}_${i}.snpeff.csv \
+    > annotated_vcf/${sample_id}_${i}.snpeff.vcf &" >> _03_snpeff_annotate.sh
+
+echo \
+    "srun \
+    --chdir ${PWD} \
+    --partition short_idx \
+    --mem 8G \
+    --time 02:00:00 \
+    --cpus-per-task 2 \
+    --output logs/BCFTOOLS_query_${sample_id}_${i}.log \
+    --job-name BCFTOOLS_query_${sample_id}_${i} \
+    singularity exec -B ${PWD} \
+    /data/ucct/bi/pipelines/singularity-images/bcftools:1.22--h3a4d415_1 \
+    bcftools query \
+    --output queried_vcf/${sample_id}_${i}.bcftools_query.txt \
+    -H -f '%CHROM\t%POS\t%REF\t%ALT\t%FILTER\t[%DP\t]\t[%REF_DP\t]\t[%ALT_DP\t]\n' \
+    sorted_vcf/${sample_id}_${i}.vcf.gz &" >> _04_bcftools_query_ivar_header.sh
+
+echo \
+    "srun \
+    --chdir ${PWD} \
+    --partition short_idx \
+    --mem 8G \
+    --time 02:00:00 \
+    --cpus-per-task 2 \
+    --job-name SNPSIFT_${sample_id}_${i} \
+    singularity exec -B ${PWD} \
+    /data/ucct/bi/pipelines/singularity-images/snpsift:5.2--hdfd78af_0 \
+    SnpSift extractFields \
+    -s "," \
+    -e "." \
+    annotated_vcf/${sample_id}_${i}.snpeff.vcf \
+    CHROM POS REF ALT \
+    "ANN[*].GENE" "ANN[*].GENEID" \
+    "ANN[*].IMPACT" "ANN[*].EFFECT" \
+    "ANN[*].FEATURE" "ANN[*].FEATUREID" \
+    "ANN[*].BIOTYPE" "ANN[*].RANK" "ANN[*].HGVS_C" \
+    "ANN[*].HGVS_P" "ANN[*].CDNA_POS" "ANN[*].CDNA_LEN" \
+    "ANN[*].CDS_POS" "ANN[*].CDS_LEN" "ANN[*].AA_POS" \
+    "ANN[*].AA_LEN" "ANN[*].DISTANCE" "EFF[*].EFFECT" \
+    "EFF[*].FUNCLASS" "EFF[*].CODON" "EFF[*].AA" "EFF[*].AA_LEN" \
+    > snpsift/${sample_id}_${i}.snpsift.txt &" >> _05_running_snpsift.sh
+
+i=$((i+1))
+
+done
+
+done < samples_files_map.tsv
+
+echo \
+    "srun \
+    --chdir ${PWD} \
+    --partition middle_idx \
+    --mem 30G \
+    --time 02:00:00 \
+    --cpus-per-task 4 \
+    --job-name VARIANT_LONG_TABLE \
+    --output logs/variant_long_table_${sample_id}.log \
+    singularity exec -B ${PWD} -B ${BASE_RESULTS_FOlDER_RP}\
+    /data/ucct/bi/pipelines/singularity-images/depot.galaxyproject.org-singularity-mulled-v2-77320db00eefbbf8c599692102c3d387a37ef02a-08144a66f00dc7684fad061f1466033c0176e7ad-0.img \
+    bash aux_create_variant_long_table.sh &" >> _06_variant_long_table.sh
+
+
+# Split by component (aka Seq technology + sample type). This file is used for the varuabt long table creation
+## The last 2 seds is just to make a simpler filename
+> sample_per_comp.tsv
+cat $validated_metadata_lab_file | jq --raw-output ' .[] | [.collecting_lab_sample_id, .organism, .sequencing_instrument_platform] | @tsv' | sed 's/ /_/g' | sed -E 's/_\[[A-Za-z]+:[0-9A-Za-z\-]+\]//g' >>  sample_per_comp.tsv
+
+echo -e "ALL FINISHED SETTING UP; PLEASE NOTE \n**FOR VCFs WITH MULTIPLE REFERENCES, PLEASE REVIEW vcf_to_ref.tsv AND RUN _99_rewrite_vcf_refs.sh IF NECESSARY**"

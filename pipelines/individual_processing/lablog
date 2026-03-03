@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## 00 - CREATE THE FOLDER DIRECTORY
+
+# Remove if calling a second time
+
+mkdir -p ANALYSIS RESULTS REFERENCES DOC TMP RAW
+
+find . -maxdepth 1 -not -name 'ANALYSIS' -not -name 'REFERENCES' -not -name 'RESULTS' -not -name 'DOC' -not -name 'TMP' -not -name 'RAW' -not -name 'README.md' -exec mv {} RAW/ \;
+
+# CREATE EMPTY SNPEFF DATABASE FILES/FOLDERS
+> DOC/snpeff.config
+mkdir DOC/snpeff_db

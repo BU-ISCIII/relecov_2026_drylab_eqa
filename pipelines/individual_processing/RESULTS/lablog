@@ -1,0 +1,48 @@
+# Gold standard files
+mkdir gold_standard
+mkdir gold_standard/variants_long_table
+mkdir gold_standard/consensus
+
+ln -s  $( realpath /data/ucct/bi/research/EQA_RELECOV_2026/gold_standards_relecov/vcf/* ) gold_standard/variants_long_table/
+ln -s $( realpath /data/ucct/bi/research/EQA_RELECOV_2026/gold_standards_relecov/2026_EQA_*/**/*.fasta ) gold_standard/consensus/
+ln -s /data/ucct/bi/research/EQA_RELECOV_2026/influenza_reference_numbering/* influenza_reference_numbering
+
+# User-generated files
+mkdir variants_long_table
+mkdir consensus_files 
+
+ANALYSIS_RP=$( realpath ../ANALYSIS )
+
+ln -s $ANALYSIS_RP/variant_long_table/* variants_long_table/
+ln -s $ANALYSIS_RP/00-consensus/* consensus_files/
+ln -s $( realpath ../RAW/validated*json ) validated_metadata.json
+
+# Generate results for FASTA FILES
+
+# module load singularity MAFFT/7.475-gompi-2020b-with-extensions
+# micromamba activate biopython_v1.84
+
+echo \
+ "srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name ALIGNMENT_CONSENSUS \
+--output fasta_analysis_reports.log \
+python3 01_fasta_alignment_SARS-CoV-2_FLU_EQA2026.py && \
+python3 02_fasta_comparison_and_reporting_SARS-CoV2_and_FLU_EQA2026.py &"> _01_generate_fasta_analysis_reports.sh
+
+# Generate results for VCF FILES
+
+echo \
+"srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name VCF \
+--output vcf_analysis_reports.log \
+python3 variant_comparison_combined_vcf_to_gold_standard_eqa_2024_v2.py &" > _02_vcf_comparison.sh
