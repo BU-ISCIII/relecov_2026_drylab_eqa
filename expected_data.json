@@ -1,7 +1,8 @@
 {
   "general": {
     "eqa_name": "RELECOV 2026 Dry Lab EQA",
-    "invited_labs": 52
+    "invited_labs": 52,
+    "participating_labs": 17
   },
   "components": {
     "SARS1": {
@@ -12,6 +13,7 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
+      "participating_labs": 15,
       "fasta_expected": 4,
       "vcf_expected": 4,
       "total_expected_fields": 74,
@@ -45,7 +47,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "High-quality baseline sample"
+          "key_feature": "High-quality baseline sample",
+          "expected_qc": "Pass"
         },
         "SARS3": {
           "sample_id": "SARS3",
@@ -58,7 +61,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "XBB sample, insertion challenge"
+          "key_feature": "XBB sample, insertion challenge",
+          "expected_qc": "Pass"
         },
         "SARS4": {
           "sample_id": "SARS4",
@@ -71,7 +75,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "Very low read depth"
+          "key_feature": "Very low read depth",
+          "expected_qc": "Fail"
         },
         "SARS5": {
           "sample_id": "SARS5",
@@ -84,7 +89,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": ">10 mixed sites"
+          "key_feature": ">10 mixed sites",
+          "expected_qc": "Fail"
         }
       }
     },
@@ -97,6 +103,7 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
+      "participating_labs": 8,
       "fasta_expected": 4,
       "vcf_expected": 4,
       "total_expected_fields": 74,
@@ -116,7 +123,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "High-quality baseline sample"
+          "key_feature": "High-quality baseline sample",
+          "expected_qc": "Pass"
         },
         "SARS7": {
           "sample_id": "SARS7",
@@ -129,7 +137,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "XBB sample, ambiguity next to a deletion"
+          "key_feature": "XBB sample, ambiguity next to a deletion",
+          "expected_qc": "Pass"
         },
         "SARS8": {
           "sample_id": "SARS8",
@@ -142,7 +151,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": ">10 mixed sites"
+          "key_feature": ">10 mixed sites",
+          "expected_qc": "Fail"
           }
         },
         "SARS9": {
@@ -156,7 +166,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads"
+          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
+          "expected_qc": "Fail"
         },
         "SARS10": {
           "sample_id": "SARS10",
@@ -169,7 +180,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "Very low read depth"
+          "key_feature": "Very low read depth",
+          "expected_qc": "Fail"
         }
     },
     "FLU1": {
@@ -177,6 +189,7 @@
       "virus": "Influenza virus",
       "platform": "Illumina",
       "read_layout": "Paired-end",
+      "participating_labs": 11,
       "fasta_expected": 4,
       "vcf_expected": 4,
       "total_expected_fields": 73,
@@ -196,7 +209,8 @@
           "expected_lineage": "A/H5N1",
           "expected_clade": "2.3.4.4.b",
           "fastq_files": ["FLU1_R1.fastq.gz", "FLU1_R2.fastq.gz"],
-          "key_feature": "High-quality baseline sample (zoonotic)"
+          "key_feature": "High-quality baseline sample (zoonotic)",
+          "expected_qc": "Pass"
         },
         "FLU2": {
           "sample_id": "FLU2",
@@ -214,7 +228,8 @@
             "host_reads": 462520,
             "total_reads": 1841284
           },
-          "key_feature": "High-quality baseline sample (human)"
+          "key_feature": "High-quality baseline sample (human)",
+          "expected_qc": "Pass"
         },
         "FLU3": {
           "sample_id": "FLU3",
@@ -227,7 +242,8 @@
           "expected_lineage": null,
           "expected_clade": null,
           "fastq_files": ["FLU3_R1.fastq.gz", "FLU3_R2.fastq.gz"],
-          "key_feature": "No influenza (Rhinovirus only)."
+          "key_feature": "No influenza (Rhinovirus only).",
+          "expected_qc": "Fail"
         },
         "FLU4": {
           "sample_id": "FLU4",
@@ -248,7 +264,8 @@
             },
             "total_reads": 681626
           },
-          "key_feature": "Contamination with SARS-CoV-2 reads."
+          "key_feature": "Contamination with SARS-CoV-2 reads.",
+          "expected_qc": "Pass"
         },
         "FLU5": {
           "sample_id": "FLU5",
@@ -266,7 +283,8 @@
             "host_reads": 100000,
             "total_reads": 1188000
           },
-          "key_feature": "NA segment dropout."
+          "key_feature": "NA segment dropout.",
+          "expected_qc": "Fail"
         }
       }
     },
@@ -277,6 +295,7 @@
       "read_layout": "Single-end",
       "fasta_expected": 5,
       "vcf_expected": 5,
+      "participating_labs": 8,
       "total_expected_fields": 73,
       "files": {
         "expected_fastq_files_per_sample": 1,
@@ -294,7 +313,8 @@
           "expected_lineage": "A/H5N6",
           "expected_clade": "2.3.4.4h",
           "fastq_files": ["FLU6.fastq.gz"],
-          "key_feature": "High-quality baseline sample (zoonotic)"
+          "key_feature": "High-quality baseline sample (zoonotic)",
+          "expected_qc": "Pass"
         },
         "FLU7": {
           "sample_id": "FLU7",
@@ -315,7 +335,8 @@
             },
             "total_reads": 6032
           },
-          "key_feature": "Contamination with Rhinovirus reads."
+          "key_feature": "Contamination with Rhinovirus reads.",
+          "expected_qc": "Pass"
         },
         "FLU8": {
           "sample_id": "FLU8",
@@ -333,7 +354,8 @@
             "host_reads": 300,
             "total_reads": 5680
           },
-          "key_feature": "High-quality baseline sample (human)"
+          "key_feature": "High-quality baseline sample (human)",
+          "expected_qc": "Pass"
         },
         "FLU9": {
           "sample_id": "FLU9",
@@ -351,7 +373,8 @@
             "host_reads": 500,
             "total_reads": 20489
           },
-          "key_feature": "HA segment dropout."
+          "key_feature": "HA segment dropout.",
+          "expected_qc": "Fail"
         },
         "FLU10": {
           "sample_id": "FLU10",
@@ -364,7 +387,8 @@
           "expected_lineage": "A/H5N1",
           "expected_clade": "2.3.4.4b",
           "fastq_files": ["FLU10.fastq.gz"],
-          "key_feature": "High-quality baseline sample (zoonotic)"
+          "key_feature": "High-quality baseline sample (zoonotic)",
+          "expected_qc": "Pass"
         }
       }
     }
