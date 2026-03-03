@@ -145,18 +145,18 @@ Table {{ table_counter.value }} summarises the correspondence between RELECOV EQ
 _**Table {{ table_counter.value }}**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
 The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
-| Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout | Clade Assignment | Lineage Assignment |
-|--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|-------------|------------------|--------------------|
-| SARS1  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end  | Unable to align  | Unassigned         |
-| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | outgroup (BA.1)  | BA.1.13            |
-| SARS3  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end  | 23A              | XBB.1.5            |
-| SARS4  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.20   | Very low read depth                               | 2           | Paired-end  | 22E              | BQ.1.1             |
-| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | outgroup (BA.1)  | BA.1.1             |
-| SARS6  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.01   | High-quality baseline sample                      | 1           | Single-end  | recombinant      | XCH.1              |
-| SARS7  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end  | 23A              | XBB.1.5.24         |
-| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D (XBB.1.9.1)  | EG.5               |
-| SARS9  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end  | Unable to align  | XBB.1.9            |
-| SARS10 | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.05   | Very low read depth                               | 1           | Single-end  | 23D (FL.15)      | Unassigned         |
+| Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout | Clade Assignment | Lineage Assignment | Quality check |
+|--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|-------------|------------------|--------------------|---------------|
+| SARS1  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end  | Unable to align  | Unassigned         | Bad           |
+| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | outgroup (BA.1)  | BA.1.13            | Ok            |
+| SARS3  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end  | 23A              | XBB.1.5            | Ok            |
+| SARS4  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.20   | Very low read depth                               | 2           | Paired-end  | 22E              | BQ.1.1             | Bad           |
+| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | outgroup (BA.1)  | BA.1.1             | Bad           |
+| SARS6  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.01   | High-quality baseline sample                      | 1           | Single-end  | recombinant      | XCH.1              | Ok            |
+| SARS7  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end  | 23A              | XBB.1.5.24         | Ok            |
+| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D (XBB.1.9.1)  | EG.5               | Bad           |
+| SARS9  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end  | Unable to align  | XBB.1.9            | Bad           |
+| SARS10 | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.05   | Very low read depth                               | 1           | Single-end  | 23D (FL.15)      | Unassigned         | Bad           |
 
 ### 3.3. Influenza Dataset Selection
 
@@ -221,18 +221,18 @@ Table {{ table_counter.value }} summarises the influenza datasets included in th
 
 _**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
 
-| Sample | Source    | Platform | Enrichment Strategy | Primer Scheme                                   | Read Layout | Ref_sample       | Type   | Clade     | Key Feature                             |
-|--------|-----------|----------|---------------------|-------------------------------------------------|-------------|------------------|--------|-----------|-----------------------------------------|
-| FLU1   | ESIB 2024 | Illumina | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Paired-end | INFL2.07          | A/H5N1 | 2.3.4.4.b | High-quality baseline sample (zoonotic) |
-| FLU2   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample1 | A/H1N1 | D.3.1.1   | High-quality baseline sample (human)    |
-| FLU3   | ESIB 2024 | Illumina | No enrichment       | —                                               | Paired-end | INFL2.04          | —      | —         | No influenza (Rhinovirus only)          |
-| FLU4   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample3 | A/H3N2 | K         | Contamination with SARS-CoV-2           |
-| FLU5   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end | In-silico Sample4 | A/H3N2 | J.2.2     | NA segment dropout                      |
-| FLU6   | ESIB 2024 | Nanopore | No enrichment       | —                                               | Single-end | INFL1.02          | A/H5N6 | 2.3.4.4h  | High-quality baseline sample (zoonotic) |
-| FLU7   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample2 | A/H1N1 | C.1.9.3   | Contamination with Rhinovirus           |
-| FLU8   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample3 | A/H3N2 | K         | High-quality baseline sample (human)    |
-| FLU9   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end | In-silico Sample1 | A/H1N1 | D.3.1.1   | HA segment dropout                      |
-| FLU10  | ESIB 2024 | Nanopore | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Single-end | INFL1.08          | A/H5N1 | 2.3.4.4b  | High-quality baseline sample (zoonotic) |
+| Sample | Source    | Platform | Enrichment Strategy | Primer Scheme                                   | Read Layout | Ref_sample        | Type   | Clade     | Key Feature                             | Quality check |
+|--------|-----------|----------|---------------------|-------------------------------------------------|-------------|-------------------|--------|-----------|-----------------------------------------|---------------|
+| FLU1   | ESIB 2024 | Illumina | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Paired-end  | INFL2.07          | A/H5N1 | 2.3.4.4.b | High-quality baseline sample (zoonotic) | Ok            |
+| FLU2   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample1 | A/H1N1 | D.3.1.1   | High-quality baseline sample (human)    | Ok            |
+| FLU3   | ESIB 2024 | Illumina | No enrichment       | —                                               | Paired-end  | INFL2.04          | —      | —         | No influenza (Rhinovirus only)          | Bad           |
+| FLU4   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample3 | A/H3N2 | K         | Contamination with SARS-CoV-2           | Ok            |
+| FLU5   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample4 | A/H3N2 | J.2.2     | NA segment dropout                      | Bad           |
+| FLU6   | ESIB 2024 | Nanopore | No enrichment       | —                                               | Single-end  | INFL1.02          | A/H5N6 | 2.3.4.4h  | High-quality baseline sample (zoonotic) | Ok            |
+| FLU7   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample2 | A/H1N1 | C.1.9.3   | Contamination with Rhinovirus           | Ok            |
+| FLU8   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample3 | A/H3N2 | K         | High-quality baseline sample (human)    | Ok            |
+| FLU9   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample1 | A/H1N1 | D.3.1.1   | HA segment dropout                      | Bad           |
+| FLU10  | ESIB 2024 | Nanopore | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Single-end  | INFL1.08          | A/H5N1 | 2.3.4.4b  | High-quality baseline sample (zoonotic) | Ok            |
 
 ## 4. Methodology of Evaluation
 
@@ -401,6 +401,35 @@ Metadata entries were considered non-compliant when:
 
 This evaluation allowed quantification of metadata standardisation and reproducibility readiness across the network.
 
+#### Evaluation of Sample Quality Control Assessment
+
+The evaluation of sample quality control (QC) assessment was designed to determine whether participating laboratories correctly interpreted overall analytical quality status for each sample. Participating laboratories were required to report their own QC evaluation for each analysed sample within the metadata template. For every sample included in the exercise, a gold standard quality control classification was predefined based on the original ECDC dataset evaluation or the in-silico design specifications. Each sample was categorised as:
+
+- Pass
+- Fail
+
+For each laboratory and sample, the reported QC classification was compared to the predefined gold standard QC status. Results were categorised as:
+
+- **Match**: Laboratory-reported QC status identical to the gold standard classification.
+- **Discrepancy**: Laboratory-reported QC status different from the gold standard classification.
+
+For each laboratory, component, and the overall network, the following metrics were calculated:
+
+- Total number of QC evaluations performed
+- Number of Matches
+- Number of Discrepancies
+- QC concordance rate, where:
+
+$$
+\text{QC concordance rate} =
+\frac{\text{Number of Matches}}
+{\text{Total QC evaluations}}
+$$
+
+QC evaluations were calculated only for samples analysed by the laboratory.
+
+The QC assessment evaluation was limited to concordance analysis. The exercise did not attempt to infer the internal QC criteria applied by laboratories, but rather assessed agreement with the predefined gold standard QC status to evaluate interpretative consistency across the network.
+
 ### 4.6. Pipeline Benchmarking and Comparative Performance
 
 The pipeline benchmarking analysis was designed to evaluate analytical performance at the pipeline and software level, rather than solely at the individual laboratory level. The objective was to identify which analytical workflows most consistently generate results that closely match the curated gold standard datasets.
@@ -470,7 +499,7 @@ The most common discrepancies were: (TODO verificar si es verdad)
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components, stratified by sequencing platform.
+Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
 
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
@@ -564,6 +593,26 @@ The most common compliance issues included (TODO revisar si es cierto):
 - Inconsistent declaration of lineage assignment tools.
 - Ambiguous reporting of reference genome identifiers.
 
+#### Sample Quality Control Assessment
+
+Sample quality control (QC) classifications reported by laboratories (Pass/Fail) were compared against the predefined gold standard QC status for each sample (ECDC or in-silico). QC agreement was evaluated as a binary outcome:
+
+- Match: laboratory QC classification equals the gold standard QC status
+- Discrepancy: laboratory QC classification differs from the gold standard QC status
+
+Overall, the network achieved {{ pct(general.qc.match_rate_pct) }} QC concordance, corresponding to {{ general.qc.matches }} Matches and {{ general.qc.discrepancies }} Discrepancies across {{ general.qc.total_evaluations }} evaluated sample-level QC decisions.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+As shown in Figure {{ fig_counter.value }}, QC concordance varied across components, indicating component-specific differences in how laboratories interpreted sample quality status (TODO revisar si es verdad).
+
+{{ render_figure(
+general.figures.qc_match_rate_by_component,
+"QC concordance by component (Match vs Discrepancy relative to the gold standard)."
+) }}
+
+**_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
+
 ### 5.6. Pipeline Benchmarking and Comparative Performance
 
 The benchmarking framework was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
@@ -608,9 +657,8 @@ This section presents the analytical results disaggregated by component, allowin
 
 Component-level analyses enable identification of platform-specific patterns, dataset-dependent challenges, and variability associated with particular sample characteristics. This approach facilitates a more granular interpretation of performance differences observed at the network level and supports targeted harmonisation recommendations.
 
-{% for comp_code in general.components %}
-  {% set comp_net = general.components_detail.get(comp_code) %}
-  {% if comp_net %}
+{% for comp_code, comp_net in general.components.items() %}
+
 ### 6.{{ loop.index }}. {{ comp_code }} ({{ comp_net.name }})
 
 #### 6.{{ loop.index }}.1. Participation and Submissions
@@ -778,7 +826,38 @@ Figure {{ fig_counter.value + 1 }} compares the distribution of lineage/type and
 **Figure {{ fig_counter.value }}. Distribution of lineage/type and clade assignment errors for {{ comp_code }}.**  
 Boxplots represent the number of lineage/type and clade errors per sample across participating laboratories. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
-#### 6.{{ loop.index }}.5. Pipeline Benchmarking and Comparative Performance
+#### 6.{{ loop.index }}.5. Sample Quality Control Assessment
+
+Laboratory-reported sample QC evaluations (Pass/Fail) for the {{ comp_code }} component were compared against the predefined gold standard QC status for each sample. Concordance was assessed as a binary outcome:
+
+- Match: reported QC status equals the gold standard
+- Discrepancy: reported QC status differs from the gold standard
+
+Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pct) }}, corresponding to {{ comp_net.qc.matches }} Matches and {{ comp_net.qc.discrepancies }} Discrepancies across {{ comp_net.qc.total_evaluations }} evaluated QC decisions.
+
+% set table_counter.value = table_counter.value + 1 %}
+**_Table {{ table_counter.value }}_. Sample-level QC concordance for {{ comp_code }}.**
+
+| Sample ID |	Gold standard QC	| % Match |	# Matches	| # Discrepancies	| Total evaluations |
+|---|---:|---:|---:|---:|---:|
+{% for s in comp_net.qc.samples %}					
+| {{ s.sample_id }} |	{{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }}	| {{ s.matches }}	| {{ s.discrepancies }}	| {{ s.total_evaluations }} |
+{% endfor %}					
+
+Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample, relative to the gold standard definition.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+As shown in Figure {{ fig_counter.value }}, sample-level QC concordance varied within {{ comp_code }}, highlighting samples where quality interpretation was less consistent across laboratories (TODO verificar si es verdad).
+
+{{ render_figure(
+comp_net.qc.fig_qc_match_by_sample,
+"Sample-level QC concordance for " ~ comp_code ~ " (Match vs Discrepancy relative to the gold standard)."
+) }}
+
+**_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match vs Discrepancy outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status.
+
+#### 6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance
 
 Based on metadata submissions, {{ comp_net.pipeline.total_number }} distinct pipeline/software configurations were reported for the {{ comp_code }} component.
 
@@ -813,7 +892,6 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.**  
 Multi-panel boxplots summarise laboratory-level performance stratified by pipeline/software configuration. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
 
-  {% endif %}
 {% endfor %}
 
 ## 7. Discussion
@@ -923,18 +1001,24 @@ The purpose of this section is to support technical optimisation, parameter harm
 
 ## 9.1. Participation Overview
 
-The laboratory analysed **{{ labdata.lab_overview.components_analysed_count }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
+The laboratory analysed **{{ labdata.components | length }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
 
 Analysed components:
 
-{% for c in general.components %}
-- {{ c }}: {{ "✔" if c in labdata.lab_overview.components_analysed else "✖" }}
+{% for comp_code, comp_info in general.components.items() %}
+- {{ comp_code }} ({{ comp_info.name }}): {{ "✔" if comp_code in labdata.components.keys() else "✖" }}
 {% endfor %}
+
+{% for comp_code, comp in labdata.components.items() %}
+
+# 9.{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})
+
+The laboratory submitted results for the **{{ comp_code }}** component from {{ comp.platform }} platform.
 
 Submitted outputs (analysed components):
 
-- `.fasta`: **{{ labdata.lab_overview.submitted_files.fasta_submitted }} / {{ labdata.lab_overview.submitted_files.fasta_expected }}**
-- `.vcf`: **{{ labdata.lab_overview.submitted_files.vcf_submitted }} / {{ labdata.lab_overview.submitted_files.vcf_expected }}**
+- `.fasta`: **{{ comp.fasta_submitted }} / {{ comp.fasta_expected }}**
+- `.vcf`: **{{ comp.vcf_submitted }} / {{ comp.vcf_expected }}**
 
 Regarding metadata completeness:
 
@@ -954,12 +1038,6 @@ Missing submissions were observed in: {{ labdata.lab_overview.metadata.missing_s
 {% else %}
 No missing sample-level submissions were observed for the analysed components.
 {% endif %}
-
-{% for comp_code, comp in labdata.components.items() %}
-
-# 9.{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})
-
-The laboratory submitted results for the **{{ comp_code }}** component{% if comp.source %} ({{ comp.source }}){% endif %}.
 
 ## 9.{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance
 
@@ -1109,6 +1187,34 @@ Each point represents a declared analytical workflow reported by participating l
 This section summarises selected quantitative analytical metrics declared in the metadata submission of **{{ labdata.lab.lab_cod }}**, disaggregated by sample within the {{ comp_code }} component.
 
 Only metrics explicitly provided by the laboratory are included in the comparative assessment. Network-level medians and interquartile ranges (IQR) are shown for contextual interpretation.
+
+#### Sample Quality Control Assessment
+
+{{ labdata.lab.lab_cod}} QC evaluations (Pass/Fail) were compared against the predefined gold standard QC status for each sample within {{ comp_code }}.
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Sample-level QC assessment for {{ labdata.lab.lab_cod }} ({{ comp_code }}), benchmarked against network-level QC concordance.**
+
+| Sample ID | Reported QC | Gold standard QC | Network % Match |
+|---|---:|---:|---:|---:|
+{% for sample_id, s in comp.samples.items() %}
+{% set ns = (general.components[comp_code].qc.samples | selectattr("sample_id","equalto",sample_id) | list | first) %}
+| {{ sample_id }} | {{ s.reported_qc | default("NA") }} | {{ ns.gold_standard_qc }} | {{ pct(ns.match_rate_pct) if ns else "NA" }} |
+{% endfor %}
+
+Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value }} contextualises the laboratory’s QC decisions relative to network-wide QC concordance per sample. The background bars represent the proportion of laboratories matching the gold standard, while the marker indicates the QC outcome reported by **{{ labdata.lab.lab_cod }}**.
+
+{{ render_figure(
+  comp.component_figures.qc_match_rate_by_sample_with_lab_marker,
+  comp_code ~ ": sample-level QC concordance across the network, with " ~ labdata.lab.lab_cod ~ " highlighted."
+) }}
+
+**_Figure {{ fig_counter.value }}_. Sample-level QC concordance across the network for {{ comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Bars represent the network-wide proportion of Match outcomes relative to the gold standard for each sample. The marker indicates whether **{{ labdata.lab.lab_cod }}** reported a Match or a Discrepancy for the corresponding sample.
+
+#### Other metrics
 
 {% for sample_id, s in comp.samples.items() %}
 {% set m = s.metadata_metrics %}

@@ -5,9 +5,6 @@
   },
 
   "lab_overview": {
-    "components_analysed": ["SARS1", "SARS2"],
-    "components_analysed_count": 2,
-
     "submitted_files": {
       "fasta_submitted": 10,
       "fasta_expected": 10,
@@ -28,10 +25,38 @@
   "components": {
     "SARS1": {
       "display_name": "SARS-CoV-2, Illumina",
-      "source": "ECDC ESIB EQA 2024",
+      "fasta_submitted": 5,
+      "fasta_expected": 4,
+      "vcf_submitted": 5,
+      "vcf_expected": 4,
+      "component_code": "SARS1",
+      "virus": "SARS-CoV-2",
+      "platform": "Illumina",
+      "read_layout": "Paired-end",
+      "enrichment_strategy": "Amplicon",
+      "primer_scheme": "ARTIC",
+      "primer_version": "v4.1",
+      "expected_submitted_files": 4,
+      "total_expected_fields": 74,
+      "files": {
+        "expected_fastq_files_per_sample": 2,
+        "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
+      },
 
       "samples": {
         "SARS1": {
+          "sample_id": "SARS1",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.04",
+          "fastq_files": ["SARS1_R1.fastq.gz", "SARS1_R2.fastq.gz"],
+          "expected_lineage": null,
+          "expected_clade": null,
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
+          "expected_qc": "Fail",
           "consensus": {
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
@@ -60,6 +85,7 @@
             "reported_clade": "23A",
             "concordance": "Exact"
           },
+          "reported_qc":"Fail",
           "metadata_metrics": {
             "pct_genome_covered_ge_10x": 98.5,
             "mean_depth": 250.2,
@@ -85,7 +111,8 @@
         "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_consensus_discrepancy_distribution.png",
         "variant_metrics_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metrics_distribution.png",
         "classification_stackedbars": "figures/labs/COD-2400-MAD-CNM/SARS1_classification_stackedbars.png",
-        "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS1_metadata_metrics_panel.png"
+        "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS1_metadata_metrics_panel.png",
+        "qc_match_rate_by_sample_with_lab_marker": "figures/labs/COD-2400-MAD-CNM/SARS1_qc_match_rate.png"
       },
 
       "classification_error_counts": {
@@ -114,7 +141,11 @@
 
     "SARS2": {
       "display_name": "SARS-CoV-2, Nanopore",
-      "source": "ECDC ESIB EQA 2024",
+      "platform": "Nanopore",
+      "fasta_submitted": 5,
+      "fasta_expected": 4,
+      "vcf_submitted": 5,
+      "vcf_expected": 4,
       "samples": {},
       "component_figures": {
         "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS2_consensus_discrepancy_distribution.png",

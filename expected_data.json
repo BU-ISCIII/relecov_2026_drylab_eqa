@@ -12,7 +12,8 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
-      "expected_submitted_files": 4,
+      "fasta_expected": 4,
+      "vcf_expected": 4,
       "total_expected_fields": 74,
       "files": {
         "expected_fastq_files_per_sample": 2,
@@ -30,7 +31,8 @@
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
           "primer_version": "v4.1",
-          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads"
+          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
+          "expected_qc": "Fail"
         },
         "SARS2": {
           "sample_id": "SARS2",
@@ -95,7 +97,8 @@
       "enrichment_strategy": "Amplicon",
       "primer_scheme": "ARTIC",
       "primer_version": "v4.1",
-      "expected_submitted_files": 4,
+      "fasta_expected": 4,
+      "vcf_expected": 4,
       "total_expected_fields": 74,
       "files": {
         "expected_fastq_files_per_sample": 1,
@@ -174,7 +177,8 @@
       "virus": "Influenza virus",
       "platform": "Illumina",
       "read_layout": "Paired-end",
-      "expected_submitted_files": 4,
+      "fasta_expected": 4,
+      "vcf_expected": 4,
       "total_expected_fields": 73,
       "files": {
         "expected_fastq_files_per_sample": 2,
@@ -271,7 +275,8 @@
       "virus": "Influenza virus",
       "platform": "Oxford Nanopore Technologies",
       "read_layout": "Single-end",
-      "expected_submitted_files": 5,
+      "fasta_expected": 5,
+      "vcf_expected": 5,
       "total_expected_fields": 73,
       "files": {
         "expected_fastq_files_per_sample": 1,
