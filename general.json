@@ -25,7 +25,7 @@
     "influenza_variant_reporting_summary": "figures/network/influenza_variant_reporting_summary.png",
     "influenza_reference_summary": "figures/network/influenza_reference_summary.png",
     "classification_summary": "figures/network/classification_summary.png",
-    "metadata_completeness_distribution": "figures/network/metadata_completeness_distribution.png",
+    "metadata_completeness": "figures/network/metadata_completeness.png",
     "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png"
   },
 
@@ -56,8 +56,8 @@
       "sars_cov_2_concordance_pct": 95.0,
       "influenza_type_concordance_pct": 90.0,
       "clade_concordance_pct_all_pct": 88.0,
-      "median_assignment_concordance": 95.0,
-      "median_assignment_accuracy": 92.0
+      "median_full_match_pct": 95.0,
+      "min_full_match_pct": 92.0
     }
   },
 
@@ -65,20 +65,16 @@
     "median_pct": 85.0,
     "min_pct": 20.0,
     "max_pct": 100.0,
-
+    
     "software_names_pct": 95.0,
     "software_version_pct": 80.0,
     "coverage_threshold_pct": 60.0,
     "frequency_threshold_pct": 55.0,
     "reference_genome_pct": 70.0,
-
     "incomplete_parameters_pct": 35.0,
 
-    "fully_compliant_pct": 40.0,
     "free_text_predefine_pct": 45.0,
     "inconsistent_tool_version": 10.0,
-
-    "clarification_pct": 15.0,
 
     "total_workflows": 12,
     "total_consensus_softwares": 6,
@@ -107,20 +103,42 @@
         "min_discrepancies": 0,
         "max_discrepancies": 25,
 
-        "incorrect_nt_pct": 40.0,
-        "excess_ambiguous_pct": 45.0,
-        "indels_pct": 15.0,
-
-        "most_frequent_discrepancy_pattern": "excess ambiguous bases in low-coverage regions",
-
         "samples": [
           {
             "sample_id": "SARS1",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS2",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS3",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS4",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS5",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
           }
         ],
+
+        "incorrect_nt_pct": 40.0,
+        "excess_ambiguous_pct": 45.0,
+        "indels_pct": 15.0,
 
         "by_type": {
           "substitutions": { "median": 0, "iqr": [0, 1] },
@@ -129,6 +147,7 @@
           "insertions": { "median": 0, "iqr": [0, 0] },
           "deletions": { "median": 0, "iqr": [0, 0] }
         },
+        "most_frequent_discrepancy_pattern": "excess ambiguous bases in low-coverage regions",
 
         "fig_discrepancies_boxplot_by_sample": "figures/SARS1/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancy_type_barplot": "figures/SARS1/consensus_discrepancy_type_barplot.png"
@@ -221,11 +240,52 @@
       }
     },
 
-    "SARS2": { "name": "SARS-CoV-2, Nanopore", "total_labs": 24, "total_fasta": 24, "total_vcf": 20, "metadata_completeness_median": 85.0,
-      "consensus": { "median_identity": 99.10, "median_discrepancies": 10, "min_discrepancies": 0, "max_discrepancies": 120,
+    "SARS2": { 
+      "name": "SARS-CoV-2, Nanopore", 
+      "total_labs": 24,
+      "total_fasta": 24,
+      "total_vcf": 20,
+      "metadata_completeness_median": 85.0,
+      "consensus": {
+        "median_identity": 99.10, 
+        "median_discrepancies": 10, 
+        "min_discrepancies": 0, 
+        "max_discrepancies": 120,
         "incorrect_nt_pct": 35.0, "excess_ambiguous_pct": 40.0, "indels_pct": 25.0,
         "most_frequent_discrepancy_pattern": "indels in homopolymeric regions",
-        "samples": [], "by_type": { "substitutions": { "median": 0, "iqr": [0, 2] }, "excess_Ns": { "median": 3, "iqr": [1, 8] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 1, "iqr": [0, 3] }, "deletions": { "median": 1, "iqr": [0, 2] } },
+        "samples": [
+          {
+            "sample_id": "SARS6",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS7",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS8",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS9",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS10",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
+        "by_type": { "substitutions": { "median": 0, "iqr": [0, 2] }, "excess_Ns": { "median": 3, "iqr": [1, 8] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 1, "iqr": [0, 3] }, "deletions": { "median": 1, "iqr": [0, 2] } },
         "fig_discrepancies_boxplot_by_sample": "figures/SARS2/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancy_type_barplot": "figures/SARS2/consensus_discrepancy_type_barplot.png"
       },
@@ -258,14 +318,41 @@
     "FLU1": { "name": "Influenza, Illumina", "total_labs": 18, "total_fasta": 18, "total_vcf": 14, "metadata_completeness_median": 80.0,
       "consensus": { "median_identity": 99.50, "median_discrepancies": 5, "min_discrepancies": 0, "max_discrepancies": 80, "incorrect_nt_pct": 30.0, "excess_ambiguous_pct": 55.0, "indels_pct": 15.0,
         "most_frequent_discrepancy_pattern": "excess Ns in segment dropout samples",
-        "samples": [], "by_type": { "substitutions": { "median": 1, "iqr": [0, 2] }, "excess_Ns": { "median": 2, "iqr": [0, 10] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 0, "iqr": [0, 1] }, "deletions": { "median": 0, "iqr": [0, 1] } },
+        "samples": [
+          {
+            "sample_id": "FLU1",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU2",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU3",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU4",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU5",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
+        "by_type": { "substitutions": { "median": 1, "iqr": [0, 2] }, "excess_Ns": { "median": 2, "iqr": [0, 10] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 0, "iqr": [0, 1] }, "deletions": { "median": 0, "iqr": [0, 1] } },
         "fig_discrepancies_boxplot_by_sample": "figures/FLU1/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancy_type_barplot": "figures/FLU1/consensus_discrepancy_type_barplot.png"
-      },
-      "variant": { "median_sensitivity": 96.0, "median_precision": 98.0, "median_false_positives": 0, "min_false_positives": 0, "max_false_positives": 25, "median_false_negatives": 2,
-        "no_false_positives_pct": 50.0, "at_least_one_fn_pct": 60.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 96.0, "iqr_pct": [92.0, 98.0] }, "precision": { "median_pct": 98.0, "iqr_pct": [95.0, 99.0] }, "tp": { "median": 15, "iqr": [12, 18] }, "fp": { "median": 0, "iqr": [0, 2] }, "fn": { "median": 2, "iqr": [1, 4] }, "total_differences": { "median": 2, "iqr": [1, 5] } },
-        "fig_total_differences_boxplot_by_sample": "figures/FLU1/variant_total_differences_boxplot_by_sample.png",
-        "fig_metric_boxplots_by_pipeline_or_overall": "figures/FLU1/variant_metric_boxplots.png"
       },
       "typing": { "exact_concordance_pct": 88.0, "partial_concordance_pct": 7.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
         "fig_stacked_bar_by_sample": "figures/FLU1/typing_outcome_stackedbar_by_sample.png",
@@ -291,14 +378,41 @@
     "FLU2": { "name": "Influenza, Nanopore", "total_labs": 16, "total_fasta": 16, "total_vcf": 12, "metadata_completeness_median": 78.0,
       "consensus": { "median_identity": 98.80, "median_discrepancies": 20, "min_discrepancies": 0, "max_discrepancies": 200, "incorrect_nt_pct": 25.0, "excess_ambiguous_pct": 50.0, "indels_pct": 25.0,
         "most_frequent_discrepancy_pattern": "indel errors in homopolymer regions",
-        "samples": [], "by_type": { "substitutions": { "median": 2, "iqr": [0, 4] }, "excess_Ns": { "median": 6, "iqr": [2, 20] }, "missing_Ns": { "median": 0, "iqr": [0, 2] }, "insertions": { "median": 2, "iqr": [0, 5] }, "deletions": { "median": 1, "iqr": [0, 4] } },
+                "samples": [
+          {
+            "sample_id": "FLU6",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU7",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU8",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU9",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU10",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
+        "by_type": { "substitutions": { "median": 2, "iqr": [0, 4] }, "excess_Ns": { "median": 6, "iqr": [2, 20] }, "missing_Ns": { "median": 0, "iqr": [0, 2] }, "insertions": { "median": 2, "iqr": [0, 5] }, "deletions": { "median": 1, "iqr": [0, 4] } },
         "fig_discrepancies_boxplot_by_sample": "figures/FLU2/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancy_type_barplot": "figures/FLU2/consensus_discrepancy_type_barplot.png"
-      },
-      "variant": { "median_sensitivity": 92.0, "median_precision": 95.0, "median_false_positives": 2, "min_false_positives": 0, "max_false_positives": 50, "median_false_negatives": 4,
-        "no_false_positives_pct": 25.0, "at_least_one_fn_pct": 70.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 92.0, "iqr_pct": [85.0, 96.0] }, "precision": { "median_pct": 95.0, "iqr_pct": [88.0, 98.0] }, "tp": { "median": 12, "iqr": [9, 15] }, "fp": { "median": 2, "iqr": [0, 6] }, "fn": { "median": 4, "iqr": [2, 7] }, "total_differences": { "median": 6, "iqr": [3, 12] } },
-        "fig_total_differences_boxplot_by_sample": "figures/FLU2/variant_total_differences_boxplot_by_sample.png",
-        "fig_metric_boxplots_by_pipeline_or_overall": "figures/FLU2/variant_metric_boxplots.png"
       },
       "typing": { "exact_concordance_pct": 82.0, "partial_concordance_pct": 10.0, "discordance_pct": 8.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 2] }, "clade": { "median": 1, "iqr": [0, 2] } },
         "fig_stacked_bar_by_sample": "figures/FLU2/typing_outcome_stackedbar_by_sample.png",

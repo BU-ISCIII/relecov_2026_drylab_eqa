@@ -498,7 +498,7 @@ The median number of components analysed per participating laboratory was {{ gen
 
 ### 5.1. Submission Completeness
 
-Across all components:
+Assessment of submission completeness was conducted in accordance with the criteria outlined in [Section 4.1](#41-submission-completeness). Across all components:
 
 - {{ pct(general.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable.
 - {{ pct(general.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable.
@@ -507,7 +507,7 @@ Submission rates were consistent across components, with minor variability refle
 
 ### 5.2. Consensus Genome Reconstruction Performance
 
-Overall performance was high for Illumina-based components (TODO verificar que es verdad), with a median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} for both Illumina components (TODO verificar que es veredad) and median genome identity of {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} for Nanopore components. For Nanopore-based datasets, greater inter-laboratory variability was observed (TODO verificar si es verdad).
+Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Overall performance was high for Illumina-based components (TODO verificar que es verdad), with a median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} for both Illumina components (TODO verificar que es veredad) and median genome identity of {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} for Nanopore components. For Nanopore-based datasets, greater inter-laboratory variability was observed (TODO verificar si es verdad).
 
 The main sources of variation included: (TODO verificar si es verdad)
 - Differences in minimum coverage thresholds
@@ -530,6 +530,8 @@ Figure {{ fig_counter.value }} summarises consensus genome reconstruction perfor
 **_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
 
 ### 5.3. Variant Detection Accuracy
+
+Variant detection accuracy was evaluated following the methodological framework described in [Section 4.3](#43-evaluation-of-variant-detectio-accuracy).
 
 #### 5.3.1. SARS-CoV-2
 
@@ -599,7 +601,7 @@ These findings highlight considerable methodological heterogeneity in influenza 
 
 ### 5.4. Lineage, Type and Clade Assignment
 
-Lineage, type and clade assignments were evaluated for concordance with gold standard classifications. Overall concordance rates were:
+Lineage, type and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
 
 - SARS-CoV-2: {{ pct(general.general_results.classification.sars_cov_2_concordance_pct) }}
 - Influenza type identification: {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}
@@ -607,39 +609,41 @@ Lineage, type and clade assignments were evaluated for concordance with gold sta
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-As shown in Figure {{ fig_counter.value }}, classification concordance was high across components, with limited inter-laboratory variability. Most classification discrepancies were associated with:
+As shown in Figure {{ fig_counter.value }}, classification concordance was high across components, with limited inter-laboratory variability (TODO revisar si es verdad). Most classification discrepancies were associated with:
 
 - Use of outdated lineage database versions
 - Differences in handling ambiguous consensus positions
 
-Across components, median classification concordance exceeded {{ pct(general.general_results.classification.median_assignment_concordance) }}, and classification accuracy remained above {{ pct(general.general_results.classification.median_assignment_accuracy) }}.
+Across components, the median percentage of laboratories reporting fully concordant classifications (both lineage/type and clade correctly assigned) was {{ pct(general.general_results.classification.median_full_match_pct) }}, with component-specific values consistently exceeding {{ pct(general.general_results.classification.min_full_match_pct) }}.
 
 {{ render_figure(general.figures.classification_summary, "Network-level classification performance summary.") }}
 
-**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories**.
-Stacked bars represent the proportion of exact matches, minor discrepancies, and incorrect assignments relative to curated gold standard classifications for each component.
+![classification_summary](./example_images/classification_summary.png)
+
+**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories**. Stacked bars represent the proportion of exact matches, partial ,atches and discrepant assignments relative to curated gold standard classifications for each component.
 
 ### 5.5. Metadata completeness and compliance
 
-The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network. Completeness and compliance were assessed according to the criteria defined in Section 4.4, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
+The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network. Completeness and compliance were assessed according to the criteria defined in [Section 4.5](#45-evaluation-of-metadata-completeness-and-compliance), including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
 
 #### Overall Completeness
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. As illustrated in Figure {{ fig_counter.value }}, metadata completeness varied across participating laboratories, with a heterogeneous distribution across predefined completeness ranges.
+Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. As illustrated in Figure {{ fig_counter.value }}, metadata completeness varied across the different components (TODO verificar si es verdad).
 
 Optional analytical fields contributed disproportionately to incompleteness (TODO comprobar si es verdad), particularly those related to parameter specification and software versioning.
 
 {{ render_figure(general.figures.metadata_completeness_distribution,
   "Distribution of metadata completeness across participating laboratories.") }}
 
-**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**.
-Boxplots represent the median and interquartile range of metadata completeness percentages. Whiskers denote the full observed range. The distribution reflects variability in reporting of analytical parameters, software versions, and controlled vocabulary adherence.
+![consensus_summary](./example_images/consensus_summary.png)
 
-Additionally, component-level reporting rates for key analytical parameters (e.g., software name, software version, coverage thresholds, allele frequency thresholds, reference genome declaration) were quantified as the proportion of laboratories providing valid entries.
+> TODO: Como este pero con el eje Y los porcentajes de completeness por componente
 
-Metadata was complete in {{ general.metadata_completeness.fully_compliant_pct }} of submissions, while {{ general.metadata_completeness.clarification_pct }} required clarification or correction during validation.
+**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the median and interquartile range of metadata completeness percentages across the different components.
+
+**100% percent of the laboratorios required either clarification through e-mail contact or correction during validation steps.**
 
 #### Reporting of Analytical Parameters
 
@@ -657,8 +661,8 @@ Incomplete parameter reporting limited the ability to fully reconstruct or repro
 
 Compliance with predefined controlled vocabularies was evaluated to assess standardisation readiness:
 
-- {{ pct(general.metadata_completeness.fully_compliant_pct) }} of submissions were fully compliant with controlled vocabulary requirements.
-- {{ pct(general.metadata_completeness.free_text_predefine_pct) }} contained at least one free-text substitution where a predefined option was required.
+- {{ pct(general.metadata_completeness.fully_compliant_pct) }} of submissions were fully compliant with controlled vocabulary requirements in dropdown menus.
+- {{ pct(general.metadata_completeness.free_text_predefine_pct) }} contained at least one free-text substitution where a predefined dropdown was required.
 
 The most common compliance issues included (TODO revisar si es cierto):
 
@@ -684,13 +688,16 @@ general.figures.qc_match_rate_by_component,
 "QC concordance by component (Match vs Discrepancy relative to the gold standard)."
 ) }}
 
+![classification_summary](./example_images/classification_summary.png)
+> Como este pero solo MAtch o Discrepancy
+
 **_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
 
 ### 5.6. Pipeline Benchmarking and Comparative Performance
 
-The benchmarking framework was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
+The benchmarking framework as defined in [Section 4.6](#46-pipeline-benchmarking-and-comparative-performance) was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
 
-Substantial heterogeneity was observed in:
+Substantial heterogeneity was observed in (TODO mirar si es verdad):
 
 - Choice of consensus reconstruction software
 - Variant calling strategies
@@ -704,7 +711,7 @@ The metadata submissions allowed characterisation of the analytical landscape cu
 
 A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified across participating laboratories, defined as unique combinations of software tools, versions, and parameter configurations declared in the metadata template.
 
-Substantial diversity was observed in the selection of core analytical tools:
+Substantial diversity was observed in the selection of core analytical tools (TODO verificar si es veradd):
 
 - Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct tool configurations )
 - Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct tools or configurations )
@@ -765,6 +772,8 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
+![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 Discrepancy type composition (aggregated across all submitted consensus sequences for {{ comp_code }}):
@@ -794,7 +803,12 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
   "Composition of consensus discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Bars represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels).
+![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+> Como este pero en el eje X los tipos de sustituciones
+
+**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+
+{{% if comp_net.variant %}}
 
 #### 6.{{ loop.index }}.3. Variant Detection Accuracy
 
@@ -849,6 +863,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key variant de
 
 **Figure {{ fig_counter.value }}. Distribution of key variant detection metrics across laboratories for {{ comp_code }}.**  
 The figure summarises laboratory-level distributions of sensitivity, precision, and discrepancy counts relative to the curated reference variant set.
+
+{{% endif %}}
 
 #### 6.{{ loop.index }}.4. Lineage, Type and Clade Assignment
 
