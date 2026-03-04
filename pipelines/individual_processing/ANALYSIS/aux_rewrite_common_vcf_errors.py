@@ -106,8 +106,9 @@ class VCFFile:
             case "DP":
                 if "DP" in self.info_keys:
                     for index, row in self.data.iterrows():
-                        # FIXME this is not correct for all cases
-                        values.append(row["INFO"].split(";")[1].split("=")[1])
+                        row_info = row['INFO'].split(";")
+                        dp = next(filter(lambda x: x.startswith("DP="), row_info))
+                        values.append(dp.split("=")[1])
                     format_dict = {
                         "ID": "DP",
                         "Number": "1",
@@ -134,6 +135,12 @@ class VCFFile:
                         index_dp = row["FORMAT"].split(":").index("DP")
                         value = str(int(row[self.sample_values_column].split(":")[index_dp].split(",")[0]) - int(row[self.sample_values_column].split(":")[index_alt_dp].split(",")[0]))
                         values.append(value)
+                elif "DP4" in self.info_keys:
+                    for index, row in self.data.iterrows():
+                        row_info = row['INFO'].split(";")
+                        dp4 = next(filter(lambda x: x.startswith("DP4="), row_info))
+                        dp4_values = [int(value) for value in dp4.split("=")[1].split(",")[0:2]]
+                        values.append(str(sum(dp4_values)))
 
             case "ALT_DP":
                 if "AD" in self.format_keys:
@@ -141,7 +148,13 @@ class VCFFile:
                     for index, row in self.data.iterrows():
                         index_AD = row["FORMAT"].split(":").index("AD")
                         values.append(row[self.sample_values_column].split(":")[index_AD].split(",")[1])
-                    format_dict = {
+                elif "DP4" in self.info_keys:
+                    for index, row in self.data.iterrows():
+                        row_info = row['INFO'].split(";")
+                        dp4 = next(filter(lambda x: x.startswith("DP4="), row_info))
+                        dp4_values = [int(value) for value in dp4.split("=")[1].split(",")[2:4]]
+                        values.append(str(sum(dp4_values)))
+                format_dict = {
                         "ID": "ALT_DP",
                         "Number": "1",
                         "Type": "Integer",
