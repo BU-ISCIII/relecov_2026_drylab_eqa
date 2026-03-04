@@ -55,7 +55,8 @@
     "classification": {
       "sars_cov_2_concordance_pct": 95.0,
       "influenza_type_concordance_pct": 90.0,
-      "clade_concordance_pct_all_pct": 88.0,
+      "sars_clade_concordance_pct": 88.0,
+      "flu_clade_concordance_pct": 90.0,
       "median_full_match_pct": 95.0,
       "min_full_match_pct": 92.0
     }
@@ -102,8 +103,12 @@
       "consensus": {
         "median_identity": 99.92,
         "median_discrepancies": 2,
+        "total_median_discrepancies": 15,
         "min_discrepancies": 0,
         "max_discrepancies": 25,
+        "median_identity_pct": 99.9200,
+        "identity_pct_min": 99.8000,
+        "identity_pct_max": 100,
 
         "samples": [
           {
@@ -193,21 +198,22 @@
       },
 
       "typing": {
-        "exact_concordance_pct": 95.0,
-        "partial_concordance_pct": 3.0,
+        "total_classification_matches_meadian": 8,
+        "total_classification_matches_min": 7,
+        "total_classification_matches_max": 10,
+        "lineage_hit_pct": 95.0,
+        "clade_hit_pct": 3.0,
         "discordance_pct": 2.0,
 
         "samples": [
-          { "sample_id": "SARS1", "exact_pct": 96.0, "partial_pct": 3.0, "discordant_pct": 1.0 }
+          { "sample_id": "SARS1", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "sample_id": "SARS2", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "sample_id": "SARS3", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "sample_id": "SARS4", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "sample_id": "SARS5", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 }
         ],
 
-        "errors": {
-          "lineage": { "median": 0, "iqr": [0, 1] },
-          "clade": { "median": 0, "iqr": [0, 0] }
-        },
-
-        "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png",
-        "fig_error_distribution": "figures/SARS1/typing_error_distribution.png"
+        "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png"
       },
 
       "qc": {
@@ -298,7 +304,7 @@
         "fig_total_differences_boxplot_by_sample": "figures/SARS2/variant_total_differences_boxplot_by_sample.png",
         "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS2/variant_metric_boxplots.png"
       },
-      "typing": { "exact_concordance_pct": 90.0, "partial_concordance_pct": 5.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
+      "typing": { "lineage_hit_pct": 90.0, "clade_hit_pct": 5.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
         "fig_stacked_bar_by_sample": "figures/SARS2/typing_outcome_stackedbar_by_sample.png",
         "fig_error_distribution": "figures/SARS2/typing_error_distribution.png"
       },
@@ -361,7 +367,7 @@
         "fig_discrepancies_boxplot_by_sample": "figures/FLU1/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancy_type_barplot": "figures/FLU1/consensus_discrepancy_type_barplot.png"
       },
-      "typing": { "exact_concordance_pct": 88.0, "partial_concordance_pct": 7.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
+      "typing": { "lineage_hit_pct": 88.0, "clade_hit_pct": 7.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
         "fig_stacked_bar_by_sample": "figures/FLU1/typing_outcome_stackedbar_by_sample.png",
         "fig_error_distribution": "figures/FLU1/typing_error_distribution.png"
       },
@@ -424,7 +430,7 @@
         "fig_discrepancies_boxplot_by_sample": "figures/FLU2/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancy_type_barplot": "figures/FLU2/consensus_discrepancy_type_barplot.png"
       },
-      "typing": { "exact_concordance_pct": 82.0, "partial_concordance_pct": 10.0, "discordance_pct": 8.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 2] }, "clade": { "median": 1, "iqr": [0, 2] } },
+      "typing": { "lineage_hit_pct": 82.0, "clade_hit_pct": 10.0, "discordance_pct": 8.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 2] }, "clade": { "median": 1, "iqr": [0, 2] } },
         "fig_stacked_bar_by_sample": "figures/FLU2/typing_outcome_stackedbar_by_sample.png",
         "fig_error_distribution": "figures/FLU2/typing_error_distribution.png"
       },

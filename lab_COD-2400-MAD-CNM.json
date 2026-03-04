@@ -15,15 +15,17 @@
   "components": {
     "SARS1": {
       "display_name": "SARS-CoV-2, Illumina",
-      "fasta_submitted": 5,
-      "fasta_expected": 4,
-      "vcf_submitted": 5,
-      "vcf_expected": 4,
-      "completeness_pct": 92.0,
-      "primary_incompleteness_drivers": [
-        "Missing software version fields",
-        "Missing allele frequency threshold field"
-      ],
+      "metadata": {
+        "fasta_submitted": 5,
+        "fasta_expected": 4,
+        "vcf_submitted": 5,
+        "vcf_expected": 4,
+        "completeness_pct": 92.0,
+        "primary_incompleteness_drivers": [
+          "Missing software version fields",
+          "Missing allele frequency threshold field"
+        ]
+      },
       "component_code": "SARS1",
       "virus": "SARS-CoV-2",
       "platform": "Illumina",
@@ -36,7 +38,6 @@
         "expected_fastq_files_per_sample": 2,
         "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
       },
-
       "samples": {
         "SARS1": {
           "sample_id": "SARS1",
@@ -71,20 +72,19 @@
             }
           },
           "variants": {
-            "sensitivity_pct": 99.00,
-            "precision_pct": 99.50,
-            "tp": 12,
-            "fp": 0,
-            "fn": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
             "reported_lineage": "XBB.1.5",
+            "lineage_match": true,
             "expected_clade": "23A",
             "reported_clade": "23A",
-            "concordance": "Exact"
+            "clade_match": true,
+            "number_matches": 2,
+            "number_discrepancies": 0
           },
           "reported_qc":"Fail",
+
           "metadata_metrics": {
             "pct_genome_covered_ge_10x": 98.5,
             "mean_depth": 250.2,
@@ -94,6 +94,7 @@
             "total_variants_reported": 12,
             "variants_with_predicted_effect": 2
           },
+
           "metadata_metrics_network": {
             "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
             "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
@@ -190,29 +191,15 @@
         "qc_match_rate_by_sample_with_lab_marker": "figures/labs/COD-2400-MAD-CNM/SARS1_qc_match_rate.png"
       },
 
-      "classification_error_counts": {
-        "lab": {
-          "lineage_errors": 0,
-          "clade_errors": 0
-        },
-        "network_median": {
-          "lineage_errors": 0,
-          "clade_errors": 0
-        }
-      },
-
       "workflow_positioning": {
+        "total_number_discrepancies": 5,
         "median_genome_identity_pct": 99.9500,
-        "network_median_identity_pct": 99.9200,
-        "network_iqr_identity_pct": [99.8000, 99.9700],
+        "total_classification_matches": 10,
 
-        "exact_classification_concordance_pct": 100.0,
-        "network_median_class_pct": 96.0,
-        "network_iqr_class_pct": [92.0, 100.0],
-
-        "scatter_fig": "figures/labs/COD-2400-MAD-CNM/SARS1_workflow_scatter.png"
+        "bar_plot": "figures/labs/COD-2400-MAD-CNM/SARS1_workflow_bar_plot.png"
       }
-      },
+
+    },
     "SARS2": {    
       "component_code": "SARS1",
       "virus": "SARS-CoV-2",

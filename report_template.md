@@ -18,6 +18,14 @@
   {% endif %}
 {%- endmacro %}
 
+{% macro iqr_range(iqr_list, decimals=2) -%}
+{% if iqr_list and iqr_list|length == 2 -%}
+{{ num(iqr_list[0], decimals) }}–{{ num(iqr_list[1], decimals) }}
+{%- else -%}
+NA
+{%- endif %}
+{%- endmacro %}
+
 {% set fig_counter = namespace(value=0) %}
 {% set table_counter = namespace(value=0) %}
 
@@ -44,7 +52,7 @@
     - [4.3. Evaluation of Variant Detection Accuracy](#43-evaluation-of-variant-detection-accuracy)
       - [4.3.1. SARS-CoV-2](#431-sars-cov-2)
       - [4.3.2. Influenza](#432-influenza)
-    - [4.4. Evaluation of Lineage, Type and Clade Assignment](#44-evaluation-of-lineage-type-and-clade-assignment)
+    - [4.4. Evaluation of Lineage, Subtype and Clade Assignment](#44-evaluation-of-lineage-subtype-and-clade-assignment)
       - [SARS-CoV-2](#sars-cov-2)
       - [Influenza virus](#influenza-virus)
       - [Both viruses](#both-viruses)
@@ -57,7 +65,7 @@
     - [5.3. Variant Detection Accuracy](#53-variant-detection-accuracy)
       - [5.3.1. SARS-CoV-2](#531-sars-cov-2)
       - [5.3.2. Influenza virus](#532-influenza-virus)
-    - [5.4. Lineage, Type and Clade Assignment](#54-lineage-type-and-clade-assignment)
+    - [5.4. Lineage, Subtype and Clade Assignment](#54-lineage-subtype-and-clade-assignment)
     - [5.5. Metadata completeness and compliance](#55-metadata-completeness-and-compliance)
       - [Overall Completeness](#overall-completeness)
       - [Reporting of Analytical Parameters](#reporting-of-analytical-parameters)
@@ -70,7 +78,7 @@
       - [6.{{ loop.index }}.1. Participation and Submissions](#6-loopindex-1-participation-and-submissions)
       - [6.{{ loop.index }}.2. Consensus Genome Reconstruction Performance](#6-loopindex-2-consensus-genome-reconstruction-performance)
       - [6.{{ loop.index }}.3. Variant Detection Accuracy](#6-loopindex-3-variant-detection-accuracy)
-      - [6.{{ loop.index }}.4. Lineage, Type and Clade Assignment](#6-loopindex-4-lineage-type-and-clade-assignment)
+      - [6.{{ loop.index }}.4. Lineage, Subtype and Clade Assignment](#6-loopindex-4-lineage-subtype-and-clade-assignment)
       - [6.{{ loop.index }}.5. Sample Quality Control Assessment](#6-loopindex-5-sample-quality-control-assessment)
       - [6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance](#6-loopindex-6-pipeline-benchmarking-and-comparative-performance)
   - [7. Discussion](#7-discussion)
@@ -88,7 +96,7 @@
     - [Per-sample summary metrics](#per-sample-summary-metrics)
     - [Discrepancy type breakdown per sample](#discrepancy-type-breakdown-per-sample)
   - [9.{{ loop.index + 1 }}.2. Variant Detection Performance](#9-loopindex--1-2-variant-detection-performance)
-  - [9.{{ loop.index + 1 }}.3. Lineage, Type and Clade Assignment](#9-loopindex--1-3-lineage-type-and-clade-assignment)
+  - [9.{{ loop.index + 1 }}.3. Lineage, Subtype and Clade Assignment](#9-loopindex--1-3-lineage-subtype-and-clade-assignment)
     - [Classification error counts](#classification-error-counts)
   - [9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance](#9-loopindex--1-4-pipeline-benchmarking-and-comparative-performance)
   - [9.{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)](#9-loopindex--1-5-metadata-derived-analytical-metrics-per-sample)
@@ -134,13 +142,13 @@ Laboratories were requested to submit:
 - For each analysed sample:
   - One consensus genome sequence in .fasta format, containing exclusively the target viral genome reconstructed from the provided reads.
   - One or more variant call files in .vcf format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
-- A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, lineage, type or clade assignment tools, and file paths to submitted outputs.
+- A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, Lineage, Subtype or clade assignment tools, and file paths to submitted outputs.
 
 The primary objective of the exercise was to assess the consistency, reproducibility, and comparability of bioinformatic workflows currently implemented across the network. The evaluation focused on core analytical tasks that are essential for routine genomic surveillance and public health response, including:
 
 - **Viral genome reconstruction**: Generation of high-quality consensus genome sequences from raw sequencing reads produced using Illumina and Oxford Nanopore Technologies platforms.
 - **Variant identification and reporting**: Detection and annotation of nucleotide variants relative to a chosen reference genome, including evaluation of filtering criteria, allele frequency thresholds, and variant file standardisation.
-- **Lineage, type and clade assignment**: Accurate classification of reconstructed genomes using established nomenclature systems and version-controlled databases.
+- **Lineage, Subtype and clade assignment**: Accurate classification of reconstructed genomes using established nomenclature systems and version-controlled databases.
 - **Metadata reporting and interoperability**: Completion of a harmonised metadata template capturing software versions, analytical parameters, reference genome selection, and file traceability, ensuring compatibility with automated validation and integration into the RELECOV analytical platform.
 
 ## 3. Dataset Design and Sample Selection Criteria
@@ -280,7 +288,7 @@ The evaluation was structured into five independent analytical domains:
 - Submission Completeness
 - Consensus genome reconstruction performance
 - Variant detection accuracy
-- Lineage, Type and Clade Assignment
+- Lineage, Subtype and Clade Assignment
 - Metadata completeness and compliance
 - Pipeline Benchmarking and Comparative Performance
 
@@ -405,7 +413,7 @@ These metrics provide insight into:
 
 This alternative evaluation approach allows characterisation of variant reporting behaviour in influenza while acknowledging the inherent reference-dependent complexity of segmented viral genomes.
 
-### 4.4. Evaluation of Lineage, Type and Clade Assignment
+### 4.4. Evaluation of Lineage, Subtype and Clade Assignment
 
 Classification outputs were evaluated separately according to virus type.
 
@@ -425,11 +433,10 @@ For influenza samples, evaluation included:
 
 #### Both viruses
 
-For SARS-CoV-2 and Influenza viruses, concordance was assessed as: (TODO verificar si es verdad)
+For SARS-CoV-2 and Influenza viruses, concordance was assessed as:
 
-- **Exact**, when both lineage/subtype and clade were correct.
-- **Partial**, when one of the classifications is correct but not the other.
-- **Discordant**, when both classifications were incorrect.
+- **Match**, when lineage/subtype or clade was correct.
+- **Discrepancy**, when one of the classifications was incorrect.
 
 Discrepancies were investigated to determine whether they resulted from: (TODO verificar si es verdad)
 
@@ -635,13 +642,14 @@ These findings highlight considerable methodological heterogeneity in influenza 
 
 **_Figure {{ fig_counter.value }}_. Network-level variant detection performance across components**. Boxplots display the distribution of nucleotide discrepancies between submitted VCF files and the curated reference variant set. The central line represents the median, boxes indicate the interquartile range, and whiskers denote the full observed range across participating laboratories.
 
-### 5.4. Lineage, Type and Clade Assignment
+### 5.4. Lineage, Subtype and Clade Assignment
 
-Lineage, type and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
+Lineage, Subtype and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
 
-- SARS-CoV-2: {{ pct(general.general_results.classification.sars_cov_2_concordance_pct) }}
-- Influenza type identification: {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}
-- Clade assignment (all viruses): {{ pct(general.general_results.classification.clade_concordance_pct_all_pct) }}
+- SARS-CoV-2 lineage assignment: {{ pct(general.general_results.classification.sars_cov_2_concordance_pct) }} concordance.
+- Influenza subtyping identification: {{ pct(general.general_results.classification.influenza_type_concordance_pct) }} concordance.
+- SARS-Cov-2 clade assignment: {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} concordance
+- Influenza clade assignment: {{ pct(general.general_results.classification.flu_clade_concordance_pct) }} concordance.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -655,6 +663,8 @@ Across components, the median percentage of laboratories reporting fully concord
 {{ render_figure(general.figures.classification_summary, "Network-level classification performance summary.") }}
 
 ![classification_summary](./example_images/classification_summary.png)
+
+> Esta pero desagregada por Linaje, Subtipo, y por componente y usabdo Hit/Discrepancy
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories**. Stacked bars represent the proportion of exact matches, partial ,atches and discrepant assignments relative to curated gold standard classifications for each component.
 
@@ -769,7 +779,7 @@ This diversity reflects the decentralised analytical capacity of the RELECOV net
 
 ## 6. Component-specific Results
 
-This section presents the analytical results disaggregated by component, allowing a detailed assessment of performance within each dataset and sequencing technology. For each component, results are structured according to participation and submission metrics, consensus genome reconstruction performance, variant detection accuracy, and lineage, type or clade assignment concordance, as applicable.
+This section presents the analytical results disaggregated by component, allowing a detailed assessment of performance within each dataset and sequencing technology. For each component, results are structured according to participation and submission metrics, consensus genome reconstruction performance, variant detection accuracy, and Lineage, Subtype or clade assignment concordance, as applicable.
 
 Component-level analyses enable identification of platform-specific patterns, dataset-dependent challenges, and variability associated with particular sample characteristics. This approach facilitates a more granular interpretation of performance differences observed at the network level and supports targeted harmonisation recommendations.
 
@@ -902,23 +912,22 @@ The figure summarises laboratory-level distributions of sensitivity, precision, 
 
 {{% endif %}}
 
-#### 6.{{ loop.index }}.4. Lineage, Type and Clade Assignment
+#### 6.{{ loop.index }}.4. Lineage, Subtype and Clade Assignment
 
-Lineage, Type and clade assignments submitted for the {{ comp_code }} component were evaluated for concordance with the curated gold standard classifications.
+Lineage, subtype and clade assignments submitted for the {{ comp_code }} component were evaluated for concordance with the curated gold standard classifications.
 
 Across all participating laboratories:
 
-- Exact concordance (lineage/type and clade correct): {{ pct(comp_net.typing.exact_concordance_pct) }}
-- Partial concordance (only lineage/type or clade correct): {{ pct(comp_net.typing.partial_concordance_pct) }}
-- Discordant classification: {{ pct(comp_net.typing.discordance_pct) }}
+- Lineage/Subtype matches (lineage/type was correct): {{ pct(comp_net.typing.lineage_hit_pct) }}.
+- Clade matches (clade was correct): {{ pct(comp_net.typing.clade_hit_pct) }}
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level classification outcomes per sample for {{ comp_code }}.**
 
-| Sample ID | Exact concordance (%) | Partial concordance (%) | Discordant (%) |
-|---|---:|---:|---:|
+| Sample ID | Lineage/Subtype matches (%) | Clade matches (%)|
+|---|---:|---:|
 {% for s in comp_net.typing.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.exact_pct) }} | {{ "%.2f"|format(s.partial_pct) }} | {{ "%.2f"|format(s.discordant_pct) }} |
+| {{ s.sample_id }} | {{ "%.2f"|format(s.exact_pct) }} | {{ "%.2f"|format(s.partial_pct) }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
@@ -929,27 +938,15 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of classification o
   "Classification outcome distribution per sample for " ~ comp_code ~ "."
 ) }}
 
+![classification_summary](./example_images/classification_summary.png)
+
+> Esta pero desagregada por Linaje, Subtipo, y por muestra y usabdo Hit/Discrepancy
+
 **Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.**  
-Stacked bars represent the proportion of Exact, Partial, and Discordant lineage/type and clade assignments across participating laboratories for each sample relative to the curated gold standard classification.
+Stacked bars represent the proportion of lineage/subtype and clade assignments match across participating laboratories for each sample relative to the curated gold standard classification.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level classification error counts for {{ comp_code }}.**
-
-| Error type | Network median per sample | Network IQR per sample |
-|---|---:|---:|
-| Number of lineage/type errors | {{ comp_net.typing.errors.lineage.median }} | {{ comp_net.typing.errors.lineage.iqr[0] }}–{{ comp_net.typing.errors.lineage.iqr[1] }} |
-| Number of clade errors | {{ comp_net.typing.errors.clade.median }} | {{ comp_net.typing.errors.clade.iqr[0] }}–{{ comp_net.typing.errors.clade.iqr[1] }} |
-
-Figure {{ fig_counter.value + 1 }} compares the distribution of lineage/type and clade assignment errors across participating laboratories.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-{{ render_figure(
-  comp_net.typing.fig_error_distribution,
-  "Distribution of lineage/type and clade assignment errors for " ~ comp_code ~ "."
-) }}
-
-**Figure {{ fig_counter.value }}. Distribution of lineage/type and clade assignment errors for {{ comp_code }}.**  
-Boxplots represent the number of lineage/type and clade errors per sample across participating laboratories. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 #### 6.{{ loop.index }}.5. Sample Quality Control Assessment
 
@@ -1051,7 +1048,7 @@ Although variant detection was not incorporated into cross-pipeline ranking, the
 
 ### 7.3. Classification Accuracy and Database Versioning
 
-Lineage, type, and clade assignment performance was high overall. Most discrepancies were attributable to outdated lineage databases or incomplete consensus reconstruction rather than fundamental classification errors.
+Lineage, Subtype, and clade assignment performance was high overall. Most discrepancies were attributable to outdated lineage databases or incomplete consensus reconstruction rather than fundamental classification errors.
 
 This finding suggests that classification performance is less dependent on core algorithmic differences and more sensitive to:
 
@@ -1155,8 +1152,8 @@ The laboratory submitted results for the **{{ comp_code }}** component from {{ c
 
 Number of ssubmitted outputs:
 
-- `.fasta`: **{{ comp.fasta_submitted }} out of {{ comp.fasta_expected }} minimum expected**
-- `.vcf`: **{{ comp.vcf_submitted }} out of {{ comp.vcf_expected }} minimum expected**
+- `.fasta`: **{{ comp.metadata.fasta_submitted }} out of {{ comp.metadata.fasta_expected }} minimum expected**
+- `.vcf`: **{{ comp.metadata.vcf_submitted }} out of {{ comp.metadata.vcf_expected }} minimum expected**
 
 Regarding metadata completeness for {{ comp_code }}:
 
@@ -1240,17 +1237,17 @@ Figure {{ fig_counter.value }} illustrates the distribution of variant detection
 **Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).**  
 Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range across the network. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
-## 9.{{ loop.index + 1 }}.3. Lineage, Type and Clade Assignment
+## 9.{{ loop.index + 1 }}.3. Lineage, Subtype and Clade Assignment
 
 Lineage/type and clade assignments submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated gold standard classifications for each sample included in the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample lineage/type and clade assignment results for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Expected lineage/type | Reported lineage/type | Expected clade | Reported clade | Concordance |
-|---|---|---|---|---|---|
+| Sample ID | Expected lineage/type | Reported lineage/type | Expected clade | Reported clade | Number of matches | Number of Discrepancies |s
+|---|---|---|---|---|---|---|
 {% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ s.classification.expected_lineage }} | {{ s.classification.reported_lineage }} | {{ s.classification.expected_clade }} | {{ s.classification.reported_clade }} | {{ s.classification.concordance }} |
+| {{ sample_id }} | {{ s.classification.expected_lineage }} | {{ s.classification.reported_lineage }} | {{ s.classification.expected_clade }} | {{ s.classification.reported_clade }} | {{ s.classification.number_matches }} | {{ s.classification.number_discrepancies }} |
 {% endfor %}
 
 Table {{ table_counter.value }} summarises the concordance between expected and reported lineage/type and clade classifications for each sample.
@@ -1264,41 +1261,33 @@ Figure {{ fig_counter.value }} illustrates the distribution of classification ou
   comp_code ~ ": distribution of classification outcomes per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
+![classification_summary](./example_images/classification_summary.png)
+
+> Como esta pero por muestra en lugar de por compoenente y separado por Lineage y Clade
+
 **Figure {{ fig_counter.value }}. Distribution of lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).**  
 Stacked bars represent the proportion of Exact, Partial, and Discordant classifications within the network for each sample relative to the curated gold standard. The red marker indicates the classification outcome reported by **{{ labdata.lab.lab_cod }}**.
-
-{% if comp.get("classification_error_counts") %}
-
-### Classification error counts
-
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Classification error counts for {{ labdata.lab.lab_cod }} compared to network medians ({{ comp_code }}).**
-
-| Discrepancy type | {{ labdata.lab.lab_cod }} | Network median |
-|---|---:|---:|
-| Number of lineage/type errors | {{ comp.classification_error_counts.lab.lineage_errors }} | {{ comp.classification_error_counts.network_median.lineage_errors }} |
-| Number of clade errors | {{ comp.classification_error_counts.lab.clade_errors }} | {{ comp.classification_error_counts.network_median.clade_errors }} |
-
-Table {{ table_counter.value }} compares the number of lineage/type and clade assignment errors observed for **{{ labdata.lab.lab_cod }}** against the median values calculated across participating laboratories.
-
-{% endif %}
 
 ## 9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance
 
 The analytical workflow declared by **{{ labdata.lab.lab_cod }}** was benchmarked against other workflows implemented across the RELECOV network for the {{ comp_code }} component.
 
-Positioning was evaluated based on two primary performance indicators:
+Positioning was evaluated based on four primary performance indicators:
 
-1. Median consensus genome identity relative to the curated gold standard.
-2. Exact lineage/type and clade classification concordance.
+1. Total number of discrepancies
+2. Median consensus genome identity relative to the curated gold standard.
+3. Total number of lineage/type and clade classification matches.
+4. Metadata completeness
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Workflow performance positioning for {{ labdata.lab.lab_cod }} within the network ({{ comp_code }}).**
 
-| Metric | {{ labdata.lab.lab_cod }} workflow | Network median | Network IQR |
+| Metric | {{ labdata.lab.lab_cod }} workflow | Network median | Network min - max |
 |---|---:|---:|---:|
-| Median genome identity (%) | {{ pct(comp.workflow_positioning.median_genome_identity_pct, 4) }} | {{ pct(comp.workflow_positioning.network_median_identity_pct, 4) }} | {{ iqr_range(comp.workflow_positioning.network_iqr_identity_pct, 4) }} |
-| Exact classification concordance (%) | {{ pct(comp.workflow_positioning.exact_classification_concordance_pct, 2) }} | {{ pct(comp.workflow_positioning.network_median_class_pct, 2) }} | {{ iqr_range(comp.workflow_positioning.network_iqr_class_pct, 2) }} |
+| Total number of discrepancies | {{ comp.workflow_positioning.total_number_discrepancies }} | {{ general.components[comp_code].consensus.total_median_discrepancies }} | {{ general.components[comp_code].consensus.min_discrepancies }} - {{ general.components[comp_code].consensus.max_discrepancies }} |
+| Median genome identity (%) | {{ pct(comp.workflow_positioning.median_genome_identity_pct, 4) }} | {{ pct(general.components[comp_code].consensus.median_identity_pct, 4) }} | {{ general.components[comp_code].consensus.identity_pct_min }} - {{ general.components[comp_code].consensus.identity_pct_max }} |
+| Total classification matches | {{ comp.workflow_positioning.total_classification_matches }} | {{ general.components[comp_code].typing.total_classification_matches_meadian }} | {{ general.components[comp_code].typing.total_classification_matches_min }} - {{ general.components[comp_code].typing.total_classification_matches_max }}|
+| Metadata completeness (%) | {{ pct(comp.metadata.completeness_pct, 2) }} | {{ pct(general.components[comp_code].metadata_completeness_median, 2) }} | {{ general.components[comp_code].metadata_completeness_min_pct }} - {{ general.components[comp_code].metadata_completeness_max_pct }} |
 
 Table {{ table_counter.value }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. Network medians and interquartile ranges (IQR) provide a reference distribution against which the positioning of the declared workflow can be interpreted.
 
@@ -1307,12 +1296,11 @@ Table {{ table_counter.value }} contextualises the performance of the declared w
 Figure {{ fig_counter.value }} illustrates the comparative positioning of declared workflows within the network for the {{ comp_code }} component.
 
 {{ render_figure(
-  comp.workflow_positioning.scatter_fig,
+  comp.workflow_positioning.bar_plot,
   comp_code ~ ": workflow positioning across the network (grey), with " ~ labdata.lab.lab_cod ~ " highlighted (red)."
 ) }}
 
-**Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.**  
-Each point represents a declared analytical workflow reported by participating laboratories. The x-axis indicates median consensus genome identity relative to the curated gold standard, and the y-axis indicates exact lineage/type and clade classification concordance. Grey markers represent network workflows, while the red marker corresponds to the workflow declared by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.** Each bar represents a declared analytical workflow reported by participating laboratories dissagregated by metric. The y-axis represents each of the metrics. The red marker corresponds to the workflow declared by **{{ labdata.lab.lab_cod }}**.
 
 ## 9.{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)
 
