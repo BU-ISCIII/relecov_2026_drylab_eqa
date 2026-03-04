@@ -1,37 +1,59 @@
 {
   "lab": {
-    "lab_cod": "COD-2400-MAD-CNM",
+    "lab_cod": "COD-2400",
     "laboratory_name": "Centro Nacional de Microbiología, Instituto de Salud Carlos III"
   },
 
-  "lab_overview": {
-    "components_analysed": ["SARS1", "SARS2"],
-    "components_analysed_count": 2,
-
-    "submitted_files": {
-      "fasta_submitted": 10,
-      "fasta_expected": 10,
-      "vcf_submitted": 8,
-      "vcf_expected": 10
-    },
-
-    "metadata": {
-      "completeness_pct": 92.0,
-      "primary_incompleteness_drivers": [
-        "Missing software version fields",
-        "Missing allele frequency threshold field"
-      ],
-      "missing_sample_ids": []
-    }
+  "metadata": {
+    "completeness_pct": 92.0,
+    "primary_incompleteness_drivers": [
+      "Missing software version fields",
+      "Missing allele frequency threshold field"
+    ]
   },
 
   "components": {
     "SARS1": {
       "display_name": "SARS-CoV-2, Illumina",
-      "source": "ECDC ESIB EQA 2024",
+      "fasta_submitted": 5,
+      "fasta_expected": 4,
+      "vcf_submitted": 5,
+      "vcf_expected": 4,
+      "completeness_pct": 92.0,
+      "primary_incompleteness_drivers": [
+        "Missing software version fields",
+        "Missing allele frequency threshold field"
+      ],
+      "component_code": "SARS1",
+      "virus": "SARS-CoV-2",
+      "platform": "Illumina",
+      "read_layout": "Paired-end",
+      "enrichment_strategy": "Amplicon",
+      "primer_scheme": "ARTIC",
+      "primer_version": "v4.1",
+      "expected_submitted_files": 4,
+      "files": {
+        "expected_fastq_files_per_sample": 2,
+        "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
+      },
 
       "samples": {
         "SARS1": {
+          "sample_id": "SARS1",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.04",
+          "fastq_files": ["SARS1_R1.fastq.gz", "SARS1_R2.fastq.gz"],
+          "expected_lineage": null,
+          "expected_clade": null,
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
+          "expected_qc": "Fail",
+          "total_expected_fields": 62,
+          "filled_fields": 59,
+          "incomplete_fields": ["Assembly software, Assembly software version, Assembly params"],
           "consensus": {
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
@@ -60,6 +82,71 @@
             "reported_clade": "23A",
             "concordance": "Exact"
           },
+          "reported_qc":"Fail",
+          "metadata_metrics": {
+            "pct_genome_covered_ge_10x": 98.5,
+            "mean_depth": 250.2,
+            "pct_genome_masked_Ns": 0.5,
+            "pct_virus_reads": 85.0,
+            "pct_host_reads": 10.0,
+            "total_variants_reported": 12,
+            "variants_with_predicted_effect": 2
+          },
+          "metadata_metrics_network": {
+            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
+            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
+            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
+            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
+            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
+            "total_variants_reported": { "median": 12, "iqr": [10, 14] },
+            "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
+          }
+        },
+        "SARS2": {
+          "sample_id": "SARS2",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS2.01",
+          "fastq_files": ["SARS2_R1.fastq.gz", "SARS2_R2.fastq.gz"],
+          "expected_lineage": "BA.1.13",
+          "expected_clade": "outgroup (BA.1)",
+          "platform": "Illumina",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "High-quality baseline sample",
+          "expected_qc": "Pass",
+          "total_expected_fields": 62,
+          "filled_fields": 59,
+          "incomplete_fields": ["Assembly software, Assembly software version, Assembly params"],
+          "consensus": {
+            "genome_identity_pct": 99.9500,
+            "total_discrepancies": 1,
+            "indel_events": 0,
+            "ambiguous_bases_pct": 0.10,
+            "genome_completeness_pct": 99.90,
+            "discrepancy_breakdown": {
+              "substitutions": 0,
+              "excess_Ns": 1,
+              "missing_Ns": 0,
+              "insertions": 0,
+              "deletions": 0
+            }
+          },
+          "variants": {
+            "sensitivity_pct": 99.00,
+            "precision_pct": 99.50,
+            "tp": 12,
+            "fp": 0,
+            "fn": 0
+          },
+          "classification": {
+            "expected_lineage": "XBB.1.5",
+            "reported_lineage": "XBB.1.5",
+            "expected_clade": "23A",
+            "reported_clade": "23A",
+            "concordance": "Exact"
+          },
+          "reported_qc":"Fail",
           "metadata_metrics": {
             "pct_genome_covered_ge_10x": 98.5,
             "mean_depth": 250.2,
@@ -85,7 +172,8 @@
         "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_consensus_discrepancy_distribution.png",
         "variant_metrics_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metrics_distribution.png",
         "classification_stackedbars": "figures/labs/COD-2400-MAD-CNM/SARS1_classification_stackedbars.png",
-        "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS1_metadata_metrics_panel.png"
+        "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS1_metadata_metrics_panel.png",
+        "qc_match_rate_by_sample_with_lab_marker": "figures/labs/COD-2400-MAD-CNM/SARS1_qc_match_rate.png"
       },
 
       "classification_error_counts": {
@@ -110,12 +198,160 @@
 
         "scatter_fig": "figures/labs/COD-2400-MAD-CNM/SARS1_workflow_scatter.png"
       }
-    },
-
-    "SARS2": {
+      },
+    "SARS2": {    
+      "component_code": "SARS1",
+      "virus": "SARS-CoV-2",
       "display_name": "SARS-CoV-2, Nanopore",
-      "source": "ECDC ESIB EQA 2024",
-      "samples": {},
+      "platform": "Nanopore",
+      "enrichment_strategy": "Amplicon",
+      "primer_scheme": "ARTIC",
+      "primer_version": "v4.1",
+      "read_layout": "Single-end",
+      "files": {
+        "expected_fastq_files_per_sample": 1,
+        "fastq_naming_pattern": "{SAMPLE_ID}.fastq.gz"
+      },
+      "fasta_submitted": 5,
+      "fasta_expected": 4,
+      "vcf_submitted": 5,
+      "vcf_expected": 4,
+      "completeness_pct": 92.0,
+      "primary_incompleteness_drivers": [
+        "Missing software version fields",
+        "Missing allele frequency threshold field"
+      ],
+
+      "samples": {
+        "SARS6": {
+          "sample_id": "SARS6",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.01",
+          "fastq_files": ["SARS6.fastq.gz"],
+          "expected_lineage": "XCH.1",
+          "expected_clade": "recombinant (XCH.1)",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "High-quality baseline sample",
+          "expected_qc": "Pass",
+          "total_expected_fields": 62,
+          "filled_fields": 59,
+          "incomplete_fields": ["Assembly software, Assembly software version, Assembly params"],
+          "consensus": {
+            "genome_identity_pct": 99.9500,
+            "total_discrepancies": 1,
+            "indel_events": 0,
+            "ambiguous_bases_pct": 0.10,
+            "genome_completeness_pct": 99.90,
+            "discrepancy_breakdown": {
+              "substitutions": 0,
+              "excess_Ns": 1,
+              "missing_Ns": 0,
+              "insertions": 0,
+              "deletions": 0
+            }
+          },
+          "variants": {
+            "sensitivity_pct": 99.00,
+            "precision_pct": 99.50,
+            "tp": 12,
+            "fp": 0,
+            "fn": 0
+          },
+          "classification": {
+            "expected_lineage": "XBB.1.5",
+            "reported_lineage": "XBB.1.5",
+            "expected_clade": "23A",
+            "reported_clade": "23A",
+            "concordance": "Exact"
+          },
+          "reported_qc":"Fail",
+          "metadata_metrics": {
+            "pct_genome_covered_ge_10x": 98.5,
+            "mean_depth": 250.2,
+            "pct_genome_masked_Ns": 0.5,
+            "pct_virus_reads": 85.0,
+            "pct_host_reads": 10.0,
+            "total_variants_reported": 12,
+            "variants_with_predicted_effect": 2
+          },
+          "metadata_metrics_network": {
+            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
+            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
+            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
+            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
+            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
+            "total_variants_reported": { "median": 12, "iqr": [10, 14] },
+            "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
+          }
+        },
+        "SARS7": {
+          "sample_id": "SARS7",
+          "source": "ECDC_ESIB_2024",
+          "ref_sample": "SARS1.09",
+          "fastq_files": ["SARS7.fastq.gz"],
+          "expected_lineage": "XBB.1.5.24",
+          "expected_clade": "23A",
+          "platform": "Oxford Nanopore Technologies",
+          "enrichment_strategy": "Amplicon",
+          "primer_scheme": "ARTIC",
+          "primer_version": "v4.1",
+          "key_feature": "XBB sample, ambiguity next to a deletion",
+          "expected_qc": "Pass",
+          "total_expected_fields": 62,
+          "filled_fields": 59,
+          "incomplete_fields": ["Assembly software, Assembly software version, Assembly params"],
+          "consensus": {
+            "genome_identity_pct": 99.9500,
+            "total_discrepancies": 1,
+            "indel_events": 0,
+            "ambiguous_bases_pct": 0.10,
+            "genome_completeness_pct": 99.90,
+            "discrepancy_breakdown": {
+              "substitutions": 0,
+              "excess_Ns": 1,
+              "missing_Ns": 0,
+              "insertions": 0,
+              "deletions": 0
+            }
+          },
+          "variants": {
+            "sensitivity_pct": 99.00,
+            "precision_pct": 99.50,
+            "tp": 12,
+            "fp": 0,
+            "fn": 0
+          },
+          "classification": {
+            "expected_lineage": "XBB.1.5",
+            "reported_lineage": "XBB.1.5",
+            "expected_clade": "23A",
+            "reported_clade": "23A",
+            "concordance": "Exact"
+          },
+          "reported_qc":"Fail",
+          "metadata_metrics": {
+            "pct_genome_covered_ge_10x": 98.5,
+            "mean_depth": 250.2,
+            "pct_genome_masked_Ns": 0.5,
+            "pct_virus_reads": 85.0,
+            "pct_host_reads": 10.0,
+            "total_variants_reported": 12,
+            "variants_with_predicted_effect": 2
+          },
+          "metadata_metrics_network": {
+            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
+            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
+            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
+            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
+            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
+            "total_variants_reported": { "median": 12, "iqr": [10, 14] },
+            "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
+          }
+        }
+      },
       "component_figures": {
         "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS2_consensus_discrepancy_distribution.png",
         "variant_metrics_distribution": "figures/labs/COD-2400-MAD-CNM/SARS2_variant_metrics_distribution.png",

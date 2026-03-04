@@ -1,48 +1,63 @@
 {
-  "components": ["SARS1", "SARS2", "FLU1", "FLU2"],
+  "eqa_name": "RELECOV 2026 Dry Lab EQA",
 
   "total_invited": 52,
-  "total_participants": 14,
-  "total_participants_pct": 26.9,
+  "total_participants": 17,
+  "total_participants_pct": 32.69,
 
   "participation_per_component": {
-    "SARS1": 10,
-    "SARS2": 5,
-    "FLU1": 10,
-    "FLU2": 2
+    "SARS1": 15,
+    "SARS2": 8,
+    "FLU1": 11,
+    "FLU2": 8
   },
 
-  "median_components_analysed_per_lab": 2,
+  "median_components_analysed_per_lab": 2.47,
 
   "submission_rates_pct": {
-    "fasta": 95.0,
-    "vcf": 82.5
+    "fasta": 100,
+    "vcf": 94.12
   },
 
   "figures": {
     "consensus_summary": "figures/network/consensus_summary.png",
     "variant_summary": "figures/network/variant_summary.png",
+    "influenza_variant_reporting_summary": "figures/network/influenza_variant_reporting_summary.png",
+    "influenza_reference_summary": "figures/network/influenza_reference_summary.png",
     "classification_summary": "figures/network/classification_summary.png",
-    "metadata_completeness_distribution": "figures/network/metadata_completeness_distribution.png"
+    "metadata_completeness": "figures/network/metadata_completeness.png",
+    "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png"
   },
 
   "general_results": {
     "consensus": {
       "median_identity_illumina_pct": 99.92,
-      "median_identity_nanopore_pct": 99.10,
-      "pct_genomes_below_discrepancy_threshold": 85.0,
-      "discrepancy_threshold": 10
+      "median_identity_nanopore_pct": 99.10
     },
     "variants": {
-      "pct_vcfs_below_discrepancy_threshold": 70.0,
-      "discrepancy_threshold": 5
+      "median_discrepancy_illumina": 10,
+      "median_discrepancy_nanopore": 20
+    },
+    "influenza_variants": {
+      "high_and_low_freq_pct": 5,
+      "low_freq_only_pct": 20,
+      "no_low_freq_pct": 75,
+      "total_distinct_references": 5,
+      "total_distinct_references_PB1": 2,
+      "total_distinct_references_PB2": 1,
+      "total_distinct_references_PA": 2,
+      "total_distinct_references_HA": 3,
+      "total_distinct_references_NP": 2,
+      "total_distinct_references_NA": 2,
+      "total_distinct_references_M": 1,
+      "total_distinct_references_NS": 1
     },
     "classification": {
       "sars_cov_2_concordance_pct": 95.0,
       "influenza_type_concordance_pct": 90.0,
       "clade_concordance_pct_all_pct": 88.0,
-      "median_assignment_concordance": 95.0,
-      "median_assignment_accuracy": 92.0
+      "median_full_match_pct": 95.0,
+      "min_full_match_pct": 92.0
     }
   },
 
@@ -50,20 +65,16 @@
     "median_pct": 85.0,
     "min_pct": 20.0,
     "max_pct": 100.0,
-
+    
     "software_names_pct": 95.0,
     "software_version_pct": 80.0,
     "coverage_threshold_pct": 60.0,
     "frequency_threshold_pct": 55.0,
     "reference_genome_pct": 70.0,
-
     "incomplete_parameters_pct": 35.0,
 
-    "fully_compliant_pct": 40.0,
     "free_text_predefine_pct": 45.0,
     "inconsistent_tool_version": 10.0,
-
-    "clarification_pct": 15.0,
 
     "total_workflows": 12,
     "total_consensus_softwares": 6,
@@ -71,178 +82,367 @@
     "total_lineage_softwares": 5
   },
 
-  "global": {
-    "components": ["SARS1", "SARS2", "FLU1", "FLU2"],
-    "components_detail": {
-      "SARS1": {
-        "name": "SARS-CoV-2, Illumina",
-        "total_labs": 30,
-        "total_fasta": 30,
-        "total_vcf": 26,
-        "metadata_completeness_median": 90.0,
+  "qc": {
+    "match_rate_pct": 90.0,
+    "matches": 270,
+    "discrepancies": 30,
+    "total_evaluations": 300
+  },
 
-        "consensus": {
-          "median_identity": 99.92,
-          "median_discrepancies": 2,
-          "min_discrepancies": 0,
-          "max_discrepancies": 25,
+  "components": {
+    "SARS1": {
+      "name": "SARS-CoV-2, Illumina",
+      "total_labs": 30,
+      "total_fasta": 30,
+      "total_vcf": 26,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,
 
-          "incorrect_nt_pct": 40.0,
-          "excess_ambiguous_pct": 45.0,
-          "indels_pct": 15.0,
+      "consensus": {
+        "median_identity": 99.92,
+        "median_discrepancies": 2,
+        "min_discrepancies": 0,
+        "max_discrepancies": 25,
 
-          "most_frequent_discrepancy_pattern": "excess ambiguous bases in low-coverage regions",
-
-          "samples": [
-            {
-              "sample_id": "SARS1",
-              "median_identity_pct": 99.95,
-              "median_discrepancies": 1,
-              "iqr_discrepancies": [0, 2]
-            }
-          ],
-
-          "by_type": {
-            "substitutions": { "median": 0, "iqr": [0, 1] },
-            "excess_Ns": { "median": 1, "iqr": [0, 2] },
-            "missing_Ns": { "median": 0, "iqr": [0, 0] },
-            "insertions": { "median": 0, "iqr": [0, 0] },
-            "deletions": { "median": 0, "iqr": [0, 0] }
+        "samples": [
+          {
+            "sample_id": "SARS1",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
           },
-
-          "fig_discrepancies_boxplot_by_sample": "figures/SARS1/consensus_discrepancies_boxplot_by_sample.png",
-          "fig_discrepancy_type_barplot": "figures/SARS1/consensus_discrepancy_type_barplot.png"
-        },
-
-        "variant": {
-          "median_sensitivity": 98.5,
-          "median_precision": 99.0,
-          "median_false_positives": 0,
-          "min_false_positives": 0,
-          "max_false_positives": 10,
-          "median_false_negatives": 1,
-
-          "no_false_positives_pct": 60.0,
-          "at_least_one_fn_pct": 45.0,
-
-          "samples": [
-            {
-              "sample_id": "SARS1",
-              "median_sensitivity_pct": 99.0,
-              "median_precision_pct": 99.5,
-              "median_tp": 12,
-              "median_fp": 0,
-              "median_fn": 0,
-              "median_total_differences": 0,
-              "iqr_total_differences": [0, 1]
-            }
-          ],
-
-          "metrics": {
-            "sensitivity": { "median_pct": 98.5, "iqr_pct": [97.0, 99.5] },
-            "precision": { "median_pct": 99.0, "iqr_pct": [98.0, 99.8] },
-            "tp": { "median": 12, "iqr": [10, 14] },
-            "fp": { "median": 0, "iqr": [0, 1] },
-            "fn": { "median": 1, "iqr": [0, 2] },
-            "total_differences": { "median": 1, "iqr": [0, 2] }
+          {
+            "sample_id": "SARS2",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
           },
-
-          "fig_total_differences_boxplot_by_sample": "figures/SARS1/variant_total_differences_boxplot_by_sample.png",
-          "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS1/variant_metric_boxplots.png"
-        },
-
-        "typing": {
-          "exact_concordance_pct": 95.0,
-          "partial_concordance_pct": 3.0,
-          "discordance_pct": 2.0,
-
-          "samples": [
-            { "sample_id": "SARS1", "exact_pct": 96.0, "partial_pct": 3.0, "discordant_pct": 1.0 }
-          ],
-
-          "errors": {
-            "lineage": { "median": 0, "iqr": [0, 1] },
-            "clade": { "median": 0, "iqr": [0, 0] }
+          {
+            "sample_id": "SARS3",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
           },
+          {
+            "sample_id": "SARS4",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS5",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
 
-          "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png",
-          "fig_error_distribution": "figures/SARS1/typing_error_distribution.png"
+        "incorrect_nt_pct": 40.0,
+        "excess_ambiguous_pct": 45.0,
+        "indels_pct": 15.0,
+
+        "by_type": {
+          "substitutions": { "median": 0, "iqr": [0, 1] },
+          "excess_Ns": { "median": 1, "iqr": [0, 2] },
+          "missing_Ns": { "median": 0, "iqr": [0, 0] },
+          "insertions": { "median": 0, "iqr": [0, 0] },
+          "deletions": { "median": 0, "iqr": [0, 0] }
         },
+        "most_frequent_discrepancy_pattern": "excess ambiguous bases in low-coverage regions",
 
-        "pipeline": {
-          "total_number": 5,
-          "configurations": [
-            {
-              "name": "Pipeline A",
-              "n_labs": 10,
-              "median_identity_pct": 99.93,
-              "median_discrepancies": 2,
-              "median_metadata_completeness_pct": 90.0,
-              "exact_classification_pct": 96.0
-            }
-          ],
-          "fig_scatter_positioning": "figures/SARS1/pipeline_scatter_positioning.png",
-          "fig_metric_boxplots_by_pipeline": "figures/SARS1/pipeline_metric_boxplots_by_pipeline.png"
-        }
+        "fig_discrepancies_boxplot_by_sample": "figures/SARS1/consensus_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancy_type_barplot": "figures/SARS1/consensus_discrepancy_type_barplot.png"
       },
 
-      "SARS2": { "name": "SARS-CoV-2, Nanopore", "total_labs": 24, "total_fasta": 24, "total_vcf": 20, "metadata_completeness_median": 85.0,
-        "consensus": { "median_identity": 99.10, "median_discrepancies": 10, "min_discrepancies": 0, "max_discrepancies": 120,
-          "incorrect_nt_pct": 35.0, "excess_ambiguous_pct": 40.0, "indels_pct": 25.0,
-          "most_frequent_discrepancy_pattern": "indels in homopolymeric regions",
-          "samples": [], "by_type": { "substitutions": { "median": 0, "iqr": [0, 2] }, "excess_Ns": { "median": 3, "iqr": [1, 8] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 1, "iqr": [0, 3] }, "deletions": { "median": 1, "iqr": [0, 2] } },
-          "fig_discrepancies_boxplot_by_sample": "figures/SARS2/consensus_discrepancies_boxplot_by_sample.png",
-          "fig_discrepancy_type_barplot": "figures/SARS2/consensus_discrepancy_type_barplot.png"
+      "variant": {
+        "median_sensitivity": 98.5,
+        "median_precision": 99.0,
+        "median_false_positives": 0,
+        "min_false_positives": 0,
+        "max_false_positives": 10,
+        "median_false_negatives": 1,
+
+        "no_false_positives_pct": 60.0,
+        "at_least_one_fn_pct": 45.0,
+
+        "samples": [
+          {
+            "sample_id": "SARS1",
+            "median_sensitivity_pct": 99.0,
+            "median_precision_pct": 99.5,
+            "median_tp": 12,
+            "median_fp": 0,
+            "median_fn": 0,
+            "median_total_differences": 0,
+            "iqr_total_differences": [0, 1]
+          }
+        ],
+
+        "metrics": {
+          "sensitivity": { "median_pct": 98.5, "iqr_pct": [97.0, 99.5] },
+          "precision": { "median_pct": 99.0, "iqr_pct": [98.0, 99.8] },
+          "tp": { "median": 12, "iqr": [10, 14] },
+          "fp": { "median": 0, "iqr": [0, 1] },
+          "fn": { "median": 1, "iqr": [0, 2] },
+          "total_differences": { "median": 1, "iqr": [0, 2] }
         },
-        "variant": { "median_sensitivity": 95.0, "median_precision": 97.0, "median_false_positives": 1, "min_false_positives": 0, "max_false_positives": 30, "median_false_negatives": 2,
-          "no_false_positives_pct": 35.0, "at_least_one_fn_pct": 55.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 95.0, "iqr_pct": [90.0, 98.0] }, "precision": { "median_pct": 97.0, "iqr_pct": [92.0, 99.0] }, "tp": { "median": 10, "iqr": [8, 12] }, "fp": { "median": 1, "iqr": [0, 3] }, "fn": { "median": 2, "iqr": [1, 4] }, "total_differences": { "median": 3, "iqr": [1, 6] } },
-          "fig_total_differences_boxplot_by_sample": "figures/SARS2/variant_total_differences_boxplot_by_sample.png",
-          "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS2/variant_metric_boxplots.png"
-        },
-        "typing": { "exact_concordance_pct": 90.0, "partial_concordance_pct": 5.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
-          "fig_stacked_bar_by_sample": "figures/SARS2/typing_outcome_stackedbar_by_sample.png",
-          "fig_error_distribution": "figures/SARS2/typing_error_distribution.png"
-        },
-        "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/SARS2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/SARS2/pipeline_metric_boxplots_by_pipeline.png" }
+
+        "fig_total_differences_boxplot_by_sample": "figures/SARS1/variant_total_differences_boxplot_by_sample.png",
+        "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS1/variant_metric_boxplots.png"
       },
 
-      "FLU1": { "name": "Influenza, Illumina", "total_labs": 18, "total_fasta": 18, "total_vcf": 14, "metadata_completeness_median": 80.0,
-        "consensus": { "median_identity": 99.50, "median_discrepancies": 5, "min_discrepancies": 0, "max_discrepancies": 80, "incorrect_nt_pct": 30.0, "excess_ambiguous_pct": 55.0, "indels_pct": 15.0,
-          "most_frequent_discrepancy_pattern": "excess Ns in segment dropout samples",
-          "samples": [], "by_type": { "substitutions": { "median": 1, "iqr": [0, 2] }, "excess_Ns": { "median": 2, "iqr": [0, 10] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 0, "iqr": [0, 1] }, "deletions": { "median": 0, "iqr": [0, 1] } },
-          "fig_discrepancies_boxplot_by_sample": "figures/FLU1/consensus_discrepancies_boxplot_by_sample.png",
-          "fig_discrepancy_type_barplot": "figures/FLU1/consensus_discrepancy_type_barplot.png"
+      "typing": {
+        "exact_concordance_pct": 95.0,
+        "partial_concordance_pct": 3.0,
+        "discordance_pct": 2.0,
+
+        "samples": [
+          { "sample_id": "SARS1", "exact_pct": 96.0, "partial_pct": 3.0, "discordant_pct": 1.0 }
+        ],
+
+        "errors": {
+          "lineage": { "median": 0, "iqr": [0, 1] },
+          "clade": { "median": 0, "iqr": [0, 0] }
         },
-        "variant": { "median_sensitivity": 96.0, "median_precision": 98.0, "median_false_positives": 0, "min_false_positives": 0, "max_false_positives": 25, "median_false_negatives": 2,
-          "no_false_positives_pct": 50.0, "at_least_one_fn_pct": 60.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 96.0, "iqr_pct": [92.0, 98.0] }, "precision": { "median_pct": 98.0, "iqr_pct": [95.0, 99.0] }, "tp": { "median": 15, "iqr": [12, 18] }, "fp": { "median": 0, "iqr": [0, 2] }, "fn": { "median": 2, "iqr": [1, 4] }, "total_differences": { "median": 2, "iqr": [1, 5] } },
-          "fig_total_differences_boxplot_by_sample": "figures/FLU1/variant_total_differences_boxplot_by_sample.png",
-          "fig_metric_boxplots_by_pipeline_or_overall": "figures/FLU1/variant_metric_boxplots.png"
-        },
-        "typing": { "exact_concordance_pct": 88.0, "partial_concordance_pct": 7.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
-          "fig_stacked_bar_by_sample": "figures/FLU1/typing_outcome_stackedbar_by_sample.png",
-          "fig_error_distribution": "figures/FLU1/typing_error_distribution.png"
-        },
-        "pipeline": { "total_number": 5, "configurations": [], "fig_scatter_positioning": "figures/FLU1/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU1/pipeline_metric_boxplots_by_pipeline.png" }
+
+        "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png",
+        "fig_error_distribution": "figures/SARS1/typing_error_distribution.png"
       },
 
-      "FLU2": { "name": "Influenza, Nanopore", "total_labs": 16, "total_fasta": 16, "total_vcf": 12, "metadata_completeness_median": 78.0,
-        "consensus": { "median_identity": 98.80, "median_discrepancies": 20, "min_discrepancies": 0, "max_discrepancies": 200, "incorrect_nt_pct": 25.0, "excess_ambiguous_pct": 50.0, "indels_pct": 25.0,
-          "most_frequent_discrepancy_pattern": "indel errors in homopolymer regions",
-          "samples": [], "by_type": { "substitutions": { "median": 2, "iqr": [0, 4] }, "excess_Ns": { "median": 6, "iqr": [2, 20] }, "missing_Ns": { "median": 0, "iqr": [0, 2] }, "insertions": { "median": 2, "iqr": [0, 5] }, "deletions": { "median": 1, "iqr": [0, 4] } },
-          "fig_discrepancies_boxplot_by_sample": "figures/FLU2/consensus_discrepancies_boxplot_by_sample.png",
-          "fig_discrepancy_type_barplot": "figures/FLU2/consensus_discrepancy_type_barplot.png"
-        },
-        "variant": { "median_sensitivity": 92.0, "median_precision": 95.0, "median_false_positives": 2, "min_false_positives": 0, "max_false_positives": 50, "median_false_negatives": 4,
-          "no_false_positives_pct": 25.0, "at_least_one_fn_pct": 70.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 92.0, "iqr_pct": [85.0, 96.0] }, "precision": { "median_pct": 95.0, "iqr_pct": [88.0, 98.0] }, "tp": { "median": 12, "iqr": [9, 15] }, "fp": { "median": 2, "iqr": [0, 6] }, "fn": { "median": 4, "iqr": [2, 7] }, "total_differences": { "median": 6, "iqr": [3, 12] } },
-          "fig_total_differences_boxplot_by_sample": "figures/FLU2/variant_total_differences_boxplot_by_sample.png",
-          "fig_metric_boxplots_by_pipeline_or_overall": "figures/FLU2/variant_metric_boxplots.png"
-        },
-        "typing": { "exact_concordance_pct": 82.0, "partial_concordance_pct": 10.0, "discordance_pct": 8.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 2] }, "clade": { "median": 1, "iqr": [0, 2] } },
-          "fig_stacked_bar_by_sample": "figures/FLU2/typing_outcome_stackedbar_by_sample.png",
-          "fig_error_distribution": "figures/FLU2/typing_error_distribution.png"
-        },
-        "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/FLU2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU2/pipeline_metric_boxplots_by_pipeline.png" }
+      "qc": {
+        "match_rate_pct": 92.0,
+        "matches": 276,
+        "discrepancies": 24,
+        "total_evaluations": 300,
+        "samples": [
+          { "sample_id": "SARS1", "gold_standard_qc": "Fail", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "sample_id": "SARS2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "sample_id": "SARS3", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "sample_id": "SARS4", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "sample_id": "SARS5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+        ],
+        "fig_match_rate_by_sample": "figures/SARS1/qc_match_rate_by_sample.png"
+      },
+
+      "pipeline": {
+        "total_number": 5,
+        "configurations": [
+          {
+            "name": "Pipeline A",
+            "n_labs": 10,
+            "median_identity_pct": 99.93,
+            "median_discrepancies": 2,
+            "median_metadata_completeness_pct": 90.0,
+            "exact_classification_pct": 96.0
+          }
+        ],
+        "fig_scatter_positioning": "figures/SARS1/pipeline_scatter_positioning.png",
+        "fig_metric_boxplots_by_pipeline": "figures/SARS1/pipeline_metric_boxplots_by_pipeline.png"
       }
+    },
+
+    "SARS2": { 
+      "name": "SARS-CoV-2, Nanopore", 
+      "total_labs": 24,
+      "total_fasta": 24,
+      "total_vcf": 20,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,
+      "consensus": {
+        "median_identity": 99.10, 
+        "median_discrepancies": 10, 
+        "min_discrepancies": 0, 
+        "max_discrepancies": 120,
+        "incorrect_nt_pct": 35.0, "excess_ambiguous_pct": 40.0, "indels_pct": 25.0,
+        "most_frequent_discrepancy_pattern": "indels in homopolymeric regions",
+        "samples": [
+          {
+            "sample_id": "SARS6",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS7",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS8",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS9",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "SARS10",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
+        "by_type": { "substitutions": { "median": 0, "iqr": [0, 2] }, "excess_Ns": { "median": 3, "iqr": [1, 8] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 1, "iqr": [0, 3] }, "deletions": { "median": 1, "iqr": [0, 2] } },
+        "fig_discrepancies_boxplot_by_sample": "figures/SARS2/consensus_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancy_type_barplot": "figures/SARS2/consensus_discrepancy_type_barplot.png"
+      },
+      "variant": { "median_sensitivity": 95.0, "median_precision": 97.0, "median_false_positives": 1, "min_false_positives": 0, "max_false_positives": 30, "median_false_negatives": 2,
+        "no_false_positives_pct": 35.0, "at_least_one_fn_pct": 55.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 95.0, "iqr_pct": [90.0, 98.0] }, "precision": { "median_pct": 97.0, "iqr_pct": [92.0, 99.0] }, "tp": { "median": 10, "iqr": [8, 12] }, "fp": { "median": 1, "iqr": [0, 3] }, "fn": { "median": 2, "iqr": [1, 4] }, "total_differences": { "median": 3, "iqr": [1, 6] } },
+        "fig_total_differences_boxplot_by_sample": "figures/SARS2/variant_total_differences_boxplot_by_sample.png",
+        "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS2/variant_metric_boxplots.png"
+      },
+      "typing": { "exact_concordance_pct": 90.0, "partial_concordance_pct": 5.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
+        "fig_stacked_bar_by_sample": "figures/SARS2/typing_outcome_stackedbar_by_sample.png",
+        "fig_error_distribution": "figures/SARS2/typing_error_distribution.png"
+      },
+      "qc": {
+        "match_rate_pct": 92.0,
+        "matches": 276,
+        "discrepancies": 24,
+        "total_evaluations": 300,
+        "samples": [
+          { "sample_id": "SARS6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "sample_id": "SARS7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "sample_id": "SARS8", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "sample_id": "SARS9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "sample_id": "SARS10", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+        ],
+        "fig_match_rate_by_sample": "figures/SARS2/qc_match_rate_by_sample.png"
+      },
+      "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/SARS2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/SARS2/pipeline_metric_boxplots_by_pipeline.png" }
+    },
+
+    "FLU1": { "name": "Influenza, Illumina", "total_labs": 18, "total_fasta": 18, "total_vcf": 14,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,
+      "consensus": { "median_identity": 99.50, "median_discrepancies": 5, "min_discrepancies": 0, "max_discrepancies": 80, "incorrect_nt_pct": 30.0, "excess_ambiguous_pct": 55.0, "indels_pct": 15.0,
+        "most_frequent_discrepancy_pattern": "excess Ns in segment dropout samples",
+        "samples": [
+          {
+            "sample_id": "FLU1",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU2",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU3",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU4",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU5",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
+        "by_type": { "substitutions": { "median": 1, "iqr": [0, 2] }, "excess_Ns": { "median": 2, "iqr": [0, 10] }, "missing_Ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 0, "iqr": [0, 1] }, "deletions": { "median": 0, "iqr": [0, 1] } },
+        "fig_discrepancies_boxplot_by_sample": "figures/FLU1/consensus_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancy_type_barplot": "figures/FLU1/consensus_discrepancy_type_barplot.png"
+      },
+      "typing": { "exact_concordance_pct": 88.0, "partial_concordance_pct": 7.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
+        "fig_stacked_bar_by_sample": "figures/FLU1/typing_outcome_stackedbar_by_sample.png",
+        "fig_error_distribution": "figures/FLU1/typing_error_distribution.png"
+      },
+      "qc": {
+        "match_rate_pct": 92.0,
+        "matches": 276,
+        "discrepancies": 24,
+        "total_evaluations": 300,
+        "samples": [
+          { "sample_id": "FLU1", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "sample_id": "FLU2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "sample_id": "FLU3", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "sample_id": "FLU4", "gold_standard_qc": "Pass", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "sample_id": "FLU5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+        ],
+        "fig_match_rate_by_sample": "figures/FLU1/qc_match_rate_by_sample.png"
+      },
+      "pipeline": { "total_number": 5, "configurations": [], "fig_scatter_positioning": "figures/FLU1/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU1/pipeline_metric_boxplots_by_pipeline.png" }
+    },
+
+    "FLU2": { "name": "Influenza, Nanopore", "total_labs": 16, "total_fasta": 16, "total_vcf": 12,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,    
+      "consensus": { "median_identity": 98.80, "median_discrepancies": 20, "min_discrepancies": 0, "max_discrepancies": 200, "incorrect_nt_pct": 25.0, "excess_ambiguous_pct": 50.0, "indels_pct": 25.0,
+        "most_frequent_discrepancy_pattern": "indel errors in homopolymer regions",
+                "samples": [
+          {
+            "sample_id": "FLU6",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU7",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU8",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU9",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          },
+          {
+            "sample_id": "FLU10",
+            "median_identity_pct": 99.95,
+            "median_discrepancies": 1,
+            "iqr_discrepancies": [0, 2]
+          }
+        ],
+        "by_type": { "substitutions": { "median": 2, "iqr": [0, 4] }, "excess_Ns": { "median": 6, "iqr": [2, 20] }, "missing_Ns": { "median": 0, "iqr": [0, 2] }, "insertions": { "median": 2, "iqr": [0, 5] }, "deletions": { "median": 1, "iqr": [0, 4] } },
+        "fig_discrepancies_boxplot_by_sample": "figures/FLU2/consensus_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancy_type_barplot": "figures/FLU2/consensus_discrepancy_type_barplot.png"
+      },
+      "typing": { "exact_concordance_pct": 82.0, "partial_concordance_pct": 10.0, "discordance_pct": 8.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 2] }, "clade": { "median": 1, "iqr": [0, 2] } },
+        "fig_stacked_bar_by_sample": "figures/FLU2/typing_outcome_stackedbar_by_sample.png",
+        "fig_error_distribution": "figures/FLU2/typing_error_distribution.png"
+      },
+      "qc": {
+        "match_rate_pct": 92.0,
+        "matches": 276,
+        "discrepancies": 24,
+        "total_evaluations": 300,
+        "samples": [
+          { "sample_id": "FLU6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "sample_id": "FLU7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "sample_id": "FLU8", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "sample_id": "FLU9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "sample_id": "FLU10", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+        ],
+        "fig_match_rate_by_sample": "figures/FLU2/qc_match_rate_by_sample.png"
+      },
+      "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/FLU2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU2/pipeline_metric_boxplots_by_pipeline.png" }
     }
-  }
+    }
 }
