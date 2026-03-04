@@ -231,6 +231,51 @@
         "fig_match_rate_by_sample": "figures/SARS1/qc_match_rate_by_sample.png"
       },
 
+      "metadata_metrics": {
+        "samples": [
+          { 
+            "sample_id": "SARS1", 
+            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
+            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
+            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
+            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
+            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+          },
+          {
+            "sample_id": "SARS2",
+            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
+            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
+            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
+            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
+            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+          },
+          {
+            "sample_id": "SARS3",
+            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
+            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
+            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
+            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
+            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+          },
+          {
+            "sample_id": "SARS4",
+            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
+            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
+            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
+            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
+            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+          },
+          {
+            "sample_id": "SARS5",
+            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
+            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
+            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
+            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
+            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+          }
+        ]
+      },
+
       "pipeline": {
         "total_number": 5,
         "configurations": [

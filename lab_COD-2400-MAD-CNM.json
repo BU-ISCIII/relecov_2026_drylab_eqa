@@ -61,7 +61,6 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "indel_events": 0,
-            "ambiguous_bases_pct": 0.10,
             "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "substitutions": 0,
@@ -83,27 +82,18 @@
             "number_matches": 2,
             "number_discrepancies": 0
           },
+
           "reported_qc":"Fail",
+          "qc_match": true,
 
           "metadata_metrics": {
-            "pct_genome_covered_ge_10x": 98.5,
-            "mean_depth": 250.2,
-            "pct_genome_masked_Ns": 0.5,
-            "pct_virus_reads": 85.0,
-            "pct_host_reads": 10.0,
-            "total_variants_reported": 12,
-            "variants_with_predicted_effect": 2
-          },
-
-          "metadata_metrics_network": {
-            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
-            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
-            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
-            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
-            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
-            "total_variants_reported": { "median": 12, "iqr": [10, 14] },
-            "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
+            "per_genome_greater_10x": 98.5,
+            "depth_of_coverage_value": 250.2,
+            "per_Ns": 0.5,
+            "per_reads_virus": 85.0,
+            "per_reads_host": 10.0
           }
+
         },
         "SARS2": {
           "sample_id": "SARS2",
@@ -124,8 +114,7 @@
           "consensus": {
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
-            "indel_events": 0, #
-            "ambiguous_bases_pct": 0.10, #TODO QUITAR
+            "indel_events": 0,
             "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "wrong_nt": 0,
@@ -162,21 +151,23 @@
             "concordance": "Exact"
           },
           "reported_qc":"Fail",
+          "qc_match": false,
+
           "metadata_metrics": {
-            "pct_genome_covered_ge_10x": 98.5,
-            "mean_depth": 250.2,
-            "pct_genome_masked_Ns": 0.5,
-            "pct_virus_reads": 85.0,
-            "pct_host_reads": 10.0,
+            "per_genome_greater_10x": 98.5,
+            "depth_of_coverage_value": 250.2,
+            "per_Ns": 0.5,
+            "per_reads_virus": 85.0,
+            "per_reads_host": 10.0,
             "total_variants_reported": 12,
             "variants_with_predicted_effect": 2
           },
           "metadata_metrics_network": {
-            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
-            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
-            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
-            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
-            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
+            "per_genome_greater_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
+            "depth_of_coverage_value": { "median": 220.0, "iqr": [180.0, 300.0] },
+            "per_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
+            "per_reads_virus": { "median": 80.0, "iqr": [60.0, 90.0] },
+            "per_reads_host": { "median": 15.0, "iqr": [5.0, 30.0] },
             "total_variants_reported": { "median": 12, "iqr": [10, 14] },
             "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
           }
@@ -244,7 +235,6 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "indel_events": 0,
-            "ambiguous_bases_pct": 0.10,
             "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "substitutions": 0,
@@ -268,22 +258,25 @@
             "reported_clade": "23A",
             "concordance": "Exact"
           },
-          "reported_qc":"Fail",
+
+          "reported_qc":"Pass",
+          "qc_match": true,
+
           "metadata_metrics": {
-            "pct_genome_covered_ge_10x": 98.5,
-            "mean_depth": 250.2,
-            "pct_genome_masked_Ns": 0.5,
-            "pct_virus_reads": 85.0,
-            "pct_host_reads": 10.0,
+            "per_genome_greater_10x": 98.5,
+            "depth_of_coverage_value": 250.2,
+            "per_Ns": 0.5,
+            "per_reads_virus": 85.0,
+            "per_reads_host": 10.0,
             "total_variants_reported": 12,
             "variants_with_predicted_effect": 2
           },
           "metadata_metrics_network": {
-            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
-            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
-            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
-            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
-            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
+            "per_genome_greater_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
+            "depth_of_coverage_value": { "median": 220.0, "iqr": [180.0, 300.0] },
+            "per_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
+            "per_reads_virus": { "median": 80.0, "iqr": [60.0, 90.0] },
+            "per_reads_host": { "median": 15.0, "iqr": [5.0, 30.0] },
             "total_variants_reported": { "median": 12, "iqr": [10, 14] },
             "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
           }
@@ -308,7 +301,6 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "indel_events": 0,
-            "ambiguous_bases_pct": 0.10,
             "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "substitutions": 0,
@@ -332,22 +324,25 @@
             "reported_clade": "23A",
             "concordance": "Exact"
           },
+
           "reported_qc":"Fail",
+          "qc_match": false,
+
           "metadata_metrics": {
-            "pct_genome_covered_ge_10x": 98.5,
-            "mean_depth": 250.2,
-            "pct_genome_masked_Ns": 0.5,
-            "pct_virus_reads": 85.0,
-            "pct_host_reads": 10.0,
+            "per_genome_greater_10x": 98.5,
+            "depth_of_coverage_value": 250.2,
+            "per_Ns": 0.5,
+            "per_reads_virus": 85.0,
+            "per_reads_host": 10.0,
             "total_variants_reported": 12,
             "variants_with_predicted_effect": 2
           },
           "metadata_metrics_network": {
-            "pct_genome_covered_ge_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
-            "mean_depth": { "median": 220.0, "iqr": [180.0, 300.0] },
-            "pct_genome_masked_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
-            "pct_virus_reads": { "median": 80.0, "iqr": [60.0, 90.0] },
-            "pct_host_reads": { "median": 15.0, "iqr": [5.0, 30.0] },
+            "per_genome_greater_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
+            "depth_of_coverage_value": { "median": 220.0, "iqr": [180.0, 300.0] },
+            "per_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
+            "per_reads_virus": { "median": 80.0, "iqr": [60.0, 90.0] },
+            "per_reads_host": { "median": 15.0, "iqr": [5.0, 30.0] },
             "total_variants_reported": { "median": 12, "iqr": [10, 14] },
             "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
           }

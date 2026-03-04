@@ -1177,10 +1177,10 @@ Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}**
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample consensus reconstruction metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Genome identity (%) | Total discrepancies | Indel events | Ambiguous bases (%) | Genome completeness (%) |
-|---|---:|---:|---:|---:|---:|
+| Sample ID | Genome identity (%) | Total discrepancies | Indel events | Genome completeness (%) |
+|---|---:|---:|---:|---:|
 {% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ s.consensus.total_discrepancies }} | {{ s.consensus.indel_events }} | {{ pct(s.consensus.ambiguous_bases_pct, 2) }} | {{ pct(s.consensus.genome_completeness_pct, 2) }} |
+| {{ sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ s.consensus.total_discrepancies }} | {{ s.consensus.indel_events }} | {{ pct(s.consensus.genome_completeness_pct, 2) }} |
 {% endfor %}
 
 The metrics presented in Table {{ table_counter.value }} summarise overall sequence similarity, discrepancy burden, and completeness relative to the curated gold standard reference.
@@ -1338,27 +1338,27 @@ Figure {{ fig_counter.value }} contextualises the laboratory’s QC decisions re
 
 {% for sample_id, s in comp.samples.items() %}
 {% set m = s.metadata_metrics %}
-
 {% if m %}
+{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("sample_id","equalto",sample_id) | list | first) %}
+
 {% set table_counter.value = table_counter.value + 1 %}
 
 ### {{ sample_id }}
 
 **Table {{ table_counter.value }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}, {{ sample_id }}).**
 
-| Metric | {{ labdata.lab.lab_cod }} | Network median | Network IQR |
+| Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
 |---|---:|---:|---:|
 {% for metric_key, metric_label in {
-  "pct_genome_covered_ge_10x": "% Genome Covered ≥10X",
-  "mean_depth": "Mean Depth of Coverage",
-  "pct_genome_masked_Ns": "% Genome Masked (Ns)",
-  "pct_virus_reads": "% Virus Reads",
-  "pct_host_reads": "% Host Reads",
-  "total_variants_reported": "Total Variants Reported",
-  "variants_with_predicted_effect": "Variants with Predicted Effect"
+  "per_genome_greater_10x": "% Genome > 10x",
+  "depth_of_coverage_value": "Depth of coverage Mean value",
+  "per_Ns": "%Ns",
+  "per_reads_virus": "%Reads virus",
+  "per_reads_host": "%Reads host"
 }.items() %}
 {% if m.get(metric_key) is not none %}
-| {{ metric_label }} | {{ m[metric_key] }} | {{ s.get("metadata_metrics_network", {}).get(metric_key, {}).get("median", "NA") }} | {{ iqr_range(s.get("metadata_metrics_network", {}).get(metric_key, {}).get("iqr"), 2) if s.get("metadata_metrics_network", {}).get(metric_key) else "NA" }} |
+
+| {{ metric_label }} | {{ m[metric_key] }} | {{ ns.[metric_key].median }} | {{ ns.[metric_key].min }} - {{ ns.[metric_key].max }} |
 {% endif %}
 {% endfor %}
 
@@ -1385,5 +1385,5 @@ Panels summarise the distribution of selected quantitative analytical parameters
 
 We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 2026 RELECOV Dry-Lab EQA. The contribution of each laboratory is fundamental to maintaining analytical comparability, reproducibility, and interoperability across the network.
 
-For any questions, technical clarifications, or follow-up discussions regarding this report, please contact the RELECOV WP.6 coordination team at bioinformatica@isciii.es.
+For any questions, technical clarifications, or follow-up discussions regarding this report, please contact the RELECOV WP.6 coordination team at [bioinformatica@isciii.es](mailto:bioinformatica@isciii.es).
 {% endif %}
