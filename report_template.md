@@ -27,39 +27,75 @@
 
 ## Table of Contents
 
-- [Executive Summary](#executive-summary)
-- [1. Introduction](#1-introduction)
-- [2. Scope of the EQA](#2-scope-of-the-eqa)
-- [3. Dataset Design and Sample Selection Criteria](#3-dataset-design-and-sample-selection-criteria)
-  - [3.1. Rationale for Dataset Selection](#31-rationale-for-dataset-selection)
-  - [3.2. SARS-CoV-2 Dataset Selection](#32-sars-cov-2-dataset-selection)
-  - [3.3. Influenza Dataset Selection](#33-influenza-dataset-selection)
-    - [In-Silico Influenza Dataset Construction](#in-silico-influenza-dataset-construction)
-- [4. Methodology of Evaluation](#4-methodology-of-evaluation)
-  - [4.1. Submission Completeness](#41-submission-completeness)
-  - [4.2. Evaluation of Consensus Genome Reconstruction Performance](#42-evaluation-of-consensus-genome-reconstruction-performance)
-  - [4.3. Evaluation of Variant Detection Accuracy](#43-evaluation-of-variant-detectio-accuracy)
-  - [4.4. Evaluation of Lineage, Type and Clade Assignment](#44-evaluation-of-lineage-type-and-clade-assignment)
-  - [4.5. Evaluation of Metadata Completeness and Compliance](#45-evaluation-of-metadata-completeness-and-compliance)
-  - [4.6. Pipeline Benchmarking and Comparative Performance](#46-pipeline-benchmarking-and-comparative-performance)
-- [5. General Results](#5-general-results)
-  - [5.1. Submission Completeness](#51-submission-completeness)
-  - [5.2. Consensus Genome Reconstruction Performance](#52-consensus-genome-reconstruction-performance)
-  - [5.3. Variant Detection Accuracy](#53-variant-detection-accuracy)
-  - [5.4. Lineage, Type and Clade Assignment](#54-lineage-type-and-clade-assignment)
-  - [5.5. Metadata completeness and compliance](#55-metadata-completeness-and-compliance)
-  - [5.6. Pipeline Benchmarking and Comparative Performance](#56-pipeline-benchmarking-and-comparative-performance)
-- [6. Component-specific Results](#6-component-specific-results)
-  - [6.1. SARS1 (SARS-CoV-2, Illumina)](#61-sars1-sars-cov-2-illumina)
-  - [6.2. SARS2 (SARS-CoV-2, Nanopore)](#62-sars2-sars-cov-2-nanopore)
-  - [6.3. FLU1 (Influenza, Illumina)](#63-flu1-influenza-illumina)
-  - [6.4. FLU2 (Influenza, Nanopore)](#64-flu2-influenza-nanopore)
-- [7. Discussion](#7-discussion)
-- [8. Conclusions](#8-conclusions)
-{% if labdata %}
+- [RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network](#relecov-20---consolidation-of-wgs-and-rt-pcr-activities-for-sars-cov-2-in-spain-towards-sustainable-use-and-integration-of-enhanced-infrastructure-and-capacities-in-the-relecov-network)
+        - [Sarai Varona, Enrique Sapena, Pablo Mata, Alejandro Bernabéu, Pau Pascual, Magdalena Matito, Juan Ledesma, Sara Monzón, Isabel Cuesta](#sarai-varona-enrique-sapena-pablo-mata-alejandro-bernabéu-pau-pascual-magdalena-matito-juan-ledesma-sara-monzón-isabel-cuesta)
+  - [Table of Contents](#table-of-contents)
+  - [Executive Summary](#executive-summary)
+  - [1. Introduction](#1-introduction)
+  - [2. Scope of the EQA](#2-scope-of-the-eqa)
+  - [3. Dataset Design and Sample Selection Criteria](#3-dataset-design-and-sample-selection-criteria)
+    - [3.1. Rationale for Dataset Selection](#31-rationale-for-dataset-selection)
+    - [3.2. SARS-CoV-2 Dataset Selection](#32-sars-cov-2-dataset-selection)
+    - [3.3. Influenza Dataset Selection](#33-influenza-dataset-selection)
+      - [In-Silico Influenza Dataset Construction](#in-silico-influenza-dataset-construction)
+  - [4. Methodology of Evaluation](#4-methodology-of-evaluation)
+    - [4.1. Submission Completeness](#41-submission-completeness)
+    - [4.2. Evaluation of Consensus Genome Reconstruction Performance](#42-evaluation-of-consensus-genome-reconstruction-performance)
+    - [4.3. Evaluation of Variant Detection Accuracy](#43-evaluation-of-variant-detection-accuracy)
+      - [4.3.1. SARS-CoV-2](#431-sars-cov-2)
+      - [4.3.2. Influenza](#432-influenza)
+    - [4.4. Evaluation of Lineage, Type and Clade Assignment](#44-evaluation-of-lineage-type-and-clade-assignment)
+      - [SARS-CoV-2](#sars-cov-2)
+      - [Influenza virus](#influenza-virus)
+      - [Both viruses](#both-viruses)
+    - [4.5. Evaluation of Metadata Completeness and Compliance](#45-evaluation-of-metadata-completeness-and-compliance)
+      - [Evaluation of Sample Quality Control Assessment](#evaluation-of-sample-quality-control-assessment)
+    - [4.6. Pipeline Benchmarking and Comparative Performance](#46-pipeline-benchmarking-and-comparative-performance)
+  - [5. General Results](#5-general-results)
+    - [5.1. Submission Completeness](#51-submission-completeness)
+    - [5.2. Consensus Genome Reconstruction Performance](#52-consensus-genome-reconstruction-performance)
+    - [5.3. Variant Detection Accuracy](#53-variant-detection-accuracy)
+      - [5.3.1. SARS-CoV-2](#531-sars-cov-2)
+      - [5.3.2. Influenza virus](#532-influenza-virus)
+    - [5.4. Lineage, Type and Clade Assignment](#54-lineage-type-and-clade-assignment)
+    - [5.5. Metadata completeness and compliance](#55-metadata-completeness-and-compliance)
+      - [Overall Completeness](#overall-completeness)
+      - [Reporting of Analytical Parameters](#reporting-of-analytical-parameters)
+      - [Controlled Vocabulary Compliance](#controlled-vocabulary-compliance)
+      - [Sample Quality Control Assessment](#sample-quality-control-assessment)
+    - [5.6. Pipeline Benchmarking and Comparative Performance](#56-pipeline-benchmarking-and-comparative-performance)
+      - [Diversity of Analytical Workflows](#diversity-of-analytical-workflows)
+  - [6. Component-specific Results](#6-component-specific-results)
+    - [6.{{ loop.index }}. {{ comp\_code }} ({{ comp\_net.name }})](#6-loopindex---comp_code---comp_netname-)
+      - [6.{{ loop.index }}.1. Participation and Submissions](#6-loopindex-1-participation-and-submissions)
+      - [6.{{ loop.index }}.2. Consensus Genome Reconstruction Performance](#6-loopindex-2-consensus-genome-reconstruction-performance)
+      - [6.{{ loop.index }}.3. Variant Detection Accuracy](#6-loopindex-3-variant-detection-accuracy)
+      - [6.{{ loop.index }}.4. Lineage, Type and Clade Assignment](#6-loopindex-4-lineage-type-and-clade-assignment)
+      - [6.{{ loop.index }}.5. Sample Quality Control Assessment](#6-loopindex-5-sample-quality-control-assessment)
+      - [6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance](#6-loopindex-6-pipeline-benchmarking-and-comparative-performance)
+  - [7. Discussion](#7-discussion)
+    - [7.1. Overall Analytical Robustness](#71-overall-analytical-robustness)
+    - [7.2. Variant Detection Accuracy](#72-variant-detection-accuracy)
+    - [7.3. Classification Accuracy and Database Versioning](#73-classification-accuracy-and-database-versioning)
+    - [7.4. Workflow Diversity and Standardisation Balance](#74-workflow-diversity-and-standardisation-balance)
+    - [7.5. Implications for RELECOV 2.0](#75-implications-for-relecov-20)
+  - [8. Conclusions](#8-conclusions)
 - [9. Individual Laboratory Technical Report](#9-individual-laboratory-technical-report)
+  - [Laboratory: {{ labdata.lab.laboratory\_name }} ({{ labdata.lab.lab\_cod }})](#laboratory--labdatalablaboratory_name---labdatalablab_cod-)
   - [9.1. Participation Overview](#91-participation-overview)
-{% endif %}
+- [9.{{ loop.index + 1 }}. {{ comp\_code }} ({{ comp.display\_name }})](#9-loopindex--1---comp_code---compdisplay_name-)
+  - [9.{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance](#9-loopindex--1-1-consensus-genome-reconstruction-performance)
+    - [Per-sample summary metrics](#per-sample-summary-metrics)
+    - [Discrepancy type breakdown per sample](#discrepancy-type-breakdown-per-sample)
+  - [9.{{ loop.index + 1 }}.2. Variant Detection Performance](#9-loopindex--1-2-variant-detection-performance)
+  - [9.{{ loop.index + 1 }}.3. Lineage, Type and Clade Assignment](#9-loopindex--1-3-lineage-type-and-clade-assignment)
+    - [Classification error counts](#classification-error-counts)
+  - [9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance](#9-loopindex--1-4-pipeline-benchmarking-and-comparative-performance)
+  - [9.{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)](#9-loopindex--1-5-metadata-derived-analytical-metrics-per-sample)
+      - [Sample Quality Control Assessment](#sample-quality-control-assessment-1)
+      - [Other metrics](#other-metrics)
+    - [{{ sample\_id }}](#-sample_id-)
+  - [Acknowledgement](#acknowledgement)
 
 ## Executive Summary
 
@@ -179,6 +215,7 @@ This design ensures that evaluation reflects the analytical demands of the RELEC
 #### In-Silico Influenza Dataset Construction
 
 The following seasonal clades were selected as reference backbones:
+
 - H1N1 clade D.3.1.1
 - H1N1 clade C.1.9.3
 - H3N2 clade K
@@ -248,6 +285,8 @@ The evaluation was structured into five independent analytical domains:
 - Pipeline Benchmarking and Comparative Performance
 
 Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking. Participation metrics were calculated at both component and laboratory level.
+
+All the scripts and templates used for evaluation and to generate reports and plots is publicly available [in github](https://github.com/BU-ISCIII/relecov_2026_drylab_eqa/blob/main/report_template.md)
 
 ### 4.1. Submission Completeness
 
@@ -415,17 +454,12 @@ $$
 
 Fields were evaluated for: (TODO revisar si es verdad)
 
-- Completion
-- Compliance with controlled vocabularies
+- Completion: Each sample has a list of minimum **recomended** fields, based on the sample characteristics. For each component/sample/lab the total number of completed minimum **recomended** fields was evaluated. Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
+- Compliance with controlled vocabularies. Metadata entries were considered non-compliant when:
+  - Controlled vocabulary options were bypassed
+  - Free-text substitutions replaced defined values
+  - Inconsistent analytical parameter reporting was observed
 - Valid file path reporting
-
-Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
-
-Metadata entries were considered non-compliant when:
-
-- Controlled vocabulary options were bypassed
-- Free-text substitutions replaced defined values
-- Inconsistent analytical parameter reporting was observed
 
 This evaluation allowed quantification of metadata standardisation and reproducibility readiness across the network.
 
@@ -510,12 +544,14 @@ Submission rates were consistent across components, with minor variability refle
 Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Overall performance was high for Illumina-based components (TODO verificar que es verdad), with a median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} for both Illumina components (TODO verificar que es veredad) and median genome identity of {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} for Nanopore components. For Nanopore-based datasets, greater inter-laboratory variability was observed (TODO verificar si es verdad).
 
 The main sources of variation included: (TODO verificar si es verdad)
+
 - Differences in minimum coverage thresholds
 - Handling of homopolymeric regions
 - Indel filtering strategies
 - Ambiguity and N masking policies
 
 The most common discrepancies were: (TODO verificar si es verdad)
+
 - Excess Ns in low-coverage regions
 - Unfiltered indels in homopolymer stretches.
 
@@ -924,14 +960,14 @@ Laboratory-reported sample QC evaluations (Pass/Fail) for the {{ comp_code }} co
 
 Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pct) }}, corresponding to {{ comp_net.qc.matches }} Matches and {{ comp_net.qc.discrepancies }} Discrepancies across {{ comp_net.qc.total_evaluations }} evaluated QC decisions.
 
-% set table_counter.value = table_counter.value + 1 %}
+{% set table_counter.value = table_counter.value + 1 %}
 **_Table {{ table_counter.value }}_. Sample-level QC concordance for {{ comp_code }}.**
 
-| Sample ID |	Gold standard QC	| % Match |	# Matches	| # Discrepancies	| Total evaluations |
+| Sample ID | Gold standard QC | % Match | # Matches | # Discrepancies | Total evaluations |
 |---|---:|---:|---:|---:|---:|
-{% for s in comp_net.qc.samples %}					
-| {{ s.sample_id }} |	{{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }}	| {{ s.matches }}	| {{ s.discrepancies }}	| {{ s.total_evaluations }} |
-{% endfor %}					
+{% for s in comp_net.qc.samples %}
+| {{ s.sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
+{% endfor %}
 
 Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample, relative to the gold standard definition.
 
@@ -1098,26 +1134,39 @@ Analysed components:
 - {{ comp_code }} ({{ comp_info.name }}): {{ "✔" if comp_code in labdata.components.keys() else "✖" }}
 {% endfor %}
 
+Regarding general metadata completeness:
+
+- Metadata completeness for **{{ labdata.lab.lab_cod }}**: **{{ pct(labdata.metadata.completeness_pct) }}**
+- Network median metadata completeness: **{{ pct(general.metadata_completeness.median_pct) }}**  
+- Network range: **{{ pct(general.metadata_completeness.min_pct) }}–{{ pct(general.metadata_completeness.max_pct) }}**
+
+{% if labdata.metadata.primary_incompleteness_drivers %}
+Primary contributors to incompleteness for {{ labdata.lab.lab_cod }}:
+{% for d in labdata.metadata.primary_incompleteness_drivers %}
+- {{ d }}
+{% endfor %}
+{% endif %}
+
 {% for comp_code, comp in labdata.components.items() %}
 
 # 9.{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})
 
 The laboratory submitted results for the **{{ comp_code }}** component from {{ comp.platform }} platform.
 
-Submitted outputs (analysed components):
+Number of ssubmitted outputs:
 
-- `.fasta`: **{{ comp.fasta_submitted }} / {{ comp.fasta_expected }}**
-- `.vcf`: **{{ comp.vcf_submitted }} / {{ comp.vcf_expected }}**
+- `.fasta`: **{{ comp.fasta_submitted }} out of {{ comp.fasta_expected }} minimum expected**
+- `.vcf`: **{{ comp.vcf_submitted }} out of {{ comp.vcf_expected }} minimum expected**
 
-Regarding metadata completeness:
+Regarding metadata completeness for {{ comp_code }}:
 
-- Metadata completeness for **{{ labdata.lab.lab_cod }}**: **{{ pct(labdata.lab_overview.metadata.completeness_pct) }}**
-- Network median metadata completeness: **{{ pct(general.metadata_completeness.median_pct) }}**  
-- Network range: **{{ pct(general.metadata_completeness.min_pct) }}–{{ pct(general.metadata_completeness.max_pct) }}**
+- Metadata completeness for **{{ comp.lab.lab_cod }}**: **{{ pct(comp.metadata.completeness_pct) }}**
+- Network median metadata completeness: **{{ pct(general.components[comp_code].metadata_completeness_median) }}**  
+- Network range: **{{ pct(general.components[comp_code].metadata_completeness_min_pct) }}–{{ pct(general.components[comp_code].metadata_completeness_max_pct) }}**
 
-{% if labdata.lab_overview.metadata.primary_incompleteness_drivers %}
-Primary contributors to incompleteness:
-{% for d in labdata.lab_overview.metadata.primary_incompleteness_drivers %}
+{% if comp.metadata.primary_incompleteness_drivers %}
+Primary contributors to incompleteness for {{ comp_code }}:
+{% for d in comp.metadata.primary_incompleteness_drivers %}
 - {{ d }}
 {% endfor %}
 {% endif %}
@@ -1134,7 +1183,7 @@ Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}**
 | Sample ID | Genome identity (%) | Total discrepancies | Indel events | Ambiguous bases (%) | Genome completeness (%) |
 |---|---:|---:|---:|---:|---:|
 {% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ num(s.consensus.genome_identity_pct, 4) }} | {{ s.consensus.total_discrepancies }} | {{ s.consensus.indel_events }} | {{ num(s.consensus.ambiguous_bases_pct, 2) }} | {{ num(s.consensus.genome_completeness_pct, 2) }} |
+| {{ sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ s.consensus.total_discrepancies }} | {{ s.consensus.indel_events }} | {{ pct(s.consensus.ambiguous_bases_pct, 2) }} | {{ pct(s.consensus.genome_completeness_pct, 2) }} |
 {% endfor %}
 
 The metrics presented in Table {{ table_counter.value }} summarise overall sequence similarity, discrepancy burden, and completeness relative to the curated gold standard reference.
@@ -1174,7 +1223,7 @@ Variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_cod }}** were comp
 | Sample ID | Sensitivity (%) | Precision (%) | True Positives (TP) | False Positives (FP) | False Negatives (FN) |
 |---|---:|---:|---:|---:|---:|
 {% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ num(s.variants.sensitivity_pct, 2) }} | {{ num(s.variants.precision_pct, 2) }} | {{ s.variants.tp }} | {{ s.variants.fp }} | {{ s.variants.fn }} |
+| {{ sample_id }} | {{ pct(s.variants.sensitivity_pct, 2) }} | {{ pct(s.variants.precision_pct, 2) }} | {{ s.variants.tp }} | {{ s.variants.fp }} | {{ s.variants.fn }} |
 {% endfor %}
 
 The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set, including sensitivity, precision, and discrepancy counts.
@@ -1248,8 +1297,8 @@ Positioning was evaluated based on two primary performance indicators:
 
 | Metric | {{ labdata.lab.lab_cod }} workflow | Network median | Network IQR |
 |---|---:|---:|---:|
-| Median genome identity (%) | {{ num(comp.workflow_positioning.median_genome_identity_pct, 4) }} | {{ num(comp.workflow_positioning.network_median_identity_pct, 4) }} | {{ iqr_range(comp.workflow_positioning.network_iqr_identity_pct, 4) }} |
-| Exact classification concordance (%) | {{ num(comp.workflow_positioning.exact_classification_concordance_pct, 2) }} | {{ num(comp.workflow_positioning.network_median_class_pct, 2) }} | {{ iqr_range(comp.workflow_positioning.network_iqr_class_pct, 2) }} |
+| Median genome identity (%) | {{ pct(comp.workflow_positioning.median_genome_identity_pct, 4) }} | {{ pct(comp.workflow_positioning.network_median_identity_pct, 4) }} | {{ iqr_range(comp.workflow_positioning.network_iqr_identity_pct, 4) }} |
+| Exact classification concordance (%) | {{ pct(comp.workflow_positioning.exact_classification_concordance_pct, 2) }} | {{ pct(comp.workflow_positioning.network_median_class_pct, 2) }} | {{ iqr_range(comp.workflow_positioning.network_iqr_class_pct, 2) }} |
 
 Table {{ table_counter.value }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. Network medians and interquartile ranges (IQR) provide a reference distribution against which the positioning of the declared workflow can be interpreted.
 

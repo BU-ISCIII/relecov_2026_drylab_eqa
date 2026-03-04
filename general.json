@@ -96,6 +96,8 @@
       "total_fasta": 30,
       "total_vcf": 26,
       "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,
 
       "consensus": {
         "median_identity": 99.92,
@@ -245,7 +247,9 @@
       "total_labs": 24,
       "total_fasta": 24,
       "total_vcf": 20,
-      "metadata_completeness_median": 85.0,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,
       "consensus": {
         "median_identity": 99.10, 
         "median_discrepancies": 10, 
@@ -315,7 +319,10 @@
       "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/SARS2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/SARS2/pipeline_metric_boxplots_by_pipeline.png" }
     },
 
-    "FLU1": { "name": "Influenza, Illumina", "total_labs": 18, "total_fasta": 18, "total_vcf": 14, "metadata_completeness_median": 80.0,
+    "FLU1": { "name": "Influenza, Illumina", "total_labs": 18, "total_fasta": 18, "total_vcf": 14,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,
       "consensus": { "median_identity": 99.50, "median_discrepancies": 5, "min_discrepancies": 0, "max_discrepancies": 80, "incorrect_nt_pct": 30.0, "excess_ambiguous_pct": 55.0, "indels_pct": 15.0,
         "most_frequent_discrepancy_pattern": "excess Ns in segment dropout samples",
         "samples": [
@@ -375,7 +382,10 @@
       "pipeline": { "total_number": 5, "configurations": [], "fig_scatter_positioning": "figures/FLU1/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU1/pipeline_metric_boxplots_by_pipeline.png" }
     },
 
-    "FLU2": { "name": "Influenza, Nanopore", "total_labs": 16, "total_fasta": 16, "total_vcf": 12, "metadata_completeness_median": 78.0,
+    "FLU2": { "name": "Influenza, Nanopore", "total_labs": 16, "total_fasta": 16, "total_vcf": 12,
+      "metadata_completeness_median": 90.0,
+      "metadata_completeness_max_pct": 100,
+      "metadata_completeness_min_pct": 15,    
       "consensus": { "median_identity": 98.80, "median_discrepancies": 20, "min_discrepancies": 0, "max_discrepancies": 200, "incorrect_nt_pct": 25.0, "excess_ambiguous_pct": 50.0, "indels_pct": 25.0,
         "most_frequent_discrepancy_pattern": "indel errors in homopolymer regions",
                 "samples": [
