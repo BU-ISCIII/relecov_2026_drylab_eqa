@@ -332,11 +332,11 @@ All submitted consensus sequences (.fasta) were:
 
 Differences between submitted sequences and gold standard sequences were categorised into the following classes: (TODO verificar que es verdad)
 
-- **Incorrect nucleotide substitution**: A nucleotide different from the allowed reference or ambiguity code.
-- **Excess ambiguity**: Ambiguity codes introduced where a defined nucleotide was expected.
-- **Missing ambiguity**: Defined nucleotide provided where an ambiguity code was expected.
-- **Excess N stretch**: Continuous region of Ns where defined bases were expected.
-- **Missing N stretch**: Defined bases provided where Ns were expected.
+- **Wrong nucleotide**: A nucleotide different from the allowed reference or ambiguity code.
+- **Ambiguity instead of nucleotide**: Ambiguity codes introduced where a defined nucleotide was expected.
+- **Nucleotide instead of ambiguity**: Defined nucleotide provided where an ambiguity code was expected.
+- **Stretch of Ns instead of nucleotide stretch**: Continuous region of Ns where defined bases were expected.
+- **Nucleotide stretch instead of stretch of Ns**: Defined bases provided where Ns were expected.
 - **Insertion relative to gold standard**
 - **Deletion relative to gold standard**
 

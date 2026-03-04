@@ -45,6 +45,8 @@
           "fastq_files": ["SARS1_R1.fastq.gz", "SARS1_R2.fastq.gz"],
           "expected_lineage": null,
           "expected_clade": null,
+          "filled_lineage": "D1",
+          "lineage_match": "Exact",
           "platform": "Illumina",
           "enrichment_strategy": "Amplicon",
           "primer_scheme": "ARTIC",
@@ -121,23 +123,35 @@
           "consensus": {
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
-            "indel_events": 0,
-            "ambiguous_bases_pct": 0.10,
+            "indel_events": 0, #
+            "ambiguous_bases_pct": 0.10, #TODO QUITAR
             "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
-              "substitutions": 0,
-              "excess_Ns": 1,
-              "missing_Ns": 0,
+              "wrong_nt": 0,
+              "ambiguity2nt": 0,
+              "nt2ambiguity": 0,
+              "ns2nt": 1,
+              "nt2ns": 0,
               "insertions": 0,
               "deletions": 0
             }
           },
           "variants": {
-            "sensitivity_pct": 99.00,
-            "precision_pct": 99.50,
-            "tp": 12,
-            "fp": 0,
-            "fn": 0
+            "total_variants_metadata": #variantes Hfreq, variantes lowfreq
+            "variants_with_predicted_effect_reported": 2,
+            "variants_with_predicted_effect_metadata": 3,
+            "total_variants_reported": 12,
+            "discrepancies_in_reported_variants": true,
+            "discrepancies_in_reported_variants_effect": false,
+            "discrepancy_breakdown": {
+              "wrong_nt": 0,
+              "ambiguity2nt": 0,
+              "nt2ambiguity": 0,
+              "ns2nt": 1,
+              "nt2ns": 0,
+              "insertions": 0,
+              "deletions": 0
+            }
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
