@@ -23,7 +23,7 @@ It also creates samples_files_map.tsv with info extracted from the JSON file
 
 export BASE_RESULTS_FOLDER=../RAW/
 export BASE_RESULTS_FOlDER_RP=$( realpath ../ )
-validated_metadata_lab_file=$( find $BASE_RESULTS_FOLDER -name "*.json" )
+validated_metadata_lab_file=$( find $BASE_RESULTS_FOLDER -name "validated_*.json" )
 
 # REMOVE PREVIOUS FOLDERS
 rm -r 00-* sorted_vcf annotated_vcf queried_vcf snpsift
@@ -71,6 +71,8 @@ while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcall
 
     if [ -z $vcf_files ]; then echo "[red]VCF files not found for sample " $sample_id;continue;fi
     IFS=',' read -r -a ref_array <<< "$reference"
+    if [[ "$sample_id" == *"FLU"* ]]; then continue; fi
+
     IFS=',' read -r -a vcf_files_array <<< "$vcf_files"
     i=1
     for vcf in ${vcf_files_array[@]}; do
@@ -125,6 +127,7 @@ IFS=',' read -r -a ref_array <<< "$reference"
         i=$((i+1))
     done
 done < samples_files_map.tsv
+
 ## Create an aux script to re-write the SNPEFF step using the file
 echo "while IFS=$'\t' read -r vcf_filename reference; do; sed -E -i \"/${vcf_filename}/ s/g (.+)( +-config)/g ${reference}\2/g\" _03_snpeff_annotate.sh; done < ../DOC/vcf_to_ref.tsv" >> _99_rewrite_vcf_refs.sh
 
@@ -138,10 +141,11 @@ mkdir snpsift
 while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
 
 if [ -z $consensus_fasta_file ]; then continue;fi
+if [[ "$sample_id" == *"FLU"* ]]; then continue; fi
 
 i=1
 IFS=',' read -r -a vcf_files_array <<< "$vcf_files"
-IFS=',' read -r -a reference_array <<< "$reference"
+reference="NC_045512.2"
 for vcf in ${vcf_files_array[@]}; do
 
 echo \
@@ -172,7 +176,7 @@ echo \
     singularity exec -B ${BASE_RESULTS_FOlDER_RP} -B /data/ucct/bi/references/refgenie/ \
     /data/ucct/bi/pipelines/singularity-images/snpeff:5.2--hdfd78af_1.1 \
     snpEff -Xmx36g \
-    ${reference_array[${i} - 1]} \
+    ${reference} \
     -config ${BASE_RESULTS_FOlDER_RP}/DOC/snpeff.config \
     -dataDir ${BASE_RESULTS_FOlDER_RP}/DOC/snpeff_db \
     sorted_vcf/${sample_id}_${i}.vcf.gz \

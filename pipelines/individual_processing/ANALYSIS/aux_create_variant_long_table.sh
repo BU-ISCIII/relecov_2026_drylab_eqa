@@ -19,6 +19,7 @@ done < samples_files_map.tsv
 headers=$( head -n1 variants_long_table.csv )
 
 while IFS=$'\t' read -r sample_id org sequencing; do
+    if [[ "$sample_id" == *"FLU"* ]]; then continue; fi
     if ! [ -f "variant_long_table/${org}_${sequencing}_variants_long_table.csv" ]; then echo $headers >> variant_long_table/"${org}_${sequencing}_variants_long_table.csv"; fi
     escaped=$(printf '%s\n' "$sample_id" | sed 's/[][\/.^$*+?(){}|]/\\&/g')
     grep "${sample_id}_" variants_long_table.csv | sed -E "s/${escaped}_[0-9]+/${sample_id}/g" >> "variant_long_table/${org}_${sequencing}_variants_long_table.csv"
