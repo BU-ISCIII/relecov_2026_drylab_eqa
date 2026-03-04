@@ -15,13 +15,10 @@ BASE_DIR = Path.cwd()
 SARS_DIR = BASE_DIR / "ALIGNMENTS_SARS"
 FLU_DIR = BASE_DIR / "ALIGNMENTS_FLU"  
 FASTA_ANALYSIS = BASE_DIR / "FASTA_ANALYSIS_REPORTS"
-INDIVIDUAL_REPORTS = FASTA_ANALYSIS / "informes_individuales" 
+INDIVIDUAL_REPORTS = FASTA_ANALYSIS 
 
 FASTA_ANALYSIS.mkdir(exist_ok=True)
 INDIVIDUAL_REPORTS.mkdir(exist_ok=True)
-
-OUTPUT_SARS = FASTA_ANALYSIS / "informe_global_SARS-CoV-2_2026_fasta_analysis.csv"
-OUTPUT_FLU = FASTA_ANALYSIS / "informe_global_INFLUENZA_2026_fasta_analysis.csv"  
 
 # ==========================================================
 # FUNCIONES
@@ -202,19 +199,6 @@ output_rows.sort(key=sort_key)
 # ESCRIBIR CSV SARS
 # ==========================================================
 
-with open(OUTPUT_SARS, "w", newline="") as out_csv:
-    writer = csv.writer(out_csv)
-    writer.writerow([
-        "COD_LAB",
-        "EQA",
-        "Sample_ID",
-        "POS (NC_045512.2)",
-        "Gold_LOW",
-        "Sample",
-        "Resultado"
-        ])
-    writer.writerows(output_rows)
-
 # Guardar informes individuales SARS
 rows_by_lab = defaultdict(list)
 for row in output_rows:
@@ -334,19 +318,6 @@ output_rows_flu.sort(key=sort_key)
 # ==========================================================
 # ESCRIBIR CSV FLU
 # ==========================================================
-
-with open(OUTPUT_FLU, "w", newline="") as out_csv:
-    writer = csv.writer(out_csv)
-    writer.writerow([
-        "COD_LAB",
-        "EQA",
-        "Sample_ID",
-        "POS",
-        "Gold",
-        "Sample",
-        "Resultado"
-        ])
-    writer.writerows(output_rows_flu)
 
 # Guardar informes individuales FLU
 rows_by_lab_flu = defaultdict(list)
