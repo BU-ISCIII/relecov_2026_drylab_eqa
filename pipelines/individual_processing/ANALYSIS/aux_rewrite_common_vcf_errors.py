@@ -115,7 +115,16 @@ class VCFFile:
                         "Type": "Integer",
                         "Description": '"Total Depth"'
                     }
-                pass
+                elif "DP" not in self.format_keys:
+                    format_dict = {
+                        "ID": "DP",
+                        "Number": "1",
+                        "Type": "Integer",
+                        "Description": '"Total Depth"'
+                    }
+                    print("WARNING: DP value was not found - Setting it to '0'")
+                    values.append(["0"] * len(self.data))
+
             case "REF_DP":
                 format_dict = {
                         "ID": "REF_DP",
@@ -127,7 +136,11 @@ class VCFFile:
                     # Nanopore, Allelic Depths (Ref base)
                     for index, row in self.data.iterrows():
                         index_AD = row["FORMAT"].split(":").index("AD")
-                        values.append(row[self.sample_values_column].split(":")[index_AD].split(",")[0])
+                        value = row[self.sample_values_column].split(":")[index_AD].split(",")[0]
+                        if value == ".":
+                            # e.g. Octopus defaults missing values in haploid samples to missing, or '.'
+                            value == "0"
+                        values.append(value)
                 elif "DP" in self.info_keys and "ALT_DP" in self.format_keys:
                     # ORDER MATTERS - ASSUMING DP is already inserted
                     for index, row in self.data.iterrows():
@@ -141,25 +154,49 @@ class VCFFile:
                         dp4 = next(filter(lambda x: x.startswith("DP4="), row_info))
                         dp4_values = [int(value) for value in dp4.split("=")[1].split(",")[0:2]]
                         values.append(str(sum(dp4_values)))
+                elif "RO" in self.info_keys:
+                    for index, row in self.data.iterrows():
+                        row_info = row['INFO'].split(";")
+                        dep = next(filter(lambda x: x.startswith("RO="), row_info))
+                        dep_values = dep.split("=")[1]
+                        values.append(dep_values)
+                else:
+                    print("WARNING: REF_DP value was not found - Setting it to '0'")
+                    values.append(["0"] * len(self.data))
+
 
             case "ALT_DP":
                 if "AD" in self.format_keys:
                     # Nanopore, Allelic Depths (Alternate base)
                     for index, row in self.data.iterrows():
                         index_AD = row["FORMAT"].split(":").index("AD")
-                        values.append(row[self.sample_values_column].split(":")[index_AD].split(",")[1])
+                        value = row[self.sample_values_column].split(":")[index_AD].split(",")[1]
+                        if value == ".":
+                            # e.g. Octopus defaults missing values in haploid samples to missing, or '.'
+                            value == "0"
+                        values.append(value)
                 elif "DP4" in self.info_keys:
                     for index, row in self.data.iterrows():
                         row_info = row['INFO'].split(";")
                         dp4 = next(filter(lambda x: x.startswith("DP4="), row_info))
                         dp4_values = [int(value) for value in dp4.split("=")[1].split(",")[2:4]]
                         values.append(str(sum(dp4_values)))
+                elif "AO" in self.info_keys:
+                    for index, row in self.data.iterrows():
+                        row_info = row['INFO'].split(";")
+                        dep = next(filter(lambda x: x.startswith("AO="), row_info))
+                        dep_values = dep.split("=")[1]
+                        values.append(dep_values)
+                else:
+                    print("WARNING: ALT_DP value was not found - Setting it to '0'")
+                    values.append(["0"] * len(self.data))
                 format_dict = {
                         "ID": "ALT_DP",
                         "Number": "1",
                         "Type": "Integer",
                         "Description": '"Depth of alternate base"'
                     }
+                
         return format_dict, values
     
     def replace_NA_values(self, replacement):
