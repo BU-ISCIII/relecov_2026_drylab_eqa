@@ -338,7 +338,7 @@ All submitted consensus sequences (.fasta) were:
 - Aligned against the corresponding gold standard sequence using [Mafft v7.475](https://mafft.cbrc.jp/alignment/software/).
 - Compared position-by-position relative to the declared reference genome coordinate system.
 
-Differences between submitted sequences and gold standard sequences were categorised into the following classes: (TODO verificar que es verdad)
+Differences between submitted sequences and gold standard sequences were categorised into the following classes:
 
 - **Wrong nucleotide**: A nucleotide different from the allowed reference or ambiguity code.
 - **Ambiguity instead of nucleotide**: Ambiguity codes introduced where a defined nucleotide was expected.
@@ -353,41 +353,11 @@ Each insertion, deletion, or contiguous stretch of Ns was counted as a single ev
 For each laboratory and sample, the following metrics were calculated: (TODO verificar que es verdad)
 
 - Total number of nucleotide discrepancies
-- Percentage genome identity. Calculated as the proportion of identical positions over the aligned genome length excluding ambiguous bases (specify).
+- Percentage genome identity. Calculated as the proportion of identical positions over the aligned genome length excluding ambiguous bases (specify). (TODO verificar)
 
 The proportional contribution of each discrepancy category was calculated relative to the total number of discrepancies observed per component.
 
 ### 4.3. Evaluation of Variant Detection Accuracy
-
-#### 4.3.1. SARS-CoV-2
-
-A curated reference variant set was generated for each sample. Variant positions were standardized relative to a defined coordinate system referred to the references used by Nextclade.
-
-Submitted .vcf files were: (TODO verificar si es verdad)
-
-- Converted to a standardised long table format for coordinate comparison
-- Compared position-by-position with the reference variant set
-
-Each reported variant was categorised as: (TODO verificar si es verdad)
-
-- True Positive (TP): Variant correctly identified.
-- False Positive (FP): Variant reported but absent in gold standard.
-- False Negative (FN): Variant present in gold standard but not reported.
-
-For each laboratory and sample we calculated the following performance metrics: (TODO verificar si es verdad)
-
-- Sensitivity = TP / (TP + FN)
-- Precision = TP / (TP + FP)
-- Total variant discrepancies were calculated as FP + FN.
-
-Comparative analyses were performed to assess the influence of: (TODO verificar si es verdad)
-
-- Allele frequency thresholds
-- Minimum coverage thresholds
-- Variant filtering criteria
-- Reference genome selection
-
-#### 4.3.2. Influenza
 
 For influenza virus datasets, direct position-by-position comparison of reported variants against the curated reference variant set was not feasible under the same framework applied to SARS-CoV-2.
 
@@ -397,12 +367,44 @@ Unlike SARS-CoV-2, where laboratories predominantly use a shared and globally st
 - Segment boundaries and numbering schemes varied.
 - Insertions and deletions were represented inconsistently across reference backbones.
 
-This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artefacts and interpretation bias. Therefore, a strict True Positive / False Positive / False Negative comparison framework was not applied to influenza variant datasets. Instead, influenza variant evaluation focused on descriptive and structural reporting metrics, including:
+This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artefacts and interpretation bias.
+
+#### 4.3.1. SARS-CoV-2
+
+A curated reference variant set was generated for each SARS-CoV-2 sample. Variant positions were standardized relative to a defined coordinate system referred to the references used by Nextclade.
+
+Submitted .vcf files were: (TODO verificar si es verdad)
+
+- Converted to a standardised long table format for coordinate comparison
+- Compared position-by-position with the reference variant set
+
+Differences between submitted variants and reference variant set were categorised into the following classes:
+
+- **Wrong nucleotide**: A nucleotide different from the allowed reference or ambiguity code.
+- **Insertion relative to gold standard**
+- **Deletion relative to gold standard**
+
+Each insertion, deletion, or contiguous stretch of Ns was counted as a single event.
+
+For each laboratory and sample, the total number of nucleotide discrepancies was calculated.
+
+The proportional contribution of each discrepancy category was calculated relative to the total number of discrepancies observed per component.
+
+Comparative analyses were performed to assess the influence of: (TODO verificar si es verdad)
+
+- Allele frequency thresholds
+- Minimum coverage thresholds
+- Variant filtering criteria
+- Reference genome selection
+
+#### 4.3.2. SARS-CoV-2 Influenza
+
+SARS-CoV-2 and Influenza variant evaluation also included escriptive and structural reporting metrics, including:
 
 - Number of laboratories reporting high-frequency variants.
 - Number of laboratories reporting both high- and low-frequency variants.
 - Number of laboratories reporting exclusively low-frequency variants.
-- Total number of distinct reference genomes employed for variant calling, disaggregated by influenza segment.
+- Total number of distinct reference genomes employed for variant calling, disaggregated by influenza segment in the case of influenza.
 
 These metrics provide insight into:
 
@@ -411,7 +413,7 @@ These metrics provide insight into:
 - Diversity of reference genome usage.
 - Degree of methodological standardisation within the network.
 
-This alternative evaluation approach allows characterisation of variant reporting behaviour in influenza while acknowledging the inherent reference-dependent complexity of segmented viral genomes.
+This evaluation approach allows characterisation of variant reporting behaviour while acknowledging the need of harmonization in inherent reference-dependent analyses.
 
 ### 4.4. Evaluation of Lineage, Subtype and Clade Assignment
 
@@ -578,7 +580,7 @@ Variant detection accuracy was evaluated following the methodological framework 
 
 #### 5.3.1. SARS-CoV-2
 
-For SARS-CoV-2 compoents (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ general.general_results.variants.median_discrepancy_illumina }} for Illumina component and a median number of {{ general.general_results.variants.median_discrepancy_nanopore }} for Nanopore component, discrepancies relative to the reference variant set.
+For SARS-CoV-2 compoents (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ general.general_results.sars_variants.median_discrepancy_illumina }} for Illumina component and a median number of {{ general.general_results.sars_variants.median_discrepancy_nanopore }} for Nanopore component, discrepancies relative to the reference variant set.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -592,6 +594,29 @@ Illumina-based analysis generally demonstrated higher concordance and lower fals
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
 ![variant_summary](./example_images/variant_summary.png)
+
+Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
+
+- {{ general.general_results.sars_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants.
+- {{ general.general_results.sars_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
+- {{ general.general_results.sars_variants.no_low_freq_pct }} reported only high-frequency variants.
+
+Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value }} summarizes the distribution of variant reporting practices across participating laboratories for SARS-CoV-2 components.
+
+{{ render_figure(
+general.figures.sars_variant_reporting_summary,
+"SARS-CoV-2 variant reporting practices across the network."
+) }}
+
+![influenza_variant_reporting_summary](./example_images/influenza_variant_reporting_summary.png)
+
+> Como esta pero para SARS
+
+**_Figure {{ fig_counter.value }}_. SARS-CoV-2 variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
 #### 5.3.2. Influenza virus
 
@@ -804,10 +829,10 @@ Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.cons
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level consensus reconstruction metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median genome identity (%) | Median discrepancies | IQR discrepancies |
+| Sample ID | Median genome identity (%) | Median discrepancies | Discrepancies min-max |
 |---|---:|---:|---:|
 {% for s in comp_net.consensus.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.iqr_discrepancies[0] }}–{{ s.iqr_discrepancies[1] }} |
+| {{ s.sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
@@ -822,6 +847,29 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level consensus discrepancy types per sample for {{ comp_code }}.**
+
+| Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for s in comp_net.consensus.samples %}
+| {{ s.sample_id }} | {{ s.substitutions }} | {{ s.excess_Ns }} | {{ s.missing_Ns }} | {{ s.insertions }} | {{ s.deletions }}
+{% endfor %}
+
+Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }}.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.consensus.fig_discrepancies_boxplot_by_sample,
+  "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
+) }}
+
+![classification_summary](./example_images/classification_summary.png)
+
+> Esta pero desagregada por tipo de discrepancia
+
+**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+
 Discrepancy type composition (aggregated across all submitted consensus sequences for {{ comp_code }}):
 
 - Incorrect substitutions: {{ pct(comp_net.consensus.incorrect_nt_pct) }} of discrepancies  
@@ -831,13 +879,13 @@ Discrepancy type composition (aggregated across all submitted consensus sequence
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
 
-| Discrepancy type | Network median per sample | Network IQR per sample |
+| Discrepancy type | Network median per sample | Min-max occurencies |
 |---|---:|---:|
-| Incorrect substitutions | {{ comp_net.consensus.by_type.substitutions.median }} | {{ comp_net.consensus.by_type.substitutions.iqr[0] }}–{{ comp_net.consensus.by_type.substitutions.iqr[1] }} |
-| Excess Ns / ambiguous bases | {{ comp_net.consensus.by_type.excess_Ns.median }} | {{ comp_net.consensus.by_type.excess_Ns.iqr[0] }}–{{ comp_net.consensus.by_type.excess_Ns.iqr[1] }} |
-| Missing Ns (expected Ns not reported) | {{ comp_net.consensus.by_type.missing_Ns.median }} | {{ comp_net.consensus.by_type.missing_Ns.iqr[0] }}–{{ comp_net.consensus.by_type.missing_Ns.iqr[1] }} |
-| Insertions | {{ comp_net.consensus.by_type.insertions.median }} | {{ comp_net.consensus.by_type.insertions.iqr[0] }}–{{ comp_net.consensus.by_type.insertions.iqr[1] }} |
-| Deletions | {{ comp_net.consensus.by_type.deletions.median }} | {{ comp_net.consensus.by_type.deletions.iqr[0] }}–{{ comp_net.consensus.by_type.deletions.iqr[1] }} |
+| Incorrect substitutions | {{ comp_net.consensus.by_type.substitutions.median }} | {{ comp_net.consensus.by_type.substitutions.min }}–{{ comp_net.consensus.by_type.substitutions.max }} |
+| Excess Ns / ambiguous bases | {{ comp_net.consensus.by_type.excess_Ns.median }} | {{ comp_net.consensus.by_type.excess_Ns.min }}–{{ comp_net.consensus.by_type.excess_Ns.max }} |
+| Missing Ns (expected Ns not reported) | {{ comp_net.consensus.by_type.missing_Ns.median }} | {{ comp_net.consensus.by_type.missing_Ns.min }}–{{ comp_net.consensus.by_type.missing_Ns.max }} |
+| Insertions | {{ comp_net.consensus.by_type.insertions.median }} | {{ comp_net.consensus.by_type.insertions.min }}–{{ comp_net.consensus.by_type.insertions.max }} |
+| Deletions | {{ comp_net.consensus.by_type.deletions.median }} | {{ comp_net.consensus.by_type.deletions.min }}–{{ comp_net.consensus.by_type.deletions.max }} |
 
 The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.most_frequent_discrepancy_pattern }}.
 
@@ -858,57 +906,62 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 #### 6.{{ loop.index }}.3. Variant Detection Accuracy
 
-Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample.
+Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median sensitivity of {{ pct(comp_net.variant.median_sensitivity, 2) }} and a median precision of {{ pct(comp_net.variant.median_precision, 2) }} across participating laboratories.
-
-The median number of false positives per sample was {{ comp_net.variant.median_false_positives }} (range: {{ comp_net.variant.min_false_positives }}–{{ comp_net.variant.max_false_positives }}), while the median number of missed expected variants (false negatives) was {{ comp_net.variant.median_false_negatives }}.
-
-- {{ pct(comp_net.variant.no_false_positives_pct) }} of submissions reported no false positive variants.
-- {{ pct(comp_net.variant.at_least_one_fn_pct) }} showed at least one missed expected variant.
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}).
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level variant detection performance per sample for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Network-level variant calling metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median sensitivity (%) | Median precision (%) | Median TP | Median FP | Median FN | Median total differences | IQR total differences |
-|---|---:|---:|---:|---:|---:|---:|---:|
+| Sample ID | Median genome identity (%) | Median discrepancies | IQR discrepancies |
+|---|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.median_sensitivity_pct) }} | {{ "%.2f"|format(s.median_precision_pct) }} | {{ s.median_tp }} | {{ s.median_fp }} | {{ s.median_fn }} | {{ s.median_total_differences }} | {{ s.iqr_total_differences[0] }}–{{ s.iqr_total_differences[1] }} |
+| {{ s.sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }}–{{ s.max_discrepancies }} |
 {% endfor %}
 
-Figure {{ fig_counter.value + 1 }} presents the distribution of variant detection discrepancies per sample across participating laboratories for {{ comp_code }}.
+Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.variant.fig_total_differences_boxplot_by_sample,
-  "Variant detection discrepancies per sample for " ~ comp_code ~ " relative to the curated reference variant set."
+  comp_net.variant.fig_discrepancies_boxplot_by_sample,
+  "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of variant detection discrepancies per sample for {{ comp_code }}.**  
-Boxplots represent the distribution of total differences (FP + FN) relative to the curated reference variant set across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+
+**Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+
+Discrepancy type composition (aggregated across all submitted variant calls for {{ comp_code }}):
+
+- Incorrect substitutions: {{ pct(comp_net.variant.incorrect_nt_pct) }} of discrepancies  
+- Excess Ns / ambiguous bases: {{ pct(comp_net.variant.excess_ambiguous_pct) }}  
+- Indels: {{ pct(comp_net.variant.indels_pct) }}
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level summary of variant detection performance metrics for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
 
-| Metric | Network median | Network IQR |
+| Discrepancy type | Network median per sample | Network IQR per sample |
 |---|---:|---:|
-| Sensitivity (%) | {{ "%.2f"|format(comp_net.variant.metrics.sensitivity.median_pct) }} | {{ comp_net.variant.metrics.sensitivity.iqr_pct[0] }}–{{ comp_net.variant.metrics.sensitivity.iqr_pct[1] }} |
-| Precision (%) | {{ "%.2f"|format(comp_net.variant.metrics.precision.median_pct) }} | {{ comp_net.variant.metrics.precision.iqr_pct[0] }}–{{ comp_net.variant.metrics.precision.iqr_pct[1] }} |
-| True positives (TP) | {{ comp_net.variant.metrics.tp.median }} | {{ comp_net.variant.metrics.tp.iqr[0] }}–{{ comp_net.variant.metrics.tp.iqr[1] }} |
-| False positives (FP) | {{ comp_net.variant.metrics.fp.median }} | {{ comp_net.variant.metrics.fp.iqr[0] }}–{{ comp_net.variant.metrics.fp.iqr[1] }} |
-| False negatives (FN) | {{ comp_net.variant.metrics.fn.median }} | {{ comp_net.variant.metrics.fn.iqr[0] }}–{{ comp_net.variant.metrics.fn.iqr[1] }} |
-| Total differences (FP + FN) | {{ comp_net.variant.metrics.total_differences.median }} | {{ comp_net.variant.metrics.total_differences.iqr[0] }}–{{ comp_net.variant.metrics.total_differences.iqr[1] }} |
+| Incorrect substitutions | {{ comp_net.variant.by_type.substitutions.median }} | {{ comp_net.variant.by_type.substitutions.min }}–{{ comp_net.variant.by_type.substitutions.max }} |
+| Excess Ns / ambiguous bases | {{ comp_net.variant.by_type.excess_Ns.median }} | {{ comp_net.variant.by_type.excess_Ns.min }}–{{ comp_net.variant.by_type.excess_Ns.max }} |
+| Missing Ns (expected Ns not reported) | {{ comp_net.variant.by_type.missing_Ns.median }} | {{ comp_net.variant.by_type.missing_Ns.min }}–{{ comp_net.variant.by_type.missing_Ns.max }} |
+| Insertions | {{ comp_net.variant.by_type.insertions.median }} | {{ comp_net.variant.by_type.insertions.min }}–{{ comp_net.variant.by_type.insertions.max }} |
+| Deletions | {{ comp_net.variant.by_type.deletions.median }} | {{ comp_net.variant.by_type.deletions.min }}–{{ comp_net.variant.by_type.deletions.max }} |
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key variant detection metrics across participating laboratories for {{ comp_code }}.
+The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.variant.most_frequent_discrepancy_pattern }}.
+
+Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.variant.fig_metric_boxplots_by_pipeline_or_overall,
-  "Distribution of key variant detection metrics across laboratories for " ~ comp_code ~ "."
+  comp_net.variant.fig_discrepancy_type_barplot,
+  "Composition of variant discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of key variant detection metrics across laboratories for {{ comp_code }}.**  
-The figure summarises laboratory-level distributions of sensitivity, precision, and discrepancy counts relative to the curated reference variant set.
+![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+> Como este pero en el eje X los tipos de sustituciones
+
+**Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 {{% endif %}}
 
