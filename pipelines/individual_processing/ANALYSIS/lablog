@@ -75,6 +75,7 @@ while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcall
 
     IFS=',' read -r -a vcf_files_array <<< "$vcf_files"
     i=1
+    reference="NC_045512.2"
     for vcf in ${vcf_files_array[@]}; do
         vcf_find_result=$( find $BASE_RESULTS_FOLDER -name $vcf)
         if [ -z $vcf_find_result ]; then echo "Failed to find vcf file " $vcf " for sample " $sample_id;exit 1;fi
@@ -89,7 +90,7 @@ while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcall
         --cpus-per-task 1 \
         --job-name fix_vcf_${vcf} \
         --output logs/VCF_FIX_${vcf} \
-        python3 aux_rewrite_common_vcf_errors.py $vcf_find_result_fp 00-vcf/$sample_id\"_\"$i\".vcf\" ${ref_array[${i} -1]} &" >> _00_create_vcf_files.sh
+        python3 aux_rewrite_common_vcf_errors.py $vcf_find_result_fp 00-vcf/$sample_id\"_\"$i\".vcf\" ${reference} &" >> _00_create_vcf_files.sh
         i=$((i+1))
     done
 
@@ -100,7 +101,9 @@ done < samples_files_map.tsv
 cat ref_tmp.txt | sort | uniq > ../DOC/vcf_references.txt
 rm ref_tmp.txt
 
+
 # For each unique reference, we need to create a snpeff DB. It doesn't take long (For viral genomes), so we create one per "service". In the future, we could point out to a common SNPEFF_DB folder
+# TODO FOR THE EQA 2026, WE ONLY GENERATE A DB FOR SARS. CHANGE {reference} to {uniq_reference} if we use this in the future
 for uniq_ref in $( cat ../DOC/vcf_references.txt ); do
     echo \
         "srun \
@@ -113,7 +116,8 @@ for uniq_ref in $( cat ../DOC/vcf_references.txt ); do
         --output logs/build_db_${uniq_ref} \
         singularity exec -B ${BASE_RESULTS_FOlDER_RP} \
         /data/ucct/bi/pipelines/singularity-images/snpeff:5.2--hdfd78af_1.1 \
-        bash -c 'bash aux_create_snpeff_db.sh ${uniq_ref}' &" >> _02_snpeff_build.sh
+        bash -c 'bash aux_create_snpeff_db.sh ${reference}' &" >> _02_snpeff_build.sh
+    break
 done
 
 # GENERATE A VCF --> REFERENCE file
