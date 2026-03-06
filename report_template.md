@@ -762,7 +762,7 @@ general.figures.qc_match_rate_by_component,
 ![classification_summary](./example_images/classification_summary.png)
 > Como este pero solo MAtch o Discrepancy
 
-**_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
+**_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Stacked bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
 
 ### 5.6. Pipeline Benchmarking and Comparative Performance
 
@@ -847,45 +847,45 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
+Considering discrepancy type composition aggregated by sample for {{ comp_code }}:
+
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level consensus discrepancy types per sample for {{ comp_code }}.**
 
 | Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.consensus.samples %}
-| {{ s.sample_id }} | {{ s.substitutions }} | {{ s.excess_Ns }} | {{ s.missing_Ns }} | {{ s.insertions }} | {{ s.deletions }}
+| {{ s.sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambigity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }}
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.consensus.fig_discrepancies_boxplot_by_sample,
-  "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
+  comp_net.consensus.fig_discrepancies_stacked_by_sample,
+  "Consensus discrepancy types per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
 ![classification_summary](./example_images/classification_summary.png)
 
-> Esta pero desagregada por tipo de discrepancia
+> Esta pero desagregada por muestra y stacked por discrepancia
 
-**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
 
-Discrepancy type composition (aggregated across all submitted consensus sequences for {{ comp_code }}):
-
-- Incorrect substitutions: {{ pct(comp_net.consensus.incorrect_nt_pct) }} of discrepancies  
-- Excess Ns / ambiguous bases: {{ pct(comp_net.consensus.excess_ambiguous_pct) }}  
-- Indels: {{ pct(comp_net.consensus.indels_pct) }}
+Discrepancy type composition aggregated across all submitted consensus sequences for {{ comp_code }}:
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
 
 | Discrepancy type | Network median per sample | Min-max occurencies |
 |---|---:|---:|
-| Incorrect substitutions | {{ comp_net.consensus.by_type.substitutions.median }} | {{ comp_net.consensus.by_type.substitutions.min }}–{{ comp_net.consensus.by_type.substitutions.max }} |
-| Excess Ns / ambiguous bases | {{ comp_net.consensus.by_type.excess_Ns.median }} | {{ comp_net.consensus.by_type.excess_Ns.min }}–{{ comp_net.consensus.by_type.excess_Ns.max }} |
-| Missing Ns (expected Ns not reported) | {{ comp_net.consensus.by_type.missing_Ns.median }} | {{ comp_net.consensus.by_type.missing_Ns.min }}–{{ comp_net.consensus.by_type.missing_Ns.max }} |
-| Insertions | {{ comp_net.consensus.by_type.insertions.median }} | {{ comp_net.consensus.by_type.insertions.min }}–{{ comp_net.consensus.by_type.insertions.max }} |
-| Deletions | {{ comp_net.consensus.by_type.deletions.median }} | {{ comp_net.consensus.by_type.deletions.min }}–{{ comp_net.consensus.by_type.deletions.max }} |
+| Incorrect nucleotide | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.wrong_nt.max }} |
+| Ambiguity instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max }} |
+| Nucleotide instead of ambiguity | {{ comp_net.consensus.discrepancy_breakdown.nt2ambigity.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ambigity.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ambigity.max }} |
+| Stretch of Ns instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ns2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ns2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ns2nt.max }} |
+| Nucleotide stretch instead of stretch of Ns| {{ comp_net.consensus.discrepancy_breakdown.nt2ns.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ns.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ns.max }} |
+| Insertion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.insertions.median }} | {{ comp_net.consensus.discrepancy_breakdown.insertions.min }}–{{ comp_net.consensus.discrepancy_breakdown.insertions.max }} |
+| Deletion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.deletions.median }} | {{ comp_net.consensus.discrepancy_breakdown.deletions.min }}–{{ comp_net.consensus.discrepancy_breakdown.deletions.max }} |
 
 The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.most_frequent_discrepancy_pattern }}.
 
@@ -893,14 +893,14 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.consensus.fig_discrepancy_type_barplot,
+  comp_net.consensus.fig_discrepancy_type_boxplot,
   "Composition of consensus discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
 ![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
 > Como este pero en el eje X los tipos de sustituciones
 
-**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 {{% if comp_net.variant %}}
 
@@ -908,45 +908,41 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}).
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}) and a meadian of total discrepancies for all the smaples in  {{ comp_code }} of {{ comp_net.variant.total_median_discrepancies }}.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level variant calling metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median genome identity (%) | Median discrepancies | IQR discrepancies |
-|---|---:|---:|---:|
+| Sample ID | Median discrepancies | Discrepancies min-max | Median wrong nucleotide | Median Insertions | Median Deletions |
+|---|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }}–{{ s.max_discrepancies }} |
+| {{ s.sample_id }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} | {{ s.wrong_nt }} | {{ s.insertions }} | {{ s.deletions }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.variant.fig_discrepancies_boxplot_by_sample,
+  comp_net.variant.fig_discrepancies_stacked_by_sample,
   "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+![classification_summary](./example_images/classification_summary.png)
 
-**Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+> Esta pero desagregada por muestra y stacked por discrepancia
+
+**Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
 
 Discrepancy type composition (aggregated across all submitted variant calls for {{ comp_code }}):
-
-- Incorrect substitutions: {{ pct(comp_net.variant.incorrect_nt_pct) }} of discrepancies  
-- Excess Ns / ambiguous bases: {{ pct(comp_net.variant.excess_ambiguous_pct) }}  
-- Indels: {{ pct(comp_net.variant.indels_pct) }}
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
 
 | Discrepancy type | Network median per sample | Network IQR per sample |
 |---|---:|---:|
-| Incorrect substitutions | {{ comp_net.variant.by_type.substitutions.median }} | {{ comp_net.variant.by_type.substitutions.min }}–{{ comp_net.variant.by_type.substitutions.max }} |
-| Excess Ns / ambiguous bases | {{ comp_net.variant.by_type.excess_Ns.median }} | {{ comp_net.variant.by_type.excess_Ns.min }}–{{ comp_net.variant.by_type.excess_Ns.max }} |
-| Missing Ns (expected Ns not reported) | {{ comp_net.variant.by_type.missing_Ns.median }} | {{ comp_net.variant.by_type.missing_Ns.min }}–{{ comp_net.variant.by_type.missing_Ns.max }} |
-| Insertions | {{ comp_net.variant.by_type.insertions.median }} | {{ comp_net.variant.by_type.insertions.min }}–{{ comp_net.variant.by_type.insertions.max }} |
-| Deletions | {{ comp_net.variant.by_type.deletions.median }} | {{ comp_net.variant.by_type.deletions.min }}–{{ comp_net.variant.by_type.deletions.max }} |
+| Incorrect nucleotide | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.variant.discrepancy_breakdown.wrong_nt.max }} |
+| Insertion relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.insertions.median }} | {{ comp_net.variant.discrepancy_breakdown.insertions.min }}–{{ comp_net.variant.discrepancy_breakdown.insertions.max }} |
+| Deletions relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.deletions.median }} | {{ comp_net.variant.discrepancy_breakdown.deletions.min }}–{{ comp_net.variant.discrepancy_breakdown.deletions.max }} |
 
 The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.variant.most_frequent_discrepancy_pattern }}.
 
@@ -954,14 +950,14 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.variant.fig_discrepancy_type_barplot,
+  comp_net.variant.fig_discrepancy_type_boxplot,
   "Composition of variant discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
 ![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
 > Como este pero en el eje X los tipos de sustituciones
 
-**Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect substitutions, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+**Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
 {{% endif %}}
 
@@ -980,7 +976,7 @@ Across all participating laboratories:
 | Sample ID | Lineage/Subtype matches (%) | Clade matches (%)|
 |---|---:|---:|
 {% for s in comp_net.typing.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.exact_pct) }} | {{ "%.2f"|format(s.partial_pct) }} |
+| {{ s.sample_id }} | {{ "%.2f"|format(s.lineage_hit_pct) }} | {{ "%.2f"|format(s.clade_hit_pct) }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
@@ -993,10 +989,9 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of classification o
 
 ![classification_summary](./example_images/classification_summary.png)
 
-> Esta pero desagregada por Linaje, Subtipo, y por muestra y usabdo Hit/Discrepancy
+> Esta pero desagregada por Linaje, Subtipo, y por muestra y usando Match/Discrepancy
 
-**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.**  
-Stacked bars represent the proportion of lineage/subtype and clade assignments match across participating laboratories for each sample relative to the curated gold standard classification.
+**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Stacked bars represent the proportion of lineage/subtype and clade assignments match across participating laboratories for each sample relative to the curated gold standard classification.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level classification error counts for {{ comp_code }}.**

@@ -121,9 +121,11 @@
             "median_discrepancies": 1,
             "min": 0,
             "max": 2,
-            "substitutions": 1,
-            "excess_Ns": 1,
-            "missing_Ns": 1 ,
+            "wrong_nt": 1,
+            "ambiguity2nt": 0,
+            "nt2ambigity": 0,
+            "ns2nt": 1,
+            "nt2ns": 1 ,
             "insertions": 1 ,
             "deletions": 1
           },
@@ -133,9 +135,11 @@
             "median_discrepancies": 1,
             "min": 0,
             "max": 2,
-            "substitutions": 1,
-            "excess_Ns": 1,
-            "missing_Ns": 1 ,
+            "wrong_nt": 1,
+            "ambiguity2nt": 0,
+            "nt2ambigity": 0,
+            "ns2nt": 1,
+            "nt2ns": 1 ,
             "insertions": 1 ,
             "deletions": 1
           },
@@ -145,9 +149,11 @@
             "median_discrepancies": 1,
             "min": 0,
             "max": 2,
-            "substitutions": 1,
-            "excess_Ns": 1,
-            "missing_Ns": 1 ,
+            "wrong_nt": 1,
+            "ambiguity2nt": 0,
+            "nt2ambigity": 0,
+            "ns2nt": 1,
+            "nt2ns": 1 ,
             "insertions": 1 ,
             "deletions": 1
           },
@@ -157,9 +163,11 @@
             "median_discrepancies": 1,
             "min": 0,
             "max": 2,
-            "substitutions": 1,
-            "excess_Ns": 1,
-            "missing_Ns": 1 ,
+            "wrong_nt": 1,
+            "ambiguity2nt": 0,
+            "nt2ambigity": 0,
+            "ns2nt": 1,
+            "nt2ns": 1 ,
             "insertions": 1 ,
             "deletions": 1
           },
@@ -169,29 +177,30 @@
             "median_discrepancies": 1,
             "min": 0,
             "max": 2,
-            "substitutions": 1,
-            "excess_Ns": 1,
-            "missing_Ns": 1 ,
+            "wrong_nt": 1,
+            "ambiguity2nt": 0,
+            "nt2ambigity": 0,
+            "ns2nt": 1,
+            "nt2ns": 1 ,
             "insertions": 1 ,
             "deletions": 1
           }
         ],
 
-        "incorrect_nt_pct": 40.0,
-        "excess_ambiguous_pct": 45.0,
-        "indels_pct": 15.0,
-
-        "by_type": {
-          "substitutions": { "median": 0, "min": 0, "max": 1 },
-          "excess_Ns": { "median": 1, "min": 0, "max": 1 },
-          "missing_Ns": { "median": 0, "min": 0, "max": 1 },
+        "discrepancy_breakdown": {
+          "wrong_nt": { "median": 0, "min": 0, "max": 1 },
+          "ambiguity2nt": { "median": 0, "min": 0, "max": 1 },
+          "nt2ambigity": { "median": 0, "min": 0, "max": 1 },
+          "ns2nt": { "median": 1, "min": 0, "max": 1 },
+          "nt2ns": { "median": 0, "min": 0, "max": 1 },
           "insertions": { "median": 0, "min": 0, "max": 1 },
           "deletions": { "median": 0, "min": 0, "max": 1 }
         },
-        "most_frequent_discrepancy_pattern": "excess ambiguous bases in low-coverage regions",
+        "most_frequent_discrepancy_pattern": "Stretch of Ns instead of nucleotide stretch",
 
         "fig_discrepancies_boxplot_by_sample": "figures/SARS1/consensus_discrepancies_boxplot_by_sample.png",
-        "fig_discrepancy_type_barplot": "figures/SARS1/consensus_discrepancy_type_barplot.png"
+        "fig_discrepancies_stacked_by_sample": "figures/SARS1/consensus_discrepancies_stacked_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/SARS1/consensus_discrepancy_type_boxplot.png"
       },
 
       "variant": {
@@ -205,49 +214,63 @@
             "sample_id": "SARS1",
             "median_discrepancies": 1,
             "min": 0,
-            "max": 2
+            "max": 2,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           },
           {
             "sample_id": "SARS2",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
-            "max": 2
+            "max": 2,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           },
           {
             "sample_id": "SARS3",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
-            "max": 2
+            "max": 2,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           },
           {
             "sample_id": "SARS4",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
-            "max": 2
+            "max": 2,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           },
           {
             "sample_id": "SARS5",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
-            "max": 2
+            "max": 2,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           }
         ],
 
-        "metrics": {
-          "sensitivity": { "median_pct": 98.5, "iqr_pct": [97.0, 99.5] },
-          "precision": { "median_pct": 99.0, "iqr_pct": [98.0, 99.8] },
-          "tp": { "median": 12, "iqr": [10, 14] },
-          "fp": { "median": 0, "iqr": [0, 1] },
-          "fn": { "median": 1, "iqr": [0, 2] },
-          "total_differences": { "median": 1, "iqr": [0, 2] }
+        "discrepancy_breakdown": {
+          "wrong_nt": { "median": 0, "min": 0, "max": 1 },
+          "insertions": { "median": 0, "min": 0, "max": 1 },
+          "deletions": { "median": 0, "min": 0, "max": 1 }
         },
 
-        "fig_total_differences_boxplot_by_sample": "figures/SARS1/variant_total_differences_boxplot_by_sample.png",
-        "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS1/variant_metric_boxplots.png"
+        "most_frequent_discrepancy_pattern": "Incorrect nucleotide",
+
+        "fig_discrepancies_stacked_by_sample": "figures/SARS1/variants_discrepancies_stacked_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/SARS1/variants_discrepancy_type_boxplot.png"
       },
 
       "typing": {
@@ -281,7 +304,7 @@
           { "sample_id": "SARS4", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
           { "sample_id": "SARS5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
         ],
-        "fig_match_rate_by_sample": "figures/SARS1/qc_match_rate_by_sample.png"
+        "fig_qc_match_by_sample": "figures/SARS1/qc_match_rate_by_sample.png"
       },
 
       "metadata_metrics": {
