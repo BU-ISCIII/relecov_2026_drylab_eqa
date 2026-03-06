@@ -1029,38 +1029,313 @@ comp_net.qc.fig_qc_match_by_sample,
 
 #### 6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance
 
-Based on metadata submissions, {{ comp_net.pipeline.total_number }} distinct pipeline/software configurations were reported for the {{ comp_code }} component.
+{{% if comp_net.benchmarking.pipeline %}}
+##### Bioinformatics protocol
+
+Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Performance summary of declared software/pipeline configurations for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Performance summary of declared bioinformatics protocols for {{ comp_code }}.**
 
-| Pipeline / Software | N labs | Median genome identity (%) | Median discrepancies | Median metadata completeness (%) | Exact classification concordance (%) |
-|---|---:|---:|---:|---:|---:|
-{% for p in comp_net.pipeline.configurations %}
-| {{ p.name }} | {{ p.n_labs }} | {{ "%.2f"|format(p.median_identity_pct) }} | {{ p.median_discrepancies }} | {{ "%.1f"|format(p.median_metadata_completeness_pct) }} | {{ "%.1f"|format(p.exact_classification_pct) }} |
+| Bioinformatics protocol | Version | N labs | Median genome identity (%) | Median discrepancies | Median metadata completeness (%) | Clade concordance (%) | Lineage/type concordance (%) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.bioinformatics_protocol.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ "%.2f"|format(p.median_identity_pct) }} | {{ p.median_discrepancies }} | {{ "%.1f"|format(p.median_metadata_completeness_pct) }} | {{ "%.1f"|format(p.clade_hit_pct) }} | {{ "%.1f"|format(p.lineage_hit_pct) }} |
 {% endfor %}
 
-The comparative positioning of declared workflows within the {{ comp_code }} component is shown in Figure {{ fig_counter.value + 1 }}.
-
 {% set fig_counter.value = fig_counter.value + 1 %}
-{{ render_figure(
-  comp_net.pipeline.fig_scatter_positioning,
-  "Comparative positioning of declared workflows for " ~ comp_code ~ " based on consensus accuracy and classification concordance."
-) }}
-
-**Figure {{ fig_counter.value }}. Positioning of declared workflows for {{ comp_code }}.**  
-Each point represents a distinct pipeline/software configuration. The x-axis indicates median genome identity relative to the curated gold standard, and the y-axis indicates exact lineage/type and clade concordance. Point size reflects the number of laboratories reporting each configuration.
 
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared pipeline configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.pipeline.fig_metric_boxplots_by_pipeline,
+  comp_net.benchmarking.bioinformatics_protocol.fig_metric_boxplots,
   "Distribution of performance metrics by pipeline configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.**  
-Multi-panel boxplots summarise laboratory-level performance stratified by pipeline/software configuration. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by bioinformatics protocols. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.dehosting %}}
+##### De-hosting software
+
+Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting softwares were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared de-hosting software for {{ comp_code }}.**
+
+| De-hosting software | Version | N labs | % Host reads |
+|---|---:|---:|---:|
+{% for p in comp_net.benchmarking.dehosting.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.per_reads_host }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metric stratified by declared dehosting sfotaware version.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.dehosting.fig_metric_boxplots,
+  "Distribution of percentage of host reads metrics by dehosting software version for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise laboratory-level percentage of host reads by dehosting software version. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each version.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.preprocessing %}}
+##### Preprocessing software
+
+Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.**
+
+| Pre-processing software | Version | N labs | Configuration | Number of reads sequenced | Reads passing filters |
+|---|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.preprocessing.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared pre-processing software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.preprocessing.fig_metric_boxplots,
+  "Distribution of performance metrics by pre-processing software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pre-processing software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by pre-processing software. Panels display Number of reads sequenced and Reads passing filters. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.mapping %}}
+##### Mapping software
+
+Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} distinct mapping software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared mapping software configurations for {{ comp_code }}.**
+
+| Mapping software | Version | N labs | Configuration | Depth of coverage threshold | % Reads virus |
+|---|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.mapping.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared mapping software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.mapping.fig_metric_boxplots,
+  "Distribution of performance metrics by mapping software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared mapping software configuration for {{ comp_code }}.** Boxplots summarise laboratory-level performance stratified by mapping software. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.assembly %}}
+##### Assembly software
+
+Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
+
+| Assembly software | Version | N labs | Configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
+|---|---:|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.assembly.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared assembly software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.assembly.fig_metric_boxplots,
+  "Distribution of performance metrics by assembly software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by assembly software. Panels display the consensus genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.consensus_software %}}
+##### Consensus software
+
+Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared consensus software configurations for {{ comp_code }}.**
+
+| Consensus software | Version | N labs | Configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
+|---|---:|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.consensus_software.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared consensus software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.consensus_software.fig_metric_boxplots,
+  "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by consensus software. Panels display the consensus genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.variant_calling %}}
+##### Variant calling software
+
+Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_number }} distinct variant calling software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared variant calling software configurations for {{ comp_code }}.**
+
+| Variant calling software | Version | N labs | Configuration | Median number of variants per sample | Median number of variants with effect per sample | Median number of discrepancies per sample |
+|---|---:|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.variant_calling.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_with_effect }} |  {{ p.median_discrepancies }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared variant calling software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.preprocessing.fig_metric_boxplots,
+  "Distribution of performance metrics by variant calling software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by variant calling software. Panels display the median number of variants per sample, the median number of variants with effect per sample and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.clade_assignment %}}
+##### Clade Assignment Software
+
+Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared clade assignment software configurations for {{ comp_code }}.**
+
+| Clade assignment software | Version | N labs | Database version | % of clade match | % of clade discrepancy |
+|---|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.clade_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.clade_hit_pct }} | {{ p.clade_discordance_pct }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared clade assignment software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.clade_assignment.fig_metric_boxplots,
+  "Distribution of performance metrics by clade assignment software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared clade assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by clade assignment software. Panels display the % of clade matches and the % of clade discrepancies. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.lineage_assignment %}}
+##### Lineage Assignment Software Name
+
+Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared lineage assignment software configurations for {{ comp_code }}.**
+
+| Lineage Assignment software | Version | N labs | Database version | % of lineage match | % of lineage discrepancy |
+|---|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.lineage_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.lineage_hit_pct }} | {{ p.lineage_discordance_pct }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared lineage assignment software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.lineage_assignment.fig_metric_boxplots,
+  "Distribution of performance metrics by lineage assignment software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared lineage assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by lineage assignment software. Panels display the % of lineage matches and the % of lineage discrepancies. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.type_assignment %}}
+##### Type Assignment Software Name
+
+Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared type assignment software configurations for {{ comp_code }}.**
+
+| Type Assignment software | Version | N labs | Database version | % of type match | % of type discrepancy |
+|---|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.type_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.type_hit_pct }} | {{ p.type_discordance_pct }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared xxx software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.type_assignment.fig_metric_boxplots,
+  "Distribution of performance metrics by type assignment software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared type assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by type assignment software. Panels display the variant valling genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
+
+{{% if comp_net.benchmarking.subtype_assignment %}}
+##### Subtype Assignment Software Name
+
+Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Performance summary of declared subtype assignment software configurations for {{ comp_code }}.**
+
+| Subtype Assignment software | Version | N labs | Database version | % of subtype match | % of subtype discrepancy |
+|---|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.subtype_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.subtype_hit_pct }} | {{ p.subtype_discordance_pct }} |
+{% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared subtype assignment software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.benchmarking.subtype_assignment.fig_metric_boxplots,
+  "Distribution of performance metrics by subtype assignment software configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared subtype assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by subtype assignment software. Panels display the variant valling genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+
+{% endif %}
 
 {% endfor %}
 

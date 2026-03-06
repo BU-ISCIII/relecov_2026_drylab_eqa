@@ -351,21 +351,164 @@
           }
         ]
       },
-
-      "pipeline": {
+      "benchmarking": {
+        "bioinformatics_protocol": {
         "total_number": 5,
-        "configurations": [
+          "softwares": [
           {
             "name": "Pipeline A",
             "n_labs": 10,
+              "version": "3.0.0",
             "median_identity_pct": 99.93,
             "median_discrepancies": 2,
             "median_metadata_completeness_pct": 90.0,
-            "exact_classification_pct": 96.0
+              "clade_hit_pct": 96.0,
+              "lineage_hit_pct": 96.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+        },
+        "dehosting": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "per_reads_host": 99.93
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/dehosting_metric_boxplots_by_pipeline.png"
+        },
+        "preprocessing": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "params": "--quality_threshold 20 --min_length 50",
+              "number_of_reads_sequenced": 500000,
+              "pass_reads": 10000
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/preprocessing_metric_boxplots_by_pipeline.png"
+        },
+        "mapping": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "params": "--mapper bwa --min_mapping_quality 30",
+              "depth_of_coverage_threshold": "10X",
+              "per_reads_virus": 98.00
           }
         ],
-        "fig_scatter_positioning": "figures/SARS1/pipeline_scatter_positioning.png",
-        "fig_metric_boxplots_by_pipeline": "figures/SARS1/pipeline_metric_boxplots_by_pipeline.png"
+          "fig_metric_boxplots": "figures/SARS1/mapping_metric_boxplots_by_pipeline.png"
+        },
+        "assembly": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "params": "--assembler spades --min_contig_length 500",
+              "consensus_genome_length": 29920,
+              "median_identity_pct": 99.93,
+              "median_discrepancies": 2
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/assembly_metric_boxplots_by_pipeline.png"
+        },
+        "consensus_software": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "params": "--consensus_algorithm majority --min_depth 10",
+              "consensus_genome_length": 29920,
+              "median_identity_pct": 99.93,
+              "median_discrepancies": 2
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/consensus_metric_boxplots_by_pipeline.png"
+        },
+        "variant_calling": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "params": "--variant_caller freebayes --min_variant_frequency 0.01",
+              "number_of_variants_in_consensus": 95.0,
+              "number_of_variants_with_effect": 97.0,
+              "median_discrepancies": 2
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/variant_calling_metric_boxplots_by_pipeline.png"
+        },
+        "clade_assignment": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "database_version": "--clade_assignment_tool pangolin --lineage_version 3.1.17",
+              "clade_discordance_pct": 95.0,
+              "clade_hit_pct": 3.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/clade_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "lineage_assignment": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "database_version": "--lineage_assignment_tool pangolin --lineage_version 3.1.17",
+              "lineage_discordance_pct": 95.0,
+              "lineage_hit_pct": 3.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/lineage_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "type_assignment": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "database_version": "--lineage_assignment_tool pangolin --lineage_version 3.1.17",
+              "type_discordance_pct": 95.0,
+              "type_hit_pct": 3.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/type_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "subtype_assignment": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Software A",
+              "n_labs": 10,
+              "version": "3.0.0",
+              "database_version": "--lineage_assignment_tool pangolin --lineage_version 3.1.17",
+              "subtype_discordance_pct": 95.0,
+              "subtype_hit_pct": 3.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS1/subtype_assignment_metric_boxplots_by_pipeline.png"
+        }
       }
     },
 
