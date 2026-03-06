@@ -104,6 +104,7 @@ rm ref_tmp.txt
 
 # For each unique reference, we need to create a snpeff DB. It doesn't take long (For viral genomes), so we create one per "service". In the future, we could point out to a common SNPEFF_DB folder
 # TODO FOR THE EQA 2026, WE ONLY GENERATE A DB FOR SARS. CHANGE {reference} to {uniq_reference} if we use this in the future
+reference="NC_045512.2"
 for uniq_ref in $( cat ../DOC/vcf_references.txt ); do
     echo \
         "srun \
