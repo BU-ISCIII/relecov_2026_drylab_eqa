@@ -116,7 +116,7 @@
 
         "samples": [
           {
-            "sample_id": "SARS1",
+            "collecting_lab_sample_id": "SARS1",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -130,7 +130,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS2",
+            "collecting_lab_sample_id": "SARS2",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -144,7 +144,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS3",
+            "collecting_lab_sample_id": "SARS3",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -158,7 +158,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS4",
+            "collecting_lab_sample_id": "SARS4",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -172,7 +172,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS5",
+            "collecting_lab_sample_id": "SARS5",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -211,7 +211,7 @@
 
         "samples": [
           {
-            "sample_id": "SARS1",
+            "collecting_lab_sample_id": "SARS1",
             "median_discrepancies": 1,
             "min": 0,
             "max": 2,
@@ -220,7 +220,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS2",
+            "collecting_lab_sample_id": "SARS2",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -230,7 +230,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS3",
+            "collecting_lab_sample_id": "SARS3",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -240,7 +240,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS4",
+            "collecting_lab_sample_id": "SARS4",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -250,7 +250,7 @@
             "deletions": 1
           },
           {
-            "sample_id": "SARS5",
+            "collecting_lab_sample_id": "SARS5",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "min": 0,
@@ -282,11 +282,11 @@
         "discordance_pct": 2.0,
 
         "samples": [
-          { "sample_id": "SARS1", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "sample_id": "SARS2", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "sample_id": "SARS3", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "sample_id": "SARS4", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "sample_id": "SARS5", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 }
+          { "collecting_lab_sample_id": "SARS1", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "collecting_lab_sample_id": "SARS2", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "collecting_lab_sample_id": "SARS3", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "collecting_lab_sample_id": "SARS4", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
+          { "collecting_lab_sample_id": "SARS5", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 }
         ],
 
         "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png"
@@ -298,11 +298,11 @@
         "discrepancies": 24,
         "total_evaluations": 300,
         "samples": [
-          { "sample_id": "SARS1", "gold_standard_qc": "Fail", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "sample_id": "SARS2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "sample_id": "SARS3", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "sample_id": "SARS4", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "sample_id": "SARS5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          { "collecting_lab_sample_id": "SARS1", "gold_standard_qc": "Fail", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS3", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS4", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
         ],
         "fig_qc_match_by_sample": "figures/SARS1/qc_match_rate_by_sample.png"
       },
@@ -310,7 +310,16 @@
       "metadata_metrics": {
         "samples": [
           { 
-            "sample_id": "SARS1", 
+            "collecting_lab_sample_id": "SARS1", 
+            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
+            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
+            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
+            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
+            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 },
+            
+          },
+          {
+            "collecting_lab_sample_id": "SARS2",
             "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
             "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
             "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
@@ -318,7 +327,7 @@
             "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
           },
           {
-            "sample_id": "SARS2",
+            "collecting_lab_sample_id": "SARS3",
             "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
             "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
             "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
@@ -326,7 +335,7 @@
             "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
           },
           {
-            "sample_id": "SARS3",
+            "collecting_lab_sample_id": "SARS4",
             "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
             "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
             "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
@@ -334,15 +343,7 @@
             "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
           },
           {
-            "sample_id": "SARS4",
-            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
-            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
-            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
-            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
-            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
-          },
-          {
-            "sample_id": "SARS5",
+            "collecting_lab_sample_id": "SARS5",
             "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
             "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
             "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
@@ -528,31 +529,31 @@
         "most_frequent_discrepancy_pattern": "Insertion relative to gold standard",
         "samples": [
           {
-            "sample_id": "SARS6",
+            "collecting_lab_sample_id": "SARS6",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "SARS7",
+            "collecting_lab_sample_id": "SARS7",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "SARS8",
+            "collecting_lab_sample_id": "SARS8",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "SARS9",
+            "collecting_lab_sample_id": "SARS9",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "SARS10",
+            "collecting_lab_sample_id": "SARS10",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
@@ -577,11 +578,11 @@
         "discrepancies": 24,
         "total_evaluations": 300,
         "samples": [
-          { "sample_id": "SARS6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "sample_id": "SARS7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "sample_id": "SARS8", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "sample_id": "SARS9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "sample_id": "SARS10", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          { "collecting_lab_sample_id": "SARS6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS8", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "SARS10", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
         ],
         "fig_match_rate_by_sample": "figures/SARS2/qc_match_rate_by_sample.png"
       },
@@ -596,31 +597,31 @@
         "most_frequent_discrepancy_pattern": "Nucleotide stretch instead of stretch of Ns",
         "samples": [
           {
-            "sample_id": "FLU1",
+            "collecting_lab_sample_id": "FLU1",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU2",
+            "collecting_lab_sample_id": "FLU2",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU3",
+            "collecting_lab_sample_id": "FLU3",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU4",
+            "collecting_lab_sample_id": "FLU4",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU5",
+            "collecting_lab_sample_id": "FLU5",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
@@ -640,11 +641,11 @@
         "discrepancies": 24,
         "total_evaluations": 300,
         "samples": [
-          { "sample_id": "FLU1", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "sample_id": "FLU2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "sample_id": "FLU3", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "sample_id": "FLU4", "gold_standard_qc": "Pass", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "sample_id": "FLU5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          { "collecting_lab_sample_id": "FLU1", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU3", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU4", "gold_standard_qc": "Pass", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
         ],
         "fig_match_rate_by_sample": "figures/FLU1/qc_match_rate_by_sample.png"
       },
@@ -659,31 +660,31 @@
         "most_frequent_discrepancy_pattern": "Deletion relative to gold standard",
                 "samples": [
           {
-            "sample_id": "FLU6",
+            "collecting_lab_sample_id": "FLU6",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU7",
+            "collecting_lab_sample_id": "FLU7",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU8",
+            "collecting_lab_sample_id": "FLU8",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU9",
+            "collecting_lab_sample_id": "FLU9",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
           },
           {
-            "sample_id": "FLU10",
+            "collecting_lab_sample_id": "FLU10",
             "median_identity_pct": 99.95,
             "median_discrepancies": 1,
             "iqr_discrepancies": [0, 2]
@@ -703,11 +704,11 @@
         "discrepancies": 24,
         "total_evaluations": 300,
         "samples": [
-          { "sample_id": "FLU6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "sample_id": "FLU7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "sample_id": "FLU8", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "sample_id": "FLU9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "sample_id": "FLU10", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          { "collecting_lab_sample_id": "FLU6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU8", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
+          { "collecting_lab_sample_id": "FLU10", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
         ],
         "fig_match_rate_by_sample": "figures/FLU2/qc_match_rate_by_sample.png"
       },
