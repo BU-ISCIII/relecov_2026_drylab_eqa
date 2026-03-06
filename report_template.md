@@ -1518,7 +1518,7 @@ Table {{ table_counter.value }} provides a detailed characterisation of discrepa
 Figure {{ fig_counter.value }} illustrates the distribution of median nucleotide discrepancies per sample across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 {{ render_figure(
-  comp.component_figures.consensus_discrepancy_distribution,
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/consensus_discrepancy_distribution.png",
   comp_code ~ ": distribution of median discrepancies per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
@@ -1550,7 +1550,7 @@ The metrics presented in Table {{ table_counter.value }} summarise per-sample va
 Figure {{ fig_counter.value }} illustrates the distribution of variant detection performance metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 {{ render_figure(
-  comp.component_figures.variant_metrics_distribution,
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/variant_metrics_distribution.png",
   comp_code ~ ": distribution of variant detection metrics across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
@@ -1584,7 +1584,7 @@ The total number of variants with allele frequency above 75%, and the total numb
 Figure {{ fig_counter.value }} illustrates the agreement between metadata-reported and VCF-derived variant counts across samples for **{{ labdata.lab.lab_cod }}**.
 
 {{ render_figure(
-  comp.component_figures.variant_metadata_vs_vcf_distribution,
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/variant_metadata_vs_vcf_distribution.png",
   comp_code ~ ": agreement between metadata-reported and VCF-derived variant counts for " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
@@ -1613,8 +1613,8 @@ Table {{ table_counter.value }} summarises the concordance between expected and 
 Figure {{ fig_counter.value }} presents the concordance distribution for lineage/type and clade assignments across laboratories for each sample included in the {{ comp_code }} component. Grey markers represent the proportion of laboratories that reported the correct classification relative to the gold standard, while the red marker indicates the classification outcome reported by {{ labdata.lab.lab_cod }}.
 
 {{ render_figure(
-comp.component_figures.classification_dimension_concordance,
-comp_code ~ ": lineage/type and clade concordance across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/classification_dimension_concordance.png",
+  comp_code ~ ": lineage/type and clade concordance across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
 ![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
@@ -1651,7 +1651,7 @@ Table {{ table_counter.value }} contextualises the performance of the declared w
 Figure {{ fig_counter.value }} illustrates the comparative positioning of declared workflows within the network for the {{ comp_code }} component.
 
 {{ render_figure(
-  comp.software_benchmarking.bar_plot,
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/workflow_bar_plot.png",
   comp_code ~ ": workflow positioning across the network (grey), with " ~ labdata.lab.lab_cod ~ " highlighted (red)."
 ) }}
 
@@ -1683,7 +1683,7 @@ Table {{ table_counter.value }} summarises the QC decision reported by **{{ labd
 Figure {{ fig_counter.value }} contextualises the laboratory’s QC decisions relative to network-wide QC concordance per sample. The background bars represent the proportion of laboratories matching the gold standard, while the marker indicates the QC outcome reported by **{{ labdata.lab.lab_cod }}**.
 
 {{ render_figure(
-  comp.component_figures.qc_match_rate_by_sample_with_lab_marker,
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/qc_match_rate.png",
   comp_code ~ ": sample-level QC concordance across the network, with " ~ labdata.lab.lab_cod ~ " highlighted."
 ) }}
 
@@ -1727,7 +1727,7 @@ Table {{ table_counter.value }} contextualises laboratory-reported analytical pa
 Figure {{ fig_counter.value }} illustrates the distribution of metadata-derived analytical metrics across participating laboratories for the {{ comp_code }} component.
 
 {{ render_figure(
-  comp.component_figures.metadata_metrics_panel,
+  "images/labs/{{ labdata.lab.lab_cod }}/{{ comp_code }}/metadata_metrics_panel.png",
   comp_code ~ ": distribution of metadata-derived analytical metrics across the network per sample; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
