@@ -589,6 +589,9 @@ def build_lab_json(
                 "software_benchmarking": extract_subset(row, SOFTWARE_BENCHMARKING_FIELDS),
             }
             component_out["samples"][sample_id] = sample_out
+        
+        if not component_out["samples"]:
+            continue
 
         component_total_expected = sum(v["total_expected_fields"] for v in component_out["samples"].values())
         component_filled = sum(v["filled_fields"] for v in component_out["samples"].values())
