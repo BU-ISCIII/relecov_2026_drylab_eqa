@@ -18,14 +18,6 @@
   {% endif %}
 {%- endmacro %}
 
-{% macro iqr_range(iqr_list, decimals=2) -%}
-{% if iqr_list and iqr_list|length == 2 -%}
-{{ num(iqr_list[0], decimals) }}–{{ num(iqr_list[1], decimals) }}
-{%- else -%}
-NA
-{%- endif %}
-{%- endmacro %}
-
 {% set fig_counter = namespace(value=0) %}
 {% set table_counter = namespace(value=0) %}
 
@@ -102,7 +94,7 @@ NA
   - [9.{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)](#9-loopindex--1-5-metadata-derived-analytical-metrics-per-sample)
       - [Sample Quality Control Assessment](#sample-quality-control-assessment-1)
       - [Other metrics](#other-metrics)
-    - [{{ sample\_id }}](#-sample_id-)
+    - [{{ sample\_id }}](#-collecting_lab_sample_id-)
   - [Acknowledgement](#acknowledgement)
 
 ## Executive Summary
@@ -938,7 +930,7 @@ Discrepancy type composition (aggregated across all submitted variant calls for 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
 
-| Discrepancy type | Network median per sample | Network IQR per sample |
+| Discrepancy type | Network median per sample | Network min-max per sample |
 |---|---:|---:|
 | Incorrect nucleotide | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.variant.discrepancy_breakdown.wrong_nt.max }} |
 | Insertion relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.insertions.median }} | {{ comp_net.variant.discrepancy_breakdown.insertions.min }}–{{ comp_net.variant.discrepancy_breakdown.insertions.max }} |
@@ -1471,7 +1463,7 @@ Primary contributors to incompleteness for {{ labdata.lab.lab_cod }}:
 
 # 9.{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})
 
-The laboratory submitted results for the **{{ comp_code }}** component from {{ comp.platform }} platform.
+The laboratory submitted results for the **{{ comp_code }}** component from {{ comp.sequencing_instrument_platform }} platform.
 
 Number of ssubmitted outputs:
 
@@ -1500,23 +1492,23 @@ Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}**
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample consensus reconstruction metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Genome identity (%) | Total discrepancies | Indel events | Genome completeness (%) |
+| Sample ID | {{ labdata.lab.lab_cod }} Genome identity (%) | Network Genome Identity Median | {{ labdata.lab.lab_cod }} Total discrepancies | Network total discrepancies median |
 |---|---:|---:|---:|---:|
-{% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ s.consensus.total_discrepancies }} | {{ s.consensus.indel_events }} | {{ pct(s.consensus.genome_completeness_pct, 2) }} |
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ general.components[comp_code].consensus.samples[collecting_lab_sample_id].median_identity_pct }} | {{ s.consensus.total_discrepancies }} | {{ general.components[comp_code].consensus.samples[collecting_lab_sample_id].median_discrepancies }} |
 {% endfor %}
 
-The metrics presented in Table {{ table_counter.value }} summarise overall sequence similarity, discrepancy burden, and completeness relative to the curated gold standard reference.
+The metrics presented in Table {{ table_counter.value }} summarise overall sequence similarity and discrepancy burden relative to the curated gold standard reference for {{ labdata.lab.lab_cod }} compared to the Network's median.
 
 ### Discrepancy type breakdown per sample
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Incorrect nucleotide | Excess Ns | Missing Ns | Insertions | Deletions |
-|---|---:|---:|---:|---:|---:|
-{% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
+| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total sucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambigity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
 {% endfor %}
 
 Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
@@ -1530,23 +1522,28 @@ Figure {{ fig_counter.value }} illustrates the distribution of median nucleotide
   comp_code ~ ": distribution of median discrepancies per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of median consensus discrepancies per sample across participating laboratories ({{ comp_code }}).**  
-Boxplots represent the distribution of nucleotide discrepancies relative to the curated gold standard across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Distribution of median consensus discrepancies per sample across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of nucleotide discrepancies relative to the curated gold standard across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+
+>>> Este boxplot en plan eje x: muestra, eje Y numero de discrepancias, igual hay que hacer uno por tipo de discrepancia para cada muestra para toda la red? Too much?
+
+{% if comp.metadata.vcf_submitted >=1 %}
 
 ## 9.{{ loop.index + 1 }}.2. Variant Detection Performance
 
-Variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated reference variant set for each sample included in the {{ comp_code }} component.
+{% if comp_code in ["SARS1", "SARS2"] %}
+
+For SARS-CoV-2, variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated reference variant set for each sample included in the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample variant detection performance metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Sensitivity (%) | Precision (%) | True Positives (TP) | False Positives (FP) | False Negatives (FN) |
-|---|---:|---:|---:|---:|---:|
-{% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ pct(s.variants.sensitivity_pct, 2) }} | {{ pct(s.variants.precision_pct, 2) }} | {{ s.variants.tp }} | {{ s.variants.fp }} | {{ s.variants.fn }} |
+| Sample ID | Total number of discrepancies | Netwrok median total number of discrepancies | Total wrong variant | Total insertion relative to gold standard | Total deletion relative to gold standard |
+|---|---:|---:|---:|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ s.variants.total_discrepancies }} | {{ general.components[comp_code].variant.samples[collecting_lab_sample_id].median_discrepancies }} | {{ s.variants.wrong_nt }} | {{ s.variants.insertions }} | {{ s.variants.deletions }} |
 {% endfor %}
 
-The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set, including sensitivity, precision, and discrepancy counts.
+The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -1557,8 +1554,44 @@ Figure {{ fig_counter.value }} illustrates the distribution of variant detection
   comp_code ~ ": distribution of variant detection metrics across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).**  
-Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range across the network. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range across the network. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+
+>>> Este boxplot en plan eje x: muestra, eje Y numero de discrepancias, igual hay que hacer uno por tipo de discrepancia para cada muestra para toda la red? Too much?
+
+{% endif %}
+
+Finallty, the total number of variants with AF higher than 75% and the total number of variants with effect reported in the metadata excel, were compared against the real values in the reported .vcf files.
+
+{% if comp_code in ["FLU1", "FLU2"] %}
+
+The total number of variants with AF higher than 75% and the total number of variants with effect reported by **{{ labdata.lab.lab_cod }}** in the metadata excel, were compared agains the real values in the reported Variant call files (`.vcf`) submitted in the {{ comp_code }} component
+{% endif %}
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Concordance between metadata-reported and VCF-derived variant counts for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
+
+| Sample ID | Metadata: variants (AF > 75%) | VCF-derived variants (AF > 75%) | Metadata: variants with effect | VCF-derived variants with effect |
+|---|---:|---:|---:|---:|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ s.variants.number_of_variants_in_consensus if s.variants and s.variants.number_of_variants_in_consensus is not none else "NA" }} | {{ s.variants.number_of_variants_in_consensus_vcf if s.variants and s.variants.number_of_variants_in_consensus_vcf is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect if s.variants and s.variants.number_of_variants_with_effect is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect_vcf if s.variants and s.variants.number_of_variants_with_effect_vcf is not none else "NA" }} |
+{% endfor %}
+
+The total number of variants with allele frequency above 75%, and the total number of variants with predicted effect reported by **{{ labdata.lab.lab_cod }}** in the metadata template, were compared against the corresponding values derived from the submitted variant call files (`.vcf`) for the {{ comp_code }} component.
+
+{% if comp.component_figures.variant_metadata_vs_vcf_distribution %}
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value }} illustrates the agreement between metadata-reported and VCF-derived variant counts across samples for **{{ labdata.lab.lab_cod }}**.
+
+{{ render_figure(
+  comp.component_figures.variant_metadata_vs_vcf_distribution,
+  comp_code ~ ": agreement between metadata-reported and VCF-derived variant counts for " ~ labdata.lab.lab_cod ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Comparison of metadata-reported and VCF-derived variant counts for {{ labdata.lab.lab_cod }} ({{ comp_code }}).** The figure compares, for each sample, the number of variants with allele frequency above 75% and the number of variants with predicted effect as reported in the metadata template versus the values derived directly from the submitted VCF files.
+
+{% endif %}
+{% endif %}
 
 ## 9.{{ loop.index + 1 }}.3. Lineage, Subtype and Clade Assignment
 
@@ -1569,27 +1602,26 @@ Lineage/type and clade assignments submitted by **{{ labdata.lab.lab_cod }}** we
 
 | Sample ID | Expected lineage/type | Reported lineage/type | Expected clade | Reported clade | Number of matches | Number of Discrepancies |s
 |---|---|---|---|---|---|---|
-{% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ s.classification.expected_lineage }} | {{ s.classification.reported_lineage }} | {{ s.classification.expected_clade }} | {{ s.classification.reported_clade }} | {{ s.classification.number_matches }} | {{ s.classification.number_discrepancies }} |
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ s.classification.expected_lineage }} | {{ s.classification.lineage_assignment }} | {{ s.classification.expected_clade }} | {{ s.classification.clade_assignment }} | {{ s.classification.number_matches }} | {{ s.classification.number_discrepancies }} |
 {% endfor %}
 
 Table {{ table_counter.value }} summarises the concordance between expected and reported lineage/type and clade classifications for each sample.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the distribution of classification outcomes per sample across participating laboratories, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
+Figure {{ fig_counter.value }} presents the concordance distribution for lineage/type and clade assignments across laboratories for each sample included in the {{ comp_code }} component. Grey markers represent the proportion of laboratories that reported the correct classification relative to the gold standard, while the red marker indicates the classification outcome reported by {{ labdata.lab.lab_cod }}.
 
 {{ render_figure(
-  comp.component_figures.classification_stackedbars,
-  comp_code ~ ": distribution of classification outcomes per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
+comp.component_figures.classification_dimension_concordance,
+comp_code ~ ": lineage/type and clade concordance across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-![classification_summary](./example_images/classification_summary.png)
+![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
 
-> Como esta pero por muestra en lugar de por compoenente y separado por Lineage y Clade
+> Como esta pero por muestra y separado por Lineage y Clade y separado por discrepancia y por matches.
 
-
-**Figure {{ fig_counter.value }}. Distribution of lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Stacked bars represent the proportion of Exact, Partial, and Discordant classifications within the network for each sample relative to the curated gold standard. The red marker indicates the classification outcome reported by **{{ labdata.lab.lab_cod }}**.
+**_Figure {{ fig_counter.value }}_. Lineage/type and clade concordance across participating laboratories ({{ comp_code }}).** Two panels display classification concordance for each sample. The upper panel represents lineage/type assignment accuracy, while the lower panel represents clade assignment accuracy. Grey markers correspond to the proportion of laboratories reporting correct classifications relative to the curated gold standard. The red marker indicates the classification result obtained by {{ labdata.lab.lab_cod }}.
 
 ## 9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance
 
@@ -1607,19 +1639,19 @@ Positioning was evaluated based on four primary performance indicators:
 
 | Metric | {{ labdata.lab.lab_cod }} workflow | Network median | Network min - max |
 |---|---:|---:|---:|
-| Total number of discrepancies | {{ comp.workflow_positioning.total_number_discrepancies }} | {{ general.components[comp_code].consensus.total_median_discrepancies }} | {{ general.components[comp_code].consensus.min_discrepancies }} - {{ general.components[comp_code].consensus.max_discrepancies }} |
-| Median genome identity (%) | {{ pct(comp.workflow_positioning.median_genome_identity_pct, 4) }} | {{ pct(general.components[comp_code].consensus.median_identity_pct, 4) }} | {{ general.components[comp_code].consensus.identity_pct_min }} - {{ general.components[comp_code].consensus.identity_pct_max }} |
-| Total classification matches | {{ comp.workflow_positioning.total_classification_matches }} | {{ general.components[comp_code].typing.total_classification_matches_meadian }} | {{ general.components[comp_code].typing.total_classification_matches_min }} - {{ general.components[comp_code].typing.total_classification_matches_max }}|
+| Total number of discrepancies | {{ comp.software_benchmarking.total_number_discrepancies }} | {{ general.components[comp_code].consensus.total_median_discrepancies }} | {{ general.components[comp_code].consensus.min_discrepancies }} - {{ general.components[comp_code].consensus.max_discrepancies }} |
+| Median genome identity (%) | {{ pct(comp.software_benchmarking.median_genome_identity_pct, 4) }} | {{ pct(general.components[comp_code].consensus.median_identity_pct, 4) }} | {{ general.components[comp_code].consensus.identity_pct_min }} - {{ general.components[comp_code].consensus.identity_pct_max }} |
+| Total classification matches | {{ comp.software_benchmarking.total_classification_matches }} | {{ general.components[comp_code].typing.total_classification_matches_meadian }} | {{ general.components[comp_code].typing.total_classification_matches_min }} - {{ general.components[comp_code].typing.total_classification_matches_max }}|
 | Metadata completeness (%) | {{ pct(comp.metadata.completeness_pct, 2) }} | {{ pct(general.components[comp_code].metadata_completeness_median, 2) }} | {{ general.components[comp_code].metadata_completeness_min_pct }} - {{ general.components[comp_code].metadata_completeness_max_pct }} |
 
-Table {{ table_counter.value }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. Network medians and interquartile ranges (IQR) provide a reference distribution against which the positioning of the declared workflow can be interpreted.
+Table {{ table_counter.value }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. Network medians and (min-max) ranges provide a reference distribution against which the positioning of the declared workflow can be interpreted.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
 Figure {{ fig_counter.value }} illustrates the comparative positioning of declared workflows within the network for the {{ comp_code }} component.
 
 {{ render_figure(
-  comp.workflow_positioning.bar_plot,
+  comp.software_benchmarking.bar_plot,
   comp_code ~ ": workflow positioning across the network (grey), with " ~ labdata.lab.lab_cod ~ " highlighted (red)."
 ) }}
 
@@ -1629,7 +1661,7 @@ Figure {{ fig_counter.value }} illustrates the comparative positioning of declar
 
 This section summarises selected quantitative analytical metrics declared in the metadata submission of **{{ labdata.lab.lab_cod }}**, disaggregated by sample within the {{ comp_code }} component.
 
-Only metrics explicitly provided by the laboratory are included in the comparative assessment. Network-level medians and interquartile ranges (IQR) are shown for contextual interpretation.
+Only metrics explicitly provided by the laboratory are included in the comparative assessment. Network-level medians and (min-max) ranges are shown for contextual interpretation.
 
 #### Sample Quality Control Assessment
 
@@ -1639,9 +1671,9 @@ Only metrics explicitly provided by the laboratory are included in the comparati
 
 | Sample ID | Reported QC | Gold standard QC | Network % Match |
 |---|---:|---:|---:|---:|
-{% for sample_id, s in comp.samples.items() %}
-{% set ns = (general.components[comp_code].qc.samples | selectattr("sample_id","equalto",sample_id) | list | first) %}
-| {{ sample_id }} | {{ s.reported_qc | default("NA") }} | {{ ns.gold_standard_qc }} | {{ pct(ns.match_rate_pct) if ns else "NA" }} |
+{% for collecting_lab_sample_id, s in comp.samples.items() %}
+{% set ns = (general.components[comp_code].qc.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) %}
+| {{ collecting_lab_sample_id }} | {{ s.qc_test | default("NA") }} | {{ ns.gold_standard_qc }} | {{ pct(ns.match_rate_pct) if ns else "NA" }} |
 {% endfor %}
 
 Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.
@@ -1659,16 +1691,16 @@ Figure {{ fig_counter.value }} contextualises the laboratory’s QC decisions re
 
 #### Other metrics
 
-{% for sample_id, s in comp.samples.items() %}
+{% for collecting_lab_sample_id, s in comp.samples.items() %}
 {% set m = s.metadata_metrics %}
 {% if m %}
-{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("sample_id","equalto",sample_id) | list | first) %}
+{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) %}
 
 {% set table_counter.value = table_counter.value + 1 %}
 
-### {{ sample_id }}
+### {{ collecting_lab_sample_id }}
 
-**Table {{ table_counter.value }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}, {{ sample_id }}).**
+**Table {{ table_counter.value }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}, {{ collecting_lab_sample_id }}).**
 
 | Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
 |---|---:|---:|---:|

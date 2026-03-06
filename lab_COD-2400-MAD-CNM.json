@@ -33,13 +33,15 @@
           "Missing allele frequency threshold field"
         ]
       },
+      "total_number_discrepancies": 5,
+      "median_genome_identity_pct": 99.9500,
+      "total_classification_matches": 10,
+      "bar_plot": "figures/labs/COD-2400-MAD-CNM/SARS1_workflow_bar_plot.png",
       "samples": {
         "SARS1": {
           "collecting_lab_sample_id": "SARS1",
           "source": "ECDC_ESIB_2024",
           "ref_sample": "SARS2.04",
-          "expected_lineage": null,
-          "expected_clade": null,
           "sequencing_instrument_platform": "Illumina",
           "enrichment_protocol": "Amplicon",
           "enrichment_panel": "ARTIC",
@@ -53,14 +55,27 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "discrepancy_breakdown": {
-              "substitutions": 0,
-              "excess_Ns": 1,
-              "missing_Ns": 0,
-              "insertions": 0,
-              "deletions": 0
-            }
+              "wrong_nt": 1,
+              "ambiguity2nt": 0,
+              "nt2ambigity": 0,
+              "ns2nt": 1,
+              "nt2ns": 1 ,
+              "insertions": 1 ,
+              "deletions": 1
+            },
+            "consensus_genome_length": "29885"
           },
           "variants": {
+            "number_of_variants_in_consensus": 90,
+            "number_of_variants_in_consensus_vcf": 25,
+            "number_of_variants_with_effect": 25,
+            "number_of_variants_with_effect_vcf": 25,
+            "discrepancies_in_reported_variants": true,
+            "discrepancies_in_reported_variants_effect": false,
+            "total_discrepancies": 1,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
@@ -70,20 +85,64 @@
             "clade_assignment": "23A",
             "clade_match": true,
             "number_matches": 2,
-            "number_discrepancies": 0
+            "number_discrepancies": 0,
+            "variant_designation": "Variant of Interest (VOI) [GENEPIO:0100083]",
+            "variant_name": "Omicron"
           },
 
           "qc_test":"Fail",
           "qc_match": true,
 
           "metadata_metrics": {
-            "per_genome_greater_10x": 98.5,
             "depth_of_coverage_value": 250.2,
-            "per_Ns": 0.5,
-            "per_reads_virus": 85.0,
-            "per_reads_host": 10.0
+            "ns_per_100_kbp": 281.08,
+            "number_of_Ns": 84,
+            "number_of_reads_sequenced": 3717816,
+            "number_of_sgene_frameshifts": 0,
+            "number_of_unambiguous_bases": 29885,
+            "number_of_variants_in_consensus": 61,
+            "number_of_variants_with_effect": 44,
+            "pass_reads": 3129836,
+            "per_Ns": 0.28,
+            "per_genome_greater_10x": 100.0,
+            "per_ldmutations": 82.61,
+            "per_reads_host": 0.0,
+            "per_reads_virus": 99.99,
+            "per_sgene_ambiguous": 0.0,
+            "per_sgene_coverage": 99.0,
+            "per_unmapped": 0.01,
+            "read_length": 150,
+            "reference_genome_accession": "NC_045512.2"
+          },
+          "software_benchmarking": {
+            "bioinformatics_protocol_software_name": "nf-core/viralrecon",
+            "bioinformatics_protocol_software_version": "v3.0.0",
+            "commercial_open_source_both": "Open Source [SWO:1000008]",
+            "clade_assignment_software_database_version": "2026-01-06--14-59-32Z",
+            "clade_assignment_software_name": "Nextclade",
+            "clade_assignment_software_version": "3.18.1",
+            "consensus_params": "AF > 0.75",
+            "consensus_sequence_software_name": "bcftools consensus",
+            "consensus_sequence_software_version": "1.22",
+            "dehosting_method_software_name": "Kraken2",
+            "dehosting_method_software_version": "2.1.6",
+            "depth_of_coverage_threshold": "10x",
+            "lineage_algorithm_software_version": "PUSHER-v1.37",
+            "lineage_assignment_constellation_version": "v0.1.12",
+            "lineage_assignment_database_version": "1.37",
+            "lineage_assignment_scorpio_version": "0.3.19",
+            "lineage_assignment_software_name": "Pangolin",
+            "lineage_assignment_software_version": "4.3.1",
+            "mapping_params": "--local --very-sensitive-local --seed 1",
+            "mapping_software_name": "bowtie2",
+            "mapping_software_version": "v2.5.4",
+            "preprocessing_params": "--cut_front --cut_tail --trim_poly_x --cut_mean_quality 20 --qualified_quality_phred 20 --unqualified_percent_limit 10 --length_required 50",
+            "preprocessing_software_name": "Fastp",
+            "preprocessing_software_version": "v1.0.1",
+            "variant_calling_params": "-t 0.25 -q 20 -m 10",
+            "variant_calling_software_name": "Ivar",
+            "variant_calling_software_version": "v1.4.4"
           }
-
         },
         "SARS2": {
           "collecting_lab_sample_id": "SARS2",
@@ -116,28 +175,26 @@
             }
           },
           "variants": {
-            "total_variants_metadata": #variantes Hfreq, variantes lowfreq
-            "variants_with_predicted_effect_reported": 2,
-            "variants_with_predicted_effect_metadata": 3,
-            "total_variants_reported": 12,
+            "number_of_variants_in_consensus": 90,
+            "number_of_variants_in_consensus_vcf": 25,
+            "number_of_variants_with_effect": 25,
+            "number_of_variants_with_effect_vcf": 25,
             "discrepancies_in_reported_variants": true,
             "discrepancies_in_reported_variants_effect": false,
-            "discrepancy_breakdown": {
-              "wrong_nt": 0,
-              "ambiguity2nt": 0,
-              "nt2ambiguity": 0,
-              "ns2nt": 1,
-              "nt2ns": 0,
-              "insertions": 0,
-              "deletions": 0
-            }
+            "total_discrepancies": 1,
+            "wrong_nt": 1,
+            "insertions": 1 ,
+            "deletions": 1
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
             "lineage_assignment": "XBB.1.5",
             "expected_clade": "23A",
             "clade_assignment": "23A",
-            "concordance": "Exact"
+            "concordance": "Exact",
+            "clade_assignment_software_database_version": "2026-01-06--14-59-32Z",
+            "clade_assignment_software_name": "Nextclade",
+            "clade_assignment_software_version": "3.18.1"
           },
           "qc_test":"Fail",
           "qc_match": false,
@@ -150,35 +207,17 @@
             "per_reads_host": 10.0,
             "total_variants_reported": 12,
             "variants_with_predicted_effect": 2
-          },
-          "metadata_metrics_network": {
-            "per_genome_greater_10x": { "median": 97.0, "iqr": [95.0, 99.0] },
-            "depth_of_coverage_value": { "median": 220.0, "iqr": [180.0, 300.0] },
-            "per_Ns": { "median": 1.0, "iqr": [0.5, 2.5] },
-            "per_reads_virus": { "median": 80.0, "iqr": [60.0, 90.0] },
-            "per_reads_host": { "median": 15.0, "iqr": [5.0, 30.0] },
-            "total_variants_reported": { "median": 12, "iqr": [10, 14] },
-            "variants_with_predicted_effect": { "median": 2, "iqr": [1, 3] }
           }
         }
       },
-
       "component_figures": {
         "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_consensus_discrepancy_distribution.png",
         "variant_metrics_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metrics_distribution.png",
-        "classification_stackedbars": "figures/labs/COD-2400-MAD-CNM/SARS1_classification_stackedbars.png",
+        "variant_metadata_vs_vcf_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metadata_vs_vcf_distribution.png",
+        "classification_dimension_concordance": "figures/labs/COD-2400-MAD-CNM/SARS1_classification_dimension_concordance.png",
         "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS1_metadata_metrics_panel.png",
         "qc_match_rate_by_sample_with_lab_marker": "figures/labs/COD-2400-MAD-CNM/SARS1_qc_match_rate.png"
-      },
-
-      "workflow_positioning": {
-        "total_number_discrepancies": 5,
-        "median_genome_identity_pct": 99.9500,
-        "total_classification_matches": 10,
-
-        "bar_plot": "figures/labs/COD-2400-MAD-CNM/SARS1_workflow_bar_plot.png"
       }
-
     },
     "SARS2": {    
       "component_code": "SARS1",
@@ -335,10 +374,11 @@
       "component_figures": {
         "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS2_consensus_discrepancy_distribution.png",
         "variant_metrics_distribution": "figures/labs/COD-2400-MAD-CNM/SARS2_variant_metrics_distribution.png",
-        "classification_stackedbars": "figures/labs/COD-2400-MAD-CNM/SARS2_classification_stackedbars.png",
+        "variant_metadata_vs_vcf_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metadata_vs_vcf_distribution.png",
+        "classification_dimension_concordance": "figures/labs/COD-2400-MAD-CNM/SARS2_classification_dimension_concordance.png",
         "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS2_metadata_metrics_panel.png"
       },
-      "workflow_positioning": {
+      "software_benchmarking": {
         "median_genome_identity_pct": 99.1000,
         "network_median_identity_pct": 99.1000,
         "network_iqr_identity_pct": [98.7000, 99.4000],
