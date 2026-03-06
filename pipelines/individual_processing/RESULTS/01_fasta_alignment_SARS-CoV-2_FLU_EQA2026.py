@@ -161,7 +161,7 @@ def initialize_sars_temporals():
 
     for i in range(1, 11):
 
-        sars_files = list(USER_DIR.rglob(f"SARS{i}_*"))
+        sars_files = list(USER_DIR.rglob(f"SARS{i}.fa"))
         if not sars_files:
             print(f"Consensus fasta for SARS{i} not found. Skipping...")
             continue
