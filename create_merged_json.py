@@ -477,37 +477,76 @@ def build_lab_json(
             consensus_metrics = pick_sample_metrics(consensus_index, sample_id, comp_code)
             variant_metrics = pick_sample_metrics(variant_index, sample_id, comp_code)
 
+            consensus_breakdown = {
+                "wrong_nt": consensus_metrics.get("wrong_nt") or consensus_metrics.get("substitutions") or 0,
+                "ambiguity2nt": consensus_metrics.get("ambiguity2nt") or 0,
+                "nt2ambiguity": consensus_metrics.get("nt2ambiguity") or consensus_metrics.get("excess_ambiguous") or 0,
+                "ns2nt": consensus_metrics.get("ns2nt") or consensus_metrics.get("missing_Ns") or 0,
+                "nt2ns": consensus_metrics.get("nt2ns") or consensus_metrics.get("excess_Ns") or 0,
+                "insertions": consensus_metrics.get("insertions") or 0,
+                "deletions": consensus_metrics.get("deletions") or 0,
+            }
+
+            consensus_total_discrepancies = sum(consensus_breakdown.values())
+
             consensus_block: Dict[str, Any] = {
                 "genome_identity_pct": consensus_metrics.get("genome_identity_pct"),
-                "total_discrepancies": consensus_metrics.get("total_discrepancies"),
+                "total_discrepancies": consensus_total_discrepancies,
                 "consensus_genome_length": row.get("consensus_genome_length"),
-                "discrepancy_breakdown": {
-                    "wrong_nt": consensus_metrics.get("wrong_nt") or consensus_metrics.get("substitutions"),
-                    "ambiguity2nt": consensus_metrics.get("ambiguity2nt") or consensus_metrics.get("missing_Ns"),
-                    "nt2ambiguity": consensus_metrics.get("nt2ambiguity") or consensus_metrics.get("excess_ambiguous"),
-                    "ns2nt": consensus_metrics.get("ns2nt") or consensus_metrics.get("missing_Ns"),
-                    "nt2ns": consensus_metrics.get("nt2ns") or consensus_metrics.get("excess_Ns"),
-                    "insertions": consensus_metrics.get("insertions"),
-                    "deletions": consensus_metrics.get("deletions"),
-                },
+                "discrepancy_breakdown": consensus_breakdown,
             }
             if consensus_block.get("genome_identity_pct") is not None:
                 sample_consensus_identities.append(float(consensus_block["genome_identity_pct"]))
             if consensus_block.get("total_discrepancies") is not None:
                 sample_consensus_discrepancies.append(float(consensus_block["total_discrepancies"]))
 
+            variant_wrong_nt = variant_metrics.get("wrong_nt") or 0
+            variant_insertions = variant_metrics.get("insertions") or 0
+            variant_deletions = variant_metrics.get("deletions") or 0
+
+            variant_total_discrepancies = (
+                variant_wrong_nt +
+                variant_insertions +
+                variant_deletions
+            )
+
+            number_of_variants_in_consensus = row.get("number_of_variants_in_consensus")
+            number_of_variants_in_consensus_vcf = variant_metrics.get("number_of_variants_in_consensus_vcf")
+
+            number_of_variants_with_effect = row.get("number_of_variants_with_effect")
+            number_of_variants_with_effect_vcf = variant_metrics.get("number_of_variants_with_effect_vcf")
+
+            if number_of_variants_in_consensus is not None and number_of_variants_in_consensus_vcf is not None:
+                discrepancies_variants = int(number_of_variants_in_consensus_vcf) - int(number_of_variants_in_consensus)
+            else:
+                discrepancies_variants = None
+
+            if number_of_variants_with_effect is not None and number_of_variants_with_effect_vcf is not None:
+                discrepancies_variants_effect = int(number_of_variants_with_effect_vcf) - int(number_of_variants_with_effect)
+            else:
+                discrepancies_variants_effect = None
+
             variants_block: Dict[str, Any] = {
-                "number_of_variants_in_consensus": row.get("number_of_variants_in_consensus"),
-                "number_of_variants_in_consensus_vcf": variant_metrics.get("number_of_variants_in_consensus_vcf") or variant_metrics.get("real_total_variants_af_gt_75"),
-                "number_of_variants_with_effect": row.get("number_of_variants_with_effect"),
-                "number_of_variants_with_effect_vcf": variant_metrics.get("number_of_variants_with_effect_vcf") or variant_metrics.get("real_variants_with_effect"),
-                "discrepancies_in_reported_variants": variant_metrics.get("discrepancies_in_reported_variants"),
-                "discrepancies_in_reported_variants_effect": variant_metrics.get("discrepancies_in_reported_variants_effect"),
-                "total_discrepancies": variant_metrics.get("total_discrepancies"),
-                "wrong_nt": variant_metrics.get("wrong_nt"),
-                "insertions": variant_metrics.get("insertions"),
-                "deletions": variant_metrics.get("deletions"),
+                "number_of_variants_in_consensus": number_of_variants_in_consensus,
+                "number_of_variants_in_consensus_vcf": number_of_variants_in_consensus_vcf,
+                "number_of_variants_with_effect": number_of_variants_with_effect,
+                "number_of_variants_with_effect_vcf": number_of_variants_with_effect_vcf,
+                "discrepancies_in_reported_variants": discrepancies_variants,
+                "discrepancies_in_reported_variants_effect": discrepancies_variants_effect,
             }
+
+            if comp_expected.get("virus") != "Influenza virus":
+                variant_wrong_nt = variant_metrics.get("wrong_nt")
+                variant_insertions = variant_metrics.get("insertions")
+                variant_deletions = variant_metrics.get("deletions")
+
+                variants_block.update({
+                    "total_discrepancies": variant_total_discrepancies,
+                    "wrong_nt": variant_wrong_nt,
+                    "insertions": variant_insertions,
+                    "deletions": variant_deletions,
+                })
+
             if variants_block["number_of_variants_in_consensus"] is not None and variants_block["number_of_variants_in_consensus_vcf"] is not None:
                 variants_block["discrepancies_in_reported_variants"] = (
                     int(variants_block["number_of_variants_in_consensus"]) != int(variants_block["number_of_variants_in_consensus_vcf"])
