@@ -149,7 +149,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- Archivos de entrada ---
 for gold_standard in GOLD_DIR.rglob("*.csv"):
-    if "FLU" in gold_standard:
+    if "FLU" in gold_standard.name:
         continue
     var_gold = pd.read_csv(gold_standard)
     # Renombrar DP y AF antes de cualquier merge
