@@ -1513,10 +1513,10 @@ The metrics presented in Table {{ table_counter.value }} summarise overall seque
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Substitutions | Excess Ns | Missing Ns | Insertions | Deletions |
+| Sample ID | Incorrect nucleotide | Excess Ns | Missing Ns | Insertions | Deletions |
 |---|---:|---:|---:|---:|---:|
 {% for sample_id, s in comp.samples.items() -%}
-| {{ sample_id }} | {{ s.consensus.discrepancy_breakdown.substitutions }} | {{ s.consensus.discrepancy_breakdown.excess_Ns }} | {{ s.consensus.discrepancy_breakdown.missing_Ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
+| {{ sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
 {% endfor %}
 
 Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
@@ -1588,8 +1588,8 @@ Figure {{ fig_counter.value }} illustrates the distribution of classification ou
 
 > Como esta pero por muestra en lugar de por compoenente y separado por Lineage y Clade
 
-**Figure {{ fig_counter.value }}. Distribution of lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).**  
-Stacked bars represent the proportion of Exact, Partial, and Discordant classifications within the network for each sample relative to the curated gold standard. The red marker indicates the classification outcome reported by **{{ labdata.lab.lab_cod }}**.
+
+**Figure {{ fig_counter.value }}. Distribution of lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Stacked bars represent the proportion of Exact, Partial, and Discordant classifications within the network for each sample relative to the curated gold standard. The red marker indicates the classification outcome reported by **{{ labdata.lab.lab_cod }}**.
 
 ## 9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance
 
