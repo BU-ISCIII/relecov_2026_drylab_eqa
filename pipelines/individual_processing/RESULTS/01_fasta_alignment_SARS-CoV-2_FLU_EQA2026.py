@@ -252,7 +252,7 @@ def initialize_flu_tmp_if_needed(tmp_file, flu_sample, segment):
 # JSON PROCESSING
 # ==========================================================
 
-def process_json_and_append(cod_dir: Path):
+def process_json_and_append():
 
     cod_dir = BASE_DIR
     json_files = list(cod_dir.glob("*.json"))
