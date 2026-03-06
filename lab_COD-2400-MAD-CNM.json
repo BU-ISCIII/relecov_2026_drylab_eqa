@@ -36,7 +36,6 @@
       "total_number_discrepancies": 5,
       "median_genome_identity_pct": 99.9500,
       "total_classification_matches": 10,
-      "bar_plot": "figures/labs/COD-2400-MAD-CNM/SARS1_workflow_bar_plot.png",
       "samples": {
         "SARS1": {
           "collecting_lab_sample_id": "SARS1",
@@ -209,14 +208,6 @@
             "variants_with_predicted_effect": 2
           }
         }
-      },
-      "component_figures": {
-        "consensus_discrepancy_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_consensus_discrepancy_distribution.png",
-        "variant_metrics_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metrics_distribution.png",
-        "variant_metadata_vs_vcf_distribution": "figures/labs/COD-2400-MAD-CNM/SARS1_variant_metadata_vs_vcf_distribution.png",
-        "classification_dimension_concordance": "figures/labs/COD-2400-MAD-CNM/SARS1_classification_dimension_concordance.png",
-        "metadata_metrics_panel": "figures/labs/COD-2400-MAD-CNM/SARS1_metadata_metrics_panel.png",
-        "qc_match_rate_by_sample_with_lab_marker": "figures/labs/COD-2400-MAD-CNM/SARS1_qc_match_rate.png"
       }
     },
     "SARS2": {    
