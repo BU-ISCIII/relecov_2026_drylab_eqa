@@ -14,7 +14,7 @@ def find_reference_id(fasta_alignment_file):
     with open(fasta_alignment_file, 'r') as f:
         for line in f:
             if line.startswith(">"):
-                references_ids.append(line.lstrip(">"))
+                references_ids.append(line.lstrip(">").rstrip())
     return references_ids[-1]
 
 def write_identity(output_file, sample_name, record_id, identity_value):
