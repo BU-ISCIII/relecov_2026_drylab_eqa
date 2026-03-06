@@ -4,13 +4,14 @@
     "laboratory_name": "Centro Nacional de Microbiología, Instituto de Salud Carlos III"
   },
   "metadata": {
-    "completeness_pct": 92.2675026123302,
+    "completeness_pct": 90.75630252100841,
     "primary_incompleteness_drivers": [
       "Mapping fields",
       "QC metrics fields",
+      "Subtype assignment fields",
+      "Type assignment fields",
       "Variant calling fields",
-      "Pre-processing fields",
-      "Clade assignment fields"
+      "Pre-processing fields"
     ]
   },
   "components": {
@@ -45,10 +46,10 @@
           "total_expected_fields": 20,
           "filled_fields": 20,
           "incomplete_fields": [],
+          "incomplete_groups": [],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29903",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -133,9 +134,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS2": {
@@ -151,10 +150,10 @@
           "total_expected_fields": 59,
           "filled_fields": 59,
           "incomplete_fields": [],
+          "incomplete_groups": [],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29885",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -240,9 +239,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS3": {
@@ -258,10 +255,10 @@
           "total_expected_fields": 59,
           "filled_fields": 59,
           "incomplete_fields": [],
+          "incomplete_groups": [],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29882",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -347,9 +344,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS4": {
@@ -365,10 +360,10 @@
           "total_expected_fields": 59,
           "filled_fields": 59,
           "incomplete_fields": [],
+          "incomplete_groups": [],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29888",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -454,9 +449,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS5": {
@@ -472,10 +465,10 @@
           "total_expected_fields": 59,
           "filled_fields": 59,
           "incomplete_fields": [],
+          "incomplete_groups": [],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29876",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -561,9 +554,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         }
       },
@@ -586,7 +577,9 @@
         "vcf_submitted": 5,
         "vcf_expected": 4,
         "completeness_pct": 93.08755760368663,
-        "primary_incompleteness_drivers": []
+        "primary_incompleteness_drivers": [
+          "Pre-processing fields"
+        ]
       },
       "samples": {
         "SARS6": {
@@ -606,10 +599,12 @@
             "preprocessing_software_name",
             "preprocessing_software_version"
           ],
+          "incomplete_groups": [
+            "Pre-processing fields"
+          ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29847",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -692,9 +687,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS7": {
@@ -714,10 +707,12 @@
             "preprocessing_software_name",
             "preprocessing_software_version"
           ],
+          "incomplete_groups": [
+            "Pre-processing fields"
+          ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29856",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -800,9 +795,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS8": {
@@ -822,10 +815,12 @@
             "preprocessing_software_name",
             "preprocessing_software_version"
           ],
+          "incomplete_groups": [
+            "Pre-processing fields"
+          ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29847",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -908,9 +903,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS9": {
@@ -930,10 +923,12 @@
             "preprocessing_software_name",
             "preprocessing_software_version"
           ],
+          "incomplete_groups": [
+            "Pre-processing fields"
+          ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29894",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1011,9 +1006,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         },
         "SARS10": {
@@ -1033,10 +1026,12 @@
             "preprocessing_software_name",
             "preprocessing_software_version"
           ],
+          "incomplete_groups": [
+            "Pre-processing fields"
+          ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "29894",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1114,9 +1109,7 @@
             "lineage_algorithm_software_version": "PUSHER-v1.37",
             "lineage_assignment_scorpio_version": "0.3.19",
             "lineage_assignment_constellation_version": "v0.1.12",
-            "lineage_assignment_database_version": "1.37",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "lineage_assignment_database_version": "1.37"
           }
         }
       },
@@ -1138,8 +1131,14 @@
         "fasta_expected": 4,
         "vcf_submitted": 4,
         "vcf_expected": 4,
-        "completeness_pct": 89.22413793103448,
-        "primary_incompleteness_drivers": []
+        "completeness_pct": 85.77586206896552,
+        "primary_incompleteness_drivers": [
+          "Mapping fields",
+          "QC metrics fields",
+          "Subtype assignment fields",
+          "Type assignment fields",
+          "Variant calling fields"
+        ]
       },
       "samples": {
         "FLU1": {
@@ -1153,18 +1152,26 @@
           "key_feature": "High-quality baseline sample (zoonotic)",
           "expected_qc": "Pass",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13136",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1236,12 +1243,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2025-09-09--12-13-13Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU2": {
@@ -1255,18 +1259,26 @@
           "key_feature": "High-quality baseline sample (human)",
           "expected_qc": "Pass",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13162",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1338,12 +1350,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU3": {
@@ -1365,10 +1374,12 @@
             "mapping_software_version",
             "reference_genome_accession"
           ],
+          "incomplete_groups": [
+            "Mapping fields"
+          ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": null,
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1424,11 +1435,7 @@
             "dehosting_method_software_version": "2.1.3",
             "preprocessing_software_name": "Fastp",
             "preprocessing_software_version": "v0.20.0",
-            "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe",
-            "clade_assignment_software_database_version": "0000",
-            "lineage_assignment_database_version": "0000",
-            "type_assignment_software_database_version": "0000",
-            "subtype_assignment_software_database_version": "0000"
+            "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe"
           }
         },
         "FLU4": {
@@ -1442,18 +1449,26 @@
           "key_feature": "Contamination with SARS-CoV-2 reads.",
           "expected_qc": "Pass",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13142",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1525,12 +1540,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU5": {
@@ -1544,18 +1556,26 @@
           "key_feature": "NA segment dropout.",
           "expected_qc": "Fail",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13129",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1627,12 +1647,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         }
       },
@@ -1654,8 +1671,14 @@
         "fasta_expected": 5,
         "vcf_submitted": 4,
         "vcf_expected": 5,
-        "completeness_pct": 86.5079365079365,
-        "primary_incompleteness_drivers": []
+        "completeness_pct": 83.80566801619433,
+        "primary_incompleteness_drivers": [
+          "Mapping fields",
+          "QC metrics fields",
+          "Subtype assignment fields",
+          "Type assignment fields",
+          "Variant calling fields"
+        ]
       },
       "samples": {
         "FLU6": {
@@ -1669,7 +1692,7 @@
           "key_feature": "High-quality baseline sample (zoonotic)",
           "expected_qc": "Pass",
           "total_expected_fields": 40,
-          "filled_fields": 30,
+          "filled_fields": 28,
           "incomplete_fields": [
             "depth_of_coverage_threshold",
             "mapping_params",
@@ -1680,12 +1703,19 @@
             "number_of_unambiguous_bases",
             "per_Ns",
             "per_genome_greater_10x",
-            "reference_genome_accession"
+            "reference_genome_accession",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": null,
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1744,12 +1774,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2025-09-09--12-13-13Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU7": {
@@ -1763,18 +1790,26 @@
           "key_feature": "Contamination with Rhinovirus reads.",
           "expected_qc": "Pass",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13133",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1846,12 +1881,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU8": {
@@ -1865,18 +1897,26 @@
           "key_feature": "High-quality baseline sample (human)",
           "expected_qc": "Pass",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13123",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -1948,12 +1988,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU9": {
@@ -1966,23 +2003,27 @@
           "enrichment_panel_version": "v1.0",
           "key_feature": "HA segment dropout.",
           "expected_qc": "Fail",
-          "total_expected_fields": 53,
-          "filled_fields": 44,
+          "total_expected_fields": 48,
+          "filled_fields": 41,
           "incomplete_fields": [
-            "clade_assignment",
-            "clade_assignment_date",
-            "clade_assignment_software_name",
-            "clade_assignment_software_version",
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13069",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -2012,9 +2053,9 @@
             "expected_clade": "D.3.1.1",
             "clade_assignment": null,
             "lineage_match": true,
-            "clade_match": null,
+            "clade_match": false,
             "number_matches": 1,
-            "number_discrepancies": 0,
+            "number_discrepancies": 1,
             "variant_designation": null,
             "variant_name": null
           },
@@ -2051,13 +2092,9 @@
             "consensus_sequence_software_version": "v1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
-            "clade_assignment_software_database_version": "0000",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         },
         "FLU10": {
@@ -2071,18 +2108,26 @@
           "key_feature": "High-quality baseline sample (zoonotic)",
           "expected_qc": "Pass",
           "total_expected_fields": 53,
-          "filled_fields": 48,
+          "filled_fields": 46,
           "incomplete_fields": [
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
             "ns_per_100_kbp",
+            "subtype_assignment_software_database_version",
+            "type_assignment_software_database_version",
             "variant_calling_software_version"
+          ],
+          "incomplete_groups": [
+            "Mapping fields",
+            "QC metrics fields",
+            "Subtype assignment fields",
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
             "total_discrepancies": null,
-            "indel_events": null,
             "consensus_genome_length": "13140",
             "discrepancy_breakdown": {
               "wrong_nt": null,
@@ -2154,12 +2199,9 @@
             "clade_assignment_software_name": "Nextclade",
             "clade_assignment_software_version": "3.9.1",
             "clade_assignment_software_database_version": "2025-09-09--12-13-13Z",
-            "lineage_assignment_database_version": "0000",
             "type_assignment_software_name": "IRMA typing",
-            "type_assignment_software_database_version": "0000",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1",
-            "subtype_assignment_software_database_version": "0000"
+            "subtype_assignment_software_version": "v1.3.1"
           }
         }
       },

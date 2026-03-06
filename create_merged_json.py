@@ -178,9 +178,6 @@ SOFTWARE_BENCHMARKING_FIELDS = [
     "subtype_assignment_software_database_version",
 ]
 
-ALWAYS_VALID_PLACEHOLDERS = {"000", "0000", "Not Provided [SNOMED:434941000124101]"}
-
-
 # ---------------------------------------------------------------------------
 # Generic helpers
 # ---------------------------------------------------------------------------
@@ -202,7 +199,9 @@ def is_meaningful(value: Any) -> bool:
         return False
     if isinstance(value, str):
         stripped = value.strip()
-        return bool(stripped) or value in ALWAYS_VALID_PLACEHOLDERS
+        if stripped in {"", "000", "0000", "Not Provided [SNOMED:434941000124101]"}:
+            return False
+        return True
     return True
 
 
@@ -219,6 +218,13 @@ def normalize_label(value: Any) -> Optional[str]:
         return "Fail"
     return text
 
+def normalize(value: Any) -> Optional[str]:
+    if value is None:
+        return None
+    text = str(value).strip()
+    if text.lower() in {"", "na", "n/a", "null", "none"}:
+        return None
+    return text
 
 def numeric_median(values: Iterable[Any]) -> Optional[float]:
     clean: List[float] = []
@@ -278,19 +284,6 @@ def applicable_group_fields(non_evaluable_groups: List[str]) -> Dict[str, List[s
             continue
         groups[group_name] = group_fields
     return groups
-
-
-def applicable_fields(non_evaluable_groups: List[str]) -> List[str]:
-    fields: List[str] = []
-    for _, group_fields in applicable_group_fields(non_evaluable_groups).items():
-        fields.extend(group_fields)
-    seen = set()
-    unique = []
-    for field in fields:
-        if field not in seen:
-            unique.append(field)
-            seen.add(field)
-    return unique
 
 
 def completeness_from_row(
@@ -452,8 +445,10 @@ def build_lab_json(
 
         for sample_id, sample_expected in comp_expected["samples"].items():
             row = metadata_by_sample.get(sample_id)
-            if row:
-                comp_rows.append(row)
+            if row is None:
+                continue
+
+            comp_rows.append(row)
 
             non_evaluable_groups = sample_expected.get("non_evaluable_metadata", [])
             total_expected_fields, filled_fields, incomplete_fields, incomplete_groups = completeness_from_row(row, non_evaluable_groups)
@@ -461,11 +456,6 @@ def build_lab_json(
             all_filled_total += filled_fields
             for group_name in incomplete_groups:
                 global_incomplete_counter[group_name] = global_incomplete_counter.get(group_name, 0) + 1
-
-            def normalize(value):
-                if value in [None, "", "NA", "N/A", "null"]:
-                    return None
-                return str(value).strip()
 
             expected_lineage = normalize(sample_expected.get("expected_lineage"))
             expected_clade = normalize(sample_expected.get("expected_clade"))
@@ -476,13 +466,13 @@ def build_lab_json(
             else:
                 reported_lineage = derive_type_subtype(row) if row else None
             reported_clade =  normalize(row.get("clade_assignment") if row else None)
-            lineage_match = (reported_lineage == expected_lineage) if (reported_lineage is not None and expected_lineage is not None) else None
-            clade_match = (reported_clade == expected_clade) if (reported_clade is not None and expected_clade is not None) else None
+            lineage_match = None if expected_lineage is None else (reported_lineage == expected_lineage)
+            clade_match = None if expected_clade is None else (reported_clade == expected_clade)
             classification_summary = classification_outcome(lineage_match, clade_match)
             total_classification_matches += classification_summary["number_matches"]
 
-            reported_qc = normalize_label(row.get("qc_test") if row else None)
-            qc_match = (reported_qc == expected_qc) if (reported_qc is not None and expected_qc is not None) else None
+            reported_qc = normalize_label(row.get("qc_test"))
+            qc_match = None if expected_qc is None else (reported_qc == expected_qc)
 
             consensus_metrics = pick_sample_metrics(consensus_index, sample_id, comp_code)
             variant_metrics = pick_sample_metrics(variant_index, sample_id, comp_code)
@@ -490,8 +480,7 @@ def build_lab_json(
             consensus_block: Dict[str, Any] = {
                 "genome_identity_pct": consensus_metrics.get("genome_identity_pct"),
                 "total_discrepancies": consensus_metrics.get("total_discrepancies"),
-                "indel_events": consensus_metrics.get("indel_events"),
-                "consensus_genome_length": row.get("consensus_genome_length") if row else None,
+                "consensus_genome_length": row.get("consensus_genome_length"),
                 "discrepancy_breakdown": {
                     "wrong_nt": consensus_metrics.get("wrong_nt") or consensus_metrics.get("substitutions"),
                     "ambiguity2nt": consensus_metrics.get("ambiguity2nt") or consensus_metrics.get("missing_Ns"),
@@ -508,16 +497,16 @@ def build_lab_json(
                 sample_consensus_discrepancies.append(float(consensus_block["total_discrepancies"]))
 
             variants_block: Dict[str, Any] = {
-                "number_of_variants_in_consensus": row.get("number_of_variants_in_consensus") if row else None,
+                "number_of_variants_in_consensus": row.get("number_of_variants_in_consensus"),
                 "number_of_variants_in_consensus_vcf": variant_metrics.get("number_of_variants_in_consensus_vcf") or variant_metrics.get("real_total_variants_af_gt_75"),
-                "number_of_variants_with_effect": row.get("number_of_variants_with_effect") if row else None,
+                "number_of_variants_with_effect": row.get("number_of_variants_with_effect"),
                 "number_of_variants_with_effect_vcf": variant_metrics.get("number_of_variants_with_effect_vcf") or variant_metrics.get("real_variants_with_effect"),
                 "discrepancies_in_reported_variants": variant_metrics.get("discrepancies_in_reported_variants"),
                 "discrepancies_in_reported_variants_effect": variant_metrics.get("discrepancies_in_reported_variants_effect"),
                 "total_discrepancies": variant_metrics.get("total_discrepancies"),
                 "wrong_nt": variant_metrics.get("wrong_nt"),
                 "insertions": variant_metrics.get("insertions"),
-                "deletions": variant_metrics.get("deletions")
+                "deletions": variant_metrics.get("deletions"),
             }
             if variants_block["number_of_variants_in_consensus"] is not None and variants_block["number_of_variants_in_consensus_vcf"] is not None:
                 variants_block["discrepancies_in_reported_variants"] = (
@@ -534,8 +523,8 @@ def build_lab_json(
                 "expected_clade": expected_clade,
                 "clade_assignment": reported_clade,
                 **classification_summary,
-                "variant_designation": row.get("variant_designation") if row else None,
-                "variant_name": row.get("variant_name") if row else None
+                "variant_designation": row.get("variant_designation"),
+                "variant_name": row.get("variant_name"),
             }
 
             sample_out: Dict[str, Any] = {
@@ -551,6 +540,7 @@ def build_lab_json(
                 "total_expected_fields": total_expected_fields,
                 "filled_fields": filled_fields,
                 "incomplete_fields": incomplete_fields if incomplete_fields else [],
+                "incomplete_groups": incomplete_groups if incomplete_groups else [],
                 "consensus": consensus_block,
                 "variants": variants_block,
                 "classification": classification_block,
@@ -565,6 +555,11 @@ def build_lab_json(
         component_filled = sum(v["filled_fields"] for v in component_out["samples"].values())
         component_completeness = (100.0 * component_filled / component_total_expected) if component_total_expected else None
 
+        component_incomplete_counter: Dict[str, int] = {}
+        for sample in component_out["samples"].values():
+            for group_name in sample.get("incomplete_groups", []):
+                component_incomplete_counter[group_name] = component_incomplete_counter.get(group_name, 0) + 1
+
         component_out["metadata"] = {
             "fasta_submitted": count_existing(comp_rows, "consensus_sequence_filename"),
             "fasta_expected": comp_expected.get("fasta_expected", len(comp_expected["samples"])),
@@ -572,26 +567,13 @@ def build_lab_json(
             "vcf_expected": comp_expected.get("vcf_expected", len(comp_expected["samples"])),
             "completeness_pct": component_completeness,
             "primary_incompleteness_drivers": [
-                name for name, _ in sorted(
-                    {
-                        group_name: sum(
-                            1 for sample in component_out["samples"].values()
-                            if group_name in sample.get("incomplete_groups", [])
-                        )
-                        for group_name in {
-                            g for sample in component_out["samples"].values() for g in sample.get("incomplete_groups", [])
-                        }
-                    }.items(),
-                    key=lambda kv: (-kv[1], kv[0])
-                )[:10]
+                name for name, _ in sorted(component_incomplete_counter.items(), key=lambda kv: (-kv[1], kv[0]))[:10]
             ],
         }
 
         component_out["total_number_discrepancies"] = sum(v["consensus"].get("total_discrepancies") or 0 for v in component_out["samples"].values())
         component_out["median_genome_identity_pct"] = numeric_median(sample_consensus_identities)
         component_out["total_classification_matches"] = total_classification_matches
-
-        fig_root = figures_root or f"figures/labs/{lab_id}"
 
         output["components"][comp_code] = component_out
 
