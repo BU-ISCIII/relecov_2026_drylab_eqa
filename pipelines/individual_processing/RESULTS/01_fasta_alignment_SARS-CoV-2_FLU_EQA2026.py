@@ -13,6 +13,7 @@ from Bio import SeqIO
 
 BASE_DIR = Path.cwd()
 GOLD_DIR = BASE_DIR / "gold_standard"
+USER_DIR = BASE_DIR / "consensus_files"
 
 ALIGN_DIR_SARS = BASE_DIR / "ALIGNMENTS_SARS"
 ALIGN_DIR_FLU = BASE_DIR / "ALIGNMENTS_FLU"
@@ -160,6 +161,10 @@ def initialize_sars_temporals():
 
     for i in range(1, 11):
 
+        if not USER_DIR.rglob(f"SARS{i}_*"):
+            print(f"Consensus fasta for SARS{i} not found. Skipping...")
+            continue
+
         tmp_file = ALIGN_DIR_SARS / f"EQA_SARS{i}_tmp.fasta"
 
         with open(tmp_file, "w") as out_f:
@@ -249,7 +254,7 @@ def initialize_flu_tmp_if_needed(tmp_file, flu_sample, segment):
 
 def process_json_and_append(cod_dir: Path):
 
-    cod_dir = Path(cod_dir)
+    cod_dir = BASE_DIR
     json_files = list(cod_dir.glob("*.json"))
     if not json_files:
         print(f"No JSON in {cod_dir.name}")
@@ -391,7 +396,7 @@ def main():
 
     initialize_sars_temporals()
 
-    process_json_and_append("/data/ucct/bi/research/20260217_EQA_SERVIFICATION_TEST/RESULTS/")
+    process_json_and_append()
 
     run_mafft_alignments()
 

@@ -44,41 +44,41 @@ def clasificar(ref_bases, sample_bases):
 
     if len(r) == 1:
         if s == "N":
-            return "N EN LUGAR DE NUCLEOTIDO"
+            return "Stretch of Ns instead of nucleotide"
         elif s == "-":
-            return "DELECION"
+            return "Deletion relative to gold standard"
         elif r == "-":
-            return "INSERCION"
+            return "Insertion relative to gold standard"
         elif r == "N":
-            return "NUCLEOTIDO EN LUGAR DE N"
+            return "Nucleotide stretch instead of stretch of Ns"
         elif s in "ATGC" and r in "ATGC":
-            return "CAMBIO DE NUCLEOTIDO"
+            return "Wrong nucleotide"
         elif s in "RYSWKMBDHV" and r in "ATGC":
-            return "AMBIGÜEDAD EN LUGAR DE NUCLEOTIDO"
+            return "Ambiguity instead of nucleotide"
         elif r in "RYSWKMBDHV" and s in "ATGC":
-            return "NUCLEOTIDO EN LUGAR DE AMBIGÜEDAD"
+            return "Nucleotide instread of ambiguity"
         else:
-            return "OTROS: REVISAR"
+            return "Other: Review"
 
     else:
         if set(r) <= {"-"} and set(s) <= {"N"}:
-            return "N(S) EN LUGAR DE GAPS"
+            return "Nucleotide instead of gap"
         elif set(r) <= {"N"} and set(s) <= {"-"}:
-            return "POSIBLE DELECION"
+            return "Deletion relative to gold standard"
         elif "-" in s and any(base in "ATGCRYSWKMBDHV" for base in r) and "N" not in r:
-            return "DELECION"
+            return "Deletion relative to gold standard"
         elif ("-" not in s and "N" not in s) and "-" in r:
-            return "INSERCION"
+            return "Insertion relative to gold standard"
         elif "N" in s and not any(x in r for x in ["N", "-"]):
-            return "N(S) EN LUGAR DE NUCLEOTIDO(S)"
+            return "Stretch of Ns instead of nucleotide"
         elif "N" in r and not any(x in s for x in ["N", "-"]):
-            return "NUCLEOTIDO(S) EN LUGAR DE N(S)"
+            return "Nucleotide stretch instead of stretch of Ns"
         elif "N" in r and "-" in s:
-            return "POSIBLE DELECION"
+            return "Deletion relative to gold standard"
         elif all(base in "ATGCRYSWKMBDHV" for base in r) and all(base in "ATGCRYSWKMBDHV" for base in s):
-            return "CAMBIO DE NUCLEOTIDO(S)"
+            return "Wrong nucleotide"
         else:
-            return "OTROS: REVISAR"
+            return "Other: Review"
 
 
 def sort_key(row):

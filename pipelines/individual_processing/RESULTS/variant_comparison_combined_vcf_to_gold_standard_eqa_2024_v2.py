@@ -39,12 +39,12 @@ def comparar_alt(row, col_gold='ALT_gold', col_comp='ALT_comp'):
         return f"Cambio en archivo VCF no encontado en gold standard (revisar Ns, variantes)"
     if alt_gold and alt_comp:
         if len(alt_gold) == len(alt_comp):
-            return "Cambio de nucleotido(s)"
+            return "Wrong nucleotide"
         elif len(alt_gold) > len(alt_comp):
-            return "Deleccion"
+            return "Deletion relative to gold standard"
         elif len(alt_gold) < len(alt_comp):
-            return "Insercion"
-    return "Desconocido"
+            return "Insertion relative to gold standard"
+    return "Unknown"
 
 def comparar_gold_vs(df_comp, col_suffix, extra_cols_gold=None, extra_cols_comp=None):
     """

@@ -2,8 +2,9 @@
 mkdir gold_standard
 mkdir gold_standard/variants_long_table
 mkdir gold_standard/consensus
+mkdir influenza_reference_numbering
 
-ln -s  $( realpath /data/ucct/bi/research/EQA_RELECOV_2026/gold_standards_relecov/vcf/* ) gold_standard/variants_long_table/
+ln -s $( realpath /data/ucct/bi/research/EQA_RELECOV_2026/gold_standards_relecov/vcf/* ) gold_standard/variants_long_table/
 ln -s $( realpath /data/ucct/bi/research/EQA_RELECOV_2026/gold_standards_relecov/2026_EQA_*/**/*.fasta ) gold_standard/consensus/
 ln -s /data/ucct/bi/research/EQA_RELECOV_2026/influenza_reference_numbering/* influenza_reference_numbering
 
@@ -32,7 +33,8 @@ echo \
 --job-name ALIGNMENT_CONSENSUS \
 --output fasta_analysis_reports.log \
 python3 01_fasta_alignment_SARS-CoV-2_FLU_EQA2026.py && \
-python3 02_fasta_comparison_and_reporting_SARS-CoV2_and_FLU_EQA2026.py &"> _01_generate_fasta_analysis_reports.sh
+python3 02_fasta_comparison_and_reporting_SARS-CoV2_and_FLU_EQA2026.py &&
+python3 03_calculate_identity.py &"> _01_generate_fasta_analysis_reports.sh
 
 # Generate results for VCF FILES
 
