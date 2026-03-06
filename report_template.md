@@ -832,7 +832,7 @@ Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.cons
 | Sample ID | Median genome identity (%) | Median discrepancies | Discrepancies min-max |
 |---|---:|---:|---:|
 {% for s in comp_net.consensus.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} |
+| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
@@ -855,7 +855,7 @@ Considering discrepancy type composition aggregated by sample for {{ comp_code }
 | Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.consensus.samples %}
-| {{ s.sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambigity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }}
+| {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambigity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }}
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }}.
@@ -902,7 +902,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 **Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
-{{% if comp_net.variant %}}
+{% if comp_net.variant %}
 
 #### 6.{{ loop.index }}.3. Variant Detection Accuracy
 
@@ -916,7 +916,7 @@ Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepan
 | Sample ID | Median discrepancies | Discrepancies min-max | Median wrong nucleotide | Median Insertions | Median Deletions |
 |---|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
-| {{ s.sample_id }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} | {{ s.wrong_nt }} | {{ s.insertions }} | {{ s.deletions }} |
+| {{ s.collecting_lab_sample_id }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} | {{ s.wrong_nt }} | {{ s.insertions }} | {{ s.deletions }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
@@ -959,7 +959,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 **Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
-{{% endif %}}
+{% endif %}
 
 #### 6.{{ loop.index }}.4. Lineage, Subtype and Clade Assignment
 
@@ -976,7 +976,7 @@ Across all participating laboratories:
 | Sample ID | Lineage/Subtype matches (%) | Clade matches (%)|
 |---|---:|---:|
 {% for s in comp_net.typing.samples %}
-| {{ s.sample_id }} | {{ "%.2f"|format(s.lineage_hit_pct) }} | {{ "%.2f"|format(s.clade_hit_pct) }} |
+| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.lineage_hit_pct) }} | {{ "%.2f"|format(s.clade_hit_pct) }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
@@ -1011,7 +1011,7 @@ Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pc
 | Sample ID | Gold standard QC | % Match | # Matches | # Discrepancies | Total evaluations |
 |---|---:|---:|---:|---:|---:|
 {% for s in comp_net.qc.samples %}
-| {{ s.sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
+| {{ s.collecting_lab_sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
 {% endfor %}
 
 Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample, relative to the gold standard definition.
@@ -1029,7 +1029,7 @@ comp_net.qc.fig_qc_match_by_sample,
 
 #### 6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance
 
-{{% if comp_net.benchmarking.pipeline %}}
+{% if comp_net.benchmarking.pipeline %}
 ##### Bioinformatics protocol
 
 Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component.
@@ -1057,7 +1057,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.dehosting %}}
+{% if comp_net.benchmarking.dehosting %}
 ##### De-hosting software
 
 Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting softwares were reported for the {{ comp_code }} component.
@@ -1085,7 +1085,7 @@ Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metri
 
 {% endif %}
 
-{{% if comp_net.benchmarking.preprocessing %}}
+{% if comp_net.benchmarking.preprocessing %}
 ##### Preprocessing software
 
 Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
@@ -1113,7 +1113,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.mapping %}}
+{% if comp_net.benchmarking.mapping %}
 ##### Mapping software
 
 Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} distinct mapping software configurations were reported for the {{ comp_code }} component.
@@ -1141,7 +1141,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.assembly %}}
+{% if comp_net.benchmarking.assembly %}
 ##### Assembly software
 
 Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
@@ -1169,7 +1169,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.consensus_software %}}
+{% if comp_net.benchmarking.consensus_software %}
 ##### Consensus software
 
 Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
@@ -1197,7 +1197,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.variant_calling %}}
+{% if comp_net.benchmarking.variant_calling %}
 ##### Variant calling software
 
 Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_number }} distinct variant calling software configurations were reported for the {{ comp_code }} component.
@@ -1225,7 +1225,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.clade_assignment %}}
+{% if comp_net.benchmarking.clade_assignment %}
 ##### Clade Assignment Software
 
 Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component.
@@ -1253,7 +1253,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.lineage_assignment %}}
+{% if comp_net.benchmarking.lineage_assignment %}
 ##### Lineage Assignment Software Name
 
 Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component.
@@ -1281,7 +1281,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.type_assignment %}}
+{% if comp_net.benchmarking.type_assignment %}
 ##### Type Assignment Software Name
 
 Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component.
@@ -1309,7 +1309,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% endif %}
 
-{{% if comp_net.benchmarking.subtype_assignment %}}
+{% if comp_net.benchmarking.subtype_assignment %}
 ##### Subtype Assignment Software Name
 
 Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component.

@@ -1,6 +1,6 @@
 {
   "lab": {
-    "lab_cod": "COD-2400",
+    "submitting_institution_id": "COD-2400",
     "laboratory_name": "Centro Nacional de Microbiología, Instituto de Salud Carlos III"
   },
 
@@ -15,6 +15,13 @@
   "components": {
     "SARS1": {
       "display_name": "SARS-CoV-2, Illumina",
+      "component_code": "SARS1",
+      "virus": "SARS-CoV-2",
+      "sequencing_instrument_sequencing_instrument_platform": "Illumina",
+      "library_layout": "Paired-end",
+      "enrichment_protocol": "Amplicon",
+      "enrichment_panel": "ARTIC",
+      "enrichment_panel_version": "v4.1",
       "metadata": {
         "fasta_submitted": 5,
         "fasta_expected": 4,
@@ -26,32 +33,17 @@
           "Missing allele frequency threshold field"
         ]
       },
-      "component_code": "SARS1",
-      "virus": "SARS-CoV-2",
-      "platform": "Illumina",
-      "read_layout": "Paired-end",
-      "enrichment_strategy": "Amplicon",
-      "primer_scheme": "ARTIC",
-      "primer_version": "v4.1",
-      "expected_submitted_files": 4,
-      "files": {
-        "expected_fastq_files_per_sample": 2,
-        "fastq_naming_pattern": "{SAMPLE_ID}_R{1,2}.fastq.gz"
-      },
       "samples": {
         "SARS1": {
-          "sample_id": "SARS1",
+          "collecting_lab_sample_id": "SARS1",
           "source": "ECDC_ESIB_2024",
           "ref_sample": "SARS2.04",
-          "fastq_files": ["SARS1_R1.fastq.gz", "SARS1_R2.fastq.gz"],
           "expected_lineage": null,
           "expected_clade": null,
-          "filled_lineage": "D1",
-          "lineage_match": "Exact",
-          "platform": "Illumina",
-          "enrichment_strategy": "Amplicon",
-          "primer_scheme": "ARTIC",
-          "primer_version": "v4.1",
+          "sequencing_instrument_platform": "Illumina",
+          "enrichment_protocol": "Amplicon",
+          "enrichment_panel": "ARTIC",
+          "enrichment_panel_version": "v4.1",
           "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
           "expected_qc": "Fail",
           "total_expected_fields": 62,
@@ -60,8 +52,6 @@
           "consensus": {
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
-            "indel_events": 0,
-            "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "substitutions": 0,
               "excess_Ns": 1,
@@ -74,16 +64,16 @@
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
-            "reported_lineage": "XBB.1.5",
+            "lineage_assignment": "XBB.1.5",
             "lineage_match": true,
             "expected_clade": "23A",
-            "reported_clade": "23A",
+            "clade_assignment": "23A",
             "clade_match": true,
             "number_matches": 2,
             "number_discrepancies": 0
           },
 
-          "reported_qc":"Fail",
+          "qc_test":"Fail",
           "qc_match": true,
 
           "metadata_metrics": {
@@ -96,16 +86,16 @@
 
         },
         "SARS2": {
-          "sample_id": "SARS2",
+          "collecting_lab_sample_id": "SARS2",
           "source": "ECDC_ESIB_2024",
           "ref_sample": "SARS2.01",
           "fastq_files": ["SARS2_R1.fastq.gz", "SARS2_R2.fastq.gz"],
           "expected_lineage": "BA.1.13",
           "expected_clade": "outgroup (BA.1)",
-          "platform": "Illumina",
-          "enrichment_strategy": "Amplicon",
-          "primer_scheme": "ARTIC",
-          "primer_version": "v4.1",
+          "sequencing_instrument_platform": "Illumina",
+          "enrichment_protocol": "Amplicon",
+          "enrichment_panel": "ARTIC",
+          "enrichment_panel_version": "v4.1",
           "key_feature": "High-quality baseline sample",
           "expected_qc": "Pass",
           "total_expected_fields": 62,
@@ -115,7 +105,6 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "indel_events": 0,
-            "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
@@ -145,12 +134,12 @@
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
-            "reported_lineage": "XBB.1.5",
+            "lineage_assignment": "XBB.1.5",
             "expected_clade": "23A",
-            "reported_clade": "23A",
+            "clade_assignment": "23A",
             "concordance": "Exact"
           },
-          "reported_qc":"Fail",
+          "qc_test":"Fail",
           "qc_match": false,
 
           "metadata_metrics": {
@@ -195,15 +184,12 @@
       "component_code": "SARS1",
       "virus": "SARS-CoV-2",
       "display_name": "SARS-CoV-2, Nanopore",
-      "platform": "Nanopore",
-      "enrichment_strategy": "Amplicon",
-      "primer_scheme": "ARTIC",
-      "primer_version": "v4.1",
+      "sequencing_instrument_platform": "Nanopore",
+      "enrichment_protocol": "Amplicon",
+      "enrichment_panel": "ARTIC",
+      "enrichment_panel_version": "v4.1",
       "read_layout": "Single-end",
-      "files": {
-        "expected_fastq_files_per_sample": 1,
-        "fastq_naming_pattern": "{SAMPLE_ID}.fastq.gz"
-      },
+
       "fasta_submitted": 5,
       "fasta_expected": 4,
       "vcf_submitted": 5,
@@ -216,16 +202,16 @@
 
       "samples": {
         "SARS6": {
-          "sample_id": "SARS6",
+          "collecting_lab_sample_id": "SARS6",
           "source": "ECDC_ESIB_2024",
           "ref_sample": "SARS1.01",
           "fastq_files": ["SARS6.fastq.gz"],
           "expected_lineage": "XCH.1",
           "expected_clade": "recombinant (XCH.1)",
-          "platform": "Oxford Nanopore Technologies",
-          "enrichment_strategy": "Amplicon",
-          "primer_scheme": "ARTIC",
-          "primer_version": "v4.1",
+          "sequencing_instrument_platform": "Oxford Nanopore Technologies",
+          "enrichment_protocol": "Amplicon",
+          "enrichment_panel": "ARTIC",
+          "enrichment_panel_version": "v4.1",
           "key_feature": "High-quality baseline sample",
           "expected_qc": "Pass",
           "total_expected_fields": 62,
@@ -235,7 +221,6 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "indel_events": 0,
-            "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "substitutions": 0,
               "excess_Ns": 1,
@@ -253,13 +238,13 @@
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
-            "reported_lineage": "XBB.1.5",
+            "lineage_assignment": "XBB.1.5",
             "expected_clade": "23A",
-            "reported_clade": "23A",
+            "clade_assignment": "23A",
             "concordance": "Exact"
           },
 
-          "reported_qc":"Pass",
+          "qc_test":"Pass",
           "qc_match": true,
 
           "metadata_metrics": {
@@ -282,16 +267,16 @@
           }
         },
         "SARS7": {
-          "sample_id": "SARS7",
+          "collecting_lab_sample_id": "SARS7",
           "source": "ECDC_ESIB_2024",
           "ref_sample": "SARS1.09",
           "fastq_files": ["SARS7.fastq.gz"],
           "expected_lineage": "XBB.1.5.24",
           "expected_clade": "23A",
-          "platform": "Oxford Nanopore Technologies",
-          "enrichment_strategy": "Amplicon",
-          "primer_scheme": "ARTIC",
-          "primer_version": "v4.1",
+          "sequencing_instrument_platform": "Oxford Nanopore Technologies",
+          "enrichment_protocol": "Amplicon",
+          "enrichment_panel": "ARTIC",
+          "enrichment_panel_version": "v4.1",
           "key_feature": "XBB sample, ambiguity next to a deletion",
           "expected_qc": "Pass",
           "total_expected_fields": 62,
@@ -301,7 +286,6 @@
             "genome_identity_pct": 99.9500,
             "total_discrepancies": 1,
             "indel_events": 0,
-            "genome_completeness_pct": 99.90,
             "discrepancy_breakdown": {
               "substitutions": 0,
               "excess_Ns": 1,
@@ -319,13 +303,13 @@
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
-            "reported_lineage": "XBB.1.5",
+            "lineage_assignment": "XBB.1.5",
             "expected_clade": "23A",
-            "reported_clade": "23A",
+            "clade_assignment": "23A",
             "concordance": "Exact"
           },
 
-          "reported_qc":"Fail",
+          "qc_test":"Fail",
           "qc_match": false,
 
           "metadata_metrics": {
