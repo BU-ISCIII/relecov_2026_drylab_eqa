@@ -161,23 +161,20 @@ def initialize_sars_temporals():
 
     for i in range(1, 11):
 
-        if not USER_DIR.rglob(f"SARS{i}_*"):
+        sars_files = list(USER_DIR.rglob(f"SARS{i}_*"))
+        if not sars_files:
             print(f"Consensus fasta for SARS{i} not found. Skipping...")
             continue
 
         tmp_file = ALIGN_DIR_SARS / f"EQA_SARS{i}_tmp.fasta"
 
         with open(tmp_file, "w") as out_f:
-
             for record in wuhan_records:
                 record.id = "NC_045512.2_Wuhan"
                 record.description = ""
                 SeqIO.write(record, out_f, "fasta")
 
-            comp_dir = (
-                GOLD_DIR / "consensus" 
-            )
-
+            comp_dir = GOLD_DIR / "consensus" 
             for fasta in comp_dir.glob(f"*SARS{i}_*.fa*"):
                 for rec in SeqIO.parse(fasta, "fasta"):
                     SeqIO.write(rec, out_f, "fasta")
@@ -321,9 +318,11 @@ def process_json_and_append():
                 number = int(match.group(1))
                 flu_sample = f"FLU{number}"
 
-                expected_headers = [
-                    h.strip() for h in consensus_name.split(",") if h.strip()
-                ]
+                # If consensus_sequence_name is empty, use all headers from the FASTA
+                if consensus_name.strip():
+                    expected_headers = [h.strip() for h in consensus_name.split(",") if h.strip()]
+                else:
+                    expected_headers = [rec.id for rec in SeqIO.parse(fasta_path, "fasta")]
 
                 fasta_records = list(SeqIO.parse(fasta_path, "fasta"))
                 record_dict = {rec.id: rec for rec in fasta_records}
