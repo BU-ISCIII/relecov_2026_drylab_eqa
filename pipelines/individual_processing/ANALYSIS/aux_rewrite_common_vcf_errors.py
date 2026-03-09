@@ -17,7 +17,8 @@ class VCFFile:
     def __init__(self, path:str):
         self.read_vcf_file(path)
         self.replace_NA_values("0")
-        self.validate_format_data()
+        if self.headers['FORMAT']:
+            self.validate_format_data()
         
         # Non-necessary, just convenient, values
         self.format_keys = [key["ID"] for key in self.headers["FORMAT"]]
@@ -39,7 +40,7 @@ class VCFFile:
                 self.headers[header_name].append(rest_of_values)
             else:
                 tabular_data.append(line.split("\t"))
-        self.headers["FORMAT"] = self.headers.get("FORMAT", OrderedDict())
+        self.headers["FORMAT"] = self.headers.get("FORMAT", [])
         self.data = pd.DataFrame(tabular_data[1:])
         self.data.columns = tabular_data[0]
         self.sample_values_column = tabular_data[0][-1] #FIXME I DON'T THINK THIS IS CORRECT
@@ -91,8 +92,13 @@ class VCFFile:
         assert "'" in new_format["Description"] or '"' in new_format["Description"], "Description field must be encased in quotes"
         assert all([format_dict["ID"] != format_v["ID"] for format_v in self.headers["FORMAT"]]), "Format header is already present"
         self.headers["FORMAT"].append(new_format)
-        self.data.FORMAT = self.data.FORMAT.apply(lambda x: f"{x}:{format_dict['ID']}")
-        self.data[self.sample_values_column] = self.data[self.sample_values_column] + ":" + pd.Series(values)
+        if "FORMAT" not in self.data:
+            self.data["FORMAT"] = pd.Series([format_dict["ID"]] * len(self.data))
+            self.sample_values_column = "SAMPLE"
+            self.data[self.sample_values_column] = pd.Series(values)
+        else:
+            self.data.FORMAT = self.data.FORMAT.apply(lambda x: f"{x}:{format_dict['ID']}")
+            self.data[self.sample_values_column] = self.data[self.sample_values_column] + ":" + pd.Series(values)
         self.validate_format_data()
 
     # This function could call to a config, but https://www.youtube.com/watch?v=waEC-8GFTP4&list=RDwaEC-8GFTP4&start_radio=1&pp=ygUeYWluJ3Qgbm9ib2R5IGdvdCB0aW1lIGZvciB0aGF0oAcB
@@ -204,7 +210,10 @@ class VCFFile:
         self.data["INFO"] = self.data["INFO"].apply(lambda x: x.replace("=NA", f"={replacement}"))
 
     def rename_chrom(self, replacement):
-        self.headers['contig'][0]['ID'] = replacement
+        if "contig" in self.headers:
+            self.headers['contig'][0]['ID'] = replacement
+        else:
+            self.headers['contig'] = [{"ID": replacement}]
         replacement = pd.Series([replacement] * len(self.data["#CHROM"]))
         self.data["#CHROM"] = replacement
 
