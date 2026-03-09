@@ -25,6 +25,7 @@ INDIVIDUAL_REPORTS.mkdir(exist_ok=True)
 # FUNCIONES
 # ==========================================================
 
+
 def calculate_and_write_discrepancies(df: pd.DataFrame, output_path: str):
     discrepancy_breakdown = {}
     table_map = {
@@ -37,14 +38,18 @@ def calculate_and_write_discrepancies(df: pd.DataFrame, output_path: str):
               "deletions": "Deletion relative to gold standard"
             }
     sample_names = [sample.split("_")[0] for sample in df["Sample_ID"]]
-    for sample in sample_names:
-        if sample not in discrepancy_breakdown:
-            discrepancy_breakdown[sample] = {"discrepancy_breakdown": {}}
-        df_by_sample = df.groupby(sample)
-        for json_key, df_key in table_map.items():
-            discrepancy_breakdown[sample]["discrepancy_breakdown"][json_key] = df_by_sample.count(df_by_sample["Resultado"] == df_key) or 0
     
-    if not Path(output_path).is_file:
+    for sample in sample_names:
+        sample_key = f"EQA_{sample}"
+        sample_df = df[df["EQA"] == sample_key]
+
+        discrepancy_breakdown[sample] = {"discrepancy_breakdown": {}}
+
+        for json_key, df_key in table_map.items():
+            count = (sample_df["Resultado"] == df_key).sum()
+            discrepancy_breakdown[sample]["discrepancy_breakdown"][json_key] = int(count)
+            
+    if not Path(output_path).is_file():
         dict_discrepancies = {}
     else:
         with open(output_path, 'r') as f:

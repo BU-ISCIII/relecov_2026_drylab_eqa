@@ -7,7 +7,7 @@ from statistics import median
 
 BASE_DIR = Path.cwd()
 
-WANTED_COMPARISONS = ["SARS1_gold_standard_2026_LC", "_Gold_Standard"]
+WANTED_COMPARISONS = ["_LC", "_Gold_Standard"]
 
 def find_reference_id(fasta_alignment_file):
     """
@@ -57,14 +57,14 @@ def identity_vs_reference(ref_seq, query_seq):
 
 def write_median_identity(output_file):
     with open(output_file, "r") as f:
-        full_file = json.read(f)
+        full_file = json.load(f)
     for sample, values in full_file.items():
         all_values_identity = values["genome_identity_pct"]
         median_value = median(all_values_identity)
-        full_file[sample]["genome_identity_pct"] = median_value
+        full_file[sample]["genome_identity_pct"] = median_value * 100
 
     with open(output_file, "w") as f:
-        json.dump(full_file, f)
+        json.dump(full_file, f, indent=4)
 
 
 def main(alignment_file_path, reference_id, output_file):
@@ -90,7 +90,7 @@ def main(alignment_file_path, reference_id, output_file):
     for record in alignment:
         if record.id == reference_id:
             continue
-        if not any([record.id in wanted for wanted in WANTED_COMPARISONS]):
+        if not any([wanted in record.id for wanted in WANTED_COMPARISONS]):
             continue
 
         query_seq = str(record.seq)
@@ -102,7 +102,6 @@ def main(alignment_file_path, reference_id, output_file):
 
         sample_name = alignment_file_path.name.split("_")[1]
         write_identity(output_file, sample_name, record_id, identity)
-    write_median_identity(output_file)
 
 
 if __name__ == '__main__':
@@ -110,3 +109,4 @@ if __name__ == '__main__':
     for alignment_file in alignment_files:
         ref_id = find_reference_id(alignment_file)
         main(alignment_file, ref_id, "calculated_values.json")
+    write_median_identity("calculated_values.json")
