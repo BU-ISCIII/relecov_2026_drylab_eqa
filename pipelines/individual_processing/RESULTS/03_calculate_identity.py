@@ -109,4 +109,4 @@ if __name__ == '__main__':
     alignment_files = BASE_DIR.rglob("ALIGNMENT*/*.fasta")
     for alignment_file in alignment_files:
         ref_id = find_reference_id(alignment_file)
-        main(alignment_file, ref_id, "identity_values.json")
+        main(alignment_file, ref_id, "calculated_values.json")

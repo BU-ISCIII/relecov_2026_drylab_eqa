@@ -54,10 +54,6 @@ def calculate_and_write_discrepancies(df: pd.DataFrame, output_path: str):
     
     with open(output_path, 'w') as f:
         json.dump(dict_discrepancies, f)
-        
-        
-    
-
 
 def base_category(base):
     base = base.upper()
@@ -369,6 +365,16 @@ rows_by_lab_flu = defaultdict(list)
 for row in output_rows_flu:
     rows_by_lab_flu[row[0]].append(row)
 for cod_lab, rows in rows_by_lab_flu.items():
+    df = pd.DataFrame(rows, columns=[
+            "COD_LAB",
+            "EQA",
+            "Sample_ID",
+            "POS (NC_045512.2)",
+            "Gold_LOW",
+            "Sample",
+            "Resultado"
+            ])
+    calculate_and_write_discrepancies(df, "calculated_values.json")
     filename = INDIVIDUAL_REPORTS / f"{cod_lab}_informe_INFLUENZA_2026_fasta_analysis.csv"
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
