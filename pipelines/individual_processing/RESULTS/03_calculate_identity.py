@@ -3,8 +3,11 @@ import sys
 import os.path
 import json
 from pathlib import Path
+from statistics import median
 
 BASE_DIR = Path.cwd()
+
+WANTED_COMPARISONS = ["SARS1_gold_standard_2026_LC", "_Gold_Standard"]
 
 def find_reference_id(fasta_alignment_file):
     """
@@ -24,11 +27,11 @@ def write_identity(output_file, sample_name, record_id, identity_value):
             input_dict = json.load(f)
     if sample_name not in input_dict:
         input_dict[sample_name] = {
-            "identity_against": {}
+            "genome_identity_pct": []
         }
-    input_dict[sample_name]["identity_against"].update({
-        record_id: f"{identity_value:.4f}"
-    })
+    if "genome_identity_pct" not in input_dict[sample_name]:
+        input_dict[sample_name]["genome_identity_pct"] = []
+    input_dict[sample_name]["genome_identity_pct"].append(identity_value)
     
     with open(output_file, "w") as f:
         json.dump(input_dict, f)
@@ -51,6 +54,17 @@ def identity_vs_reference(ref_seq, query_seq):
                 matches += 1
 
         return matches / compared if compared > 0 else 0
+
+def write_median_identity(output_file):
+    with open(output_file, "r") as f:
+        full_file = json.read(f)
+    for sample, values in full_file.items():
+        all_values_identity = values["genome_identity_pct"]
+        median_value = median(all_values_identity)
+        full_file[sample]["genome_identity_pct"] = median_value
+
+    with open(output_file, "w") as f:
+        json.dump(full_file, f)
 
 
 def main(alignment_file_path, reference_id, output_file):
@@ -76,6 +90,8 @@ def main(alignment_file_path, reference_id, output_file):
     for record in alignment:
         if record.id == reference_id:
             continue
+        if not any([record.id in wanted for wanted in WANTED_COMPARISONS]):
+            continue
 
         query_seq = str(record.seq)
         record_id = record.id
@@ -86,6 +102,7 @@ def main(alignment_file_path, reference_id, output_file):
 
         sample_name = alignment_file_path.name.split("_")[1]
         write_identity(output_file, sample_name, record_id, identity)
+    write_median_identity(output_file)
 
 
 if __name__ == '__main__':
