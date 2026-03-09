@@ -39,7 +39,7 @@ class VCFFile:
                 self.headers[header_name].append(rest_of_values)
             else:
                 tabular_data.append(line.split("\t"))
-
+        self.headers["FORMAT"] = self.headers.get("FORMAT", OrderedDict())
         self.data = pd.DataFrame(tabular_data[1:])
         self.data.columns = tabular_data[0]
         self.sample_values_column = tabular_data[0][-1] #FIXME I DON'T THINK THIS IS CORRECT
