@@ -3,7 +3,8 @@ import csv
 import re
 from pathlib import Path
 from collections import defaultdict
-
+import pandas as pd
+import json
 
 
 # ==========================================================
@@ -23,6 +24,40 @@ INDIVIDUAL_REPORTS.mkdir(exist_ok=True)
 # ==========================================================
 # FUNCIONES
 # ==========================================================
+
+def calculate_and_write_discrepancies(df: pd.DataFrame, output_path: str):
+    discrepancy_breakdown = {}
+    table_map = {
+              "wrong_nt": "Wrong nucleotide",
+              "ambiguity2nt": "Nucleotide instread of ambiguity",
+              "nt2ambigity": "Ambiguity instead of nucleotide",
+              "ns2nt": "Nucleotide stretch instead of stretch of Ns",
+              "nt2ns": "Stretch of Ns instead of nucleotide" ,
+              "insertions": "Insertion relative to gold standard",
+              "deletions": "Deletion relative to gold standard"
+            }
+    sample_names = list(df["Sample_ID"])
+    for sample in sample_names:
+        if sample not in discrepancy_breakdown:
+            discrepancy_breakdown[sample] = {"discrepancy_breakdown": {}}
+        df_by_sample = df.groupby(sample)
+        for json_key, df_key in table_map.items():
+            discrepancy_breakdown[sample]["discrepancy_breakdown"][json_key] = df_by_sample.count(df_by_sample["Resultado"] == df_key) or 0
+    
+    if not Path(output_path).is_file:
+        dict_discrepancies = {}
+    else:
+        with open(output_path, 'r') as f:
+            dict_discrepancies = json.load(f)
+    
+    dict_discrepancies.update(discrepancy_breakdown)
+    
+    with open(output_path, 'w') as f:
+        json.dump(dict_discrepancies, f)
+        
+        
+    
+
 
 def base_category(base):
     base = base.upper()
@@ -56,7 +91,7 @@ def clasificar(ref_bases, sample_bases):
         elif s in "RYSWKMBDHV" and r in "ATGC":
             return "Ambiguity instead of nucleotide"
         elif r in "RYSWKMBDHV" and s in "ATGC":
-            return "Nucleotide instread of ambiguity"
+            return "Nucleotide instead of ambiguity"
         else:
             return "Other: Review"
 
@@ -204,6 +239,16 @@ rows_by_lab = defaultdict(list)
 for row in output_rows:
     rows_by_lab[row[0]].append(row)
 for cod_lab, rows in rows_by_lab.items():
+    df = pd.DataFrame(rows, columns=[
+            "COD_LAB",
+            "EQA",
+            "Sample_ID",
+            "POS (NC_045512.2)",
+            "Gold_LOW",
+            "Sample",
+            "Resultado"
+            ])
+    calculate_and_write_discrepancies(df, "calculated_values.json")
     filename = INDIVIDUAL_REPORTS / f"{cod_lab}_informe_SARS-CoV-2_2026_fasta_analysis.csv"
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
