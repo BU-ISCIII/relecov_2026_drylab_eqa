@@ -171,8 +171,9 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
         if "full" in file.name:
             continue
         else:
-            print(file.name)
             var_enviados = pd.read_csv(file)
+    if var_enviados.empty:
+        continue
 
     # --- Añadir columna EQA ---
     var_gold = add_eqa_column(var_gold, samples)
