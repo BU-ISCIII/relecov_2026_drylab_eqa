@@ -31,6 +31,8 @@ def write_identity(output_file, sample_name, record_id, identity_value):
         }
     if "genome_identity_pct" not in input_dict[sample_name]:
         input_dict[sample_name]["genome_identity_pct"] = []
+    elif isinstance(input_dict[sample_name]["genome_identity_pct"], float):
+        input_dict[sample_name]["genome_identity_pct"] = []
     input_dict[sample_name]["genome_identity_pct"].append(identity_value)
     
     with open(output_file, "w") as f:
