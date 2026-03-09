@@ -140,7 +140,7 @@ def get_pattern_vlt(gold_standard_filename):
 BASE_DIR = Path(args.base_dir).resolve()
 BASE_NAME = BASE_DIR.name  # Nombre para los archivos de salida
 
-COD_DIR = Path(f"{args.base_dir}/../").name
+COD_DIR = Path(f"{args.base_dir}/../").resolve().name
 
 VCF_DIR = BASE_DIR / "variants_long_table"
 GOLD_DIR = BASE_DIR / "gold_standard/variants_long_table"
@@ -241,6 +241,6 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
     merged_all = merged_all.sort_values(by=['EQA','POS'])
 
     # --- 💾 8. Guardar CSV final ---
-    path_combined = OUTPUT_DIR / f"{BASE_NAME}_diferencias_{gold_standard.name}_COMBINADO_v2.csv"
+    path_combined = OUTPUT_DIR / f"{sample_tag}_diferencias_{gold_standard.name}_COMBINADO_v2.csv"
     merged_all.to_csv(path_combined, index=False)
     print(f"✅ Archivo combinado guardado: {path_combined}")
