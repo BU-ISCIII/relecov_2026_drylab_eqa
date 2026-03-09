@@ -140,6 +140,8 @@ def get_pattern_vlt(gold_standard_filename):
 BASE_DIR = Path(args.base_dir).resolve()
 BASE_NAME = BASE_DIR.name  # Nombre para los archivos de salida
 
+COD_DIR = Path(f"{args.base_dir}/../").name
+
 VCF_DIR = BASE_DIR / "variants_long_table"
 GOLD_DIR = BASE_DIR / "gold_standard/variants_long_table"
 
@@ -208,11 +210,10 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
     merged_all = diff_enviados
 
     # --- 🧾 4. Añadir COD_LAB desde BASE_NAME ---
-    match = re.search(r'(COD-\d+)', BASE_NAME)
+    match = re.search(r'(COD-\d+)', COD_DIR)
     sample_tag = match.group(1) if match else BASE_NAME
     #FIXME THIS WILL WORK FOR LATER PURPOSES - JUST NOT NOW, SO HARCODING
-    merged_all['COD_LAB'] = "COD-2400"
-
+    merged_all['COD_LAB'] = sample_tag
     # --- 🗃️ 5. Ordenar columnas ---
     final_cols = [
         'COD_LAB', #'SAMPLE_ID',
