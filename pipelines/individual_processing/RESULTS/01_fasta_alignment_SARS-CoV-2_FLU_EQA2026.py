@@ -333,6 +333,11 @@ def process_json_and_append():
                         log_and_print(f"❌ Missing header {header}", log)
                         log_global_error(cod_dir.name, sample_id, None, f"Missing header: {header}")
                         continue
+                
+                if not all([header in record_dict for header in expected_headers]):
+                    expected_headers = [rec.id for rec in SeqIO.parse(fasta_path, "fasta")]
+                
+                for header in expected_headers:
 
                     rec = record_dict[header]
                     header_upper = header.upper()
