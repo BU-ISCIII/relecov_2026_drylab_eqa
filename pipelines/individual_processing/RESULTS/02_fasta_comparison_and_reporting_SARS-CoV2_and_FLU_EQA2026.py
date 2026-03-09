@@ -36,7 +36,7 @@ def calculate_and_write_discrepancies(df: pd.DataFrame, output_path: str):
               "insertions": "Insertion relative to gold standard",
               "deletions": "Deletion relative to gold standard"
             }
-    sample_names = list(df["Sample_ID"])
+    sample_names = [sample.split("_")[0] for sample in df["Sample_ID"]]
     for sample in sample_names:
         if sample not in discrepancy_breakdown:
             discrepancy_breakdown[sample] = {"discrepancy_breakdown": {}}
