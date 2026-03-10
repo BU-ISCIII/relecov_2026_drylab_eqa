@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
+import csv
 import json
 import logging
+import re
 from pathlib import Path
 from statistics import median
 from typing import Any, Dict, Iterable, List, Optional, Tuple
@@ -483,14 +485,17 @@ def build_lab_json(
             consensus_metrics = pick_sample_metrics(consensus_index, sample_id, comp_code)
             variant_metrics = pick_sample_metrics(variant_index, sample_id, comp_code)
 
+            # Support both flat metrics and the nested discrepancy_breakdown format
+            # (as produced by calculated_values.json, which also has a nt2ambigity typo)
+            breakdown_src = consensus_metrics.get("discrepancy_breakdown") or consensus_metrics
             consensus_breakdown = {
-                "wrong_nt": consensus_metrics.get("wrong_nt") or consensus_metrics.get("substitutions") or 0,
-                "ambiguity2nt": consensus_metrics.get("ambiguity2nt") or 0,
-                "nt2ambiguity": consensus_metrics.get("nt2ambiguity") or consensus_metrics.get("excess_ambiguous") or 0,
-                "ns2nt": consensus_metrics.get("ns2nt") or consensus_metrics.get("missing_Ns") or 0,
-                "nt2ns": consensus_metrics.get("nt2ns") or consensus_metrics.get("excess_Ns") or 0,
-                "insertions": consensus_metrics.get("insertions") or 0,
-                "deletions": consensus_metrics.get("deletions") or 0,
+                "wrong_nt": breakdown_src.get("wrong_nt") or breakdown_src.get("substitutions") or 0,
+                "ambiguity2nt": breakdown_src.get("ambiguity2nt") or 0,
+                "nt2ambiguity": breakdown_src.get("nt2ambiguity") or breakdown_src.get("nt2ambigity") or breakdown_src.get("excess_ambiguous") or 0,
+                "ns2nt": breakdown_src.get("ns2nt") or breakdown_src.get("missing_Ns") or 0,
+                "nt2ns": breakdown_src.get("nt2ns") or breakdown_src.get("excess_Ns") or 0,
+                "insertions": breakdown_src.get("insertions") or 0,
+                "deletions": breakdown_src.get("deletions") or 0,
             }
 
             consensus_total_discrepancies = sum(consensus_breakdown.values())
@@ -648,6 +653,68 @@ def find_optional_json(path_or_none: Optional[str]) -> Optional[Any]:
     return load_json(p) if p.exists() else None
 
 
+def load_variant_csv_as_comparison(path: Path, lab_id: str) -> Dict[str, Any]:
+    """Parse a variant long-table CSV and return a per-sample metrics dict for *lab_id*.
+
+    Expected columns: COD_LAB, EQA, POS, REF (NC_045512.2), Gold_Standard,
+    ALT_enviados, DP_gold, DP_enviados, AF_gold, AF_enviados, RESULTADOS_enviados.
+
+    Returns {sample_id: {"number_of_variants_in_consensus_vcf": N, "variant_records": [...]}}
+    """
+    samples: Dict[str, List[Dict[str, Any]]] = {}
+    with open(path, "r", encoding="utf-8") as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            if row.get("COD_LAB", "").strip() != lab_id:
+                continue
+            eqa = row.get("EQA", "").strip()
+            if not eqa:
+                continue
+            samples.setdefault(eqa, []).append(dict(row))
+
+    result: Dict[str, Any] = {}
+    for eqa, records in samples.items():
+        result[eqa] = {
+            "number_of_variants_in_consensus_vcf": len(records),
+            "variant_records": records,
+        }
+    return result
+
+
+def discover_input_data_sources(
+    input_data_dir: Path,
+    lab_id: str,
+) -> Tuple[Optional[Any], Dict[str, Any]]:
+    """Auto-discover consensus JSON and variant CSVs from *input_data_dir*.
+
+    Returns:
+        consensus_data  – contents of calculated_values.json (or None if absent)
+        variant_index   – merged {sample_id: metrics} from all variant CSVs for *lab_id*
+    """
+    consensus_data: Optional[Any] = None
+    calc_path = input_data_dir / "calculated_values.json"
+    if calc_path.exists():
+        consensus_data = load_json(calc_path)
+        log.info("Loaded consensus data from %s", calc_path)
+    else:
+        log.warning("calculated_values.json not found in %s", input_data_dir)
+
+    variant_index: Dict[str, Any] = {}
+    # Pattern: RESULTS_diferencias_comp<CODE>_variant_long_table.csv_COMBINADO_v2.csv
+    pattern = re.compile(r"RESULTS_diferencias_comp(\w+)_variant_long_table*\.csv$")
+    for csv_path in sorted(input_data_dir.glob("RESULTS_diferencias_comp*variants_long_table*.csv")):
+        m = pattern.search(csv_path.name)
+        comp_code = m.group(1) if m else csv_path.stem
+        try:
+            comp_variant_data = load_variant_csv_as_comparison(csv_path, lab_id)
+            variant_index.update(comp_variant_data)
+            log.info("Loaded variant data for comp %s from %s (%d samples)", comp_code, csv_path, len(comp_variant_data))
+        except Exception as exc:
+            log.warning("Could not load variant CSV %s: %s", csv_path, exc)
+
+    return consensus_data, variant_index
+
+
 def infer_lab_name(metadata_rows: List[Dict[str, Any]], fallback: Optional[str] = None) -> str:
     return fallback or metadata_rows[0].get("submitting_institution_id") or "Unknown laboratory"
 
@@ -676,10 +743,21 @@ def process_single_metadata_file(
     variant_path: Optional[str] = None,
     lab_name: Optional[str] = None,
     figures_root: Optional[str] = None,
+    input_data_dir: Optional[Path] = None,
 ) -> Path:
     metadata_rows = load_json(metadata_path)
     consensus_data = find_optional_json(consensus_path)
     variant_data = find_optional_json(variant_path)
+
+    if input_data_dir is not None:
+        lab_id = metadata_rows[0].get("submitting_institution_id") if metadata_rows else None
+        if lab_id:
+            disc_consensus, disc_variants = discover_input_data_sources(input_data_dir, lab_id)
+            if consensus_data is None:
+                consensus_data = disc_consensus
+            if variant_data is None and disc_variants:
+                variant_data = disc_variants
+
     out = build_lab_json(
         expected_data=expected_data,
         metadata_rows=metadata_rows,
@@ -701,6 +779,7 @@ def iterative_process(
     lab_name: Optional[str] = None,
     consensus_comparison: Optional[str] = None,
     variant_comparison: Optional[str] = None,
+    input_data_dir: Optional[Path] = None,
 ) -> List[Path]:
     expected_data, _ = validate_load_inputs(root_folder, expected_data_path, output_path, heading_file)
     root = Path(root_folder)
@@ -721,11 +800,21 @@ def iterative_process(
             final_lab_name = lab_name or inferred_lab_id
             figures_root = f"figures/labs/{inferred_lab_id}"
             output_file = output_dir / f"lab_{inferred_lab_id}.json"
+
+            lab_consensus = find_optional_json(consensus_comparison)
+            lab_variants: Optional[Any] = find_optional_json(variant_comparison)
+            if input_data_dir is not None:
+                disc_consensus, disc_variants = discover_input_data_sources(input_data_dir, inferred_lab_id)
+                if lab_consensus is None:
+                    lab_consensus = disc_consensus
+                if lab_variants is None and disc_variants:
+                    lab_variants = disc_variants
+
             out = build_lab_json(
                 expected_data=expected_data,
                 metadata_rows=metadata_rows,
-                consensus_comparison=find_optional_json(consensus_comparison),
-                variant_comparison=find_optional_json(variant_comparison),
+                consensus_comparison=lab_consensus,
+                variant_comparison=lab_variants,
                 lab_name_override=final_lab_name,
                 figures_root=figures_root,
             )
@@ -747,6 +836,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("-o", "--output", required=True, help="Output file path (single mode) or output directory (folder mode)")
     parser.add_argument("--consensus-comparison", help="Optional path to consensus comparison JSON")
     parser.add_argument("--variant-comparison", help="Optional path to variant comparison JSON")
+    parser.add_argument(
+        "--input-data",
+        default=None,
+        help=(
+            "Directory containing input data files for auto-discovery: "
+            "calculated_values.json (consensus) and "
+            "RESULTS_diferencias_comp*_variant_long_table.csv_COMBINADO_v2.csv (variants). "
+            "Explicit --consensus-comparison / --variant-comparison take precedence."
+        ),
+    )
     parser.add_argument("--lab_cod", default=None, help="Restrict folder mode to a single lab code")
     parser.add_argument("--lab_name", default=None, help="Override full laboratory name")
     parser.add_argument("--heading_file", default=None, help="Optional heading/template JSON (kept for backward compatibility)")
@@ -756,6 +855,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     args = parse_args()
+
+    input_data_dir = Path(args.input_data) if args.input_data else None
 
     if args.metadata:
         expected_data = load_json(args.expected_data)
@@ -767,6 +868,7 @@ def main() -> None:
             consensus_path=args.consensus_comparison,
             variant_path=args.variant_comparison,
             lab_name=args.lab_name,
+            input_data_dir=input_data_dir,
         )
         print(f"Generated {output_path}")
     else:
@@ -779,6 +881,7 @@ def main() -> None:
             lab_name=args.lab_name,
             consensus_comparison=args.consensus_comparison,
             variant_comparison=args.variant_comparison,
+            input_data_dir=input_data_dir,
         )
         print(f"Generated {len(generated)} file(s)")
         for path in generated:
