@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import argparse
+from html import parser
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import median
 from typing import Any, Dict, Iterable, List, Optional
+
+import matplotlib.pyplot as plt
 
 FIGURE_PATHS = {
     "consensus_summary": "figures/network/consensus_summary.png",
@@ -135,6 +138,114 @@ def most_common_or_none(values: Iterable[Any]) -> Any:
     if not clean:
         return None
     return Counter(clean).most_common(1)[0][0]
+
+
+def ensure_network_figures_dir(figures_dir: str | Path) -> Path:
+    output_dir = Path(figures_dir) / "network"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return output_dir
+
+
+def classification_hits_discrepancies_from_component(
+    comp_data: Dict[str, Any],
+    mode: str,
+) -> tuple[int, int]:
+    """
+    mode:
+      - 'lineage_type'
+      - 'clade'
+    """
+    typing = comp_data.get("typing", {})
+    samples = typing.get("samples", [])
+    total_labs = comp_data.get("total_labs", 0)
+
+    total_hits = 0
+    total_discrepancies = 0
+
+    for sample in samples:
+        if mode == "lineage_type":
+            hit_pct = sample.get("lineage_hit_pct")
+        elif mode == "clade":
+            hit_pct = sample.get("clade_hit_pct")
+        else:
+            raise ValueError(f"Unknown classification mode: {mode}")
+
+        if hit_pct is None or total_labs == 0:
+            continue
+
+        sample_hits = round(total_labs * hit_pct / 100.0)
+        sample_discrepancies = total_labs - sample_hits
+
+        total_hits += sample_hits
+        total_discrepancies += sample_discrepancies
+
+    return total_hits, total_discrepancies
+
+
+def make_stacked_classification_plot(
+    general_data: Dict[str, Any],
+    figures_dir: str | Path,
+    mode: str,
+    output_filename: str,
+    title: str,
+) -> str:
+    components = general_data.get("components", {})
+
+    component_names = []
+    hit_counts = []
+    discrepancy_counts = []
+
+    for comp_code, comp_data in components.items():
+        hits, discrepancies = classification_hits_discrepancies_from_component(comp_data, mode)
+
+        component_names.append(comp_code)
+        hit_counts.append(hits)
+        discrepancy_counts.append(discrepancies)
+
+    output_dir = ensure_network_figures_dir(figures_dir)
+    output_path = output_dir / output_filename
+
+    plt.figure(figsize=(10, 6))
+    x_positions = list(range(len(component_names)))
+
+    plt.bar(x_positions, hit_counts, label="Match")
+    plt.bar(x_positions, discrepancy_counts, bottom=hit_counts, label="Discrepancy")
+
+    plt.xticks(x_positions, component_names)
+    plt.xlabel("Component")
+    plt.ylabel("Total number of assignments")
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
+def generate_network_figures(general_data: Dict[str, Any], figures_dir: str | Path = "figures") -> Dict[str, str]:
+    """
+    Generate network-level figures and return their paths.
+    """
+    outputs = {}
+
+    outputs["classification_summary_lineage_type"] = make_stacked_classification_plot(
+        general_data=general_data,
+        figures_dir=figures_dir,
+        mode="lineage_type",
+        output_filename="classification_summary_lineage_type.png",
+        title="Network-level lineage/type assignment performance summary",
+    )
+
+    outputs["classification_summary_clade"] = make_stacked_classification_plot(
+        general_data=general_data,
+        figures_dir=figures_dir,
+        mode="clade",
+        output_filename="classification_summary_clade.png",
+        title="Network-level clade assignment performance summary",
+    )
+
+    return outputs
 
 
 def collect_software_groups(
@@ -1348,6 +1459,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-data", required=True, help="Path to expected_data.json")
     parser.add_argument("--labs-dir", required=True, help="Directory containing per-lab JSON files")
     parser.add_argument("--output", required=True, help="Output general.json path")
+    parser.add_argument("--figures-dir", default="figures", help="Base directory where figures will be written")
     return parser.parse_args()
 
 
@@ -1356,9 +1468,18 @@ def main() -> None:
     expected_data = load_json(args.expected_data)
     labs = load_lab_jsons(Path(args.labs_dir))
     general = build_general(expected_data, labs)
+
+    generated_figures = generate_network_figures(
+        general_data=general,
+        figures_dir=args.figures_dir,
+    )
+
+    # Update figure paths in general.json
+    general.setdefault("figures", {})
+    general["figures"].update(generated_figures)
+
     dump_json(general, args.output)
     print(f"Generated {args.output}")
-
 
 if __name__ == "__main__":
     main()
