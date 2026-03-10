@@ -751,13 +751,13 @@ Substantial heterogeneity was observed in (TODO mirar si es verdad):
 
 The metadata submissions allowed characterisation of the analytical landscape currently implemented across the RELECOV network.
 
-A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified across participating laboratories, defined as unique combinations of software tools, versions, and parameter configurations declared in the metadata template.
+A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified across participating laboratories, defined as unique combinations of software tools and versions declared in the metadata template.
 
 Substantial diversity was observed in the selection of core analytical tools (TODO verificar si es veradd):
 
-- Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct tool configurations )
-- Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct tools or configurations )
-- Lineage/type and clade assignment software ( {{ general.metadata_completeness.total_lineage_softwares }} tools or database versions )
+- Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct tools or versions )
+- Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct tools or versions )
+- Lineage/type and clade assignment software ( {{ general.metadata_completeness.total_lineage_softwares }} tools or versions )
 
 Comparative performance analyses stratified by component are presented in Section 6, where software-level differences are evaluated within homogeneous analytical contexts (SARS-CoV-2 Illumina, SARS-CoV-2 Nanopore, Influenza Illumina, Influenza Nanopore).
 
