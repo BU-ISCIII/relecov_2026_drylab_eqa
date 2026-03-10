@@ -333,8 +333,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
     flu_clade_matches = 0
     flu_clade_total = 0
 
-    full_match_pct_per_component: List[float] = []
-
     qc_matches = 0
     qc_discrepancies = 0
     qc_total = 0
@@ -1421,8 +1419,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "influenza_type_concordance_pct": pct(flu_type_matches, flu_type_total),
                 "sars_clade_concordance_pct": pct(sars_clade_matches, sars_clade_total),
                 "flu_clade_concordance_pct": pct(flu_clade_matches, flu_clade_total),
-                "median_full_match_pct": median_or_none(full_match_pct_per_component),
-                "min_full_match_pct": min_or_none(full_match_pct_per_component),
             },
         },
         "metadata_completeness": {
