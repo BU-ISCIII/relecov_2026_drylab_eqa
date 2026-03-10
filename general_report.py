@@ -588,6 +588,14 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     if sig:
                         lineage_softwares.add(sig)
 
+                sig = software_signature(
+                    sample.get("software_benchmarking", {}).get("clade_assignment_software_name"),
+                    sample.get("software_benchmarking", {}).get("clade_assignment_software_version"),
+                )
+
+                if sig:
+                    variant_softwares.add(sig)
+
                 qc_val = sample.get("qc_match")
                 if qc_val is True:
                     qc_matches += 1
