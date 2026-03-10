@@ -184,13 +184,13 @@ The table details sample origin, sequencing technology (Illumina paired-end or O
 | Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout | Clade Assignment | Lineage Assignment | Quality check |
 |--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|-------------|------------------|--------------------|---------------|
 | SARS1  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end  | -                | -                  | Bad           |
-| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | outgroup (BA.1)  | BA.1.13            | Ok            |
+| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | 21K              | BA.1.13            | Ok            |
 | SARS3  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end  | 23A              | XBB.1.5            | Ok            |
 | SARS4  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.20   | Very low read depth                               | 2           | Paired-end  | 22E              | BQ.1.1             | Bad           |
-| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | outgroup (BA.1)  | BA.1.1             | Bad           |
+| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | 21K              | BA.1.1             | Bad           |
 | SARS6  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.01   | High-quality baseline sample                      | 1           | Single-end  | recombinant      | XCH.1              | Ok            |
 | SARS7  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end  | 23A              | XBB.1.5.24         | Ok            |
-| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D (XBB.1.9.1)  | EG.5               | Bad           |
+| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D              | XBB.1.9.1          | Bad           |
 | SARS9  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end  | -                | -                  | Bad           |
 | SARS10 | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.05   | Very low read depth                               | 1           | Single-end  | -                | -                  | Bad           |
 
@@ -591,7 +591,7 @@ Variant evaluation included structural reporting characteristics and methodologi
 
 - {{ general.general_results.sars_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants.
 - {{ general.general_results.sars_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
-- {{ general.general_results.sars_variants.no_low_freq_pct }} reported only high-frequency variants.
+- {{ general.general_results.sars_variants.high_freq_only_pct }} reported only high-frequency variants.
 
 Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components.
 
@@ -618,18 +618,9 @@ At network level:
 
 - {{ general.general_results.influenza_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants.
 - {{ general.general_results.influenza_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
-- {{ general.general_results.influenza_variants.no_low_freq_pct }} reported only high-frequency variants.
+- {{ general.general_results.influenza_variants.high_freq_only_pct }} reported only high-frequency variants.
 
-Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across influenza components, aggregated by viral segment. When stratified by genomic segment, the number of distinct reference sequences used was:
-
-- PB1: {{ general.general_results.influenza_variants.total_distinct_references_PB1 }}
-- PB2: {{ general.general_results.influenza_variants.total_distinct_references_PB2 }}
-- PA: {{ general.general_results.influenza_variants.total_distinct_references_PA }}
-- HA: {{ general.general_results.influenza_variants.total_distinct_references_HA }}
-- NP: {{ general.general_results.influenza_variants.total_distinct_references_NP }}
-- NA: {{ general.general_results.influenza_variants.total_distinct_references_NA }}
-- M: {{ general.general_results.influenza_variants.total_distinct_references_M }}
-- NS: {{ general.general_results.influenza_variants.total_distinct_references_NS }}
+Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across influenza components, considering eight fragments.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -643,17 +634,6 @@ general.figures.influenza_variant_reporting_summary,
 ![influenza_variant_reporting_summary](./example_images/influenza_variant_reporting_summary.png)
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-{{ render_figure(
-general.figures.influenza_reference_summary,
-"Influenza reference genome heterogeneity by fragment across the network."
-) }}
-
-![influenza_reference_summary](./example_images/influenza_reference_summary.png)
-
-**_Figure {{ fig_counter.value }}_. Influenza reference genome heterogeneity by fragment across the network**. Summarise the number of distinct reference genomes used per influenza segment for variant calling.
 
 These findings highlight considerable methodological heterogeneity in influenza variant analysis within the network. (TODO revisar) Differences in allele frequency thresholds and reference genome selection represent key drivers of inter-laboratory variability and limit direct comparability of variant-level results under a unified coordinate framework.
 
