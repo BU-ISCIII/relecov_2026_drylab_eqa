@@ -131,8 +131,6 @@ METADATA_METRICS_FIELDS = [
     "per_Ns",
     "number_of_Ns",
     "ns_per_100_kbp",
-    "number_of_variants_in_consensus",
-    "number_of_variants_with_effect",
     "number_of_sgene_frameshifts",
     "number_of_unambiguous_bases",
     "per_ldmutations",
@@ -345,6 +343,14 @@ def unify_component_name(component_info: Dict[str, Any]) -> str:
     return component_info.get("component_code", "Unknown")
 
 
+def safe_int(value: Any) -> Optional[int]:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
 # ---------------------------------------------------------------------------
 # Flexible comparison loaders
 # ---------------------------------------------------------------------------
@@ -465,7 +471,7 @@ def build_lab_json(
                 reported_lineage = normalize(row.get("lineage_assignment") if row else None)
             else:
                 reported_lineage = derive_type_subtype(row) if row else None
-            reported_clade =  normalize(row.get("clade_assignment") if row else None)
+            reported_clade = normalize(row.get("clade_assignment") if row else None)
             lineage_match = None if expected_lineage is None else (reported_lineage == expected_lineage)
             clade_match = None if expected_clade is None else (reported_clade == expected_clade)
             classification_summary = classification_outcome(lineage_match, clade_match)
@@ -510,19 +516,19 @@ def build_lab_json(
                 variant_deletions
             )
 
-            number_of_variants_in_consensus = row.get("number_of_variants_in_consensus")
-            number_of_variants_in_consensus_vcf = variant_metrics.get("number_of_variants_in_consensus_vcf")
+            number_of_variants_in_consensus = safe_int(row.get("number_of_variants_in_consensus"))
+            number_of_variants_in_consensus_vcf = safe_int(variant_metrics.get("number_of_variants_in_consensus_vcf"))
 
-            number_of_variants_with_effect = row.get("number_of_variants_with_effect")
-            number_of_variants_with_effect_vcf = variant_metrics.get("number_of_variants_with_effect_vcf")
+            number_of_variants_with_effect = safe_int(row.get("number_of_variants_with_effect"))
+            number_of_variants_with_effect_vcf = safe_int(variant_metrics.get("number_of_variants_with_effect_vcf"))
 
             if number_of_variants_in_consensus is not None and number_of_variants_in_consensus_vcf is not None:
-                discrepancies_variants = int(number_of_variants_in_consensus_vcf) - int(number_of_variants_in_consensus)
+                discrepancies_variants = number_of_variants_in_consensus_vcf - number_of_variants_in_consensus
             else:
                 discrepancies_variants = None
 
             if number_of_variants_with_effect is not None and number_of_variants_with_effect_vcf is not None:
-                discrepancies_variants_effect = int(number_of_variants_with_effect_vcf) - int(number_of_variants_with_effect)
+                discrepancies_variants_effect = number_of_variants_with_effect_vcf - number_of_variants_with_effect
             else:
                 discrepancies_variants_effect = None
 
@@ -530,10 +536,14 @@ def build_lab_json(
                 "number_of_variants_in_consensus": number_of_variants_in_consensus,
                 "number_of_variants_in_consensus_vcf": number_of_variants_in_consensus_vcf,
                 "number_of_variants_with_effect": number_of_variants_with_effect,
-                "number_of_variants_with_effect_vcf": number_of_variants_with_effect_vcf,
                 "discrepancies_in_reported_variants": discrepancies_variants,
-                "discrepancies_in_reported_variants_effect": discrepancies_variants_effect,
             }
+
+            if comp_expected.get("virus") == "SARS-CoV-2":
+                variants_block.update({
+                    "number_of_variants_with_effect_vcf": number_of_variants_with_effect_vcf,
+                    "discrepancies_in_reported_variants_effect": discrepancies_variants_effect,
+                })
 
             if comp_expected.get("virus") != "Influenza virus":
                 variant_wrong_nt = variant_metrics.get("wrong_nt")
@@ -546,15 +556,6 @@ def build_lab_json(
                     "insertions": variant_insertions,
                     "deletions": variant_deletions,
                 })
-
-            if variants_block["number_of_variants_in_consensus"] is not None and variants_block["number_of_variants_in_consensus_vcf"] is not None:
-                variants_block["discrepancies_in_reported_variants"] = (
-                    int(variants_block["number_of_variants_in_consensus"]) != int(variants_block["number_of_variants_in_consensus_vcf"])
-                )
-            if variants_block["number_of_variants_with_effect"] is not None and variants_block["number_of_variants_with_effect_vcf"] is not None:
-                variants_block["discrepancies_in_reported_variants_effect"] = (
-                    int(variants_block["number_of_variants_with_effect"]) != int(variants_block["number_of_variants_with_effect_vcf"])
-                )
 
             classification_block = {
                 "expected_lineage": expected_lineage,
