@@ -40,21 +40,12 @@
       "median_discrepancy_nanopore": 20,
       "high_and_low_freq_pct": 5,
       "low_freq_only_pct": 20,
-      "no_low_freq_pct": 75
+      "high_freq_only_pct": 75
     },
     "influenza_variants": {
       "high_and_low_freq_pct": 5,
       "low_freq_only_pct": 20,
-      "no_low_freq_pct": 75,
-      "total_distinct_references": 5,
-      "total_distinct_references_PB1": 2,
-      "total_distinct_references_PB2": 1,
-      "total_distinct_references_PA": 2,
-      "total_distinct_references_HA": 3,
-      "total_distinct_references_NP": 2,
-      "total_distinct_references_NA": 2,
-      "total_distinct_references_M": 1,
-      "total_distinct_references_NS": 1
+      "high_freq_only_pct": 75
     },
     "classification": {
       "sars_cov_2_concordance_pct": 95.0,
