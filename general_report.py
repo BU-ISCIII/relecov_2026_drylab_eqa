@@ -223,6 +223,63 @@ def make_stacked_classification_plot(
     return str(output_path)
 
 
+def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int, int]:
+    """
+    Calculate total QC matches and discrepancies across all samples of one component.
+    """
+    qc = comp_data.get("qc", {})
+    samples = qc.get("samples", [])
+
+    total_matches = 0
+    total_discrepancies = 0
+
+    for sample in samples:
+        total_matches += safe_int(sample.get("matches")) or 0
+        total_discrepancies += safe_int(sample.get("discrepancies")) or 0
+
+    return total_matches, total_discrepancies
+
+
+def make_qc_match_rate_by_component_plot(
+    general_data: Dict[str, Any],
+    figures_dir: str | Path,
+    output_filename: str = "qc_match_rate_by_component.png",
+    title: str = "QC concordance by component relative to the gold standard",
+) -> str:
+    components = general_data.get("components", {})
+
+    component_names = []
+    match_counts = []
+    discrepancy_counts = []
+
+    for comp_code, comp_data in components.items():
+        matches, discrepancies = qc_hits_discrepancies_from_component(comp_data)
+
+        component_names.append(comp_code)
+        match_counts.append(matches)
+        discrepancy_counts.append(discrepancies)
+
+    output_dir = ensure_network_figures_dir(figures_dir)
+    output_path = output_dir / output_filename
+
+    plt.figure(figsize=(10, 6))
+    x_positions = list(range(len(component_names)))
+
+    plt.bar(x_positions, match_counts, label="Match")
+    plt.bar(x_positions, discrepancy_counts, bottom=match_counts, label="Discrepancy")
+
+    plt.xticks(x_positions, component_names)
+    plt.xlabel("Component")
+    plt.ylabel("Total number of QC evaluations")
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def generate_network_figures(
     general_data: Dict[str, Any],
     labs: List[Dict[str, Any]],
@@ -248,6 +305,11 @@ def generate_network_figures(
 
     outputs["metadata_completeness_distribution"] = make_metadata_completeness_distribution_plot(
         labs=labs,
+        figures_dir=figures_dir,
+    )
+
+    outputs["qc_match_rate_by_component"] = make_qc_match_rate_by_component_plot(
+        general_data=general_data,
         figures_dir=figures_dir,
     )
 
@@ -1494,8 +1556,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "frequency_threshold_pct": pct(frequency_threshold_count, frequency_threshold_total),
             "reference_genome_pct": pct(reference_genome_count, reference_genome_total),
             "incomplete_parameters_pct": pct(metadata_incomplete_samples, metadata_evaluable_samples),
-            "free_text_predefine_pct": None,
-            "inconsistent_tool_version": None,
             "total_workflows": len(all_workflows),
             "total_consensus_softwares": len(consensus_softwares),
             "total_variant_softwares": len(variant_softwares),
