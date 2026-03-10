@@ -210,7 +210,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
     sars_variant_reporting_modes: Counter = Counter()
 
     influenza_variant_reporting_modes: Counter = Counter()
-    influenza_reference_by_segment: Dict[str, set] = {seg: set() for seg in ["PB1", "PB2", "PA", "HA", "NP", "NA", "M", "NS"]}
+    distinct_sars_references: set = set()
+    distinct_influenza_references: set = set()
 
     sars_lineage_matches = 0
     sars_lineage_total = 0
@@ -415,12 +416,17 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     elif var.get("low_freq_only"):
                         influenza_variant_reporting_modes["low_freq_only"] += 1
 
-                    ref = sample.get("metadata_metrics", {}).get("reference_genome_accession")
-                    if is_meaningful(ref):
-                        ref_str = str(ref)
-                        for seg in influenza_reference_by_segment:
-                            if seg in ref_str.upper():
-                                influenza_reference_by_segment[seg].add(ref_str)
+                ref = sample.get("metadata_metrics", {}).get("reference_genome_accession")
+
+                if is_meaningful(ref):
+                    ref_list = [r.strip().upper() for r in str(ref).split(",") if r.strip()]
+
+                    if comp_expected.get("virus") == "SARS-CoV-2":
+                        for accession in ref_list:
+                            distinct_sars_references.add(accession)
+                    elif comp_expected.get("virus") == "Influenza virus":
+                        for accession in ref_list:
+                            distinct_influenza_references.add(accession)
 
     for comp_code, comp_expected in components_expected.items():
         participating_labs = [lab for lab in labs if comp_code in lab.get("components", {})]
@@ -1291,20 +1297,13 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "high_and_low_freq_pct": pct(sars_variant_reporting_modes["high_and_low_freq"], sum(sars_variant_reporting_modes.values())),
                 "low_freq_only_pct": pct(sars_variant_reporting_modes["low_freq_only"], sum(sars_variant_reporting_modes.values())),
                 "high_freq_only_pct": pct(sars_variant_reporting_modes["high_freq_only"], sum(sars_variant_reporting_modes.values())),
+                "total_distinct_references": len(distinct_sars_references),
             },
             "influenza_variants": {
                 "high_and_low_freq_pct": pct(influenza_variant_reporting_modes["high_and_low_freq"], sum(influenza_variant_reporting_modes.values())),
                 "low_freq_only_pct": pct(influenza_variant_reporting_modes["low_freq_only"], sum(influenza_variant_reporting_modes.values())),
                 "high_freq_only_pct": pct(influenza_variant_reporting_modes["high_freq_only"], sum(influenza_variant_reporting_modes.values())),
-                "total_distinct_references": len(set().union(*influenza_reference_by_segment.values())) if influenza_reference_by_segment else 0,
-                "total_distinct_references_PB1": len(influenza_reference_by_segment["PB1"]),
-                "total_distinct_references_PB2": len(influenza_reference_by_segment["PB2"]),
-                "total_distinct_references_PA": len(influenza_reference_by_segment["PA"]),
-                "total_distinct_references_HA": len(influenza_reference_by_segment["HA"]),
-                "total_distinct_references_NP": len(influenza_reference_by_segment["NP"]),
-                "total_distinct_references_NA": len(influenza_reference_by_segment["NA"]),
-                "total_distinct_references_M": len(influenza_reference_by_segment["M"]),
-                "total_distinct_references_NS": len(influenza_reference_by_segment["NS"]),
+                "total_distinct_references": len(distinct_influenza_references),
             },
             "classification": {
                 "sars_cov_2_concordance_pct": pct(sars_lineage_matches, sars_lineage_total),
