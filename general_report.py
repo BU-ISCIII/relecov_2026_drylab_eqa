@@ -223,10 +223,11 @@ def make_stacked_classification_plot(
     return str(output_path)
 
 
-def generate_network_figures(general_data: Dict[str, Any], figures_dir: str | Path = "figures") -> Dict[str, str]:
-    """
-    Generate network-level figures and return their paths.
-    """
+def generate_network_figures(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    figures_dir: str | Path = "figures",
+) -> Dict[str, str]:
     outputs = {}
 
     outputs["classification_summary_lineage_type"] = make_stacked_classification_plot(
@@ -243,6 +244,11 @@ def generate_network_figures(general_data: Dict[str, Any], figures_dir: str | Pa
         mode="clade",
         output_filename="classification_summary_clade.png",
         title="Network-level clade assignment performance summary",
+    )
+
+    outputs["metadata_completeness_distribution"] = make_metadata_completeness_distribution_plot(
+        labs=labs,
+        figures_dir=figures_dir,
     )
 
     return outputs
@@ -296,6 +302,63 @@ def build_software_entries(
         entries.append(entry)
 
     return sorted(entries, key=lambda x: (x.get("name") or "", x.get("version") or ""))
+
+
+def collect_metadata_completeness_by_component(labs: List[Dict[str, Any]]) -> Dict[str, List[float]]:
+    """
+    Collect sample-level metadata completeness percentages grouped by component.
+    Each value corresponds to one sample from one laboratory.
+    """
+    completeness_by_component: Dict[str, List[float]] = defaultdict(list)
+
+    for lab in labs:
+        for comp_code, comp in lab.get("components", {}).items():
+            for sample in comp.get("samples", {}).values():
+                total_expected = safe_number(sample.get("total_expected_fields"))
+                filled = safe_number(sample.get("filled_fields"))
+
+                if total_expected is None or total_expected == 0:
+                    continue
+                if filled is None:
+                    continue
+
+                completeness_pct = 100.0 * filled / total_expected
+                completeness_by_component[comp_code].append(completeness_pct)
+
+    return completeness_by_component
+
+
+def make_metadata_completeness_distribution_plot(
+    labs: List[Dict[str, Any]],
+    figures_dir: str | Path,
+) -> str:
+    """
+    Create a boxplot of sample-level metadata completeness percentages by component.
+    """
+    output_dir = ensure_network_figures_dir(figures_dir)
+    output_path = output_dir / "metadata_completeness_distribution.png"
+
+    completeness_by_component = collect_metadata_completeness_by_component(labs)
+
+    component_order = ["SARS1", "SARS2", "FLU1", "FLU2"]
+    component_names = [comp for comp in component_order if comp in completeness_by_component]
+    data = [completeness_by_component[comp] for comp in component_names]
+
+    if not data:
+        return str(output_path)
+
+    plt.figure(figsize=(10, 6))
+    plt.boxplot(data, labels=component_names)
+
+    plt.xlabel("Component")
+    plt.ylabel("Metadata completeness (%)")
+    plt.title("Distribution of metadata completeness across participating laboratories")
+    plt.ylim(0, 100)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
 
 
 def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -1467,6 +1530,7 @@ def main() -> None:
 
     generated_figures = generate_network_figures(
         general_data=general,
+        labs=labs,
         figures_dir=args.figures_dir,
     )
 
