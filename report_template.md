@@ -643,27 +643,27 @@ These findings highlight considerable methodological heterogeneity in influenza 
 
 Lineage, Subtype and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
 
-- SARS-CoV-2 lineage assignment: {{ pct(general.general_results.classification.sars_cov_2_concordance_pct) }} concordance.
-- Influenza subtyping identification: {{ pct(general.general_results.classification.influenza_type_concordance_pct) }} concordance.
-- SARS-Cov-2 clade assignment: {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} concordance
-- Influenza clade assignment: {{ pct(general.general_results.classification.flu_clade_concordance_pct) }} concordance.
+- SARS-CoV-2 lineage assignment: **{{ pct(general.general_results.classification.sars_cov_2_concordance_pct) }}** concordance.
+- Influenza type/subtype identification: **{{ pct(general.general_results.classification.influenza_type_concordance_pct) }}** concordance.
+- SARS-CoV-2 clade assignment: **{{ pct(general.general_results.classification.sars_clade_concordance_pct) }}** concordance.
+- Influenza clade assignment: **{{ pct(general.general_results.classification.flu_clade_concordance_pct) }}** concordance.
+
+Across components, classification concordance was generally high, with only limited inter-laboratory variability. Observed discrepancies were mainly associated with (TODO revisar que tenga sentido):
+
+- Use of outdated lineage or clade database versions.
+- Differences in the handling of ambiguous positions in consensus sequences.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-As shown in Figure {{ fig_counter.value }}, classification concordance was high across components, with limited inter-laboratory variability (TODO revisar si es verdad). Most classification discrepancies were associated with:
+{{ render_figure(general.figures.classification_summary_lineage_type, "Network-level lineage/type assignment performance summary.") }}
 
-- Use of outdated lineage database versions
-- Differences in handling ambiguous consensus positions
+![classification_summary](./figures/network/classification_summary_lineage_type.png)
 
-Across components, the median percentage of laboratories reporting fully concordant classifications (both lineage/type and clade correctly assigned) was {{ pct(general.general_results.classification.median_full_match_pct) }}, with component-specific values consistently exceeding {{ pct(general.general_results.classification.min_full_match_pct) }}.
+{{ render_figure(general.figures.classification_summary_clade, "Network-level clade assignment performance summary.") }}
 
-{{ render_figure(general.figures.classification_summary, "Network-level classification performance summary.") }}
+![classification_summary](./figures/network/classification_summary_clade.png)
 
-![classification_summary](./example_images/classification_summary.png)
-
-> Esta pero desagregada por Linaje, Subtipo, y por componente y usabdo Hit/Discrepancy
-
-**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories**. Stacked bars represent the proportion of exact matches, partial ,atches and discrepant assignments relative to curated gold standard classifications for each component.
+**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Stacked bars represent the total number of classification outcomes across all samples and laboratories for each component. Bars are partitioned into **Hits** (correct assignments relative to the curated gold standard) and **Discrepancies** (incorrect assignments). Separate panels show results for **lineage/type assignments** and **clade assignments**.
 
 ### 5.5. Metadata completeness and compliance
 
@@ -684,7 +684,7 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 
 > TODO: Como este pero con el eje Y los porcentajes de completeness por componente
 
-**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the median and interquartile range of metadata completeness percentages across the different components.
+**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields.
 
 **100% percent of the laboratorios required either clarification through e-mail contact or correction during validation steps.**
 
@@ -702,10 +702,10 @@ Incomplete parameter reporting limited the ability to fully reconstruct or repro
 
 #### Controlled Vocabulary Compliance
 
-Compliance with predefined controlled vocabularies was evaluated to assess standardisation readiness:
+Compliance with predefined controlled vocabularies was evaluated to assess standardisation readiness: (TODO: rellenar esto a mano con el excel de drive)
 
-- {{ pct(general.metadata_completeness.fully_compliant_pct) }} of submissions were fully compliant with controlled vocabulary requirements in dropdown menus.
-- {{ pct(general.metadata_completeness.free_text_predefine_pct) }} contained at least one free-text substitution where a predefined dropdown was required.
+- XXX (TODO) of submissions were fully compliant with controlled vocabulary requirements in dropdown menus.
+- XXX (TODO) contained at least one free-text substitution where a predefined dropdown was required.
 
 The most common compliance issues included (TODO revisar si es cierto):
 
