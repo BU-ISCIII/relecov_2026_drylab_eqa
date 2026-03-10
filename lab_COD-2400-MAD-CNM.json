@@ -68,6 +68,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -99,8 +100,6 @@
             "per_Ns": 66.51,
             "number_of_Ns": 19887,
             "ns_per_100_kbp": 66505.03,
-            "number_of_variants_in_consensus": 30,
-            "number_of_variants_with_effect": 22,
             "number_of_sgene_frameshifts": 0,
             "number_of_unambiguous_bases": 29903,
             "per_ldmutations": 39.62,
@@ -172,6 +171,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -180,12 +180,12 @@
           "classification": {
             "expected_lineage": "BA.1.13",
             "lineage_assignment": "BA.1.13",
-            "expected_clade": "outgroup (BA.1)",
+            "expected_clade": "21K",
             "clade_assignment": "21K",
             "lineage_match": true,
-            "clade_match": false,
-            "number_matches": 1,
-            "number_discrepancies": 1,
+            "clade_match": true,
+            "number_matches": 2,
+            "number_discrepancies": 0,
             "variant_designation": "Variant of Interest (VOI) [GENEPIO:0100083]",
             "variant_name": "Omicron"
           },
@@ -204,8 +204,6 @@
             "per_Ns": 0.28,
             "number_of_Ns": 84,
             "ns_per_100_kbp": 281.08,
-            "number_of_variants_in_consensus": 61,
-            "number_of_variants_with_effect": 44,
             "number_of_sgene_frameshifts": 0,
             "number_of_unambiguous_bases": 29885,
             "per_ldmutations": 82.61,
@@ -277,6 +275,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -309,8 +308,6 @@
             "per_Ns": 0.09,
             "number_of_Ns": 28,
             "ns_per_100_kbp": 93.7,
-            "number_of_variants_in_consensus": 92,
-            "number_of_variants_with_effect": 65,
             "number_of_sgene_frameshifts": 0,
             "number_of_unambiguous_bases": 29882,
             "per_ldmutations": 95.65,
@@ -382,6 +379,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -414,8 +412,6 @@
             "per_Ns": 8.19,
             "number_of_Ns": 2448,
             "ns_per_100_kbp": 8190.58,
-            "number_of_variants_in_consensus": 73,
-            "number_of_variants_with_effect": 52,
             "number_of_sgene_frameshifts": 0,
             "number_of_unambiguous_bases": 29888,
             "per_ldmutations": 82.54,
@@ -487,6 +483,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -495,12 +492,12 @@
           "classification": {
             "expected_lineage": "BA.1.1",
             "lineage_assignment": "BA.1.1",
-            "expected_clade": "outgroup (BA.1)",
+            "expected_clade": "21K",
             "clade_assignment": "21K",
             "lineage_match": true,
-            "clade_match": false,
-            "number_matches": 1,
-            "number_discrepancies": 1,
+            "clade_match": true,
+            "number_matches": 2,
+            "number_discrepancies": 0,
             "variant_designation": "Variant of Interest (VOI) [GENEPIO:0100083]",
             "variant_name": "Omicron"
           },
@@ -519,8 +516,6 @@
             "per_Ns": 0.3,
             "number_of_Ns": 91,
             "ns_per_100_kbp": 304.59,
-            "number_of_variants_in_consensus": 56,
-            "number_of_variants_with_effect": 41,
             "number_of_sgene_frameshifts": 0,
             "number_of_unambiguous_bases": 29876,
             "per_ldmutations": 80.39,
@@ -560,7 +555,7 @@
       },
       "total_number_discrepancies": 0,
       "median_genome_identity_pct": null,
-      "total_classification_matches": 6
+      "total_classification_matches": 8
     },
     "SARS2": {
       "display_name": "SARS-CoV-2, Oxford Nanopore Technologies",
@@ -623,6 +618,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -655,8 +651,6 @@
             "per_Ns": 0.42,
             "number_of_Ns": 126,
             "ns_per_100_kbp": 422.15,
-            "number_of_variants_in_consensus": 118,
-            "number_of_variants_with_effect": 78,
             "number_of_sgene_frameshifts": 21,
             "number_of_unambiguous_bases": 29847,
             "per_ldmutations": 96.15,
@@ -731,6 +725,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -763,8 +758,6 @@
             "per_Ns": 0.46,
             "number_of_Ns": 136,
             "ns_per_100_kbp": 455.52,
-            "number_of_variants_in_consensus": 97,
-            "number_of_variants_with_effect": 67,
             "number_of_sgene_frameshifts": 21,
             "number_of_unambiguous_bases": 29856,
             "per_ldmutations": 95.65,
@@ -839,6 +832,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -871,8 +865,6 @@
             "per_Ns": 1.97,
             "number_of_Ns": 589,
             "ns_per_100_kbp": 1973.4,
-            "number_of_variants_in_consensus": 94,
-            "number_of_variants_with_effect": 66,
             "number_of_sgene_frameshifts": 21,
             "number_of_unambiguous_bases": 29847,
             "per_ldmutations": 92.96,
@@ -947,6 +939,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -978,9 +971,7 @@
             "per_genome_greater_10x": 30.0,
             "per_Ns": 83.09,
             "number_of_Ns": 24838,
-            "ns_per_100_kbp": 83093.6,
-            "number_of_variants_in_consensus": 16,
-            "number_of_variants_with_effect": 8
+            "ns_per_100_kbp": 83093.6
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
@@ -1050,6 +1041,7 @@
             "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
             "discrepancies_in_reported_variants_effect": null,
+            "high_and_low_freq": true,
             "total_discrepancies": 0,
             "wrong_nt": null,
             "insertions": null,
@@ -1081,9 +1073,7 @@
             "per_genome_greater_10x": 6.0,
             "per_Ns": 95.23,
             "number_of_Ns": 28468,
-            "ns_per_100_kbp": 95226.47,
-            "number_of_variants_in_consensus": 11,
-            "number_of_variants_with_effect": 5
+            "ns_per_100_kbp": 95226.47
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
@@ -1187,9 +1177,8 @@
             "number_of_variants_in_consensus": 1377,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 0,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -1217,8 +1206,6 @@
             "per_genome_greater_10x": 96.57,
             "per_Ns": 0.0,
             "number_of_Ns": 0,
-            "number_of_variants_in_consensus": 1377,
-            "number_of_variants_with_effect": 0,
             "number_of_unambiguous_bases": 13136
           },
           "software_benchmarking": {
@@ -1290,9 +1277,8 @@
             "number_of_variants_in_consensus": 449,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 113,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1320,8 +1306,6 @@
             "per_genome_greater_10x": 99.24,
             "per_Ns": 0.0,
             "number_of_Ns": 0,
-            "number_of_variants_in_consensus": 449,
-            "number_of_variants_with_effect": 113,
             "number_of_unambiguous_bases": 13162
           },
           "software_benchmarking": {
@@ -1387,9 +1371,8 @@
             "number_of_variants_in_consensus": null,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": null,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": null,
@@ -1472,9 +1455,8 @@
             "number_of_variants_in_consensus": 492,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 111,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1502,8 +1484,6 @@
             "per_genome_greater_10x": 96.67,
             "per_Ns": 0.0,
             "number_of_Ns": 0,
-            "number_of_variants_in_consensus": 492,
-            "number_of_variants_with_effect": 111,
             "number_of_unambiguous_bases": 13142
           },
           "software_benchmarking": {
@@ -1575,9 +1555,8 @@
             "number_of_variants_in_consensus": 455,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 98,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1605,8 +1584,6 @@
             "per_genome_greater_10x": 87.57,
             "per_Ns": 8.75,
             "number_of_Ns": 984,
-            "number_of_variants_in_consensus": 455,
-            "number_of_variants_with_effect": 98,
             "number_of_unambiguous_bases": 13129
           },
           "software_benchmarking": {
@@ -1711,9 +1688,8 @@
             "number_of_variants_in_consensus": null,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": null,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H5N6",
@@ -1801,9 +1777,8 @@
             "number_of_variants_in_consensus": 435,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 101,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1831,8 +1806,6 @@
             "per_genome_greater_10x": 99.07,
             "per_Ns": 1.07,
             "number_of_Ns": 194,
-            "number_of_variants_in_consensus": 435,
-            "number_of_variants_with_effect": 101,
             "number_of_unambiguous_bases": 13133
           },
           "software_benchmarking": {
@@ -1904,9 +1877,8 @@
             "number_of_variants_in_consensus": 492,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 111,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1934,8 +1906,6 @@
             "per_genome_greater_10x": 96.57,
             "per_Ns": 0.0,
             "number_of_Ns": 0,
-            "number_of_variants_in_consensus": 492,
-            "number_of_variants_with_effect": 111,
             "number_of_unambiguous_bases": 13123
           },
           "software_benchmarking": {
@@ -2007,9 +1977,8 @@
             "number_of_variants_in_consensus": 399,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 89,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -2037,8 +2006,6 @@
             "per_genome_greater_10x": 86.94,
             "per_Ns": 12.5,
             "number_of_Ns": 1637,
-            "number_of_variants_in_consensus": 399,
-            "number_of_variants_with_effect": 89,
             "number_of_unambiguous_bases": 13069
           },
           "software_benchmarking": {
@@ -2107,9 +2074,8 @@
             "number_of_variants_in_consensus": 1371,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 0,
-            "number_of_variants_with_effect_vcf": null,
             "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null
+            "low_freq_only": true
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -2137,8 +2103,6 @@
             "per_genome_greater_10x": 96.6,
             "per_Ns": 0.0,
             "number_of_Ns": 0,
-            "number_of_variants_in_consensus": 1371,
-            "number_of_variants_with_effect": 0,
             "number_of_unambiguous_bases": 13140
           },
           "software_benchmarking": {
