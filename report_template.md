@@ -657,11 +657,11 @@ Across components, classification concordance was generally high, with only limi
 
 {{ render_figure(general.figures.classification_summary_lineage_type, "Network-level lineage/type assignment performance summary.") }}
 
-![classification_summary](./figures/network/classification_summary_lineage_type.png)
+![classification_summary_lineage_type](./figures/network/classification_summary_lineage_type.png)
 
 {{ render_figure(general.figures.classification_summary_clade, "Network-level clade assignment performance summary.") }}
 
-![classification_summary](./figures/network/classification_summary_clade.png)
+![classification_summary_clade](./figures/network/classification_summary_clade.png)
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Stacked bars represent the total number of classification outcomes across all samples and laboratories for each component. Bars are partitioned into **Hits** (correct assignments relative to the curated gold standard) and **Discrepancies** (incorrect assignments). Separate panels show results for **lineage/type assignments** and **clade assignments**.
 
@@ -680,7 +680,7 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 {{ render_figure(general.figures.metadata_completeness_distribution,
   "Distribution of metadata completeness across participating laboratories.") }}
 
-![consensus_summary](./example_images/consensus_summary.png)
+![metadata_completeness_distribution](./figures/network/metadata_completeness_distribution.png)
 
 > TODO: Como este pero con el eje Y los porcentajes de completeness por componente
 
@@ -731,8 +731,7 @@ general.figures.qc_match_rate_by_component,
 "QC concordance by component (Match vs Discrepancy relative to the gold standard)."
 ) }}
 
-![classification_summary](./example_images/classification_summary.png)
-> Como este pero solo MAtch o Discrepancy
+![qc_match_rate_by_component](./figures/network/qc_match_rate_by_component.png)
 
 **_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Stacked bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
 
