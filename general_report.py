@@ -93,16 +93,6 @@ def max_or_none(values: Iterable[Any]) -> Optional[float]:
     return round(float(max(nums)), 4)
 
 
-def software_signature(name, version):
-    if not is_meaningful(name):
-        return None
-
-    if is_meaningful(version):
-        return f"{str(name).strip()} | {str(version).strip()}"
-
-    return str(name).strip()
-
-
 def get_workflow_signature(sample: Dict[str, Any]) -> Optional[str]:
     sb = sample.get("software_benchmarking", {})
 
@@ -124,12 +114,6 @@ def load_lab_jsons(input_dir: Path) -> List[Dict[str, Any]]:
             continue
         out.append(load_json(path))
     return out
-
-
-def software_key(name, version=None):
-    if not is_meaningful(name):
-        return None
-    return (str(name).strip(), str(version).strip() if is_meaningful(version) else None)
 
 
 def software_key(name, version=None):
