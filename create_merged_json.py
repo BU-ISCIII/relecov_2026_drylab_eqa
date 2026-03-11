@@ -199,7 +199,7 @@ def is_meaningful(value: Any) -> bool:
         return False
     if isinstance(value, str):
         stripped = value.strip()
-        if stripped in {"", "000", "0000", "Not Provided [SNOMED:434941000124101]"}:
+        if stripped in {"", "000", "0000", "Not Provided", "Not Provided [SNOMED:434941000124101]"}:
             return False
         return True
     return True
@@ -302,6 +302,20 @@ def completeness_from_row(
     missing: List[str] = []
     partial_incomplete_groups: List[str] = []
 
+    mapping_performed = any(
+        is_meaningful(row.get(field))
+        for field in groups.get("Mapping fields", [])
+    )
+    assembly_performed = any(
+        is_meaningful(row.get(field))
+        for field in groups.get("Assembly fields", [])
+    )
+    # Mapping and assembly fields are mutually exclusive
+    excluded_group = None
+    if mapping_performed and not assembly_performed:
+        excluded_group = "Assembly fields"
+    elif assembly_performed and not mapping_performed:
+        excluded_group = "Mapping fields"
     for group_name, group_fields in groups.items():
         group_filled_fields: List[str] = []
         group_missing_fields: List[str] = []
@@ -312,11 +326,8 @@ def completeness_from_row(
             else:
                 group_missing_fields.append(field)
 
-        # If the whole block is empty, ignore it completely:
-        # - it does not count toward total_expected_fields
-        # - its empty fields are not counted as incomplete_fields
-        # - it is not considered a primary incompleteness driver
-        if len(group_filled_fields) == 0:
+        # Mapping and assembly fields are mutually exclusive
+        if group_name == excluded_group:
             continue
 
         # The block has been started, therefore all of its fields become expected.
@@ -804,11 +815,12 @@ def iterative_process(
             lab_consensus = find_optional_json(consensus_comparison)
             lab_variants: Optional[Any] = find_optional_json(variant_comparison)
             if input_data_dir is not None:
-                disc_consensus, disc_variants = discover_input_data_sources(input_data_dir, inferred_lab_id)
-                if lab_consensus is None:
-                    lab_consensus = disc_consensus
-                if lab_variants is None and disc_variants:
-                    lab_variants = disc_variants
+                input_data_dir = results_dir
+            disc_consensus, disc_variants = discover_input_data_sources(input_data_dir, inferred_lab_id)
+            if lab_consensus is None:
+                lab_consensus = disc_consensus
+            if lab_variants is None and disc_variants:
+                lab_variants = disc_variants
 
             out = build_lab_json(
                 expected_data=expected_data,
