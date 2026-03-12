@@ -491,7 +491,14 @@ def build_lab_json(
             total_classification_matches += classification_summary["number_matches"]
 
             reported_qc = normalize_label(row.get("qc_test"))
-            qc_match = None if expected_qc is None else (reported_qc == expected_qc)
+            qc_filled = all(
+                row.get(f) for f in FIELD_GROUPS["QC metrics fields"]
+            )
+            reported_qc = "Fail" if not qc_filled else reported_qc
+            if expected_qc is not None:
+                qc_match = (reported_qc == expected_qc) if qc_filled else False
+            else:
+                qc_match = None
 
             consensus_metrics = pick_sample_metrics(consensus_index, sample_id, comp_code)
             variant_metrics = pick_sample_metrics(variant_index, sample_id, comp_code)
@@ -549,6 +556,7 @@ def build_lab_json(
                 discrepancies_variants_effect = None
 
             variants_block: Dict[str, Any] = {
+                "high_and_low_freq": variant_metrics.get("high_and_low_freq") or False,
                 "number_of_variants_in_consensus": number_of_variants_in_consensus,
                 "number_of_variants_in_consensus_vcf": number_of_variants_in_consensus_vcf,
                 "number_of_variants_with_effect": number_of_variants_with_effect,
@@ -726,6 +734,34 @@ def discover_input_data_sources(
     return consensus_data, variant_index
 
 
+def load_consolidated_json_sources(
+    consolidated_json_path: Path,
+) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    """Load consensus and variant data from a consolidated JSON report.
+
+    Expected format::
+
+        {
+          "consensus": { "<sample_id>": { "discrepancy_breakdown": {...}, "genome_identity_pct": ... }, ... },
+          "variants":  { "<sample_id>": { "high_and_low_freq": ..., "number_of_variants_in_consensus_vcf": ..., ... }, ... }
+        }
+
+    Returns:
+        consensus_data – the value of the ``consensus`` key (or None if absent)
+        variant_data   – the value of the ``variants`` key (or None if absent)
+    """
+    payload = load_json(consolidated_json_path)
+    consensus_data: Optional[Dict[str, Any]] = payload.get("consensus") or None
+    variant_data: Optional[Dict[str, Any]] = payload.get("variants") or None
+    log.info(
+        "Loaded consolidated JSON from %s: %d consensus entries, %d variant entries",
+        consolidated_json_path,
+        len(consensus_data) if consensus_data else 0,
+        len(variant_data) if variant_data else 0,
+    )
+    return consensus_data, variant_data
+
+
 def infer_lab_name(metadata_rows: List[Dict[str, Any]], fallback: Optional[str] = None) -> str:
     return fallback or metadata_rows[0].get("submitting_institution_id") or "Unknown laboratory"
 
@@ -755,12 +791,19 @@ def process_single_metadata_file(
     lab_name: Optional[str] = None,
     figures_root: Optional[str] = None,
     input_data_dir: Optional[Path] = None,
+    consolidated_json_path: Optional[Path] = None,
 ) -> Path:
     metadata_rows = load_json(metadata_path)
     consensus_data = find_optional_json(consensus_path)
     variant_data = find_optional_json(variant_path)
 
-    if input_data_dir is not None:
+    if consolidated_json_path is not None:
+        disc_consensus, disc_variants = load_consolidated_json_sources(consolidated_json_path)
+        if consensus_data is None:
+            consensus_data = disc_consensus
+        if variant_data is None and disc_variants:
+            variant_data = disc_variants
+    elif input_data_dir is not None:
         lab_id = metadata_rows[0].get("submitting_institution_id") if metadata_rows else None
         if lab_id:
             disc_consensus, disc_variants = discover_input_data_sources(input_data_dir, lab_id)
@@ -791,11 +834,18 @@ def iterative_process(
     consensus_comparison: Optional[str] = None,
     variant_comparison: Optional[str] = None,
     input_data_dir: Optional[Path] = None,
+    consolidated_json_path: Optional[Path] = None,
 ) -> List[Path]:
     expected_data, _ = validate_load_inputs(root_folder, expected_data_path, output_path, heading_file)
     root = Path(root_folder)
     output_dir = Path(output_path)
     generated: List[Path] = []
+
+    # Load global consolidated JSON if explicitly provided via --consolidated-json
+    global_consolidated_consensus: Optional[Any] = None
+    global_consolidated_variants: Optional[Any] = None
+    if consolidated_json_path is not None:
+        global_consolidated_consensus, global_consolidated_variants = load_consolidated_json_sources(consolidated_json_path)
 
     for folder in find_lab_dirs(root):
         results_dir = folder / "RESULTS"
@@ -814,13 +864,28 @@ def iterative_process(
 
             lab_consensus = find_optional_json(consensus_comparison)
             lab_variants: Optional[Any] = find_optional_json(variant_comparison)
-            if input_data_dir is not None:
-                input_data_dir = results_dir
-            disc_consensus, disc_variants = discover_input_data_sources(input_data_dir, inferred_lab_id)
-            if lab_consensus is None:
-                lab_consensus = disc_consensus
-            if lab_variants is None and disc_variants:
-                lab_variants = disc_variants
+
+            # 1. Per-lab consolidated_json_reports.json inside RESULTS/ (highest auto-discovery priority)
+            per_lab_consolidated = results_dir / "consolidated_json_reports.json"
+            if per_lab_consolidated.exists():
+                disc_consensus, disc_variants = load_consolidated_json_sources(per_lab_consolidated)
+                if lab_consensus is None:
+                    lab_consensus = disc_consensus
+                if lab_variants is None and disc_variants:
+                    lab_variants = disc_variants
+            # 2. Global consolidated JSON provided via --consolidated-json
+            elif consolidated_json_path is not None:
+                if lab_consensus is None:
+                    lab_consensus = global_consolidated_consensus
+                if lab_variants is None and global_consolidated_variants:
+                    lab_variants = global_consolidated_variants
+            # 3. Legacy per-lab file discovery from --input-data
+            elif input_data_dir is not None:
+                disc_consensus, disc_variants = discover_input_data_sources(results_dir, inferred_lab_id)
+                if lab_consensus is None:
+                    lab_consensus = disc_consensus
+                if lab_variants is None and disc_variants:
+                    lab_variants = disc_variants
 
             out = build_lab_json(
                 expected_data=expected_data,
@@ -858,6 +923,16 @@ def parse_args() -> argparse.Namespace:
             "Explicit --consensus-comparison / --variant-comparison take precedence."
         ),
     )
+    parser.add_argument(
+        "--consolidated-json",
+        default=None,
+        help=(
+            "Path to a consolidated JSON report containing both consensus and variant data. "
+            "Expected format: {\"consensus\": {\"<sample_id>\": {...}, ...}, \"variants\": {\"<sample_id>\": {...}, ...}}. "
+            "Takes precedence over --input-data. "
+            "Explicit --consensus-comparison / --variant-comparison still take precedence over this."
+        ),
+    )
     parser.add_argument("--lab_cod", default=None, help="Restrict folder mode to a single lab code")
     parser.add_argument("--lab_name", default=None, help="Override full laboratory name")
     parser.add_argument("--heading_file", default=None, help="Optional heading/template JSON (kept for backward compatibility)")
@@ -869,6 +944,7 @@ def main() -> None:
     args = parse_args()
 
     input_data_dir = Path(args.input_data) if args.input_data else None
+    consolidated_json_path = Path(args.consolidated_json) if args.consolidated_json else None
 
     if args.metadata:
         expected_data = load_json(args.expected_data)
@@ -881,6 +957,7 @@ def main() -> None:
             variant_path=args.variant_comparison,
             lab_name=args.lab_name,
             input_data_dir=input_data_dir,
+            consolidated_json_path=consolidated_json_path,
         )
         print(f"Generated {output_path}")
     else:
@@ -894,6 +971,7 @@ def main() -> None:
             consensus_comparison=args.consensus_comparison,
             variant_comparison=args.variant_comparison,
             input_data_dir=input_data_dir,
+            consolidated_json_path=consolidated_json_path,
         )
         print(f"Generated {len(generated)} file(s)")
         for path in generated:
