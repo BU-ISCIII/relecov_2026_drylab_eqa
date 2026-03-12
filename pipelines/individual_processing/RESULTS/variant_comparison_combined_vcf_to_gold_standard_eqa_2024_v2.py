@@ -150,12 +150,12 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
 
         # Number of variants in consensus (total length of variants_long_table divided by sample)
         n_variants_consensus = len(group)
-        variants_dict[sample]["number_of_variants_in_consensus"] = n_variants_consensus
+        variants_dict[sample]["number_of_variants_in_consensus_vcf"] = n_variants_consensus
         
         # N of variants with effect (Where EFFECT != synonymous_variant)
         df_variants_effect = group[group["EFFECT"] != "synonymous_variant"]
         n_variants_effect = len(df_variants_effect)
-        variants_dict[sample]["number_of_variants_with_effect"] = n_variants_effect
+        variants_dict[sample]["number_of_variants_with_effect_vcf"] = n_variants_effect
 
         if df.empty:
             # No discrepancies, so default values
