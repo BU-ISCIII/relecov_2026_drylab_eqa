@@ -173,6 +173,13 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             n_discrepancies = len(merged_group)
             variants_dict[sample]["discrepancies_in_reported_variants"] = n_discrepancies
 
+            # Had to rename some columns to merge
+            merged_group = merged_group.copy()
+            merged_group["REF"] = merged_group["REF (NC_045512.2)"]
+            merged_group["ALT"] = merged_group["ALT_enviados"]
+            merged_group["POS"] = pd.to_numeric(merged_group["POS"])
+            df_variants_effect["POS"] = pd.to_numeric(df_variants_effect["POS"])
+
             w_effect = merged_group.merge(
             df_variants_effect,
             on=['POS', 'REF', 'ALT'],
@@ -188,7 +195,7 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             variants_dict[sample]= {}
 
         # discrepancies between reported ALT and gold ALT
-        discrepancies = (reported_df["ALT_enviados"] != reported_df["ALT_gold"]).sum()
+        discrepancies = (reported_df["ALT_enviados"] != reported_df["Gold_Standard"]).sum()
         variants_dict[sample]["total_discrepancies"] = discrepancies
 
         # count each RESULTADOS_enviados category
