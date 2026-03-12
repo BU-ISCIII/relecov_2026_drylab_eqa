@@ -154,7 +154,7 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
         variants_dict[sample]["number_of_variants_in_consensus_vcf"] = n_variants_consensus
         
         # N of variants with effect (Where EFFECT != synonymous_variant)
-        df_variants_effect = group[group["EFFECT"] != "synonymous_variant"]
+        df_variants_effect = group[group["EFFECT"] == "missense_variant"]
         n_variants_effect = len(df_variants_effect)
         variants_dict[sample]["number_of_variants_with_effect_vcf"] = n_variants_effect
 
