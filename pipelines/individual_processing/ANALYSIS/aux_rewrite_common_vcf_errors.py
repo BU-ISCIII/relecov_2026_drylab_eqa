@@ -21,8 +21,8 @@ class VCFFile:
             self.validate_format_data()
         
         # Non-necessary, just convenient, values
-        self.format_keys = [key["ID"] for key in self.headers["FORMAT"]]
-        self.info_keys = [key["ID"] for key in self.headers["INFO"]]
+        self.format_keys = [key.get("ID", "") for key in self.headers.get("FORMAT", {})]
+        self.info_keys = [key.get("ID", "") for key in self.headers.get("INFO", {})]
 
     def read_vcf_file(self, path):
         self.headers = OrderedDict()   
@@ -208,7 +208,8 @@ class VCFFile:
     def replace_NA_values(self, replacement):
         self.data[self.sample_values_column] = self.data[self.sample_values_column].apply(lambda x: x.replace("NA", replacement))
         self.data[self.sample_values_column] = self.data[self.sample_values_column].apply(lambda x: x.replace(".", "0"))
-        self.data["INFO"] = self.data["INFO"].apply(lambda x: x.replace("=NA", f"={replacement}"))
+        if "INFO" in self.data:
+            self.data["INFO"] = self.data["INFO"].apply(lambda x: x.replace("=NA", f"={replacement}"))
 
     def rename_chrom(self, replacement):
         if "contig" in self.headers:
