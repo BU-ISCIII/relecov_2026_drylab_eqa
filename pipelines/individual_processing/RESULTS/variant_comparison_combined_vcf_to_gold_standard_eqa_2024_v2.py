@@ -142,6 +142,12 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
     for sample, group in vlt_df.groupby("SAMPLE"):
         if sample not in variants_dict:
             variants_dict[sample] = {}
+
+        # check presence of high and low frequency alleles
+        has_low_freq = (group["AF_enviados"] < af_threshold).any()
+        has_high_freq = (group["AF_enviados"] >= af_threshold).any()
+        variants_dict[sample]["high_and_low_freq"] = has_low_freq and has_high_freq
+
         # Number of variants in consensus (total length of variants_long_table divided by sample)
         n_variants_consensus = len(group)
         variants_dict[sample]["number_of_variants_in_consensus"] = n_variants_consensus
@@ -150,6 +156,16 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
         df_variants_effect = group[group["EFFECT"] != "synonymous_variant"]
         n_variants_effect = len(df_variants_effect)
         variants_dict[sample]["number_of_variants_with_effect"] = n_variants_effect
+
+        if df.empty:
+            # No discrepancies, so default values
+            variants_dict[sample]["discrepancies_in_reported_variants"] = 0
+            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = 0
+            variants_dict[sample]["high_and_low_freq"] = False
+            variants_dict[sample]["total_discrepancies"] = 0
+            for key, json_equivalent in resultados_map.items():
+                variants_dict[sample][json_equivalent] = 0
+
         for merged_sample_name, merged_group in df.groupby("EQA"):
             if sample not in merged_sample_name:
                 continue
@@ -167,15 +183,9 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             n_discrepancies_w_effect = len(w_effect)
             variants_dict[sample]["discrepancies_in_reported_variants_effect"] = n_discrepancies_w_effect
 
-    for sample, reported_df in df.groupby("EQA")
+    for sample, reported_df in df.groupby("EQA"):
         if sample not in variants_dict:
             variants_dict[sample]= {}
-        
-        # check presence of high and low frequency alleles
-        has_low_freq = (reported_df["AF_enviados"] < af_threshold).any()
-        has_high_freq = (reported_df["AF_enviados"] >= af_threshold).any()
-        variants_dict[sample]["high_and_low_freq"] = has_low_freq and has_high_freq
-
 
         # discrepancies between reported ALT and gold ALT
         discrepancies = (reported_df["ALT_enviados"] != reported_df["ALT_gold"]).sum()
