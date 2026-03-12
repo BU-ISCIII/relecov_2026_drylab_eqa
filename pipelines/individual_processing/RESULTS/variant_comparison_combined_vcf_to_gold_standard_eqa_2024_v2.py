@@ -145,9 +145,9 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             variants_dict[sample] = {}
 
         # check presence of high and low frequency alleles
-        has_low_freq = (group["AF"] < af_threshold).any()
-        has_high_freq = (group["AF"] >= af_threshold).any()
-        variants_dict[sample]["high_and_low_freq"] = has_low_freq and has_high_freq
+        has_low_freq = (pd.to_numeric(group["AF"]) < af_threshold).any()
+        has_high_freq = (pd.to_numeric(group["AF"]) >= af_threshold).any()
+        variants_dict[sample]["high_and_low_freq"] = bool(has_low_freq and has_high_freq)
 
         # Number of variants in consensus (total length of variants_long_table divided by sample)
         n_variants_consensus = len(group)
@@ -162,7 +162,6 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             # No discrepancies, so default values
             variants_dict[sample]["discrepancies_in_reported_variants"] = 0
             variants_dict[sample]["discrepancies_in_reported_variants_effect"] = 0
-            variants_dict[sample]["high_and_low_freq"] = False
             variants_dict[sample]["total_discrepancies"] = 0
             for key, json_equivalent in resultados_map.items():
                 variants_dict[sample][json_equivalent] = 0
