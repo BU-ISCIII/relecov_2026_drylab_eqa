@@ -144,8 +144,8 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             variants_dict[sample] = {}
 
         # check presence of high and low frequency alleles
-        has_low_freq = (group["AF_enviados"] < af_threshold).any()
-        has_high_freq = (group["AF_enviados"] >= af_threshold).any()
+        has_low_freq = (group["AF"] < af_threshold).any()
+        has_high_freq = (group["AF"] >= af_threshold).any()
         variants_dict[sample]["high_and_low_freq"] = has_low_freq and has_high_freq
 
         # Number of variants in consensus (total length of variants_long_table divided by sample)
