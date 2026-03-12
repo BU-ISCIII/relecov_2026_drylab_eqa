@@ -64,6 +64,18 @@ def write_median_identity(output_file):
         all_values_identity = values["genome_identity_pct"]
         median_value = median(all_values_identity)
         full_file[sample]["genome_identity_pct"] = median_value * 100
+        if "discrepancy_breakdown" not in full_file[sample]:
+            # Zero values for the discrepancy breakdown. assuming if there is an identity AND they're not here
+            full_file[sample]["discrepancy_breakdown"] = {
+                "wrong_nt": 0,
+                "ambiguity2nt": 0,
+                "nt2ambigity": 0,
+                "ns2nt": 0,
+                "nt2ns": 0,
+                "insertions": 0,
+                "deletions": 0
+            }
+            print(f"0 discrepancies assumed for sample {sample}")
 
     with open(output_file, "w") as f:
         json.dump(full_file, f, indent=4)

@@ -14,6 +14,7 @@ mkdir consensus_files
 
 ANALYSIS_RP=$( realpath ../ANALYSIS )
 
+rm -r variants_long_table/ consensus_files/ validated_metadata.json
 ln -s $ANALYSIS_RP/variant_long_table/* variants_long_table/
 ln -s $ANALYSIS_RP/00-consensus/* consensus_files/
 ln -s $( realpath ../RAW/validated*json ) validated_metadata.json

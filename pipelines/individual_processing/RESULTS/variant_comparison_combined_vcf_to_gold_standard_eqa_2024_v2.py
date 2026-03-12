@@ -171,7 +171,7 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
                 continue
             # Calculate discrepancies in reported variants + with effect
             n_discrepancies = len(merged_group)
-            variants_dict[sample]["discrepancies_in_reported_variants"] = n_discrepancies
+            variants_dict[sample]["discrepancies_in_reported_variants"] = int(n_discrepancies)
 
             # Had to rename some columns to merge
             merged_group = merged_group.copy()
@@ -183,12 +183,10 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             w_effect = merged_group.merge(
             df_variants_effect,
             on=['POS', 'REF', 'ALT'],
-            how='outer',
-            suffixes=('_gold', f'_dsa'),
-            indicator=True
+            how='inner'
             )
             n_discrepancies_w_effect = len(w_effect)
-            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = n_discrepancies_w_effect
+            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = int(n_discrepancies_w_effect)
 
     for sample, reported_df in df.groupby("EQA"):
         if sample not in variants_dict:
@@ -196,19 +194,22 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
 
         # discrepancies between reported ALT and gold ALT
         discrepancies = (reported_df["ALT_enviados"] != reported_df["Gold_Standard"]).sum()
-        variants_dict[sample]["total_discrepancies"] = discrepancies
+        variants_dict[sample]["total_discrepancies"] = int(discrepancies)
 
         # count each RESULTADOS_enviados category
         resultados_counts = df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
-        for key, json_equivalent in resultados_map:
-            variants_dict[sample][json_equivalent] = resultados_counts[key]
+        for key, json_equivalent in resultados_map.items():
+            variants_dict[sample][json_equivalent] = int(resultados_counts.get(key,0))
 
     if os.path.isfile("variants_report.json"):
-        with open("variants_report.json", "r") as f:
-            existing = json.load(f)
-        if existing:
-            existing.update(variants_dict)
-            variants_dict = existing
+        try:
+            with open("variants_report.json", "r") as f:
+                existing = json.load(f)
+            if existing:
+                existing.update(variants_dict)
+                variants_dict = existing
+        except json.JSONDecodeError:
+            pass
     with open("variants_report.json", "w") as f:
         json.dump(variants_dict, f)
 
