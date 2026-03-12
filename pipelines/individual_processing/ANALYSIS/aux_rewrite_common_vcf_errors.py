@@ -55,7 +55,7 @@ class VCFFile:
         """
         line = "=".join(line)
         line = re.split(',(?=(?:[^"]*"[^"]*")*[^"]*$)', line)
-        return {key.lstrip("<"): value.rstrip(">") for key, value in [element.split("=") for element in line]}
+        return {key.lstrip("<"): value.rstrip(">") for key, value in [element.split("=", maxsplit=1) for element in line]}
 
     def validate_format_data(self):
         v_format = self.headers["FORMAT"]
@@ -207,6 +207,7 @@ class VCFFile:
     
     def replace_NA_values(self, replacement):
         self.data[self.sample_values_column] = self.data[self.sample_values_column].apply(lambda x: x.replace("NA", replacement))
+        self.data[self.sample_values_column] = self.data[self.sample_values_column].apply(lambda x: x.replace(".", "0"))
         self.data["INFO"] = self.data["INFO"].apply(lambda x: x.replace("=NA", f"={replacement}"))
 
     def rename_chrom(self, replacement):

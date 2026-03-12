@@ -9,12 +9,12 @@ ln -s $( realpath /data/ucct/bi/research/EQA_RELECOV_2026/gold_standards_relecov
 ln -s /data/ucct/bi/research/EQA_RELECOV_2026/influenza_reference_numbering/* influenza_reference_numbering
 
 # User-generated files
-mkdir variants_long_table
-mkdir consensus_files 
 
 ANALYSIS_RP=$( realpath ../ANALYSIS )
 
 rm -r variants_long_table/ consensus_files/ validated_metadata.json
+mkdir variants_long_table
+mkdir consensus_files 
 ln -s $ANALYSIS_RP/variant_long_table/* variants_long_table/
 ln -s $ANALYSIS_RP/00-consensus/* consensus_files/
 ln -s $( realpath ../RAW/validated*json ) validated_metadata.json

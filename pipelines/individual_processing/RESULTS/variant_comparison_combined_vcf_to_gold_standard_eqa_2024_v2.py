@@ -187,6 +187,15 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
             )
             n_discrepancies_w_effect = len(w_effect)
             variants_dict[sample]["discrepancies_in_reported_variants_effect"] = int(n_discrepancies_w_effect)
+            break
+        else:
+            # No discrepancies, so default values
+            print("We got here")
+            variants_dict[sample]["discrepancies_in_reported_variants"] = 0
+            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = 0
+            variants_dict[sample]["total_discrepancies"] = 0
+            for key, json_equivalent in resultados_map.items():
+                variants_dict[sample][json_equivalent] = 0
 
     for sample, reported_df in df.groupby("EQA"):
         if sample not in variants_dict:
