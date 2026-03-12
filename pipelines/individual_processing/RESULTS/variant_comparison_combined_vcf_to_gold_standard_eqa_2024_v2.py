@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import re
+import json
 
 # --- Argumentos ---
 parser = argparse.ArgumentParser(description="Localizar variants_long_table CSV y Excel, etiquetarlos y guardarlos.")
@@ -125,6 +126,68 @@ def comparar_gold_vs(df_comp, col_suffix, extra_cols_gold=None, extra_cols_comp=
 
     return diff_final.sort_values(by=['EQA','POS'])
 
+def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
+    variants_dict = {}
+    resultados_map = {
+              "Wrong nucleotide": "wrong_nt",
+              "Insertion relative to gold standard": "insertions",
+              "Deletion relative to gold standard": "deletions"
+            }
+    
+    # Set up the initial values
+    df = merged_all.copy()
+    vlt_df = vlt_lab.copy()
+    af_threshold = 0.75
+
+    for sample, group in vlt_df.groupby("SAMPLE"):
+        if sample not in variants_dict:
+            variants_dict[sample] = {}
+        # Number of variants in consensus (total length of variants_long_table divided by sample)
+        n_variants_consensus = len(group)
+        variants_dict[sample]["number_of_variants_in_consensus"] = n_variants_consensus
+        
+        # N of variants with effect (Where EFFECT != synonymous_variant)
+        df_variants_effect = group[group["EFFECT"] != "synonymous_variant"]
+        n_variants_effect = len(df_variants_effect)
+        variants_dict[sample]["number_of_variants_with_effect"] = n_variants_effect
+        for merged_sample_name, merged_group in df.groupby("EQA"):
+            if sample not in merged_sample_name:
+                continue
+            # Calculate discrepancies in reported variants + with effect
+            n_discrepancies = len(merged_group)
+            variants_dict[sample]["discrepancies_in_reported_variants"] = n_discrepancies
+
+            w_effect = merged_group.merge(
+            df_variants_effect,
+            on=['POS', 'REF', 'ALT'],
+            how='outer',
+            suffixes=('_gold', f'_dsa'),
+            indicator=True
+            )
+            n_discrepancies_w_effect = len(w_effect)
+            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = n_discrepancies_w_effect
+
+    for sample, reported_df in df.groupby("EQA")
+        if sample not in variants_dict:
+            variants_dict[sample]= {}
+        
+        # check presence of high and low frequency alleles
+        has_low_freq = (reported_df["AF_enviados"] < af_threshold).any()
+        has_high_freq = (reported_df["AF_enviados"] >= af_threshold).any()
+        variants_dict[sample]["high_and_low_freq"] = has_low_freq and has_high_freq
+
+
+        # discrepancies between reported ALT and gold ALT
+        discrepancies = (reported_df["ALT_enviados"] != reported_df["ALT_gold"]).sum()
+        variants_dict[sample]["total_discrepancies"] = discrepancies
+
+        # count each RESULTADOS_enviados category
+        resultados_counts = df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
+        for key, json_equivalent in resultados_map:
+            variants_dict[sample][json_equivalent] = resultados_counts[key]
+
+    with open("variants_report.json", "w") as f:
+        json.dump(variants_dict, f)
 
 def get_pattern_vlt(gold_standard_filename):
     if "FLU" in gold_standard_filename:
@@ -239,6 +302,9 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
 
     # --- 📊 7. Ordenar por EQA y posición ---
     merged_all = merged_all.sort_values(by=['EQA','POS'])
+
+    # --- 7.5 Calcular stats y guardar ---
+    calculate_values_eqa(merged_all, var_enviados)
 
     # --- 💾 8. Guardar CSV final ---
     path_combined = OUTPUT_DIR / f"{sample_tag}_diferencias_{gold_standard.name}_COMBINADO_v2.csv"
