@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import re
 import json
+import os.path
 
 # --- Argumentos ---
 parser = argparse.ArgumentParser(description="Localizar variants_long_table CSV y Excel, etiquetarlos y guardarlos.")
@@ -196,6 +197,10 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
         for key, json_equivalent in resultados_map:
             variants_dict[sample][json_equivalent] = resultados_counts[key]
 
+    if os.path.exists("variants_report.json"):
+        with open("variants_report.json", "r") as f:
+            existing = json.read(f)
+        variants_dict = existing.update(variants_dict)
     with open("variants_report.json", "w") as f:
         json.dump(variants_dict, f)
 
