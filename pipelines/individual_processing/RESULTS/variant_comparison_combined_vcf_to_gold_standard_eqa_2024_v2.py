@@ -145,8 +145,10 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
 
     # Find number of successful hits
     for sample, vlt_df_sample in vlt_df.groupby("SAMPLE"):
-        matches = vlt_df.merge(vlt_gold_df, on=["POS", "REF", "ALT"])
-        num_matches = len(matches)
+        set1 = set(map(tuple, vlt_df_sample[["POS", "REF", "ALT"]].values))
+        set2 = set(map(tuple, vlt_gold_df[sample][["POS", "REF", "ALT"]].values))
+
+        num_matches = len(set1 & set2)
         if sample not in variants_dict:
             variants_dict[sample] = {}
         variants_dict[sample]["successful_hits"] = num_matches
