@@ -48,5 +48,5 @@ echo \
 --cpus-per-task 4 \
 --job-name VCF \
 --output vcf_analysis_reports.log \
-python3 variant_comparison_combined_vcf_to_gold_standard_eqa_2024_v2.py &&
+python3 variant_comparison_combined_vcf_to_gold_standard_eqa_2024_v2.py;
 python3 05_merge_json.py &" > _02_vcf_comparison.sh

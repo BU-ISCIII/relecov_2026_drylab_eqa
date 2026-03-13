@@ -1,8 +1,12 @@
 import json
+import os
 
 def read_json(path):
-    with open(path, "r") as f:
-        file = json.load(f)
+    if os.path.isfile(path):
+        with open(path, "r") as f:
+            file = json.load(f)
+    else:
+        file = {}
     return file
 
 def write_json(path, dictionary):
