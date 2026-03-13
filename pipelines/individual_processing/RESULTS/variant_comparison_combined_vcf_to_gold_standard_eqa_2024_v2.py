@@ -36,9 +36,9 @@ def comparar_alt(row, col_gold='ALT_gold', col_comp='ALT_comp'):
     alt_comp = str(row[col_comp]) if pd.notna(row[col_comp]) else ''
 
     if alt_gold and not alt_comp:
-        return f"Cambio en gold standard no encontrado en archivo VCF (revisar Ns, wildtype)"
+        return "Missing variant"
     if alt_comp and not alt_gold:
-        return f"Cambio en archivo VCF no encontado en gold standard (revisar Ns, variantes)"
+        return "De novo reported variant"
     if alt_gold and alt_comp:
         if len(alt_gold) == len(alt_comp):
             return "Wrong nucleotide"
@@ -127,18 +127,31 @@ def comparar_gold_vs(df_comp, col_suffix, extra_cols_gold=None, extra_cols_comp=
 
     return diff_final.sort_values(by=['EQA','POS'])
 
-def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
+def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
     variants_dict = {}
     resultados_map = {
               "Wrong nucleotide": "wrong_nt",
               "Insertion relative to gold standard": "insertions",
-              "Deletion relative to gold standard": "deletions"
+              "Deletion relative to gold standard": "deletions",
+              "Missing variant": "missing",
+              "De novo reported variant": "denovo"
             }
     
     # Set up the initial values
     df = merged_all.copy()
     vlt_df = vlt_lab.copy()
+    vlt_gold_df = vlt_gold.copy()
     af_threshold = 0.75
+
+    # Find number of successful hits
+    for sample, vlt_df_sample in vlt_df.groupby("SAMPLE"):
+        matches = vlt_df.merge(vlt_gold_df, on=["POS", "REF", "ALT"])
+        num_matches = len(matches)
+        if sample not in variants_dict:
+            variants_dict[sample] = {}
+        variants_dict[sample]["successful_hits"] = num_matches
+    
+
 
     for sample, group in vlt_df.groupby("SAMPLE"):
         if sample not in variants_dict:
@@ -159,53 +172,10 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab):
         variants_dict[sample]["number_of_variants_with_effect_vcf"] = n_variants_effect
 
         if df.empty:
-            # No discrepancies, so default values
-            variants_dict[sample]["discrepancies_in_reported_variants"] = 0
-            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = 0
-            variants_dict[sample]["total_discrepancies"] = 0
-            for key, json_equivalent in resultados_map.items():
-                variants_dict[sample][json_equivalent] = 0
-
-        for merged_sample_name, merged_group in df.groupby("EQA"):
-            if sample not in merged_sample_name:
-                continue
-            # Calculate discrepancies in reported variants + with effect
-            n_discrepancies = len(merged_group)
-            variants_dict[sample]["discrepancies_in_reported_variants"] = int(n_discrepancies)
-
-            # Had to rename some columns to merge
-            merged_group = merged_group.copy()
-            merged_group["REF"] = merged_group["REF (NC_045512.2)"]
-            merged_group["ALT"] = merged_group["ALT_enviados"]
-            merged_group["POS"] = pd.to_numeric(merged_group["POS"])
-            df_variants_effect["POS"] = pd.to_numeric(df_variants_effect["POS"])
-
-            w_effect = merged_group.merge(
-            df_variants_effect,
-            on=['POS', 'REF', 'ALT'],
-            how='inner'
-            )
-            n_discrepancies_w_effect = len(w_effect)
-            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = int(n_discrepancies_w_effect)
-            break
-        else:
-            # No discrepancies, so default values
-            print("We got here")
-            variants_dict[sample]["discrepancies_in_reported_variants"] = 0
-            variants_dict[sample]["discrepancies_in_reported_variants_effect"] = 0
-            variants_dict[sample]["total_discrepancies"] = 0
             for key, json_equivalent in resultados_map.items():
                 variants_dict[sample][json_equivalent] = 0
 
     for sample, reported_df in df.groupby("EQA"):
-        if sample not in variants_dict:
-            variants_dict[sample]= {}
-
-        # discrepancies between reported ALT and gold ALT
-        discrepancies = (reported_df["ALT_enviados"] != reported_df["Gold_Standard"]).sum()
-        variants_dict[sample]["total_discrepancies"] = int(discrepancies)
-
-        # count each RESULTADOS_enviados category
         resultados_counts = df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
         for key, json_equivalent in resultados_map.items():
             variants_dict[sample][json_equivalent] = int(resultados_counts.get(key,0))
@@ -337,7 +307,7 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
     merged_all = merged_all.sort_values(by=['EQA','POS'])
 
     # --- 7.5 Calcular stats y guardar ---
-    calculate_values_eqa(merged_all, var_enviados)
+    calculate_values_eqa(merged_all, var_enviados, var_gold)
 
     # --- 💾 8. Guardar CSV final ---
     path_combined = OUTPUT_DIR / f"{sample_tag}_diferencias_{gold_standard.name}_COMBINADO_v2.csv"
