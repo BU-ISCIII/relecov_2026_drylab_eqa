@@ -37,6 +37,8 @@ rm _0* _99_rewrite_vcf_refs.sh
 echo "Creating samples_files_map.tsv with the following headers: "
 echo -e 'sample_id\tconsensus_fasta_file\tvcf_files'
 cat $validated_metadata_lab_file  | jq --raw-output ' .[] | [.collecting_lab_sample_id, .consensus_sequence_filename, .vcf_filename, .reference_genome_accession, .variant_calling_software_name] | @tsv ' >> samples_files_map.tsv
+samples_files_map=$(cat samples_files_map.tsv | tr \\11 \\7)
+
 
 # Now, for each sample, we want to create the symbolic links to the consensus fasta, adding some checks
 mkdir -p 00-consensus 00-vcf 
@@ -51,25 +53,27 @@ mkdir -p 00-consensus 00-vcf
 > vcf_filename_mapping.tsv
 
 
-
 # While loop called twice - First time execution for when files still do not have standard names
-while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
-    if [ -z $sample_id ]; then echo "Something went wrong; A line contains no sample ID"; continue; fi
-    if [ -z $consensus_fasta_file ]; then echo "Consensus fasta file not found; skipping sample "$sample_id;continue;fi
-    
-    ### Consensus fasta
-    fasta_find_result=$( find $BASE_RESULTS_FOLDER -name $consensus_fasta_file)
-    fasta_find_result_fp=$( realpath $fasta_find_result )
-    if [ -z $fasta_find_result_fp ]; then echo "Failed to find consensus fasta for sample "$sample_id; fi
-    ln -s $fasta_find_result_fp 00-consensus/$sample_id".fa"
-    #### fasta filename mapping
-    echo -e "${consensus_fasta_file}\t${sample_id}" >> fasta_filename_mapping.tsv
+while IFS=$'\a' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
 
+    if [ -z $sample_id ]; then echo "Something went wrong; A line contains no sample ID"; continue; fi
+    if [ -z $consensus_fasta_file ]; then echo "Consensus fasta file not found for "$sample_id;
+    else
+        ### Consensus fasta
+        fasta_find_result=$( find $BASE_RESULTS_FOLDER -name $consensus_fasta_file)
+        fasta_find_result_fp=$( realpath $fasta_find_result )
+        if [ -z $fasta_find_result_fp ]; then echo "Failed to find consensus fasta for sample "$sample_id;
+        else ln -s $fasta_find_result_fp 00-consensus/$sample_id".fa"
+        #### fasta filename mapping
+        echo -e "${consensus_fasta_file}\t${sample_id}" >> fasta_filename_mapping.tsv
+        fi
+    fi
+
+    if [ -z $vcf_files ]; then echo "[red]VCF files not found for sample " $sample_id;continue;fi
 
     ### Add references to temporal file
     sed 's/,/\n/g' <<< $reference >> ref_tmp.txt
 
-    if [ -z $vcf_files ]; then echo "[red]VCF files not found for sample " $sample_id;continue;fi
     IFS=',' read -r -a ref_array <<< "$reference"
     if [[ "$sample_id" == *"FLU"* ]]; then continue; fi
 
@@ -95,7 +99,7 @@ while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcall
     done
 
 
-done < samples_files_map.tsv
+done <<< $samples_files_map
 
 # Unique references used to create VCF go to DOC
 cat ref_tmp.txt | sort | uniq > ../DOC/vcf_references.txt
@@ -123,7 +127,7 @@ done
 
 # GENERATE A VCF --> REFERENCE file
 > vcf_to_ref.tsv
-while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
+while IFS=$'\a' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
 
 IFS=',' read -r -a ref_array <<< "$reference"
     i=1
@@ -131,7 +135,7 @@ IFS=',' read -r -a ref_array <<< "$reference"
         echo -e "${sample_id}_${i}\t${ref}" >> vcf_to_ref.tsv
         i=$((i+1))
     done
-done < samples_files_map.tsv
+done <<< $samples_files_map
 
 ## Create an aux script to re-write the SNPEFF step using the file
 echo "while IFS=$'\t' read -r vcf_filename reference; do; sed -E -i \"/${vcf_filename}/ s/g (.+)( +-config)/g ${reference}\2/g\" _03_snpeff_annotate.sh; done < ../DOC/vcf_to_ref.tsv" >> _99_rewrite_vcf_refs.sh
@@ -143,9 +147,8 @@ mkdir queried_vcf
 mkdir snpsift
 
 ## GENERATE SCRIPTS for each vcf file
-while IFS=$'\t' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
+while IFS=$'\a' read -r sample_id consensus_fasta_file vcf_files reference vcaller; do 
 
-if [ -z $consensus_fasta_file ]; then continue;fi
 if [[ "$sample_id" == *"FLU"* ]]; then continue; fi
 
 i=1
@@ -233,7 +236,7 @@ i=$((i+1))
 
 done
 
-done < samples_files_map.tsv
+done <<< $samples_files_map
 
 echo \
     "srun \
