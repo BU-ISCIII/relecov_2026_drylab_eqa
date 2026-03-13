@@ -178,7 +178,7 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
                 variants_dict[sample][json_equivalent] = 0
 
     for sample, reported_df in df.groupby("EQA"):
-        resultados_counts = df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
+        resultados_counts = reported_df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
         for key, json_equivalent in resultados_map.items():
             variants_dict[sample][json_equivalent] = int(resultados_counts.get(key,0))
 
