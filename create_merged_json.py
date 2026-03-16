@@ -496,7 +496,7 @@ def build_lab_json(
             )
             reported_qc = "Fail" if not qc_filled else reported_qc
             if expected_qc is not None:
-                qc_match = (reported_qc == expected_qc) if qc_filled else False
+                qc_match = (reported_qc == expected_qc)
             else:
                 qc_match = None
 
@@ -532,12 +532,14 @@ def build_lab_json(
             variant_wrong_nt = variant_metrics.get("wrong_nt") or 0
             variant_insertions = variant_metrics.get("insertions") or 0
             variant_deletions = variant_metrics.get("deletions") or 0
-
-            variant_total_discrepancies = (
-                variant_wrong_nt +
-                variant_insertions +
-                variant_deletions
-            )
+            if all(not f for f in (variant_wrong_nt, variant_insertions, variant_deletions)):
+                variant_total_discrepancies = None
+            else:
+                variant_total_discrepancies = (
+                    variant_wrong_nt +
+                    variant_insertions +
+                    variant_deletions
+                )
 
             number_of_variants_in_consensus = safe_int(row.get("number_of_variants_in_consensus"))
             number_of_variants_in_consensus_vcf = safe_int(variant_metrics.get("number_of_variants_in_consensus_vcf"))
@@ -557,6 +559,7 @@ def build_lab_json(
 
             variants_block: Dict[str, Any] = {
                 "high_and_low_freq": variant_metrics.get("high_and_low_freq") or False,
+                "successful_hits": variant_metrics.get("successful_hits"),
                 "number_of_variants_in_consensus": number_of_variants_in_consensus,
                 "number_of_variants_in_consensus_vcf": number_of_variants_in_consensus_vcf,
                 "number_of_variants_with_effect": number_of_variants_with_effect,
@@ -703,26 +706,39 @@ def load_variant_csv_as_comparison(path: Path, lab_id: str) -> Dict[str, Any]:
 def discover_input_data_sources(
     input_data_dir: Path,
     lab_id: str,
-) -> Tuple[Optional[Any], Dict[str, Any]]:
-    """Auto-discover consensus JSON and variant CSVs from *input_data_dir*.
+) -> Tuple[Optional[Any], Optional[Any]]:
+    """Auto-discover consensus and variant data from *input_data_dir*.
+
+    Priority order:
+      1. ``consolidated_json_reports.json`` — provides both consensus and variants
+         in a single file; used when present.
+      2. ``calculated_values.json`` (consensus) + variant long-table CSVs (variants)
+         — legacy fallback when the consolidated file is absent.
 
     Returns:
-        consensus_data  – contents of calculated_values.json (or None if absent)
-        variant_index   – merged {sample_id: metrics} from all variant CSVs for *lab_id*
+        consensus_data  – dict keyed by sample_id (or None if absent)
+        variant_data    – dict keyed by sample_id (or None if absent)
     """
+    consolidated_path = input_data_dir / "consolidated_json_reports.json"
+    if consolidated_path.exists():
+        consensus_data, variant_data = load_consolidated_json_sources(consolidated_path)
+        log.info("Loaded consolidated JSON from %s", consolidated_path)
+        return consensus_data, variant_data
+
+    # --- Legacy fallback ---
     consensus_data: Optional[Any] = None
     calc_path = input_data_dir / "calculated_values.json"
     if calc_path.exists():
         consensus_data = load_json(calc_path)
         log.info("Loaded consensus data from %s", calc_path)
     else:
-        log.warning("calculated_values.json not found in %s", input_data_dir)
+        log.warning("Neither consolidated_json_reports.json nor calculated_values.json found in %s", input_data_dir)
 
     variant_index: Dict[str, Any] = {}
-    # Pattern: RESULTS_diferencias_comp<CODE>_variant_long_table.csv_COMBINADO_v2.csv
-    pattern = re.compile(r"RESULTS_diferencias_comp(\w+)_variant_long_table*\.csv$")
-    for csv_path in sorted(input_data_dir.glob("RESULTS_diferencias_comp*variants_long_table*.csv")):
-        m = pattern.search(csv_path.name)
+    # Filename pattern: RESULTS_diferencias_comp<CODE>_variant_long_table.csv_COMBINADO_v2.csv
+    comp_pattern = re.compile(r"RESULTS_diferencias_comp(\w+)_variant_long_table")
+    for csv_path in sorted(input_data_dir.glob("RESULTS_diferencias_comp*_variant_long_table*")):
+        m = comp_pattern.search(csv_path.name)
         comp_code = m.group(1) if m else csv_path.stem
         try:
             comp_variant_data = load_variant_csv_as_comparison(csv_path, lab_id)
@@ -731,7 +747,7 @@ def discover_input_data_sources(
         except Exception as exc:
             log.warning("Could not load variant CSV %s: %s", csv_path, exc)
 
-    return consensus_data, variant_index
+    return consensus_data, variant_index or None
 
 
 def load_consolidated_json_sources(
