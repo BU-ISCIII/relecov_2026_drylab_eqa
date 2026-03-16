@@ -1,17 +1,19 @@
 {
   "lab": {
     "submitting_institution_id": "COD-2400",
-    "laboratory_name": "Centro Nacional de Microbiología, Instituto de Salud Carlos III"
+    "laboratory_name": "COD-2400"
   },
   "metadata": {
-    "completeness_pct": 90.75630252100841,
+    "completeness_pct": 89.0721649484536,
     "primary_incompleteness_drivers": [
       "Mapping fields",
       "QC metrics fields",
       "Subtype assignment fields",
       "Type assignment fields",
       "Variant calling fields",
-      "Pre-processing fields"
+      "Pre-processing fields",
+      "Clade assignment fields",
+      "Consensus analysis fields"
     ]
   },
   "components": {
@@ -49,30 +51,33 @@
           "incomplete_groups": [],
           "consensus": {
             "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "total_discrepancies": 21,
             "consensus_genome_length": "29903",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
+              "ns2nt": 21,
               "nt2ns": 0,
               "insertions": 0,
               "deletions": 0
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 30,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 22,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 36,
+            "number_of_variants_in_consensus": 30,
+            "number_of_variants_in_consensus_vcf": 30,
+            "number_of_variants_with_effect": 22,
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 22,
+            "discrepancies_in_reported_variants_effect": 0,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": null,
@@ -151,31 +156,34 @@
           "incomplete_fields": [],
           "incomplete_groups": [],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 99.81930734482182,
+            "total_discrepancies": 3,
             "consensus_genome_length": "29885",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
+              "ns2nt": 1,
               "nt2ns": 0,
-              "insertions": 0,
+              "insertions": 2,
               "deletions": 0
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 61,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 44,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 65,
+            "number_of_variants_in_consensus": 61,
+            "number_of_variants_in_consensus_vcf": 61,
+            "number_of_variants_with_effect": 44,
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 45,
+            "discrepancies_in_reported_variants_effect": 1,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "BA.1.13",
@@ -255,31 +263,34 @@
           "incomplete_fields": [],
           "incomplete_groups": [],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 99.58503446891105,
+            "total_discrepancies": 3,
             "consensus_genome_length": "29882",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
+              "ns2nt": 2,
               "nt2ns": 0,
-              "insertions": 0,
+              "insertions": 1,
               "deletions": 0
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 92,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 65,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 95,
+            "number_of_variants_in_consensus": 92,
+            "number_of_variants_in_consensus_vcf": 92,
+            "number_of_variants_with_effect": 65,
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 64,
+            "discrepancies_in_reported_variants_effect": 1,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
@@ -359,31 +370,34 @@
           "incomplete_fields": [],
           "incomplete_groups": [],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 96.46680942184153,
+            "total_discrepancies": 62,
             "consensus_genome_length": "29888",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
-              "nt2ns": 0,
-              "insertions": 0,
+              "ns2nt": 43,
+              "nt2ns": 16,
+              "insertions": 3,
               "deletions": 0
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 73,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 52,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 75,
+            "number_of_variants_in_consensus": 73,
+            "number_of_variants_in_consensus_vcf": 73,
+            "number_of_variants_with_effect": 52,
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 52,
+            "discrepancies_in_reported_variants_effect": 0,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "BQ.1.1",
@@ -463,31 +477,34 @@
           "incomplete_fields": [],
           "incomplete_groups": [],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 99.79588422285427,
+            "total_discrepancies": 6,
             "consensus_genome_length": "29876",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 2,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
+              "ns2nt": 1,
               "nt2ns": 0,
-              "insertions": 0,
-              "deletions": 0
+              "insertions": 2,
+              "deletions": 1
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 56,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 41,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 65,
+            "number_of_variants_in_consensus": 56,
+            "number_of_variants_in_consensus_vcf": 56,
+            "number_of_variants_with_effect": 41,
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 42,
+            "discrepancies_in_reported_variants_effect": 1,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "BA.1.1",
@@ -553,8 +570,9 @@
           }
         }
       },
-      "total_number_discrepancies": 0,
-      "median_genome_identity_pct": null,
+      "total_number_discrepancies_consensus": 95,
+      "total_number_discrepancies_variants": 0,
+      "median_genome_identity_pct": 99.69045934588266,
       "total_classification_matches": 8
     },
     "SARS2": {
@@ -598,7 +616,7 @@
             "Pre-processing fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
+            "genome_identity_pct": 100.0,
             "total_discrepancies": 0,
             "consensus_genome_length": "29847",
             "discrepancy_breakdown": {
@@ -612,17 +630,20 @@
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": true,
+            "low_freq_only": false,
+            "successful_hits": 118,
             "number_of_variants_in_consensus": 118,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 118,
             "number_of_variants_with_effect": 78,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
-            "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 78,
+            "discrepancies_in_reported_variants_effect": 0,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "XCH.1",
@@ -705,31 +726,34 @@
             "Pre-processing fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 99.96315648445874,
+            "total_discrepancies": 1,
             "consensus_genome_length": "29856",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 0,
+              "nt2ns": 1,
               "insertions": 0,
               "deletions": 0
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 97,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 67,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 97,
+            "number_of_variants_in_consensus": 97,
+            "number_of_variants_in_consensus_vcf": 95,
+            "number_of_variants_with_effect": 67,
+            "discrepancies_in_reported_variants": 2,
+            "number_of_variants_with_effect_vcf": 66,
+            "discrepancies_in_reported_variants_effect": 1,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.5.24",
@@ -812,31 +836,34 @@
             "Pre-processing fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 98.35494354541495,
+            "total_discrepancies": 2,
             "consensus_genome_length": "29847",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 0,
+              "nt2ns": 2,
               "insertions": 0,
               "deletions": 0
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": true,
+            "low_freq_only": false,
+            "successful_hits": 94,
             "number_of_variants_in_consensus": 94,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 94,
             "number_of_variants_with_effect": 66,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
-            "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 66,
+            "discrepancies_in_reported_variants_effect": 0,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.9.1",
@@ -920,30 +947,33 @@
           ],
           "consensus": {
             "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "total_discrepancies": 17,
             "consensus_genome_length": "29894",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
+              "ns2nt": 16,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 1
             }
           },
           "variants": {
-            "number_of_variants_in_consensus": 16,
-            "number_of_variants_in_consensus_vcf": null,
-            "number_of_variants_with_effect": 8,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
             "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": 16,
+            "number_of_variants_in_consensus": 16,
+            "number_of_variants_in_consensus_vcf": 15,
+            "number_of_variants_with_effect": 8,
+            "discrepancies_in_reported_variants": 1,
+            "number_of_variants_with_effect_vcf": 9,
+            "discrepancies_in_reported_variants_effect": 1,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": null,
@@ -1021,31 +1051,34 @@
             "Pre-processing fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 99.0466314310564,
+            "total_discrepancies": 1,
             "consensus_genome_length": "29894",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 0,
+              "nt2ns": 1,
               "insertions": 0,
               "deletions": 0
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": true,
+            "low_freq_only": false,
+            "successful_hits": 11,
             "number_of_variants_in_consensus": 11,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 11,
             "number_of_variants_with_effect": 5,
-            "number_of_variants_with_effect_vcf": null,
-            "discrepancies_in_reported_variants": null,
-            "discrepancies_in_reported_variants_effect": null,
-            "high_and_low_freq": true,
-            "total_discrepancies": 0,
-            "wrong_nt": null,
-            "insertions": null,
-            "deletions": null
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_with_effect_vcf": 5,
+            "discrepancies_in_reported_variants_effect": 0,
+            "total_discrepancies": null,
+            "wrong_nt": 0,
+            "insertions": 0,
+            "deletions": 0
           },
           "classification": {
             "expected_lineage": null,
@@ -1103,8 +1136,9 @@
           }
         }
       },
-      "total_number_discrepancies": 0,
-      "median_genome_identity_pct": null,
+      "total_number_discrepancies_consensus": 21,
+      "total_number_discrepancies_variants": 0,
+      "median_genome_identity_pct": 99.50489395775756,
       "total_classification_matches": 5
     },
     "FLU1": {
@@ -1160,11 +1194,11 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 96.06970382832452,
+            "total_discrepancies": 11,
             "consensus_genome_length": "13136",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 11,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
@@ -1174,11 +1208,14 @@
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 1377,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 0,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -1260,8 +1297,8 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 96.15024850617078,
+            "total_discrepancies": 5,
             "consensus_genome_length": "13162",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
@@ -1270,15 +1307,18 @@
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 5
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 449,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 113,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1368,11 +1408,14 @@
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": null,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": null,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": null,
@@ -1438,25 +1481,28 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 96.21274198504558,
+            "total_discrepancies": 16,
             "consensus_genome_length": "13142",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 1,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 15
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 492,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 111,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1538,25 +1584,28 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 95.94828140746617,
+            "total_discrepancies": 29,
             "consensus_genome_length": "13129",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 0,
+              "nt2ns": 14,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 15
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 455,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 98,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1610,8 +1659,9 @@
           }
         }
       },
-      "total_number_discrepancies": 0,
-      "median_genome_identity_pct": null,
+      "total_number_discrepancies_consensus": 61,
+      "total_number_discrepancies_variants": 0,
+      "median_genome_identity_pct": 96.10997616724765,
       "total_classification_matches": 8
     },
     "FLU2": {
@@ -1628,13 +1678,15 @@
         "fasta_expected": 5,
         "vcf_submitted": 4,
         "vcf_expected": 5,
-        "completeness_pct": 83.80566801619433,
+        "completeness_pct": 78.11320754716981,
         "primary_incompleteness_drivers": [
           "Mapping fields",
           "QC metrics fields",
           "Subtype assignment fields",
           "Type assignment fields",
-          "Variant calling fields"
+          "Variant calling fields",
+          "Clade assignment fields",
+          "Consensus analysis fields"
         ]
       },
       "samples": {
@@ -1648,9 +1700,16 @@
           "enrichment_panel_version": null,
           "key_feature": "High-quality baseline sample (zoonotic)",
           "expected_qc": "Pass",
-          "total_expected_fields": 40,
+          "total_expected_fields": 53,
           "filled_fields": 28,
           "incomplete_fields": [
+            "consensus_genome_length",
+            "consensus_params",
+            "consensus_sequence_filename",
+            "consensus_sequence_md5",
+            "consensus_sequence_name",
+            "consensus_sequence_software_name",
+            "consensus_sequence_software_version",
             "depth_of_coverage_threshold",
             "mapping_params",
             "mapping_software_name",
@@ -1658,17 +1717,25 @@
             "ns_per_100_kbp",
             "number_of_Ns",
             "number_of_unambiguous_bases",
+            "number_of_variants_in_consensus",
+            "number_of_variants_with_effect",
             "per_Ns",
             "per_genome_greater_10x",
             "reference_genome_accession",
             "subtype_assignment_software_database_version",
-            "type_assignment_software_database_version"
+            "type_assignment_software_database_version",
+            "variant_calling_params",
+            "variant_calling_software_name",
+            "variant_calling_software_version",
+            "vcf_filename"
           ],
           "incomplete_groups": [
+            "Consensus analysis fields",
             "Mapping fields",
             "QC metrics fields",
             "Subtype assignment fields",
-            "Type assignment fields"
+            "Type assignment fields",
+            "Variant calling fields"
           ],
           "consensus": {
             "genome_identity_pct": null,
@@ -1685,11 +1752,14 @@
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": null,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": null,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H5N6",
@@ -1760,25 +1830,28 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 95.91838361931492,
+            "total_discrepancies": 8,
             "consensus_genome_length": "13133",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 3,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 5
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 435,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 101,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1860,25 +1933,28 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 95.90439911526174,
+            "total_discrepancies": 20,
             "consensus_genome_length": "13123",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 3,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 17
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 492,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 111,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1941,9 +2017,14 @@
           "enrichment_panel_version": "v1.0",
           "key_feature": "HA segment dropout.",
           "expected_qc": "Fail",
-          "total_expected_fields": 48,
+          "total_expected_fields": 53,
           "filled_fields": 41,
           "incomplete_fields": [
+            "clade_assignment",
+            "clade_assignment_date",
+            "clade_assignment_software_database_version",
+            "clade_assignment_software_name",
+            "clade_assignment_software_version",
             "mapping_params",
             "mapping_software_name",
             "mapping_software_version",
@@ -1953,6 +2034,7 @@
             "variant_calling_software_version"
           ],
           "incomplete_groups": [
+            "Clade assignment fields",
             "Mapping fields",
             "QC metrics fields",
             "Subtype assignment fields",
@@ -1960,25 +2042,28 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "genome_identity_pct": 95.46819084747528,
+            "total_discrepancies": 6,
             "consensus_genome_length": "13069",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 0,
+              "nt2ns": 1,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 5
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 399,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 89,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -2057,7 +2142,7 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": null,
+            "genome_identity_pct": 96.10988142511631,
             "total_discrepancies": 0,
             "consensus_genome_length": "13140",
             "discrepancy_breakdown": {
@@ -2071,11 +2156,14 @@
             }
           },
           "variants": {
+            "high_and_low_freq": false,
+            "high_freq_only": false,
+            "low_freq_only": false,
+            "successful_hits": null,
             "number_of_variants_in_consensus": 1371,
             "number_of_variants_in_consensus_vcf": null,
             "number_of_variants_with_effect": 0,
-            "discrepancies_in_reported_variants": null,
-            "low_freq_only": true
+            "discrepancies_in_reported_variants": null
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -2129,8 +2217,9 @@
           }
         }
       },
-      "total_number_discrepancies": 0,
-      "median_genome_identity_pct": null,
+      "total_number_discrepancies_consensus": 34,
+      "total_number_discrepancies_variants": 0,
+      "median_genome_identity_pct": 95.91139136728833,
       "total_classification_matches": 9
     }
   }
