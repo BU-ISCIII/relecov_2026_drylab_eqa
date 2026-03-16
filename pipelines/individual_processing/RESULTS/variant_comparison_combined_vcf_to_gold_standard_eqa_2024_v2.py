@@ -29,8 +29,8 @@ def add_eqa_column(df, samples_list, sample_col="SAMPLE"):
 # --- Función flexible para comparar ALT ---
 def comparar_alt(row, col_gold='ALT_gold', col_comp='ALT_comp'):
     """
-    Comparación de los valores en columnas ALT donde se recogen 
-    los cambios con respecto a la refrencia
+    Compare ALT values between gold standard and reported variants.
+    Assumes rows have already been matched by EQA, POS and REF.
     """
     alt_gold = str(row[col_gold]) if pd.notna(row[col_gold]) else ''
     alt_comp = str(row[col_comp]) if pd.notna(row[col_comp]) else ''
@@ -159,17 +159,25 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
         if sample not in variants_dict:
             variants_dict[sample] = {}
 
-        # check presence of high and low frequency alleles
-        has_low_freq = (pd.to_numeric(group["AF"]) < af_threshold).any()
-        has_high_freq = (pd.to_numeric(group["AF"]) >= af_threshold).any()
-        variants_dict[sample]["high_and_low_freq"] = bool(has_low_freq and has_high_freq)
+        # Check presence of low- and high-frequency alleles
+        af_values = pd.to_numeric(group["AF"], errors="coerce")
 
-        # Number of variants in consensus (total length of variants_long_table divided by sample)
-        n_variants_consensus = len(group)
+        has_low_freq = (af_values < af_threshold).any()
+        has_high_freq = (af_values > af_threshold).any()
+
+        variants_dict[sample]["high_and_low_freq"] = bool(has_high_freq and has_low_freq)
+        variants_dict[sample]["high_freq_only"] = bool(has_high_freq and not has_low_freq)
+        variants_dict[sample]["low_freq_only"] = bool(has_low_freq and not has_high_freq)
+
+        # Keep only variants with AF > 0.75
+        group_high_af = group[af_values > af_threshold].copy()
+
+        # Number of variants in consensus considering only AF > 0.75
+        n_variants_consensus = len(group_high_af)
         variants_dict[sample]["number_of_variants_in_consensus_vcf"] = n_variants_consensus
         
-        # N of variants with effect (Where EFFECT != synonymous_variant)
-        df_variants_effect = group[group["EFFECT"] == "missense_variant"]
+        # Number of variants with effect considering only AF > 0.75
+        df_variants_effect = group_high_af[group_high_af["EFFECT"] == "missense_variant"]
         n_variants_effect = len(df_variants_effect)
         variants_dict[sample]["number_of_variants_with_effect_vcf"] = n_variants_effect
 
