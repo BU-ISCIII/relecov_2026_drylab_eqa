@@ -11,14 +11,27 @@ WANTED_COMPARISONS = ["_LC", "_Gold_Standard"]
 
 def find_reference_id(fasta_alignment_file):
     """
-    Find last reference in the alinment
+    Find the reference sequence based on WANTED_COMPARISONS
     """
-    references_ids = []
-    with open(fasta_alignment_file, 'r') as f:
+    with open(fasta_alignment_file) as f:
         for line in f:
             if line.startswith(">"):
-                references_ids.append(line.lstrip(">").rstrip())
-    return references_ids[-1]
+                rid = line.lstrip(">").strip()
+
+                if any(tag in rid for tag in WANTED_COMPARISONS):
+                    print(f"Found reference: {rid} in {fasta_alignment_file}")
+                    return rid
+
+    raise ValueError(f"No reference found in {fasta_alignment_file}")
+
+def reference_is_fully_masked(ref_seq):
+    """
+    Returns True if the gold standard contains only Ns or gaps.
+    """
+    for base in ref_seq.upper():
+        if base not in {"N", "-"}:
+            return False
+    return True
 
 def write_identity(output_file, sample_name, record_id, identity_value):
     input_dict = {}
@@ -37,18 +50,18 @@ def write_identity(output_file, sample_name, record_id, identity_value):
     
     with open(output_file, "w") as f:
         json.dump(input_dict, f)
-
+        
 def identity_vs_reference(ref_seq, query_seq):
         matches = 0
         compared = 0
 
         for r, q in zip(ref_seq, query_seq):
             # Ignore positions where reference has gap
-            if r == "-":
+            if r == "-" and q == "-":
                 continue
-
-            # Ignore positions where query also has gap
-            if q == "-":
+            if r == "-" and q == "N":
+                continue
+            if r == "N" and q == "-":
                 continue
 
             compared += 1
@@ -56,14 +69,28 @@ def identity_vs_reference(ref_seq, query_seq):
                 matches += 1
 
         return matches / compared if compared > 0 else 0
-
+        
 def write_median_identity(output_file):
     with open(output_file, "r") as f:
         full_file = json.load(f)
     for sample, values in full_file.items():
         all_values_identity = values["genome_identity_pct"]
-        median_value = median(all_values_identity)
-        full_file[sample]["genome_identity_pct"] = median_value * 100
+    
+        if not isinstance(all_values_identity, list):
+            all_values_identity = [all_values_identity]
+
+        clean_values = [v for v in all_values_identity if isinstance(v, (int, float))]
+        if not isinstance(all_values_identity, list):
+            all_values_identity = [all_values_identity]
+
+        clean_values = [v for v in all_values_identity if isinstance(v, (int, float))]
+
+        if len(clean_values) == 0:
+            full_file[sample]["genome_identity_pct"] = None
+        else:
+            median_value = median(clean_values)
+            full_file[sample]["genome_identity_pct"] = median_value * 100
+
         if "discrepancy_breakdown" not in full_file[sample]:
             # Zero values for the discrepancy breakdown. assuming if there is an identity AND they're not here
             full_file[sample]["discrepancy_breakdown"] = {
@@ -101,18 +128,34 @@ def main(alignment_file_path, reference_id, output_file):
 
     print(f"\nReference: {reference_id}\n")
 
+    # Check if gold standard is fully masked
+    reference_masked = reference_is_fully_masked(ref_seq)
+
+    if reference_masked:
+        print(f"{reference_id} is fully masked (only Ns/gaps). Identity will be NA.")
+
     for record in alignment:
         if record.id == reference_id:
             continue
-        if not any([wanted in record.id for wanted in WANTED_COMPARISONS]):
+
+        # skip alternative reference-like sequences
+        if any(tag in record.id for tag in WANTED_COMPARISONS):
+            continue
+        
+        if "COD" not in record.id and ("SARS" not in record.id or "FLU" not in record.id):
+            print(f"Skipping {record.id} as it does not match expected sample naming conventions.")
             continue
 
         query_seq = str(record.seq)
         record_id = record.id
-        print(f"Comparing {reference_id} against {record_id}")
-        identity = identity_vs_reference(ref_seq, query_seq)
 
-        print(f"{record.id}\t{identity:.4f}\t({identity*100:.2f}%)")
+        if reference_masked:
+            identity = None
+            print(f"{record.id}\tNA\t(NA)")
+        else:
+            print(f"Comparing {reference_id} against {record_id}")
+            identity = identity_vs_reference(ref_seq, query_seq)
+            print(f"{record.id}\t{identity:.4f}\t({identity*100:.2f}%)")
 
         sample_name = alignment_file_path.name.split("_")[1]
         write_identity(output_file, sample_name, record_id, identity)
