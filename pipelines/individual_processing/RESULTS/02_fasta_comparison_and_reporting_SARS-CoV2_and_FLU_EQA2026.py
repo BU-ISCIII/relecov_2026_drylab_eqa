@@ -303,14 +303,19 @@ for fasta_file in FLU_DIR.glob("*_aligned.fasta"):
     # ======================================================
     # GOLD STANDARD (único)
     # ======================================================
-    gold_seq = str(records[1].seq)
+    gold_record = next((r for r in records if "Gold_Standard" in r.id), None)
+    if gold_record is None:
+        continue
 
+    gold_seq = str(gold_record.seq)
     # ======================================================
     # MUESTRAS
     # ======================================================
 
     for record in records[2:]:
         sample_id = record.id
+        if "Gold_Standard" in sample_id:
+            continue
         seq = str(record.seq)
         cod_match = re.search(r"COD[_-]?(\d+)", sample_id, re.IGNORECASE)
         cod = "COD-" + cod_match.group(1) if cod_match else "NA"
