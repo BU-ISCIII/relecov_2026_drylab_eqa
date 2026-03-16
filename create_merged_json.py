@@ -571,12 +571,16 @@ def build_lab_json(
                 variant_wrong_nt = variant_metrics.get("wrong_nt")
                 variant_insertions = variant_metrics.get("insertions")
                 variant_deletions = variant_metrics.get("deletions")
+                variant_missing = variant_metrics.get("missing")
+                variant_denovo = variant_metrics.get("denovo")
 
                 variants_block.update({
                     "total_discrepancies": variant_total_discrepancies,
                     "wrong_nt": variant_wrong_nt,
                     "insertions": variant_insertions,
                     "deletions": variant_deletions,
+                    "missing": variant_missing,
+                    "denovo": variant_denovo,
                 })
 
             classification_block = {
