@@ -528,7 +528,7 @@ def build_lab_json(
             variant_missing = variant_metrics.get("missing") or 0
             variant_denovo = variant_metrics.get("denovo") or 0
 
-            if all(not f for f in (variant_wrong_nt, variant_insertions, variant_deletions)):
+            if all(not f for f in (variant_wrong_nt, variant_insertions, variant_deletions, variant_missing, variant_denovo)):
                 variant_total_discrepancies = None
             else:
                 variant_total_discrepancies = (
