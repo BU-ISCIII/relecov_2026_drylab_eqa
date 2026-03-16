@@ -491,14 +491,7 @@ def build_lab_json(
             total_classification_matches += classification_summary["number_matches"]
 
             reported_qc = normalize_label(row.get("qc_test"))
-            qc_filled = all(
-                row.get(f) for f in FIELD_GROUPS["QC metrics fields"]
-            )
-            reported_qc = "Fail" if not qc_filled else reported_qc
-            if expected_qc is not None:
-                qc_match = (reported_qc == expected_qc)
-            else:
-                qc_match = None
+            qc_match = None if expected_qc is None else (reported_qc == expected_qc)
 
             consensus_metrics = pick_sample_metrics(consensus_index, sample_id, comp_code)
             variant_metrics = pick_sample_metrics(variant_index, sample_id, comp_code)
@@ -548,17 +541,19 @@ def build_lab_json(
             number_of_variants_with_effect_vcf = safe_int(variant_metrics.get("number_of_variants_with_effect_vcf"))
 
             if number_of_variants_in_consensus is not None and number_of_variants_in_consensus_vcf is not None:
-                discrepancies_variants = number_of_variants_in_consensus_vcf - number_of_variants_in_consensus
+                discrepancies_variants = abs(number_of_variants_in_consensus_vcf - number_of_variants_in_consensus)
             else:
                 discrepancies_variants = None
 
             if number_of_variants_with_effect is not None and number_of_variants_with_effect_vcf is not None:
-                discrepancies_variants_effect = number_of_variants_with_effect_vcf - number_of_variants_with_effect
+                discrepancies_variants_effect = abs(number_of_variants_with_effect_vcf - number_of_variants_with_effect)
             else:
                 discrepancies_variants_effect = None
 
             variants_block: Dict[str, Any] = {
                 "high_and_low_freq": variant_metrics.get("high_and_low_freq") or False,
+                "high_freq_only": variant_metrics.get("high_freq_only") or False,
+                "low_freq_only": variant_metrics.get("low_freq_only") or False,
                 "successful_hits": variant_metrics.get("successful_hits"),
                 "number_of_variants_in_consensus": number_of_variants_in_consensus,
                 "number_of_variants_in_consensus_vcf": number_of_variants_in_consensus_vcf,
@@ -641,7 +636,8 @@ def build_lab_json(
             ],
         }
 
-        component_out["total_number_discrepancies"] = sum(v["consensus"].get("total_discrepancies") or 0 for v in component_out["samples"].values())
+        component_out["total_number_discrepancies_consensus"] = sum(v["consensus"].get("total_discrepancies") or 0 for v in component_out["samples"].values())
+        component_out["total_number_discrepancies_variants"] = sum(v["variants"].get("total_discrepancies") or 0 for v in component_out["samples"].values())
         component_out["median_genome_identity_pct"] = numeric_median(sample_consensus_identities)
         component_out["total_classification_matches"] = total_classification_matches
 
