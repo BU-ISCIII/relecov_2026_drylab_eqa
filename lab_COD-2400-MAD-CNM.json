@@ -77,7 +77,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": null,
@@ -183,7 +185,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "BA.1.13",
@@ -290,7 +294,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.5",
@@ -397,7 +403,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "BQ.1.1",
@@ -504,7 +512,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "BA.1.1",
@@ -643,7 +653,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "XCH.1",
@@ -753,7 +765,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.5.24",
@@ -863,7 +877,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": "XBB.1.9.1",
@@ -973,7 +989,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": null,
@@ -1078,7 +1096,9 @@
             "total_discrepancies": null,
             "wrong_nt": 0,
             "insertions": 0,
-            "deletions": 0
+            "deletions": 0,
+            "missing": 0,
+            "denovo": 0
           },
           "classification": {
             "expected_lineage": null,
