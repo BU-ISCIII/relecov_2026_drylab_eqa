@@ -491,7 +491,7 @@ def build_lab_json(
             total_classification_matches += classification_summary["number_matches"]
 
             reported_qc = normalize_label(row.get("qc_test"))
-            qc_match = None if expected_qc is None else (reported_qc == expected_qc)
+            qc_match = None if expected_qc is None else (None if reported_qc is None else (reported_qc == expected_qc))
 
             consensus_metrics = pick_sample_metrics(consensus_index, sample_id, comp_code)
             variant_metrics = pick_sample_metrics(variant_index, sample_id, comp_code)
