@@ -82,6 +82,33 @@ SEGMENT_TO_NUMBER = {
 # UTILIDADES
 # ==========================================================
 
+def detect_influenza_segment(header):
+    header_upper = header.upper()
+
+    # 1. Direct names or SEG labels already covered by the current map
+    for key, val in SEGMENT_NAME_MAP.items():
+        if key in header_upper:
+            return val
+
+    # 2. Headers like FLU1_1, FLU1_2, ..., FLU1_8
+    match = re.search(r"(?:^|_)([1-8])(?:$|_)", header_upper)
+    if match:
+        segment_number = int(match.group(1))
+        number_to_segment = {
+            1: "PB2",
+            2: "PB1",
+            3: "PA",
+            4: "HA",
+            5: "NP",
+            6: "NA",
+            7: "MP",
+            8: "NS",
+        }
+        return number_to_segment.get(segment_number)
+
+    return None
+
+
 def log_and_print(msg, log):
     print(msg)
     log.write(msg + "\n")
@@ -340,14 +367,8 @@ def process_json_and_append():
                 for header in expected_headers:
 
                     rec = record_dict[header]
-                    header_upper = header.upper()
 
-                    segment_detected = None
-                    #for key, val in SEGMENT_MAP.items():
-                    for key, val in SEGMENT_NAME_MAP.items():
-                        if key in header_upper:
-                            segment_detected = val
-                            break
+                    segment_detected = detect_influenza_segment(header)
 
                     if not segment_detected:
                         log_and_print(f"❌ Cannot detect segment in {header}", log)
