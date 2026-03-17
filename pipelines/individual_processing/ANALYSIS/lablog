@@ -138,7 +138,7 @@ IFS=',' read -r -a ref_array <<< "$reference"
 done <<< $samples_files_map
 
 ## Create an aux script to re-write the SNPEFF step using the file
-echo "while IFS=$'\t' read -r vcf_filename reference; do; sed -E -i \"/${vcf_filename}/ s/g (.+)( +-config)/g ${reference}\2/g\" _03_snpeff_annotate.sh; done < ../DOC/vcf_to_ref.tsv" >> _99_rewrite_vcf_refs.sh
+echo "while IFS=$'\t' read -r vcf_filename reference; do sed -E -i \"/${vcf_filename}/ s/g (.+)( +-config)/g ${reference}\2/g\" _03_snpeff_annotate.sh; done < ./vcf_to_ref.tsv" >> _99_rewrite_vcf_refs.sh
 
 # GENERATE THE NECESSARY FOLDERS FOR THE STEPS
 mkdir sorted_vcf
