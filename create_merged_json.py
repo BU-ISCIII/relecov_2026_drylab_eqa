@@ -559,7 +559,6 @@ def build_lab_json(
                 "high_and_low_freq": variant_metrics.get("high_and_low_freq") or False,
                 "high_freq_only": variant_metrics.get("high_freq_only") or False,
                 "low_freq_only": variant_metrics.get("low_freq_only") or False,
-                "successful_hits": variant_metrics.get("successful_hits"),
                 "number_of_variants_in_consensus": number_of_variants_in_consensus,
                 "number_of_variants_in_consensus_vcf": number_of_variants_in_consensus_vcf,
                 "number_of_variants_with_effect": number_of_variants_with_effect,
@@ -568,6 +567,7 @@ def build_lab_json(
 
             if comp_expected.get("virus") == "SARS-CoV-2":
                 variants_block.update({
+                    "successful_hits": variant_metrics.get("successful_hits"),
                     "number_of_variants_with_effect_vcf": number_of_variants_with_effect_vcf,
                     "discrepancies_in_reported_variants_effect": discrepancies_variants_effect,
                 })
