@@ -73,7 +73,7 @@
             "successful_hits": 36,
             "number_of_variants_with_effect_vcf": 22,
             "discrepancies_in_reported_variants_effect": 0,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -181,7 +181,7 @@
             "successful_hits": 65,
             "number_of_variants_with_effect_vcf": 45,
             "discrepancies_in_reported_variants_effect": 1,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -290,7 +290,7 @@
             "successful_hits": 95,
             "number_of_variants_with_effect_vcf": 64,
             "discrepancies_in_reported_variants_effect": 1,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -399,7 +399,7 @@
             "successful_hits": 75,
             "number_of_variants_with_effect_vcf": 52,
             "discrepancies_in_reported_variants_effect": 0,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -508,7 +508,7 @@
             "successful_hits": 65,
             "number_of_variants_with_effect_vcf": 42,
             "discrepancies_in_reported_variants_effect": 1,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -649,7 +649,7 @@
             "successful_hits": 118,
             "number_of_variants_with_effect_vcf": 78,
             "discrepancies_in_reported_variants_effect": 0,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -761,7 +761,7 @@
             "successful_hits": 97,
             "number_of_variants_with_effect_vcf": 66,
             "discrepancies_in_reported_variants_effect": 1,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -873,7 +873,7 @@
             "successful_hits": 94,
             "number_of_variants_with_effect_vcf": 66,
             "discrepancies_in_reported_variants_effect": 0,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -985,7 +985,7 @@
             "successful_hits": 16,
             "number_of_variants_with_effect_vcf": 9,
             "discrepancies_in_reported_variants_effect": 1,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -1092,7 +1092,7 @@
             "successful_hits": 11,
             "number_of_variants_with_effect_vcf": 5,
             "discrepancies_in_reported_variants_effect": 0,
-            "total_discrepancies": null,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
@@ -1227,13 +1227,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 1377,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 1373,
+            "number_of_variants_in_vcf": 37523,
             "number_of_variants_with_effect": 0,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 4
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -1329,13 +1330,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 449,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 446,
+            "number_of_variants_in_vcf": 39071,
             "number_of_variants_with_effect": 113,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 3
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1430,6 +1432,7 @@
             "low_freq_only": false,
             "number_of_variants_in_consensus": null,
             "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_vcf": null,
             "number_of_variants_with_effect": null,
             "discrepancies_in_reported_variants": null
           },
@@ -1511,13 +1514,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 492,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 481,
+            "number_of_variants_in_vcf": 25977,
             "number_of_variants_with_effect": 111,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 11
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1613,13 +1617,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 455,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 455,
+            "number_of_variants_in_vcf": 34996,
             "number_of_variants_with_effect": 98,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 0
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1674,7 +1679,7 @@
         }
       },
       "total_number_discrepancies_consensus": 61,
-      "total_number_discrepancies_variants": 0,
+      "total_number_discrepancies_variants": null,
       "median_genome_identity_pct": 96.10997616724765,
       "total_classification_matches": 8
     },
@@ -1754,9 +1759,10 @@
           "variants": {
             "high_and_low_freq": false,
             "high_freq_only": false,
-            "low_freq_only": false,
+            "low_freq_only": true,
             "number_of_variants_in_consensus": null,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 0,
+            "number_of_variants_in_vcf": 4531,
             "number_of_variants_with_effect": null,
             "discrepancies_in_reported_variants": null
           },
@@ -1850,13 +1856,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 435,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 419,
+            "number_of_variants_in_vcf": 2892,
             "number_of_variants_with_effect": 101,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 16
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1952,13 +1959,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 492,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 471,
+            "number_of_variants_in_vcf": 2796,
             "number_of_variants_with_effect": 111,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 21
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -2060,13 +2068,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 399,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 379,
+            "number_of_variants_in_vcf": 11792,
             "number_of_variants_with_effect": 89,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 20
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -2159,13 +2168,14 @@
             }
           },
           "variants": {
-            "high_and_low_freq": false,
+            "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 1371,
-            "number_of_variants_in_consensus_vcf": null,
+            "number_of_variants_in_consensus_vcf": 1363,
+            "number_of_variants_in_vcf": 21455,
             "number_of_variants_with_effect": 0,
-            "discrepancies_in_reported_variants": null
+            "discrepancies_in_reported_variants": 8
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -2220,7 +2230,7 @@
         }
       },
       "total_number_discrepancies_consensus": 34,
-      "total_number_discrepancies_variants": 0,
+      "total_number_discrepancies_variants": null,
       "median_genome_identity_pct": 95.90439911526174,
       "total_classification_matches": 9
     }
