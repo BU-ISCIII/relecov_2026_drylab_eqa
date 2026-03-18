@@ -809,8 +809,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             variant_samples = []
 
             for sample_id, expected_sample in comp_expected["samples"].items():
-                if not sample_is_evaluable(expected_sample, "Variant calling fields"):
-                    continue
+                sample_evaluable = sample_is_evaluable(expected_sample, "Variant calling fields")
 
                 tds = []
                 successful_hits_vals = []
@@ -826,19 +825,28 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     td = safe_number(var.get("total_discrepancies"))
                     sh = safe_number(var.get("successful_hits"))
 
-                    if td is not None:
+                    if td is not None and sample_evaluable:
                         variant_discs.append(td)
                         tds.append(td)
+                    elif td is not None:
+                        tds.append(td)
 
-                    if sh is not None:
+                    if sh is not None and sample_evaluable:
                         variant_successful_hits.append(sh)
+                        successful_hits_vals.append(sh)
+                    elif sh is not None:
                         successful_hits_vals.append(sh)
 
                     for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                         v = safe_number(var.get(key))
                         if v is not None:
-                            variant_breakdown_all[key].append(v)
                             bd[key].append(v)
+                            if sample_evaluable:
+                                variant_breakdown_all[key].append(v)
+
+                has_sample_variant_data = bool(tds or successful_hits_vals or any(bd.values()))
+                if not has_sample_variant_data:
+                    continue
 
                 variant_samples.append({
                     "collecting_lab_sample_id": sample_id,
@@ -883,8 +891,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             variant_samples = []
 
             for sample_id, expected_sample in comp_expected["samples"].items():
-                if not sample_is_evaluable(expected_sample, "Variant calling fields"):
-                    continue
+                sample_evaluable = sample_is_evaluable(expected_sample, "Variant calling fields")
 
                 sample_variants_in_consensus = []
                 sample_variants_in_consensus_vcf = []
@@ -904,17 +911,30 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     niv = safe_number(var.get("number_of_variants_in_vcf"))
 
                     if nivc is not None:
-                        variant_in_consensus_all.append(nivc)
                         sample_variants_in_consensus.append(nivc)
+                        if sample_evaluable:
+                            variant_in_consensus_all.append(nivc)
                     if nivcv is not None:
-                        variant_in_consensus_vcf_all.append(nivcv)
                         sample_variants_in_consensus_vcf.append(nivcv)
+                        if sample_evaluable:
+                            variant_in_consensus_vcf_all.append(nivcv)
                     if dirv is not None:
-                        discrepancy_reported_all.append(dirv)
                         sample_discrepancies_in_reported_variants.append(dirv)
+                        if sample_evaluable:
+                            discrepancy_reported_all.append(dirv)
                     if niv is not None:
-                        variant_in_vcf_all.append(niv)
                         sample_variants_in_vcf.append(niv)
+                        if sample_evaluable:
+                            variant_in_vcf_all.append(niv)
+
+                has_sample_variant_data = bool(
+                    sample_variants_in_consensus
+                    or sample_variants_in_consensus_vcf
+                    or sample_discrepancies_in_reported_variants
+                    or sample_variants_in_vcf
+                )
+                if not has_sample_variant_data:
+                    continue
 
                 variant_samples.append({
                     "collecting_lab_sample_id": sample_id,
