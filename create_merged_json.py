@@ -522,22 +522,24 @@ def build_lab_json(
             if consensus_block.get("total_discrepancies") is not None:
                 sample_consensus_discrepancies.append(float(consensus_block["total_discrepancies"]))
 
-            variant_wrong_nt = variant_metrics.get("wrong_nt") or 0
-            variant_insertions = variant_metrics.get("insertions") or 0
-            variant_deletions = variant_metrics.get("deletions") or 0
-            variant_missing = variant_metrics.get("missing") or 0
-            variant_denovo = variant_metrics.get("denovo") or 0
+            variant_wrong_nt = variant_metrics.get("wrong_nt")
+            variant_insertions = variant_metrics.get("insertions")
+            variant_deletions = variant_metrics.get("deletions")
+            variant_missing = variant_metrics.get("missing")
+            variant_denovo = variant_metrics.get("denovo")
 
-            if all(not f for f in (variant_wrong_nt, variant_insertions, variant_deletions, variant_missing, variant_denovo)):
+            variant_values = [
+                variant_wrong_nt,
+                variant_insertions,
+                variant_deletions,
+                variant_missing,
+                variant_denovo,
+            ]
+
+            if all(v is None for v in variant_values):
                 variant_total_discrepancies = None
             else:
-                variant_total_discrepancies = (
-                    variant_wrong_nt +
-                    variant_insertions +
-                    variant_deletions + 
-                    variant_missing +
-                    variant_denovo
-                )
+                variant_total_discrepancies = sum(v if v is not None else 0 for v in variant_values)
 
             number_of_variants_in_consensus = safe_int(row.get("number_of_variants_in_consensus"))
             number_of_variants_in_consensus_vcf = safe_int(variant_metrics.get("number_of_variants_in_consensus_vcf"))
