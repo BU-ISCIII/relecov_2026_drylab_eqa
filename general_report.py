@@ -446,6 +446,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
     sars_variant_reporting_modes: Counter = Counter()
 
     influenza_variant_reporting_modes: Counter = Counter()
+    influenza_variants_in_consensus: List[float] = []
+    influenza_variants_in_consensus_vcf: List[float] = []
+    influenza_discrepancies_in_reported_variants: List[float] = []
+    influenza_variants_in_vcf: List[float] = []
     distinct_sars_references: set = set()
     distinct_influenza_references: set = set()
 
@@ -661,6 +665,20 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                         sars_variant_reporting_modes["low_freq_only"] += 1
 
                 if comp_expected.get("virus") == "Influenza virus":
+                    nivc = safe_number(var.get("number_of_variants_in_consensus"))
+                    nivcv = safe_number(var.get("number_of_variants_in_consensus_vcf"))
+                    dirv = safe_number(var.get("discrepancies_in_reported_variants"))
+                    niv = safe_number(var.get("number_of_variants_in_vcf"))
+
+                    if nivc is not None:
+                        influenza_variants_in_consensus.append(nivc)
+                    if nivcv is not None:
+                        influenza_variants_in_consensus_vcf.append(nivcv)
+                    if dirv is not None:
+                        influenza_discrepancies_in_reported_variants.append(dirv)
+                    if niv is not None:
+                        influenza_variants_in_vcf.append(niv)
+
                     if var.get("high_and_low_freq"):
                         influenza_variant_reporting_modes["high_and_low_freq"] += 1
                     elif var.get("high_freq_only"):
@@ -784,78 +802,159 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "fig_discrepancy_type_boxplot": f"figures/{comp_code}/consensus_discrepancy_type_boxplot.png",
         }
 
-        variant_discs = []
-        variant_successful_hits = []
-        variant_breakdown_all = defaultdict(list)
-        variant_samples = []
+        if comp_expected.get("virus") == "SARS-CoV-2":
+            variant_discs = []
+            variant_successful_hits = []
+            variant_breakdown_all = defaultdict(list)
+            variant_samples = []
 
-        for sample_id, expected_sample in comp_expected["samples"].items():
-            if not sample_is_evaluable(expected_sample, "Variant calling fields"):
-                continue
-
-            tds = []
-            successful_hits_vals = []
-            bd = defaultdict(list)
-
-            for lab in participating_labs:
-                sample = lab["components"][comp_code]["samples"].get(sample_id)
-                if not sample:
+            for sample_id, expected_sample in comp_expected["samples"].items():
+                if not sample_is_evaluable(expected_sample, "Variant calling fields"):
                     continue
 
-                var = sample.get("variants", {})
+                tds = []
+                successful_hits_vals = []
+                bd = defaultdict(list)
 
-                td = safe_number(var.get("total_discrepancies"))
-                sh = safe_number(var.get("successful_hits"))
+                for lab in participating_labs:
+                    sample = lab["components"][comp_code]["samples"].get(sample_id)
+                    if not sample:
+                        continue
 
-                if td is not None:
-                    variant_discs.append(td)
-                    tds.append(td)
+                    var = sample.get("variants", {})
 
-                if sh is not None:
-                    variant_successful_hits.append(sh)
-                    successful_hits_vals.append(sh)
+                    td = safe_number(var.get("total_discrepancies"))
+                    sh = safe_number(var.get("successful_hits"))
 
-                for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
-                    v = safe_number(var.get(key))
-                    if v is not None:
-                        variant_breakdown_all[key].append(v)
-                        bd[key].append(v)
+                    if td is not None:
+                        variant_discs.append(td)
+                        tds.append(td)
 
-            variant_samples.append({
-                "collecting_lab_sample_id": sample_id,
-                "median_discrepancies": median_or_none(tds),
-                "min": min_or_none(tds),
-                "max": max_or_none(tds),
-                "median_successful_hits": median_or_none(successful_hits_vals),
-                "min_successful_hits": min_or_none(successful_hits_vals),
-                "max_successful_hits": max_or_none(successful_hits_vals),
-                "wrong_nt": median_or_none(bd.get("wrong_nt", [])),
-                "insertions": median_or_none(bd.get("insertions", [])),
-                "deletions": median_or_none(bd.get("deletions", [])),
-                "missing": median_or_none(bd.get("missing", [])),
-                "denovo": median_or_none(bd.get("denovo", [])),
-            })
+                    if sh is not None:
+                        variant_successful_hits.append(sh)
+                        successful_hits_vals.append(sh)
 
-        comp_obj["variant"] = {
-            "median_discrepancies": median_or_none(variant_discs),
-            "total_median_discrepancies": round(sum(v for v in [median_or_none(variant_discs)] if v is not None), 4) if variant_discs else None,
-            "min_discrepancies": min_or_none(variant_discs),
-            "max_discrepancies": max_or_none(variant_discs),
-            "median_successful_hits": median_or_none(variant_successful_hits),
-            "min_successful_hits": min_or_none(variant_successful_hits),
-            "max_successful_hits": max_or_none(variant_successful_hits),
-            "samples": variant_samples,
-            "discrepancy_breakdown": {
-                key: {
-                    "median": median_or_none(vals),
-                    "min": min_or_none(vals),
-                    "max": max_or_none(vals),
-                } for key, vals in variant_breakdown_all.items()
-            },
-            "most_frequent_discrepancy_pattern": max(variant_breakdown_all.items(), key=lambda kv: len(kv[1]))[0] if variant_breakdown_all else None,
-            "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/variant_discrepancies_boxplot_by_sample.png",
-            "fig_discrepancy_type_boxplot": f"figures/{comp_code}/variant_discrepancy_type_boxplot.png",
-        }
+                    for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
+                        v = safe_number(var.get(key))
+                        if v is not None:
+                            variant_breakdown_all[key].append(v)
+                            bd[key].append(v)
+
+                variant_samples.append({
+                    "collecting_lab_sample_id": sample_id,
+                    "median_discrepancies": median_or_none(tds),
+                    "min": min_or_none(tds),
+                    "max": max_or_none(tds),
+                    "median_successful_hits": median_or_none(successful_hits_vals),
+                    "min_successful_hits": min_or_none(successful_hits_vals),
+                    "max_successful_hits": max_or_none(successful_hits_vals),
+                    "wrong_nt": median_or_none(bd.get("wrong_nt", [])),
+                    "insertions": median_or_none(bd.get("insertions", [])),
+                    "deletions": median_or_none(bd.get("deletions", [])),
+                    "missing": median_or_none(bd.get("missing", [])),
+                    "denovo": median_or_none(bd.get("denovo", [])),
+                })
+
+            comp_obj["variant"] = {
+                "median_discrepancies": median_or_none(variant_discs),
+                "total_median_discrepancies": round(sum(v for v in [median_or_none(variant_discs)] if v is not None), 4) if variant_discs else None,
+                "min_discrepancies": min_or_none(variant_discs),
+                "max_discrepancies": max_or_none(variant_discs),
+                "median_successful_hits": median_or_none(variant_successful_hits),
+                "min_successful_hits": min_or_none(variant_successful_hits),
+                "max_successful_hits": max_or_none(variant_successful_hits),
+                "samples": variant_samples,
+                "discrepancy_breakdown": {
+                    key: {
+                        "median": median_or_none(vals),
+                        "min": min_or_none(vals),
+                        "max": max_or_none(vals),
+                    } for key, vals in variant_breakdown_all.items()
+                },
+                "most_frequent_discrepancy_pattern": max(variant_breakdown_all.items(), key=lambda kv: len(kv[1]))[0] if variant_breakdown_all else None,
+                "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/variant_discrepancies_boxplot_by_sample.png",
+                "fig_discrepancy_type_boxplot": f"figures/{comp_code}/variant_discrepancy_type_boxplot.png",
+            }
+        else:
+            variant_in_consensus_all = []
+            variant_in_consensus_vcf_all = []
+            discrepancy_reported_all = []
+            variant_in_vcf_all = []
+            variant_samples = []
+
+            for sample_id, expected_sample in comp_expected["samples"].items():
+                if not sample_is_evaluable(expected_sample, "Variant calling fields"):
+                    continue
+
+                sample_variants_in_consensus = []
+                sample_variants_in_consensus_vcf = []
+                sample_discrepancies_in_reported_variants = []
+                sample_variants_in_vcf = []
+
+                for lab in participating_labs:
+                    sample = lab["components"][comp_code]["samples"].get(sample_id)
+                    if not sample:
+                        continue
+
+                    var = sample.get("variants", {})
+
+                    nivc = safe_number(var.get("number_of_variants_in_consensus"))
+                    nivcv = safe_number(var.get("number_of_variants_in_consensus_vcf"))
+                    dirv = safe_number(var.get("discrepancies_in_reported_variants"))
+                    niv = safe_number(var.get("number_of_variants_in_vcf"))
+
+                    if nivc is not None:
+                        variant_in_consensus_all.append(nivc)
+                        sample_variants_in_consensus.append(nivc)
+                    if nivcv is not None:
+                        variant_in_consensus_vcf_all.append(nivcv)
+                        sample_variants_in_consensus_vcf.append(nivcv)
+                    if dirv is not None:
+                        discrepancy_reported_all.append(dirv)
+                        sample_discrepancies_in_reported_variants.append(dirv)
+                    if niv is not None:
+                        variant_in_vcf_all.append(niv)
+                        sample_variants_in_vcf.append(niv)
+
+                variant_samples.append({
+                    "collecting_lab_sample_id": sample_id,
+                    "variants_in_consensus": {
+                        "median": median_or_none(sample_variants_in_consensus),
+                        "min": min_or_none(sample_variants_in_consensus),
+                        "max": max_or_none(sample_variants_in_consensus),
+                    },
+                    "variants_in_consensus_vcf": {
+                        "median": median_or_none(sample_variants_in_consensus_vcf),
+                        "min": min_or_none(sample_variants_in_consensus_vcf),
+                        "max": max_or_none(sample_variants_in_consensus_vcf),
+                    },
+                    "discrepancies_in_reported_variants": {
+                        "median": median_or_none(sample_discrepancies_in_reported_variants),
+                        "min": min_or_none(sample_discrepancies_in_reported_variants),
+                        "max": max_or_none(sample_discrepancies_in_reported_variants),
+                    },
+                    "variants_in_vcf": {
+                        "median": median_or_none(sample_variants_in_vcf),
+                        "min": min_or_none(sample_variants_in_vcf),
+                        "max": max_or_none(sample_variants_in_vcf),
+                    },
+                })
+
+            comp_obj["variant"] = {
+                "median_variants_in_consensus": median_or_none(variant_in_consensus_all),
+                "min_variants_in_consensus": min_or_none(variant_in_consensus_all),
+                "max_variants_in_consensus": max_or_none(variant_in_consensus_all),
+                "median_variants_in_consensus_vcf": median_or_none(variant_in_consensus_vcf_all),
+                "min_variants_in_consensus_vcf": min_or_none(variant_in_consensus_vcf_all),
+                "max_variants_in_consensus_vcf": max_or_none(variant_in_consensus_vcf_all),
+                "median_discrepancies_in_reported_variants": median_or_none(discrepancy_reported_all),
+                "min_discrepancies_in_reported_variants": min_or_none(discrepancy_reported_all),
+                "max_discrepancies_in_reported_variants": max_or_none(discrepancy_reported_all),
+                "median_variants_in_vcf": median_or_none(variant_in_vcf_all),
+                "min_variants_in_vcf": min_or_none(variant_in_vcf_all),
+                "max_variants_in_vcf": max_or_none(variant_in_vcf_all),
+                "samples": variant_samples,
+            }
 
         classification_matches_per_lab = []
         per_sample_cls = []
@@ -1580,6 +1679,18 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "low_freq_only_pct": pct(influenza_variant_reporting_modes["low_freq_only"], sum(influenza_variant_reporting_modes.values())),
                 "high_freq_only_pct": pct(influenza_variant_reporting_modes["high_freq_only"], sum(influenza_variant_reporting_modes.values())),
                 "total_distinct_references": len(distinct_influenza_references),
+                "median_variants_in_consensus": median_or_none(influenza_variants_in_consensus),
+                "min_variants_in_consensus": min_or_none(influenza_variants_in_consensus),
+                "max_variants_in_consensus": max_or_none(influenza_variants_in_consensus),
+                "median_variants_in_consensus_vcf": median_or_none(influenza_variants_in_consensus_vcf),
+                "min_variants_in_consensus_vcf": min_or_none(influenza_variants_in_consensus_vcf),
+                "max_variants_in_consensus_vcf": max_or_none(influenza_variants_in_consensus_vcf),
+                "median_discrepancies_in_reported_variants": median_or_none(influenza_discrepancies_in_reported_variants),
+                "min_discrepancies_in_reported_variants": min_or_none(influenza_discrepancies_in_reported_variants),
+                "max_discrepancies_in_reported_variants": max_or_none(influenza_discrepancies_in_reported_variants),
+                "median_variants_in_vcf": median_or_none(influenza_variants_in_vcf),
+                "min_variants_in_vcf": min_or_none(influenza_variants_in_vcf),
+                "max_variants_in_vcf": max_or_none(influenza_variants_in_vcf),
             },
             "classification": {
                 "sars_cov_2_concordance_pct": pct(sars_lineage_matches, sars_lineage_total),
