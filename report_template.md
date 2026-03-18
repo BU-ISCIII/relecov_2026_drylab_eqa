@@ -826,7 +826,7 @@ Considering discrepancy type composition aggregated by sample for {{ comp_code }
 | Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.consensus.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambigity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }}
+| {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambiguity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }}
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }}.
@@ -852,13 +852,13 @@ Discrepancy type composition aggregated across all submitted consensus sequences
 |---|---:|---:|
 | Incorrect nucleotide | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.wrong_nt.max }} |
 | Ambiguity instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max }} |
-| Nucleotide instead of ambiguity | {{ comp_net.consensus.discrepancy_breakdown.nt2ambigity.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ambigity.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ambigity.max }} |
+| Nucleotide instead of ambiguity | {{ comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max }} |
 | Stretch of Ns instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ns2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ns2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ns2nt.max }} |
 | Nucleotide stretch instead of stretch of Ns| {{ comp_net.consensus.discrepancy_breakdown.nt2ns.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ns.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ns.max }} |
 | Insertion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.insertions.median }} | {{ comp_net.consensus.discrepancy_breakdown.insertions.min }}–{{ comp_net.consensus.discrepancy_breakdown.insertions.max }} |
 | Deletion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.deletions.median }} | {{ comp_net.consensus.discrepancy_breakdown.deletions.min }}–{{ comp_net.consensus.discrepancy_breakdown.deletions.max }} |
 
-The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.most_frequent_discrepancy_pattern }}.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.dominant_discrepancy_pattern }}.
 
 Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
 
@@ -915,7 +915,7 @@ Discrepancy type composition (aggregated across all submitted variant calls for 
 | Insertion relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.insertions.median }} | {{ comp_net.variant.discrepancy_breakdown.insertions.min }}–{{ comp_net.variant.discrepancy_breakdown.insertions.max }} |
 | Deletions relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.deletions.median }} | {{ comp_net.variant.discrepancy_breakdown.deletions.min }}–{{ comp_net.variant.discrepancy_breakdown.deletions.max }} |
 
-The most frequent discrepancy pattern observed in {{ comp_code }} was {{ comp_net.variant.most_frequent_discrepancy_pattern }}.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ comp_net.variant.dominant_discrepancy_pattern }}.
 
 Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
 
@@ -1487,7 +1487,7 @@ The metrics presented in Table {{ table_counter.value }} summarise overall seque
 | Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total sucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
-| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambigity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
+| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
 {% endfor %}
 
 Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
