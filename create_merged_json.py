@@ -648,7 +648,13 @@ def build_lab_json(
         }
 
         component_out["total_number_discrepancies_consensus"] = sum(v["consensus"].get("total_discrepancies") or 0 for v in component_out["samples"].values())
-        component_out["total_number_discrepancies_variants"] = sum(v["variants"].get("total_discrepancies") or 0 for v in component_out["samples"].values())
+        if comp_expected.get("virus") == "Influenza virus":
+            component_out["total_number_discrepancies_variants"] = None
+        else:
+            component_out["total_number_discrepancies_variants"] = sum(
+                v["variants"].get("total_discrepancies") or 0
+                for v in component_out["samples"].values()
+            )
         component_out["median_genome_identity_pct"] = numeric_median(sample_consensus_identities)
         component_out["total_classification_matches"] = total_classification_matches
 
