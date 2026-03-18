@@ -183,39 +183,72 @@ def comparar_gold_vs(df_comp, col_suffix, extra_cols_gold=None, extra_cols_comp=
     return diff_final.sort_values(by=['EQA', 'POS'])
 
 
-def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
+def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold, expected_samples):
     variants_dict = {}
     resultados_map = {
-              "Wrong nucleotide": "wrong_nt",
-              "Insertion relative to gold standard": "insertions",
-              "Deletion relative to gold standard": "deletions",
-              "Missing variant": "missing",
-              "De novo reported variant": "denovo"
-            }
-    
-    # Set up the initial values
+        "Wrong nucleotide": "wrong_nt",
+        "Insertion relative to gold standard": "insertions",
+        "Deletion relative to gold standard": "deletions",
+        "Missing variant": "missing",
+        "De novo reported variant": "denovo"
+    }
+
     df = merged_all.copy()
     vlt_df = vlt_lab.copy()
     vlt_gold_df = vlt_gold.copy()
     af_threshold = 0.75
 
-    # Find number of successful hits
-    for sample, vlt_df_sample in vlt_df.groupby("SAMPLE"):
+    # Muestras presentes realmente en VCF del laboratorio
+    lab_samples = set(vlt_df["SAMPLE"].dropna().astype(str)) if not vlt_df.empty else set()
+
+    # Muestras con gold/reference disponible
+    gold_samples = set(vlt_gold_df["SAMPLE"].dropna().astype(str)) if not vlt_gold_df.empty else set()
+
+    # Inicialización usando las muestras esperadas
+    for sample in map(str, expected_samples):
+        variants_dict[sample] = {}
+
+        has_vcf = sample in lab_samples
+        has_gold = sample in gold_samples
+        is_calculable = has_vcf and has_gold
+
+        # successful_hits
+        variants_dict[sample]["successful_hits"] = None
+
+        # métricas derivadas del VCF
+        variants_dict[sample]["high_and_low_freq"] = None
+        variants_dict[sample]["high_freq_only"] = None
+        variants_dict[sample]["low_freq_only"] = None
+        variants_dict[sample]["number_of_variants_in_consensus_vcf"] = None
+        variants_dict[sample]["number_of_variants_with_effect_vcf"] = None
+
+        # discrepancias: 0 solo si se puede calcular, null si no
+        for json_equivalent in resultados_map.values():
+            variants_dict[sample][json_equivalent] = 0 if is_calculable else None
+
+    # successful_hits solo si hay VCF y gold
+    for sample in map(str, expected_samples):
+        has_vcf = sample in lab_samples
+        has_gold = sample in gold_samples
+
+        if not (has_vcf and has_gold):
+            continue
+
+        vlt_df_sample = vlt_df[vlt_df["SAMPLE"].astype(str) == sample]
+        gold_sample_df = vlt_gold_df[vlt_gold_df["SAMPLE"].astype(str) == sample]
+
         set1 = set(map(tuple, vlt_df_sample[["POS", "REF", "ALT"]].values))
-        set2 = set(map(tuple, vlt_gold_df[vlt_gold_df["SAMPLE"] == sample][["POS", "REF", "ALT"]].values))
+        set2 = set(map(tuple, gold_sample_df[["POS", "REF", "ALT"]].values))
 
-        num_matches = len(set1 & set2)
-        if sample not in variants_dict:
-            variants_dict[sample] = {}
-        variants_dict[sample]["successful_hits"] = num_matches
-    
+        variants_dict[sample]["successful_hits"] = len(set1 & set2)
 
+    # métricas del VCF solo si existe VCF para esa muestra
+    for sample in map(str, expected_samples):
+        if sample not in lab_samples:
+            continue
 
-    for sample, group in vlt_df.groupby("SAMPLE"):
-        if sample not in variants_dict:
-            variants_dict[sample] = {}
+        group = vlt_df[vlt_df["SAMPLE"].astype(str) == sample].copy()
 
-        # Check presence of low- and high-frequency alleles
         af_values = pd.to_numeric(group["AF"], errors="coerce")
 
         has_low_freq = (af_values < af_threshold).any()
@@ -225,26 +258,31 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
         variants_dict[sample]["high_freq_only"] = bool(has_high_freq and not has_low_freq)
         variants_dict[sample]["low_freq_only"] = bool(has_low_freq and not has_high_freq)
 
-        # Keep only variants with AF > 0.75
         group_high_af = group[af_values > af_threshold].copy()
 
-        # Number of variants in consensus considering only AF > 0.75
-        n_variants_consensus = len(group_high_af)
-        variants_dict[sample]["number_of_variants_in_consensus_vcf"] = n_variants_consensus
-        
-        # Number of variants with effect considering only AF > 0.75
+        variants_dict[sample]["number_of_variants_in_consensus_vcf"] = len(group_high_af)
+
         df_variants_effect = group_high_af[group_high_af["EFFECT"] == "missense_variant"]
-        n_variants_effect = len(df_variants_effect)
-        variants_dict[sample]["number_of_variants_with_effect_vcf"] = n_variants_effect
+        variants_dict[sample]["number_of_variants_with_effect_vcf"] = len(df_variants_effect)
 
-        if df.empty:
+    # Sobrescribir discrepancias reales para las muestras comparables con diferencias
+    if not df.empty:
+        for sample, reported_df in df.groupby("EQA"):
+            sample = str(sample)
+
+            # Solo sobrescribir si esa muestra era calculable
+            if sample not in variants_dict:
+                continue
+
+            has_vcf = sample in lab_samples
+            has_gold = sample in gold_samples
+            if not (has_vcf and has_gold):
+                continue
+
+            resultados_counts = reported_df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
+
             for key, json_equivalent in resultados_map.items():
-                variants_dict[sample][json_equivalent] = 0
-
-    for sample, reported_df in df.groupby("EQA"):
-        resultados_counts = reported_df["RESULTADOS_enviados"].value_counts(dropna=False).to_dict()
-        for key, json_equivalent in resultados_map.items():
-            variants_dict[sample][json_equivalent] = int(resultados_counts.get(key,0))
+                variants_dict[sample][json_equivalent] = int(resultados_counts.get(key, 0))
 
     if os.path.isfile("variants_report.json"):
         try:
@@ -255,8 +293,10 @@ def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
                 variants_dict = existing
         except json.JSONDecodeError:
             pass
+
     with open("variants_report.json", "w") as f:
         json.dump(variants_dict, f)
+
 
 def get_pattern_vlt(gold_standard_filename):
     if "FLU" in gold_standard_filename:
@@ -373,7 +413,7 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
     merged_all = merged_all.sort_values(by=['EQA','POS'])
 
     # --- 7.5 Calcular stats y guardar ---
-    calculate_values_eqa(merged_all, var_enviados, var_gold)
+    calculate_values_eqa(merged_all, var_enviados, var_gold, samples)
 
     # --- 💾 8. Guardar CSV final ---
     path_combined = OUTPUT_DIR / f"{sample_tag}_diferencias_{gold_standard.name}_COMBINADO_v2.csv"
