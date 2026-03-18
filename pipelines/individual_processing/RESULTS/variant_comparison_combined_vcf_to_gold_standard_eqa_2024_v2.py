@@ -14,46 +14,89 @@ args = parser.parse_args()
 
 # --- Función para añadir columna EQA ---
 def add_eqa_column(df, samples_list, sample_col="SAMPLE"):
-    """ 
-    Añade la columna EQA a la df con la identificación oportuna
-    Ordena por muestra y posición 
     """
-    df["EQA"] = np.nan
+    Añade la columna EQA a la df con la identificación oportuna
+    Ordena por muestra y posición
+    """
+    df = df.copy()
+    df["EQA"] = pd.Series(pd.NA, index=df.index, dtype="object")
+
     for eqaid in samples_list:
-        print(df.columns)
-        df.loc[df[sample_col].str.contains(eqaid, na=False), "EQA"] = eqaid
+        df.loc[df[sample_col].astype(str).str.contains(eqaid, na=False), "EQA"] = eqaid
+
     if "POS" in df.columns:
         df = df.sort_values(by=["EQA", "POS"], ascending=[True, True])
+
     return df
 
 # --- Función flexible para comparar ALT ---
-def comparar_alt(row, col_gold='ALT_gold', col_comp='ALT_comp'):
+def comparar_alt(row, col_ref='REF_gold', col_gold='ALT_gold', col_comp='ALT_comp'):
     """
-    Compare ALT values between gold standard and reported variants.
-    Assumes rows have already been matched by EQA, POS and REF.
+    Clasifica diferencias entre gold standard y muestra reportada.
+
+    Reglas:
+    - wrong_nt: misma POS y misma REF, ALT distinto, ambos de longitud 1
+    - insertions: inserción no presente en gold
+    - deletions: deleción no presente en gold
+    - missing: variante presente en gold y ausente en muestra
+    - denovo: SNP de novo de un solo nucleótido en muestra, ausente en gold
     """
+    ref = str(row[col_ref]) if pd.notna(row[col_ref]) else ''
     alt_gold = str(row[col_gold]) if pd.notna(row[col_gold]) else ''
     alt_comp = str(row[col_comp]) if pd.notna(row[col_comp]) else ''
 
-    if alt_gold and not alt_comp:
+    has_gold = bool(alt_gold)
+    has_comp = bool(alt_comp)
+
+    # Caso 1: está en gold pero no en muestra
+    if has_gold and not has_comp:
         return "Missing variant"
-    if alt_comp and not alt_gold:
-        return "De novo reported variant"
-    if alt_gold and alt_comp:
-        if len(alt_gold) == len(alt_comp):
-            return "Wrong nucleotide"
-        elif len(alt_gold) > len(alt_comp):
-            return "Deletion relative to gold standard"
-        elif len(alt_gold) < len(alt_comp):
+
+    # Caso 2: está en muestra pero no en gold
+    if has_comp and not has_gold:
+        # Inserción de novo
+        if len(alt_comp) > len(ref):
             return "Insertion relative to gold standard"
+        # Deleción de novo
+        elif len(ref) > len(alt_comp):
+            return "Deletion relative to gold standard"
+        # SNP de novo
+        elif len(ref) == 1 and len(alt_comp) == 1:
+            return "De novo reported variant"
+        else:
+            return "De novo reported variant"
+
+    # Caso 3: están ambos, comparar
+    if has_gold and has_comp:
+        # iguales, no debería entrar aquí normalmente
+        if alt_gold == alt_comp:
+            return "Match"
+
+        # mismo REF, distinto ALT
+        # SNP incorrecto
+        if len(ref) == 1 and len(alt_gold) == 1 and len(alt_comp) == 1:
+            return "Wrong nucleotide"
+
+        # inserción relativa a gold
+        if len(alt_comp) > len(alt_gold):
+            return "Insertion relative to gold standard"
+
+        # deleción relativa a gold
+        if len(alt_comp) < len(alt_gold):
+            return "Deletion relative to gold standard"
+
+        # fallback
+        return "Wrong nucleotide"
+
     return "Unknown"
+
 
 def comparar_gold_vs(df_comp, col_suffix, extra_cols_gold=None, extra_cols_comp=None):
     """
     df_comp: DataFrame de muestras a comparar con var_gold
     col_suffix: sufijo para las columnas de df_comp ('enviados' o 'isciii')
-    extra_cols_gold: lista de columnas del gold standard a incluir (ej: ['DP', 'AF'])
-    extra_cols_comp: lista de columnas del comparado a incluir (ej: ['DP', 'AF'])
+    extra_cols_gold: lista de columnas del gold standard a incluir
+    extra_cols_comp: lista de columnas del comparado a incluir
     """
     if extra_cols_gold is None:
         extra_cols_gold = []
@@ -66,66 +109,79 @@ def comparar_gold_vs(df_comp, col_suffix, extra_cols_gold=None, extra_cols_comp=
         for col in [f'ALT_{col_suffix}', f'CHROM_{col_suffix}'] + extra_cols_comp:
             merged[col] = pd.NA
     else:
-        eqa_validos = df_comp['EQA'].unique()
+        eqa_validos = df_comp['EQA'].dropna().unique()
 
         gold_filtered = var_gold[var_gold['EQA'].isin(eqa_validos)].copy()
-        gold_filtered['REF_gold'] = gold_filtered['REF']
-        gold_filtered['ALT_gold'] = gold_filtered['ALT']
-
         df_comp = df_comp.copy()
-        df_comp[f'REF_{col_suffix}'] = df_comp['REF']
-        df_comp[f'ALT_{col_suffix}'] = df_comp['ALT']
+
+        gold_filtered = gold_filtered.rename(columns={
+            'SAMPLE': 'SAMPLE_gold',
+            'CHROM': 'CHROM_gold',
+            'REF': 'REF_gold',
+            'ALT': 'ALT_gold'
+        })
+
+        df_comp = df_comp.rename(columns={
+            'SAMPLE': f'SAMPLE_{col_suffix}',
+            'CHROM': f'CHROM_{col_suffix}',
+            'REF': f'REF_{col_suffix}',
+            'ALT': f'ALT_{col_suffix}'
+        })
 
         merged = gold_filtered.merge(
             df_comp,
-            on=['EQA','POS', 'REF', 'ALT'],
+            left_on=['EQA', 'POS', 'REF_gold'],
+            right_on=['EQA', 'POS', f'REF_{col_suffix}'],
             how='outer',
-            suffixes=('_gold', f'_{col_suffix}'),
             indicator=True
         )
 
-        if f'REF_{col_suffix}' in merged.columns:
-            merged['REF_gold'] = merged['REF_gold'].combine_first(merged[f'REF_{col_suffix}'])
+        merged['REF_gold'] = merged['REF_gold'].combine_first(merged[f'REF_{col_suffix}'])
         merged['SAMPLE_ID'] = merged.get(f'SAMPLE_{col_suffix}').combine_first(merged.get('SAMPLE_gold'))
 
-    diff = merged[(merged['_merge'] != 'both') | (merged['ALT_gold'] != merged.get(f'ALT_{col_suffix}', None))]
+    diff = merged[
+        (merged['_merge'] != 'both') |
+        (merged['ALT_gold'] != merged.get(f'ALT_{col_suffix}', pd.NA))
+    ].copy()
 
-    # Columnas obligatorias
     for col in [f'ALT_{col_suffix}', f'CHROM_{col_suffix}']:
         if col not in diff.columns:
             diff[col] = pd.NA
 
-    # Columnas extra del gold
     for col in extra_cols_gold:
         col_gold = f"{col}_gold"
-        # Solo crear si NO existe ya
         if col_gold not in diff.columns:
             if col in diff.columns:
                 diff[col_gold] = diff[col]
             else:
                 diff[col_gold] = pd.NA
 
-    # Columnas extra del comparado
     for col in extra_cols_comp:
-        if col in diff.columns:
-            diff[f"{col}_{col_suffix}"] = diff[col]
-        else:
-            diff[f"{col}_{col_suffix}"] = pd.NA
+        col_comp = f"{col}_{col_suffix}"
+        if col_comp not in diff.columns:
+            if col in diff.columns:
+                diff[col_comp] = diff[col]
+            else:
+                diff[col_comp] = pd.NA
 
-    diff['POS'] = diff['POS'].astype(float).astype('Int64')
+    diff['POS'] = pd.to_numeric(diff['POS'], errors='coerce').astype('Int64')
 
-    diff_final = diff[['SAMPLE_ID','EQA','POS','REF_gold','ALT_gold',f'ALT_{col_suffix}',f'CHROM_{col_suffix}'] +
-                      [f"{col}_gold" for col in extra_cols_gold] +
-                      [f"{col}_{col_suffix}" for col in extra_cols_comp]].copy()
+    diff_final = diff[
+        ['SAMPLE_ID', 'EQA', 'POS', 'REF_gold', 'ALT_gold', f'ALT_{col_suffix}', f'CHROM_{col_suffix}'] +
+        [f"{col}_gold" for col in extra_cols_gold] +
+        [f"{col}_{col_suffix}" for col in extra_cols_comp]
+    ].copy()
 
     diff_final[f'RESULTADOS_{col_suffix}'] = diff_final.apply(
         comparar_alt,
         axis=1,
+        col_ref='REF_gold',
         col_gold='ALT_gold',
         col_comp=f'ALT_{col_suffix}'
     )
 
-    return diff_final.sort_values(by=['EQA','POS'])
+    return diff_final.sort_values(by=['EQA', 'POS'])
+
 
 def calculate_values_eqa(merged_all: pd.DataFrame, vlt_lab, vlt_gold):
     variants_dict = {}
@@ -323,3 +379,4 @@ for gold_standard in GOLD_DIR.rglob("*.csv"):
     path_combined = OUTPUT_DIR / f"{sample_tag}_diferencias_{gold_standard.name}_COMBINADO_v2.csv"
     merged_all.to_csv(path_combined, index=False)
     print(f"✅ Archivo combinado guardado: {path_combined}")
+
