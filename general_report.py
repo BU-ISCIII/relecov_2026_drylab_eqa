@@ -596,13 +596,17 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 if sig:
                     variant_softwares.add(sig)
 
+                expected_qc = expected_sample.get("expected_qc")
+                reported_qc = sample.get("qc_test")
                 qc_val = sample.get("qc_match")
-                if qc_val is True:
-                    qc_matches += 1
-                    qc_total += 1
-                elif qc_val is False:
-                    qc_discrepancies += 1
-                    qc_total += 1
+
+                if expected_qc is not None and reported_qc is not None and qc_val is not None:
+                    if qc_val is True:
+                        qc_matches += 1
+                        qc_total += 1
+                    elif qc_val is False:
+                        qc_discrepancies += 1
+                        qc_total += 1
 
                 if sample_is_evaluable(expected_sample, "Consensus analysis fields"):
                     gi = safe_number(sample.get("consensus", {}).get("genome_identity_pct"))
@@ -613,23 +617,29 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                             consensus_nanopore_identity.append(gi)
 
                 cls = sample.get("classification", {})
+
+                expected_lineage = cls.get("expected_lineage")
+                expected_clade = cls.get("expected_clade")
                 lineage_match = cls.get("lineage_match")
                 clade_match = cls.get("clade_match")
+
                 if comp_expected.get("virus") == "SARS-CoV-2":
-                    if lineage_match is not None:
+                    if expected_lineage is not None and lineage_match is not None:
                         sars_lineage_total += 1
                         if lineage_match:
                             sars_lineage_matches += 1
-                    if clade_match is not None:
+
+                    if expected_clade is not None and clade_match is not None:
                         sars_clade_total += 1
                         if clade_match:
                             sars_clade_matches += 1
                 else:
-                    if lineage_match is not None:
+                    if expected_lineage is not None and lineage_match is not None:
                         flu_type_total += 1
                         if lineage_match:
                             flu_type_matches += 1
-                    if clade_match is not None:
+
+                    if expected_clade is not None and clade_match is not None:
                         flu_clade_total += 1
                         if clade_match:
                             flu_clade_matches += 1
@@ -791,7 +801,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 if td is not None:
                     variant_discs.append(td)
                     tds.append(td)
-                for key in ["wrong_nt", "insertions", "deletions"]:
+                for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                     v = safe_number(var.get(key))
                     if v is not None:
                         variant_breakdown_all[key].append(v)
@@ -804,6 +814,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "wrong_nt": median_or_none(bd.get("wrong_nt", [])),
                 "insertions": median_or_none(bd.get("insertions", [])),
                 "deletions": median_or_none(bd.get("deletions", [])),
+                "missing": median_or_none(bd.get("missing", [])),
+                "denovo": median_or_none(bd.get("denovo", [])),
             })
 
         comp_obj["variant"] = {
@@ -819,6 +831,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     "max": max_or_none(vals),
                 } for key, vals in variant_breakdown_all.items()
             },
+            "most_frequent_discrepancy_pattern": max(variant_breakdown_all.items(), key=lambda kv: len(kv[1]))[0] if variant_breakdown_all else None,
             "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/variant_discrepancies_boxplot_by_sample.png",
             "fig_discrepancy_type_boxplot": f"figures/{comp_code}/variant_discrepancy_type_boxplot.png",
         }
