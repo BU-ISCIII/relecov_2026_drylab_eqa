@@ -567,6 +567,9 @@ def build_lab_json(
                 "discrepancies_in_reported_variants": discrepancies_variants,
             }
 
+            if comp_expected.get("virus") == "Influenza virus":
+                variants_block["number_of_variants_in_vcf"] = 0
+
             if comp_expected.get("virus") == "SARS-CoV-2":
                 variants_block.update({
                     "successful_hits": variant_metrics.get("successful_hits"),
