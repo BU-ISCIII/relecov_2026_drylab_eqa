@@ -792,7 +792,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     "max": max_or_none(vals),
                 } for key, vals in disc_breakdown_all.items()
             },
-            "most_frequent_discrepancy_pattern": max(disc_breakdown_all.items(), key=lambda kv: len(kv[1]))[0] if disc_breakdown_all else None,
+            "most_frequent_discrepancy_pattern": max(disc_breakdown_all.items(), key=lambda kv: median_or_none(kv[1]) if kv[1] else float("-inf"))[0] if disc_breakdown_all else None,
             "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/consensus_discrepancies_boxplot_by_sample.png",
             "fig_discrepancies_stacked_by_sample": f"figures/{comp_code}/consensus_discrepancies_stacked_by_sample.png",
             "fig_discrepancy_type_boxplot": f"figures/{comp_code}/consensus_discrepancy_type_boxplot.png",
@@ -864,7 +864,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                         "max": max_or_none(vals),
                     } for key, vals in variant_breakdown_all.items()
                 },
-                "most_frequent_discrepancy_pattern": max(variant_breakdown_all.items(), key=lambda kv: len(kv[1]))[0] if variant_breakdown_all else None,
+                "most_frequent_discrepancy_pattern": max(variant_breakdown_all.items(), key=lambda kv: median_or_none(kv[1]) if kv[1] else float("-inf"))[0] if variant_breakdown_all else None,
                 "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/variant_discrepancies_boxplot_by_sample.png",
                 "fig_discrepancy_type_boxplot": f"figures/{comp_code}/variant_discrepancy_type_boxplot.png",
             }
