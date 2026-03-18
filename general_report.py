@@ -528,19 +528,17 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 if is_meaningful(sample.get("software_benchmarking", {}).get("bioinformatics_protocol_software_version")):
                     software_version_count += 1
 
-                if sample_is_evaluable(expected_sample, "Mapping fields"):
-                    coverage_threshold_total += 1
-                    if is_meaningful(sample.get("software_benchmarking", {}).get("depth_of_coverage_threshold")):
-                        coverage_threshold_count += 1
+                coverage_threshold_total += 1
+                if is_meaningful(sample.get("software_benchmarking", {}).get("depth_of_coverage_threshold")):
+                    coverage_threshold_count += 1
 
-                    reference_genome_total += 1
-                    if is_meaningful(sample.get("metadata_metrics", {}).get("reference_genome_accession")):
-                        reference_genome_count += 1
+                reference_genome_total += 1
+                if is_meaningful(sample.get("metadata_metrics", {}).get("reference_genome_accession")):
+                    reference_genome_count += 1
 
-                if sample_is_evaluable(expected_sample, "Variant calling fields"):
-                    frequency_threshold_total += 1
-                    if is_meaningful(sample.get("software_benchmarking", {}).get("variant_calling_params")):
-                        frequency_threshold_count += 1
+                frequency_threshold_total += 1
+                if is_meaningful(sample.get("software_benchmarking", {}).get("variant_calling_params")):
+                    frequency_threshold_count += 1
 
                 total_expected_fields = safe_number(sample.get("total_expected_fields"))
                 filled_fields = safe_number(sample.get("filled_fields"))
@@ -612,13 +610,12 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                         qc_discrepancies += 1
                         qc_total += 1
 
-                if sample_is_evaluable(expected_sample, "Consensus analysis fields"):
-                    gi = safe_number(sample.get("consensus", {}).get("genome_identity_pct"))
-                    if gi is not None:
-                        if comp_expected.get("sequencing_instrument_platform") == "Illumina":
-                            consensus_illumina_identity.append(gi)
-                        else:
-                            consensus_nanopore_identity.append(gi)
+                gi = safe_number(sample.get("consensus", {}).get("genome_identity_pct"))
+                if gi is not None:
+                    if comp_expected.get("sequencing_instrument_platform") == "Illumina":
+                        consensus_illumina_identity.append(gi)
+                    else:
+                        consensus_nanopore_identity.append(gi)
 
                 cls = sample.get("classification", {})
 
@@ -649,7 +646,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                             flu_clade_matches += 1
 
                 var = sample.get("variants", {})
-                if comp_expected.get("virus") == "SARS-CoV-2" and sample_is_evaluable(expected_sample, "Variant calling fields"):
+                if comp_expected.get("virus") == "SARS-CoV-2":
                     td = safe_number(var.get("total_discrepancies"))
                     if td is not None:
                         if comp_expected.get("sequencing_instrument_platform") == "Illumina":
@@ -730,11 +727,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         for lab in participating_labs:
             comp = lab["components"][comp_code]
             for sample_id, sample in comp.get("samples", {}).items():
-                expected_sample = comp_expected["samples"][sample_id]
-                if not sample_is_evaluable(expected_sample, "Consensus analysis fields"):
-                    continue
                 cons = sample.get("consensus", {})
                 gi = safe_number(cons.get("genome_identity_pct"))
+                if gi is None:
+                    continue
                 td = safe_number(cons.get("total_discrepancies"))
                 if gi is not None:
                     consensus_vals.append(gi)
@@ -748,8 +744,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                         breakdown_per_sample[sample_id][key].append(val)
 
         for sample_id, expected_sample in comp_expected["samples"].items():
-            if not sample_is_evaluable(expected_sample, "Consensus analysis fields"):
-                continue
             gis = []
             tds = []
             sample_bd = breakdown_per_sample[sample_id]
@@ -759,6 +753,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     continue
                 cons = sample.get("consensus", {})
                 gi = safe_number(cons.get("genome_identity_pct"))
+                if gi is None:
+                    continue
                 td = safe_number(cons.get("total_discrepancies"))
                 if gi is not None:
                     gis.append(gi)
@@ -809,8 +805,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             variant_samples = []
 
             for sample_id, expected_sample in comp_expected["samples"].items():
-                sample_evaluable = sample_is_evaluable(expected_sample, "Variant calling fields")
-
                 tds = []
                 successful_hits_vals = []
                 bd = defaultdict(list)
@@ -825,28 +819,19 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     td = safe_number(var.get("total_discrepancies"))
                     sh = safe_number(var.get("successful_hits"))
 
-                    if td is not None and sample_evaluable:
+                    if td is not None:
                         variant_discs.append(td)
                         tds.append(td)
-                    elif td is not None:
-                        tds.append(td)
 
-                    if sh is not None and sample_evaluable:
+                    if sh is not None:
                         variant_successful_hits.append(sh)
-                        successful_hits_vals.append(sh)
-                    elif sh is not None:
                         successful_hits_vals.append(sh)
 
                     for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                         v = safe_number(var.get(key))
                         if v is not None:
                             bd[key].append(v)
-                            if sample_evaluable:
-                                variant_breakdown_all[key].append(v)
-
-                has_sample_variant_data = bool(tds or successful_hits_vals or any(bd.values()))
-                if not has_sample_variant_data:
-                    continue
+                            variant_breakdown_all[key].append(v)
 
                 variant_samples.append({
                     "collecting_lab_sample_id": sample_id,
@@ -891,8 +876,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             variant_samples = []
 
             for sample_id, expected_sample in comp_expected["samples"].items():
-                sample_evaluable = sample_is_evaluable(expected_sample, "Variant calling fields")
-
                 sample_variants_in_consensus = []
                 sample_variants_in_consensus_vcf = []
                 sample_discrepancies_in_reported_variants = []
@@ -912,29 +895,16 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
                     if nivc is not None:
                         sample_variants_in_consensus.append(nivc)
-                        if sample_evaluable:
-                            variant_in_consensus_all.append(nivc)
+                        variant_in_consensus_all.append(nivc)
                     if nivcv is not None:
                         sample_variants_in_consensus_vcf.append(nivcv)
-                        if sample_evaluable:
-                            variant_in_consensus_vcf_all.append(nivcv)
+                        variant_in_consensus_vcf_all.append(nivcv)
                     if dirv is not None:
                         sample_discrepancies_in_reported_variants.append(dirv)
-                        if sample_evaluable:
-                            discrepancy_reported_all.append(dirv)
+                        discrepancy_reported_all.append(dirv)
                     if niv is not None:
                         sample_variants_in_vcf.append(niv)
-                        if sample_evaluable:
-                            variant_in_vcf_all.append(niv)
-
-                has_sample_variant_data = bool(
-                    sample_variants_in_consensus
-                    or sample_variants_in_consensus_vcf
-                    or sample_discrepancies_in_reported_variants
-                    or sample_variants_in_vcf
-                )
-                if not has_sample_variant_data:
-                    continue
+                        variant_in_vcf_all.append(niv)
 
                 variant_samples.append({
                     "collecting_lab_sample_id": sample_id,
