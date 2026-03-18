@@ -785,32 +785,50 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         }
 
         variant_discs = []
+        variant_successful_hits = []
         variant_breakdown_all = defaultdict(list)
         variant_samples = []
+
         for sample_id, expected_sample in comp_expected["samples"].items():
             if not sample_is_evaluable(expected_sample, "Variant calling fields"):
                 continue
+
             tds = []
+            successful_hits_vals = []
             bd = defaultdict(list)
+
             for lab in participating_labs:
                 sample = lab["components"][comp_code]["samples"].get(sample_id)
                 if not sample:
                     continue
+
                 var = sample.get("variants", {})
+
                 td = safe_number(var.get("total_discrepancies"))
+                sh = safe_number(var.get("successful_hits"))
+
                 if td is not None:
                     variant_discs.append(td)
                     tds.append(td)
+
+                if sh is not None:
+                    variant_successful_hits.append(sh)
+                    successful_hits_vals.append(sh)
+
                 for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                     v = safe_number(var.get(key))
                     if v is not None:
                         variant_breakdown_all[key].append(v)
                         bd[key].append(v)
+
             variant_samples.append({
                 "collecting_lab_sample_id": sample_id,
                 "median_discrepancies": median_or_none(tds),
                 "min": min_or_none(tds),
                 "max": max_or_none(tds),
+                "median_successful_hits": median_or_none(successful_hits_vals),
+                "min_successful_hits": min_or_none(successful_hits_vals),
+                "max_successful_hits": max_or_none(successful_hits_vals),
                 "wrong_nt": median_or_none(bd.get("wrong_nt", [])),
                 "insertions": median_or_none(bd.get("insertions", [])),
                 "deletions": median_or_none(bd.get("deletions", [])),
@@ -823,6 +841,9 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "total_median_discrepancies": round(sum(v for v in [median_or_none(variant_discs)] if v is not None), 4) if variant_discs else None,
             "min_discrepancies": min_or_none(variant_discs),
             "max_discrepancies": max_or_none(variant_discs),
+            "median_successful_hits": median_or_none(variant_successful_hits),
+            "min_successful_hits": min_or_none(variant_successful_hits),
+            "max_successful_hits": max_or_none(variant_successful_hits),
             "samples": variant_samples,
             "discrepancy_breakdown": {
                 key: {
