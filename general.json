@@ -1,24 +1,23 @@
 {
   "eqa_name": "RELECOV 2026 Dry Lab EQA",
-
   "total_invited": 52,
-  "total_participants": 17,
-  "total_participants_pct": 32.69,
-
+  "total_participants": 19,
+  "total_participants_pct": 36.54,
   "participation_per_component": {
-    "SARS1": 15,
-    "SARS2": 8,
-    "FLU1": 11,
-    "FLU2": 8
+    "SARS1": 16,
+    "SARS2": 10,
+    "FLU1": 12,
+    "FLU2": 10
   },
-
-  "median_components_analysed_per_lab": 2.47,
-
+  "median_components_analysed_per_lab": 2.0,
+  "total_fasta_submitted": 197,
+  "total_fasta_expected": 202,
+  "total_vcf_submitted": 176,
+  "total_vcf_expected": 202,
   "submission_rates_pct": {
-    "fasta": 100,
-    "vcf": 94.12
+    "fasta": 97.52,
+    "vcf": 87.13
   },
-
   "figures": {
     "consensus_summary": "figures/network/consensus_summary.png",
     "variant_summary": "figures/network/variant_summary.png",
@@ -27,319 +26,551 @@
     "influenza_reference_summary": "figures/network/influenza_reference_summary.png",
     "classification_summary": "figures/network/classification_summary.png",
     "metadata_completeness": "figures/network/metadata_completeness.png",
-    "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png"
+    "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png",
+    "classification_summary_lineage_type": "figures/network/classification_summary_lineage_type.png",
+    "classification_summary_clade": "figures/network/classification_summary_clade.png",
+    "metadata_completeness_distribution": "figures/network/metadata_completeness_distribution.png"
   },
-
   "general_results": {
     "consensus": {
-      "median_identity_illumina_pct": 99.92,
-      "median_identity_nanopore_pct": 99.10
+      "median_identity_illumina_pct": 97.7533,
+      "median_identity_nanopore_pct": 96.0987
     },
     "sars_variants": {
-      "median_discrepancy_illumina": 10,
-      "median_discrepancy_nanopore": 20,
-      "high_and_low_freq_pct": 5,
-      "low_freq_only_pct": 20,
-      "high_freq_only_pct": 75
+      "median_discrepancy_illumina": 9.0,
+      "median_discrepancy_nanopore": 5.5,
+      "high_and_low_freq_pct": 66.67,
+      "low_freq_only_pct": 0.0,
+      "high_freq_only_pct": 33.33,
+      "total_distinct_references": 3
     },
     "influenza_variants": {
-      "high_and_low_freq_pct": 5,
-      "low_freq_only_pct": 20,
-      "high_freq_only_pct": 75
+      "high_and_low_freq_pct": 50.68,
+      "low_freq_only_pct": 36.99,
+      "high_freq_only_pct": 12.33,
+      "total_distinct_references": 63,
+      "median_variants_in_consensus": 477.0,
+      "min_variants_in_consensus": 377.0,
+      "max_variants_in_consensus": 1797.0,
+      "median_variants_in_consensus_vcf": 188.0,
+      "min_variants_in_consensus_vcf": 0.0,
+      "max_variants_in_consensus_vcf": 1363.0,
+      "median_discrepancies_in_reported_variants": 377.0,
+      "min_discrepancies_in_reported_variants": 8.0,
+      "max_discrepancies_in_reported_variants": 1797.0,
+      "median_variants_in_vcf": 541.0,
+      "min_variants_in_vcf": 0.0,
+      "max_variants_in_vcf": 39071.0
     },
     "classification": {
-      "sars_cov_2_concordance_pct": 95.0,
-      "influenza_type_concordance_pct": 90.0,
-      "sars_clade_concordance_pct": 88.0,
-      "flu_clade_concordance_pct": 90.0,
-      "median_full_match_pct": 95.0,
-      "min_full_match_pct": 92.0
+      "sars_cov_2_concordance_pct": 77.66,
+      "influenza_type_concordance_pct": 81.63,
+      "sars_clade_concordance_pct": 73.4,
+      "flu_clade_concordance_pct": 67.35
     }
   },
-
   "metadata_completeness": {
-    "median_pct": 85.0,
-    "min_pct": 20.0,
-    "max_pct": 100.0,
-    
-    "software_names_pct": 95.0,
-    "software_version_pct": 80.0,
-    "coverage_threshold_pct": 60.0,
-    "frequency_threshold_pct": 55.0,
-    "reference_genome_pct": 70.0,
-    "incomplete_parameters_pct": 35.0,
-
-    "free_text_predefine_pct": 45.0,
-    "inconsistent_tool_version": 10.0,
-
-    "total_workflows": 12,
-    "total_consensus_softwares": 6,
-    "total_variant_softwares": 7,
-    "total_lineage_softwares": 5
+    "median_pct": 59.0956,
+    "min_pct": 11.3281,
+    "max_pct": 92.0,
+    "software_names_pct": 93.72,
+    "software_version_pct": 62.34,
+    "coverage_threshold_pct": 45.61,
+    "frequency_threshold_pct": 38.91,
+    "reference_genome_pct": 57.74,
+    "incomplete_parameters_pct": 95.82,
+    "total_workflows": 10,
+    "total_consensus_softwares": 16,
+    "total_variant_softwares": 32,
+    "total_lineage_softwares": 15,
+    "primary_incompleteness_drivers": [
+      "Variant calling fields",
+      "Pre-processing fields",
+      "Mapping fields",
+      "QC metrics fields",
+      "De-hosting fields",
+      "Consensus analysis fields",
+      "Lineage assignment fields",
+      "Clade assignment fields",
+      "SARS-CoV-2 QC metrics",
+      "Bioinformatics protocol fields"
+    ]
   },
-
   "qc": {
-    "match_rate_pct": 90.0,
-    "matches": 270,
-    "discrepancies": 30,
-    "total_evaluations": 300
+    "match_rate_pct": 71.11,
+    "matches": 64,
+    "discrepancies": 26,
+    "total_evaluations": 90
   },
-
   "components": {
     "SARS1": {
       "name": "SARS-CoV-2, Illumina",
-      "total_labs": 30,
-      "total_fasta": 30,
-      "total_vcf": 26,
-      "metadata_completeness_median": 90.0,
-      "metadata_completeness_max_pct": 100,
-      "metadata_completeness_min_pct": 15,
-
+      "total_labs": 16,
+      "total_fasta": 64,
+      "total_vcf": 64,
+      "metadata_completeness_median": 55.8111,
+      "metadata_completeness_min_pct": 23.5521,
+      "metadata_completeness_max_pct": 100.0,
       "consensus": {
-        "median_identity": 99.92,
-        "median_discrepancies": 2,
-        "total_median_discrepancies": 15,
-        "min_discrepancies": 0,
-        "max_discrepancies": 25,
-        "median_identity_pct": 99.9200,
-        "identity_pct_min": 99.8000,
-        "identity_pct_max": 100,
-
+        "median_identity": 99.5914,
+        "median_discrepancies": 4.5,
+        "total_median_discrepancies": 4.5,
+        "min_discrepancies": 1.0,
+        "max_discrepancies": 125.0,
+        "median_identity_pct": 99.5914,
+        "identity_pct_min": 92.1525,
+        "identity_pct_max": 99.8962,
         "samples": [
           {
             "collecting_lab_sample_id": "SARS1",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "ambiguity2nt": 0,
-            "nt2ambigity": 0,
-            "ns2nt": 1,
-            "nt2ns": 1 ,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_identity_pct": null,
+            "median_discrepancies": null,
+            "min": null,
+            "max": null,
+            "wrong_nt": null,
+            "ambiguity2nt": null,
+            "nt2ambigity": null,
+            "ns2nt": null,
+            "nt2ns": null,
+            "insertions": null,
+            "deletions": null
           },
           {
             "collecting_lab_sample_id": "SARS2",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "ambiguity2nt": 0,
-            "nt2ambigity": 0,
-            "ns2nt": 1,
-            "nt2ns": 1 ,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_identity_pct": 99.8159,
+            "median_discrepancies": 3.0,
+            "min": 1.0,
+            "max": 4.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 1.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS3",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "ambiguity2nt": 0,
-            "nt2ambigity": 0,
-            "ns2nt": 1,
-            "nt2ns": 1 ,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_identity_pct": 99.5865,
+            "median_discrepancies": 3.0,
+            "min": 2.0,
+            "max": 11.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 2.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS4",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "ambiguity2nt": 0,
-            "nt2ambigity": 0,
-            "ns2nt": 1,
-            "nt2ns": 1 ,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_identity_pct": 95.5796,
+            "median_discrepancies": 75.5,
+            "min": 62.0,
+            "max": 125.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 38.0,
+            "nt2ns": 29.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS5",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "ambiguity2nt": 0,
-            "nt2ambigity": 0,
-            "ns2nt": 1,
-            "nt2ns": 1 ,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_identity_pct": 99.7959,
+            "median_discrepancies": 5.5,
+            "min": 3.0,
+            "max": 7.0,
+            "wrong_nt": 2.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 1.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 1.0
           }
         ],
-
         "discrepancy_breakdown": {
-          "wrong_nt": { "median": 0, "min": 0, "max": 1 },
-          "ambiguity2nt": { "median": 0, "min": 0, "max": 1 },
-          "nt2ambigity": { "median": 0, "min": 0, "max": 1 },
-          "ns2nt": { "median": 1, "min": 0, "max": 1 },
-          "nt2ns": { "median": 0, "min": 0, "max": 1 },
-          "insertions": { "median": 0, "min": 0, "max": 1 },
-          "deletions": { "median": 0, "min": 0, "max": 1 }
+          "wrong_nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 8.0
+          },
+          "ambiguity2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "nt2ambiguity": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 1.0
+          },
+          "ns2nt": {
+            "median": 2.0,
+            "min": 1.0,
+            "max": 100.0
+          },
+          "nt2ns": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 99.0
+          },
+          "insertions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 3.0
+          },
+          "deletions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 3.0
+          }
         },
-        "most_frequent_discrepancy_pattern": "Stretch of Ns instead of nucleotide stretch",
-
+        "most_frequent_discrepancy_pattern": "ns2nt",
         "fig_discrepancies_boxplot_by_sample": "figures/SARS1/consensus_discrepancies_boxplot_by_sample.png",
         "fig_discrepancies_stacked_by_sample": "figures/SARS1/consensus_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/SARS1/consensus_discrepancy_type_boxplot.png"
       },
-
       "variant": {
-        "median_discrepancies": 2,
-        "total_median_discrepancies": 15,
-        "min_discrepancies": 0,
-        "max_discrepancies": 25,
-
+        "median_discrepancies": 9.0,
+        "total_median_discrepancies": 9.0,
+        "min_discrepancies": 0.0,
+        "max_discrepancies": 520.0,
+        "median_successful_hits": 65.0,
+        "min_successful_hits": 7.0,
+        "max_successful_hits": 95.0,
         "samples": [
           {
             "collecting_lab_sample_id": "SARS1",
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_discrepancies": 6.0,
+            "min": 2.0,
+            "max": 48.0,
+            "median_successful_hits": 32.0,
+            "min_successful_hits": 26.0,
+            "max_successful_hits": 36.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0,
+            "missing": 4.0,
+            "denovo": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS2",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_discrepancies": 8.0,
+            "min": 0.0,
+            "max": 30.0,
+            "median_successful_hits": 62.0,
+            "min_successful_hits": 51.0,
+            "max_successful_hits": 65.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0,
+            "missing": 3.0,
+            "denovo": 4.0
           },
           {
             "collecting_lab_sample_id": "SARS3",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_discrepancies": 20.0,
+            "min": 0.0,
+            "max": 70.0,
+            "median_successful_hits": 92.0,
+            "min_successful_hits": 67.0,
+            "max_successful_hits": 95.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0,
+            "missing": 3.0,
+            "denovo": 7.0
           },
           {
             "collecting_lab_sample_id": "SARS4",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_discrepancies": 9.0,
+            "min": 0.0,
+            "max": 520.0,
+            "median_successful_hits": 71.0,
+            "min_successful_hits": 7.0,
+            "max_successful_hits": 75.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 1.0,
+            "missing": 4.0,
+            "denovo": 5.0
           },
           {
             "collecting_lab_sample_id": "SARS5",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "min": 0,
-            "max": 2,
-            "wrong_nt": 1,
-            "insertions": 1 ,
-            "deletions": 1
+            "median_discrepancies": 9.0,
+            "min": 2.0,
+            "max": 85.0,
+            "median_successful_hits": 63.0,
+            "min_successful_hits": 37.0,
+            "max_successful_hits": 65.0,
+            "wrong_nt": 1.0,
+            "insertions": 0.0,
+            "deletions": 1.0,
+            "missing": 1.0,
+            "denovo": 3.0
           }
         ],
-
         "discrepancy_breakdown": {
-          "wrong_nt": { "median": 0, "min": 0, "max": 1 },
-          "insertions": { "median": 0, "min": 0, "max": 1 },
-          "deletions": { "median": 0, "min": 0, "max": 1 }
+          "wrong_nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 3.0
+          },
+          "insertions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 6.0
+          },
+          "deletions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 46.0
+          },
+          "missing": {
+            "median": 3.0,
+            "min": 0.0,
+            "max": 68.0
+          },
+          "denovo": {
+            "median": 4.0,
+            "min": 0.0,
+            "max": 469.0
+          }
         },
-
-        "most_frequent_discrepancy_pattern": "Incorrect nucleotide",
-
-        "fig_discrepancies_stacked_by_sample": "figures/SARS1/variants_discrepancies_stacked_by_sample.png",
-        "fig_discrepancy_type_boxplot": "figures/SARS1/variants_discrepancy_type_boxplot.png"
+        "most_frequent_discrepancy_pattern": "denovo",
+        "fig_discrepancies_boxplot_by_sample": "figures/SARS1/variant_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/SARS1/variant_discrepancy_type_boxplot.png"
       },
-
       "typing": {
-        "total_classification_matches_meadian": 8,
-        "total_classification_matches_min": 7,
-        "total_classification_matches_max": 10,
-        "lineage_hit_pct": 95.0,
-        "clade_hit_pct": 3.0,
-        "discordance_pct": 2.0,
-
+        "total_classification_matches_median": 8.0,
+        "total_classification_matches_min": 0.0,
+        "total_classification_matches_max": 8.0,
+        "lineage_hit_pct": 85.94,
+        "clade_hit_pct": 68.75,
+        "discordance_pct": 12.5,
         "samples": [
-          { "collecting_lab_sample_id": "SARS1", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "collecting_lab_sample_id": "SARS2", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "collecting_lab_sample_id": "SARS3", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "collecting_lab_sample_id": "SARS4", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 },
-          { "collecting_lab_sample_id": "SARS5", "lineage_hit_pct": 96.0, "clade_hit_pct": 3.0 }
-        ],
-
-        "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png"
-      },
-
-      "qc": {
-        "match_rate_pct": 92.0,
-        "matches": 276,
-        "discrepancies": 24,
-        "total_evaluations": 300,
-        "samples": [
-          { "collecting_lab_sample_id": "SARS1", "gold_standard_qc": "Fail", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS3", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS4", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
-        ],
-        "fig_qc_match_by_sample": "figures/SARS1/qc_match_rate_by_sample.png"
-      },
-
-      "metadata_metrics": {
-        "samples": [
-          { 
-            "collecting_lab_sample_id": "SARS1", 
-            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
-            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
-            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
-            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
-            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 },
-            
+          {
+            "collecting_lab_sample_id": "SARS1",
+            "lineage_hit_pct": null,
+            "clade_hit_pct": null
           },
           {
             "collecting_lab_sample_id": "SARS2",
-            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
-            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
-            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
-            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
-            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+            "lineage_hit_pct": 87.5,
+            "clade_hit_pct": 68.75
           },
           {
             "collecting_lab_sample_id": "SARS3",
-            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
-            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
-            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
-            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
-            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+            "lineage_hit_pct": 81.25,
+            "clade_hit_pct": 68.75
           },
           {
             "collecting_lab_sample_id": "SARS4",
-            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
-            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
-            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
-            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
-            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+            "lineage_hit_pct": 87.5,
+            "clade_hit_pct": 68.75
           },
           {
             "collecting_lab_sample_id": "SARS5",
-            "per_genome_greater_10x": { "median": 97.0, "min": 95.0, "max": 99.0 },
-            "depth_of_coverage_value": { "median": 220.0, "min": 180.0, "max": 300.0 },
-            "per_Ns": { "median": 1.0, "min": 0.5, "max": 2.5 },
-            "per_reads_virus": { "median": 80.0, "min": 60.0, "max": 90.0 },
-            "per_reads_host": { "median": 15.0, "min": 5.0, "max": 30.0 }
+            "lineage_hit_pct": 87.5,
+            "clade_hit_pct": 68.75
+          }
+        ],
+        "fig_stacked_bar_by_sample": "figures/SARS1/typing_outcome_stackedbar_by_sample.png"
+      },
+      "qc": {
+        "match_rate_pct": 62.5,
+        "matches": 25,
+        "discrepancies": 15,
+        "total_evaluations": 40,
+        "samples": [
+          {
+            "sample_id": "SARS1",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 100.0,
+            "matches": 8,
+            "discrepancies": 0,
+            "total_evaluations": 8
+          },
+          {
+            "sample_id": "SARS2",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 8,
+            "discrepancies": 0,
+            "total_evaluations": 8
+          },
+          {
+            "sample_id": "SARS3",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 8,
+            "discrepancies": 0,
+            "total_evaluations": 8
+          },
+          {
+            "sample_id": "SARS4",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 12.5,
+            "matches": 1,
+            "discrepancies": 7,
+            "total_evaluations": 8
+          },
+          {
+            "sample_id": "SARS5",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 0.0,
+            "matches": 0,
+            "discrepancies": 8,
+            "total_evaluations": 8
+          }
+        ],
+        "fig_qc_match_by_sample": "figures/SARS1/qc_match_by_sample.png"
+      },
+      "metadata_metrics": {
+        "samples": [
+          {
+            "sample_id": "SARS1",
+            "per_genome_greater_10x": {
+              "median": 33.0,
+              "min": 8.0,
+              "max": 37.0
+            },
+            "depth_of_coverage_value": {
+              "median": 837.0,
+              "min": 676.0,
+              "max": 3576.0
+            },
+            "per_Ns": {
+              "median": 66.3196,
+              "min": 0.44,
+              "max": 68.73
+            },
+            "per_reads_virus": {
+              "median": 30.442,
+              "min": 18.81,
+              "max": 36.56
+            },
+            "per_reads_host": {
+              "median": 0.835,
+              "min": 0.01,
+              "max": 60.4
+            }
+          },
+          {
+            "sample_id": "SARS2",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 56.0,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 13324.0,
+              "min": 3735.0,
+              "max": 16435.0
+            },
+            "per_Ns": {
+              "median": 0.28,
+              "min": 0.2,
+              "max": 0.8
+            },
+            "per_reads_virus": {
+              "median": 99.96,
+              "min": 99.7,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.09
+            }
+          },
+          {
+            "sample_id": "SARS3",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 68.0,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 17430.0,
+              "min": 4965.0,
+              "max": 27672.0
+            },
+            "per_Ns": {
+              "median": 0.04,
+              "min": 0.0,
+              "max": 0.1
+            },
+            "per_reads_virus": {
+              "median": 99.96,
+              "min": 99.71,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.1
+            }
+          },
+          {
+            "sample_id": "SARS4",
+            "per_genome_greater_10x": {
+              "median": 92.0,
+              "min": 83.0,
+              "max": 94.0
+            },
+            "depth_of_coverage_value": {
+              "median": 54.0,
+              "min": 27.0,
+              "max": 61.0
+            },
+            "per_Ns": {
+              "median": 9.62,
+              "min": 0.0,
+              "max": 16.99
+            },
+            "per_reads_virus": {
+              "median": 99.53,
+              "min": 96.66,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.01,
+              "min": 0.0,
+              "max": 0.79
+            }
+          },
+          {
+            "sample_id": "SARS5",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 99.69,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 9360.5,
+              "min": 3517.0,
+              "max": 12659.0
+            },
+            "per_Ns": {
+              "median": 0.3,
+              "min": 0.11,
+              "max": 0.338
+            },
+            "per_reads_virus": {
+              "median": 99.98,
+              "min": 99.64,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.12
+            }
           }
         ]
       },
@@ -348,362 +579,3200 @@
           "total_number": 5,
           "softwares": [
             {
-              "name": "Pipeline A",
-              "n_labs": 10,
+              "name": "Custom pipeline/workflow",
+              "n_labs": 5,
+              "median_identity_pct": 99.63,
+              "median_discrepancies": 5.0,
+              "median_metadata_completeness_pct": 62.7119,
+              "clade_hit_pct": 20.0,
+              "lineage_hit_pct": 60.0
+            },
+            {
+              "name": "DRAGEN Targeted Microbial",
+              "n_labs": 2,
+              "version": "1.1.0",
+              "median_identity_pct": 99.5615,
+              "median_discrepancies": 4.0,
+              "median_metadata_completeness_pct": 44.3548,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 87.5
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "median_identity_pct": 99.7287,
+              "median_discrepancies": 2.0,
+              "median_metadata_completeness_pct": 44.0678,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 100.0
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "Web version",
+              "median_identity_pct": 99.6969,
+              "median_discrepancies": 2.0,
+              "median_metadata_completeness_pct": 33.8983,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 100.0
+            },
+            {
+              "name": "nf-core/viralrecon",
+              "n_labs": 6,
               "version": "3.0.0",
-              "median_identity_pct": 99.93,
-              "median_discrepancies": 2,
-              "median_metadata_completeness_pct": 90.0,
-              "clade_hit_pct": 96.0,
-              "lineage_hit_pct": 96.0
+              "median_identity_pct": 99.6938,
+              "median_discrepancies": 6.0,
+              "median_metadata_completeness_pct": 91.4149,
+              "clade_hit_pct": 83.33,
+              "lineage_hit_pct": 100.0
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
         },
         "dehosting": {
-          "total_number": 5,
+          "total_number": 4,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "per_reads_host": 99.93
+              "name": "BWA-Mem",
+              "n_labs": 1,
+              "version": "V2.2.1",
+              "per_reads_host": null
+            },
+            {
+              "name": "Kraken2",
+              "n_labs": 5,
+              "version": "2.1.6",
+              "per_reads_host": 0.0
+            },
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "DRAGEN Microbial Amplicon ad hoc version",
+              "per_reads_host": null
+            },
+            {
+              "name": "bowtie2",
+              "n_labs": 1,
+              "version": "2.5.1",
+              "per_reads_host": 0.12
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/dehosting_metric_boxplots_by_pipeline.png"
         },
         "preprocessing": {
-          "total_number": 5,
+          "total_number": 6,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "params": "--quality_threshold 20 --min_length 50",
-              "number_of_reads_sequenced": 500000,
-              "pass_reads": 10000
+              "name": "Fastp",
+              "n_labs": 1,
+              "version": "0.20.1",
+              "params": "--detect_adapter_for_pe --cut_tail --cut_window_size 10 --cut_mean_quality 20 --length_required 35 --json json_file --html html_file --thread 34",
+              "number_of_reads_sequenced": 3024406.0,
+              "pass_reads": 2423968.0
+            },
+            {
+              "name": "Fastp",
+              "n_labs": 1,
+              "version": "0.24.0",
+              "params": null,
+              "number_of_reads_sequenced": 113415910.0,
+              "pass_reads": null
+            },
+            {
+              "name": "Fastp",
+              "n_labs": 6,
+              "version": "1.0.1",
+              "params": "--detect_adapter_for_pe --cut_front --cut_tail --trim_poly_x --cut_mean_quality 30 --qualified_quality_phred 30 --unqualified_percent_limit 10 --length_required 50",
+              "number_of_reads_sequenced": 3024406.0,
+              "pass_reads": 2115268.0
+            },
+            {
+              "name": "Trimmomatic",
+              "n_labs": 2,
+              "version": "0.39",
+              "params": "LEADING:30 TRAILING:30 SLIDINGWINDOW:10:30",
+              "number_of_reads_sequenced": 3024406.0,
+              "pass_reads": 2950068.0
+            },
+            {
+              "name": "Trimmomatic",
+              "n_labs": 1,
+              "version": "0.39-2",
+              "params": null,
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "Trimmomatic",
+              "n_labs": 1,
+              "version": "0.40",
+              "params": null,
+              "number_of_reads_sequenced": 3024406.0,
+              "pass_reads": 2631478.0
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/preprocessing_metric_boxplots_by_pipeline.png"
         },
         "mapping": {
-          "total_number": 5,
+          "total_number": 6,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "params": "--mapper bwa --min_mapping_quality 30",
+              "name": "bowtie2",
+              "n_labs": 6,
+              "version": "2.5.4",
+              "params": "--local --very-sensitive-local --seed 1",
+              "depth_of_coverage_threshold": "10x",
+              "per_reads_virus": 99.955
+            },
+            {
+              "name": "bwa mem",
+              "n_labs": 1,
+              "version": "0.7.17-r1188",
+              "params": "-Y -M -t 34",
+              "depth_of_coverage_threshold": "30x",
+              "per_reads_virus": 99.64
+            },
+            {
+              "name": "bwa mem",
+              "n_labs": 1,
+              "version": "0.7.19",
+              "params": null,
+              "depth_of_coverage_threshold": null,
+              "per_reads_virus": null
+            },
+            {
+              "name": "bwa mem",
+              "n_labs": 1,
+              "version": "0.7.19-r1273",
+              "params": "-p -Y -v 2",
+              "depth_of_coverage_threshold": "10x",
+              "per_reads_virus": null
+            },
+            {
+              "name": "bwa mem",
+              "n_labs": 1,
+              "version": "V2.2.1",
+              "params": "-t 4 covid-ba2",
               "depth_of_coverage_threshold": "10X",
-              "per_reads_virus": 98.00
+              "per_reads_virus": null
+            },
+            {
+              "name": "minimap2",
+              "n_labs": 1,
+              "version": "DRAGEN Microbial Amplicon ad-hoc version",
+              "params": null,
+              "depth_of_coverage_threshold": null,
+              "per_reads_virus": null
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/mapping_metric_boxplots_by_pipeline.png"
         },
         "assembly": {
-          "total_number": 5,
+          "total_number": 3,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "params": "--assembler spades --min_contig_length 500",
-              "consensus_genome_length": 29920,
-              "median_identity_pct": 99.93,
-              "median_discrepancies": 2
+              "name": "Megahit",
+              "n_labs": 1,
+              "version": "DRAGEN Microbial Amplicon ad hoc version",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.5697,
+              "median_discrepancies": 3.0
+            },
+            {
+              "name": "SPAdes",
+              "n_labs": 1,
+              "version": "4.0.0",
+              "params": "--rnaviral --threads 24",
+              "consensus_genome_length": 29808.0,
+              "median_identity_pct": 99.6049,
+              "median_discrepancies": 7.0
+            },
+            {
+              "name": "SPAdes",
+              "n_labs": 1,
+              "version": "4.1.0",
+              "params": null,
+              "consensus_genome_length": 29801.0,
+              "median_identity_pct": 99.6905,
+              "median_discrepancies": 6.0
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/assembly_metric_boxplots_by_pipeline.png"
         },
         "consensus_software": {
-          "total_number": 5,
+          "total_number": 8,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "params": "--consensus_algorithm majority --min_depth 10",
-              "consensus_genome_length": 29920,
-              "median_identity_pct": 99.93,
-              "median_discrepancies": 2
+              "name": "DRAGEN consensus",
+              "n_labs": 2,
+              "version": "DRAGEN Microbial Amplicon ad hoc version",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.5697,
+              "median_discrepancies": 3.0
+            },
+            {
+              "name": "Ivar consensus",
+              "n_labs": 1,
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.7287,
+              "median_discrepancies": 2.0
+            },
+            {
+              "name": "Ivar consensus",
+              "n_labs": 1,
+              "version": "1.4.2",
+              "params": "-t 0.01",
+              "consensus_genome_length": 29903.0,
+              "median_identity_pct": 99.6584,
+              "median_discrepancies": 5.0
+            },
+            {
+              "name": "Ivar consensus",
+              "n_labs": 1,
+              "version": "1.4.3",
+              "params": "-q 20 -t 0.8 -m 20 -n N",
+              "consensus_genome_length": 29869.0,
+              "median_identity_pct": 99.7388,
+              "median_discrepancies": 5.0
+            },
+            {
+              "name": "Ivar consensus",
+              "n_labs": 2,
+              "version": "1.4.4",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.6385,
+              "median_discrepancies": 6.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.2.2",
+              "params": "-m",
+              "consensus_genome_length": 29812.0,
+              "median_identity_pct": 99.6938,
+              "median_discrepancies": 6.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.21",
+              "params": "mosdepth -x -Q 1 | awk '$4<=10'",
+              "consensus_genome_length": 29.868,
+              "median_identity_pct": 99.6367,
+              "median_discrepancies": 5.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 4,
+              "version": "1.22",
+              "params": "AF > 0.75",
+              "consensus_genome_length": 29885.0,
+              "median_identity_pct": 99.6938,
+              "median_discrepancies": 6.0
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/consensus_metric_boxplots_by_pipeline.png"
         },
         "variant_calling": {
-          "total_number": 5,
+          "total_number": 8,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "params": "--variant_caller freebayes --min_variant_frequency 0.01",
-              "number_of_variants_in_consensus": 95.0,
-              "number_of_variants_with_effect": 97.0,
-              "median_discrepancies": 2
+              "name": "DRAGEN VariantCaller",
+              "n_labs": 2,
+              "version": "DRAGEN Microbial Amplicon ad hoc version",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 9.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Ivar",
+              "n_labs": 1,
+              "version": "1.22",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 2.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Ivar",
+              "n_labs": 1,
+              "version": "1.4.2",
+              "params": "-t 0.03 -m 10",
+              "number_of_variants_in_consensus": 65.0,
+              "median_discrepancies": 22.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Ivar",
+              "n_labs": 1,
+              "version": "1.4.3",
+              "params": "-q 15 -t 0.01 -m 1 -r NC_045512.2.fasta -g NC_045512.2.gff3",
+              "number_of_variants_in_consensus": 61.0,
+              "median_discrepancies": 63.0,
+              "number_of_variants_with_effect": 47.0
+            },
+            {
+              "name": "Ivar",
+              "n_labs": 6,
+              "version": "1.4.4",
+              "params": "-t 0.25 -q 20 -m 10",
+              "number_of_variants_in_consensus": 61.0,
+              "median_discrepancies": 2.0,
+              "number_of_variants_with_effect": 46.5
+            },
+            {
+              "name": "Octopus",
+              "n_labs": 1,
+              "version": "0.7.4",
+              "params": "-P 1",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 14.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "freebayes",
+              "n_labs": 1,
+              "version": "1.1.0",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 69.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "lofreq",
+              "n_labs": 1,
+              "version": "2.1.5",
+              "params": "indelqual --dindel // call-parallel --pp-threads 64 --call-indels",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null,
+              "number_of_variants_with_effect": null
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/variant_calling_metric_boxplots_by_pipeline.png"
         },
         "clade_assignment": {
-          "total_number": 5,
+          "total_number": 7,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "database_version": "--clade_assignment_tool pangolin --lineage_version 3.1.17",
-              "clade_discordance_pct": 95.0,
-              "clade_hit_pct": 3.0
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "2.12.0",
+              "database_version": "2024-10-17--16-48-48Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.11.0",
+              "database_version": null,
+              "clade_discordance_pct": 100.0,
+              "clade_hit_pct": 0.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.13.1",
+              "database_version": "2026-01-06--14-59-32Z",
+              "clade_discordance_pct": 100.0,
+              "clade_hit_pct": 0.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.18.0",
+              "database_version": "2026-01-14–19-24-43Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 7,
+              "version": "3.18.1",
+              "database_version": "2026-01-06--14-59-32Z",
+              "clade_discordance_pct": 11.11,
+              "clade_hit_pct": 88.89
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.8.1",
+              "database_version": "2026-01-06T14:59:32Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.9.0",
+              "database_version": "2026-01-06T14:59:32Z",
+              "clade_discordance_pct": 100.0,
+              "clade_hit_pct": 0.0
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/clade_assignment_metric_boxplots_by_pipeline.png"
         },
         "lineage_assignment": {
-          "total_number": 5,
+          "total_number": 2,
           "softwares": [
             {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "database_version": "--lineage_assignment_tool pangolin --lineage_version 3.1.17",
-              "lineage_discordance_pct": 95.0,
-              "lineage_hit_pct": 3.0
+              "name": "Pangolin",
+              "n_labs": 6,
+              "version": "4.3.1",
+              "database_version": "1.37",
+              "lineage_discordance_pct": 0.0,
+              "lineage_hit_pct": 100.0
+            },
+            {
+              "name": "Pangolin",
+              "n_labs": 7,
+              "version": "4.3.4",
+              "database_version": "4.3.4",
+              "lineage_discordance_pct": 15.62,
+              "lineage_hit_pct": 84.38
             }
           ],
           "fig_metric_boxplots": "figures/SARS1/lineage_assignment_metric_boxplots_by_pipeline.png"
-        },
-        "type_assignment": {
-          "total_number": 5,
-          "softwares": [
-            {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "database_version": "--lineage_assignment_tool pangolin --lineage_version 3.1.17",
-              "type_discordance_pct": 95.0,
-              "type_hit_pct": 3.0
-            }
-          ],
-          "fig_metric_boxplots": "figures/SARS1/type_assignment_metric_boxplots_by_pipeline.png"
-        },
-        "subtype_assignment": {
-          "total_number": 5,
-          "softwares": [
-            {
-              "name": "Software A",
-              "n_labs": 10,
-              "version": "3.0.0",
-              "database_version": "--lineage_assignment_tool pangolin --lineage_version 3.1.17",
-              "subtype_discordance_pct": 95.0,
-              "subtype_hit_pct": 3.0
-            }
-          ],
-          "fig_metric_boxplots": "figures/SARS1/subtype_assignment_metric_boxplots_by_pipeline.png"
         }
       }
     },
-
-    "SARS2": { 
-      "name": "SARS-CoV-2, Nanopore", 
-      "total_labs": 24,
-      "total_fasta": 24,
-      "total_vcf": 20,
-      "metadata_completeness_median": 90.0,
-      "metadata_completeness_max_pct": 100,
-      "metadata_completeness_min_pct": 15,
+    "SARS2": {
+      "name": "SARS-CoV-2, Oxford Nanopore Technologies",
+      "total_labs": 10,
+      "total_fasta": 37,
+      "total_vcf": 35,
+      "metadata_completeness_median": 56.4516,
+      "metadata_completeness_min_pct": 16.3793,
+      "metadata_completeness_max_pct": 93.0876,
       "consensus": {
-        "median_identity": 99.10, 
-        "median_discrepancies": 10, 
-        "min_discrepancies": 0, 
-        "max_discrepancies": 120,
-        "most_frequent_discrepancy_pattern": "Insertion relative to gold standard",
+        "median_identity": 99.7923,
+        "median_discrepancies": 8.0,
+        "total_median_discrepancies": 8.0,
+        "min_discrepancies": 0.0,
+        "max_discrepancies": 45.0,
+        "median_identity_pct": 99.7923,
+        "identity_pct_min": 5.7214,
+        "identity_pct_max": 100.0,
         "samples": [
           {
             "collecting_lab_sample_id": "SARS6",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 99.9096,
+            "median_discrepancies": 2.5,
+            "min": 0.0,
+            "max": 23.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS7",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 99.8828,
+            "median_discrepancies": 8.5,
+            "min": 0.0,
+            "max": 23.0,
+            "wrong_nt": 1.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 1.0,
+            "insertions": 1.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS8",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 98.757,
+            "median_discrepancies": 14.5,
+            "min": 2.0,
+            "max": 30.0,
+            "wrong_nt": 0.5,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 7.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "SARS9",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": null,
+            "median_discrepancies": null,
+            "min": null,
+            "max": null,
+            "wrong_nt": null,
+            "ambiguity2nt": null,
+            "nt2ambigity": null,
+            "ns2nt": null,
+            "nt2ns": null,
+            "insertions": null,
+            "deletions": null
           },
           {
             "collecting_lab_sample_id": "SARS10",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 99.0433,
+            "median_discrepancies": 2.0,
+            "min": 1.0,
+            "max": 45.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 1.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           }
         ],
-        "by_type": { "wrong_nt": { "median": 0, "iqr": [0, 2] }, "ns2nt": { "median": 3, "iqr": [1, 8] }, "nt2ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 1, "iqr": [0, 3] }, "deletions": { "median": 1, "iqr": [0, 2] } },
+        "discrepancy_breakdown": {
+          "wrong_nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 23.0
+          },
+          "ambiguity2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "nt2ambiguity": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "ns2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 42.0
+          },
+          "nt2ns": {
+            "median": 1.0,
+            "min": 0.0,
+            "max": 30.0
+          },
+          "insertions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 4.0
+          },
+          "deletions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 2.0
+          }
+        },
+        "most_frequent_discrepancy_pattern": "nt2ns",
         "fig_discrepancies_boxplot_by_sample": "figures/SARS2/consensus_discrepancies_boxplot_by_sample.png",
-        "fig_discrepancy_type_barplot": "figures/SARS2/consensus_discrepancy_type_barplot.png"
+        "fig_discrepancies_stacked_by_sample": "figures/SARS2/consensus_discrepancies_stacked_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/SARS2/consensus_discrepancy_type_boxplot.png"
       },
-      "variant": { "median_sensitivity": 95.0, "median_precision": 97.0, "median_false_positives": 1, "min_false_positives": 0, "max_false_positives": 30, "median_false_negatives": 2,
-        "no_false_positives_pct": 35.0, "at_least_one_fn_pct": 55.0, "samples": [], "metrics": { "sensitivity": { "median_pct": 95.0, "iqr_pct": [90.0, 98.0] }, "precision": { "median_pct": 97.0, "iqr_pct": [92.0, 99.0] }, "tp": { "median": 10, "iqr": [8, 12] }, "fp": { "median": 1, "iqr": [0, 3] }, "fn": { "median": 2, "iqr": [1, 4] }, "total_differences": { "median": 3, "iqr": [1, 6] } },
-        "fig_total_differences_boxplot_by_sample": "figures/SARS2/variant_total_differences_boxplot_by_sample.png",
-        "fig_metric_boxplots_by_pipeline_or_overall": "figures/SARS2/variant_metric_boxplots.png"
+      "variant": {
+        "median_discrepancies": 5.5,
+        "total_median_discrepancies": 5.5,
+        "min_discrepancies": 0.0,
+        "max_discrepancies": 203.0,
+        "median_successful_hits": 81.5,
+        "min_successful_hits": 8.0,
+        "max_successful_hits": 118.0,
+        "samples": [
+          {
+            "collecting_lab_sample_id": "SARS6",
+            "median_discrepancies": 2.0,
+            "min": 0.0,
+            "max": 32.0,
+            "median_successful_hits": 117.0,
+            "min_successful_hits": 95.0,
+            "max_successful_hits": 118.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0,
+            "missing": 1.0,
+            "denovo": 0.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS7",
+            "median_discrepancies": 19.0,
+            "min": 0.0,
+            "max": 26.0,
+            "median_successful_hits": 93.0,
+            "min_successful_hits": 74.0,
+            "max_successful_hits": 97.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 2.0,
+            "missing": 4.0,
+            "denovo": 0.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS8",
+            "median_discrepancies": 21.0,
+            "min": 0.0,
+            "max": 46.0,
+            "median_successful_hits": 87.0,
+            "min_successful_hits": 72.0,
+            "max_successful_hits": 94.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0,
+            "missing": 7.0,
+            "denovo": 0.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS9",
+            "median_discrepancies": 6.0,
+            "min": 0.0,
+            "max": 157.0,
+            "median_successful_hits": 15.5,
+            "min_successful_hits": 11.0,
+            "max_successful_hits": 16.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.5,
+            "missing": 0.5,
+            "denovo": 4.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS10",
+            "median_discrepancies": 1.0,
+            "min": 0.0,
+            "max": 203.0,
+            "median_successful_hits": 11.0,
+            "min_successful_hits": 8.0,
+            "max_successful_hits": 11.0,
+            "wrong_nt": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0,
+            "missing": 0.0,
+            "denovo": 0.0
+          }
+        ],
+        "discrepancy_breakdown": {
+          "wrong_nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "insertions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 27.0
+          },
+          "deletions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 25.0
+          },
+          "missing": {
+            "median": 1.0,
+            "min": 0.0,
+            "max": 23.0
+          },
+          "denovo": {
+            "median": 1.0,
+            "min": 0.0,
+            "max": 169.0
+          }
+        },
+        "most_frequent_discrepancy_pattern": "missing",
+        "fig_discrepancies_boxplot_by_sample": "figures/SARS2/variant_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/SARS2/variant_discrepancy_type_boxplot.png"
       },
-      "typing": { "lineage_hit_pct": 90.0, "clade_hit_pct": 5.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
-        "fig_stacked_bar_by_sample": "figures/SARS2/typing_outcome_stackedbar_by_sample.png",
-        "fig_error_distribution": "figures/SARS2/typing_error_distribution.png"
+      "typing": {
+        "total_classification_matches_median": 5.0,
+        "total_classification_matches_min": 1.0,
+        "total_classification_matches_max": 5.0,
+        "lineage_hit_pct": 60.0,
+        "clade_hit_pct": 83.33,
+        "discordance_pct": 6.67,
+        "samples": [
+          {
+            "collecting_lab_sample_id": "SARS6",
+            "lineage_hit_pct": 90.0,
+            "clade_hit_pct": 70.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS7",
+            "lineage_hit_pct": 80.0,
+            "clade_hit_pct": 90.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS8",
+            "lineage_hit_pct": 10.0,
+            "clade_hit_pct": 90.0
+          },
+          {
+            "collecting_lab_sample_id": "SARS9",
+            "lineage_hit_pct": null,
+            "clade_hit_pct": null
+          },
+          {
+            "collecting_lab_sample_id": "SARS10",
+            "lineage_hit_pct": null,
+            "clade_hit_pct": null
+          }
+        ],
+        "fig_stacked_bar_by_sample": "figures/SARS2/typing_outcome_stackedbar_by_sample.png"
       },
       "qc": {
-        "match_rate_pct": 92.0,
-        "matches": 276,
-        "discrepancies": 24,
-        "total_evaluations": 300,
+        "match_rate_pct": 68.0,
+        "matches": 17,
+        "discrepancies": 8,
+        "total_evaluations": 25,
         "samples": [
-          { "collecting_lab_sample_id": "SARS6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS8", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "SARS10", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          {
+            "sample_id": "SARS6",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 80.0,
+            "matches": 4,
+            "discrepancies": 1,
+            "total_evaluations": 5
+          },
+          {
+            "sample_id": "SARS7",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 80.0,
+            "matches": 4,
+            "discrepancies": 1,
+            "total_evaluations": 5
+          },
+          {
+            "sample_id": "SARS8",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 20.0,
+            "matches": 1,
+            "discrepancies": 4,
+            "total_evaluations": 5
+          },
+          {
+            "sample_id": "SARS9",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 80.0,
+            "matches": 4,
+            "discrepancies": 1,
+            "total_evaluations": 5
+          },
+          {
+            "sample_id": "SARS10",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 80.0,
+            "matches": 4,
+            "discrepancies": 1,
+            "total_evaluations": 5
+          }
         ],
-        "fig_match_rate_by_sample": "figures/SARS2/qc_match_rate_by_sample.png"
+        "fig_qc_match_by_sample": "figures/SARS2/qc_match_by_sample.png"
       },
-      "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/SARS2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/SARS2/pipeline_metric_boxplots_by_pipeline.png" }
+      "metadata_metrics": {
+        "samples": [
+          {
+            "sample_id": "SARS6",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 99.0,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 500.0,
+              "min": 221.0,
+              "max": 826.0
+            },
+            "per_Ns": {
+              "median": 0.465,
+              "min": 0.274,
+              "max": 0.5122
+            },
+            "per_reads_virus": {
+              "median": 95.355,
+              "min": 37.1395,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0036
+            }
+          },
+          {
+            "sample_id": "SARS7",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 100.0,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 573.0,
+              "min": 230.0,
+              "max": 1859.0
+            },
+            "per_Ns": {
+              "median": 0.4611,
+              "min": 0.274,
+              "max": 0.55
+            },
+            "per_reads_virus": {
+              "median": 96.61,
+              "min": 15.6305,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.0054,
+              "min": 0.0,
+              "max": 0.18
+            }
+          },
+          {
+            "sample_id": "SARS8",
+            "per_genome_greater_10x": {
+              "median": 99.0,
+              "min": 99.0,
+              "max": 99.0
+            },
+            "depth_of_coverage_value": {
+              "median": 500.0,
+              "min": 211.0,
+              "max": 976.0
+            },
+            "per_Ns": {
+              "median": 2.06,
+              "min": 0.816,
+              "max": 2.6938
+            },
+            "per_reads_virus": {
+              "median": 97.215,
+              "min": 29.6198,
+              "max": 100.0
+            },
+            "per_reads_host": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.01
+            }
+          },
+          {
+            "sample_id": "SARS9",
+            "per_genome_greater_10x": {
+              "median": 30.0,
+              "min": 30.0,
+              "max": 32.0
+            },
+            "depth_of_coverage_value": {
+              "median": 19.0,
+              "min": 2.0,
+              "max": 72.0
+            },
+            "per_Ns": {
+              "median": 82.78,
+              "min": 81.51,
+              "max": 83.107
+            },
+            "per_reads_virus": {
+              "median": 23.6338,
+              "min": 4.35,
+              "max": 71.0
+            },
+            "per_reads_host": {
+              "median": 2.7141,
+              "min": 0.23,
+              "max": 3.96
+            }
+          },
+          {
+            "sample_id": "SARS10",
+            "per_genome_greater_10x": {
+              "median": 6.0,
+              "min": 6.0,
+              "max": 7.0
+            },
+            "depth_of_coverage_value": {
+              "median": 12.0,
+              "min": 2.0,
+              "max": 19.0
+            },
+            "per_Ns": {
+              "median": 94.7399,
+              "min": 89.23,
+              "max": 95.23
+            },
+            "per_reads_virus": {
+              "median": 67.9691,
+              "min": 28.92,
+              "max": 85.0
+            },
+            "per_reads_host": {
+              "median": 1.0745,
+              "min": 0.38,
+              "max": 2.05
+            }
+          }
+        ]
+      },
+      "benchmarking": {
+        "bioinformatics_protocol": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Artic pipeline",
+              "n_labs": 1,
+              "version": "1.8.5",
+              "median_identity_pct": 99.4765,
+              "median_discrepancies": 7.0,
+              "median_metadata_completeness_pct": 79.661,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 66.67
+            },
+            {
+              "name": "Custom pipeline/workflow",
+              "n_labs": 2,
+              "median_identity_pct": 99.5111,
+              "median_discrepancies": 15.0,
+              "median_metadata_completeness_pct": 56.7797,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 33.33
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "median_identity_pct": 99.8794,
+              "median_discrepancies": 4.0,
+              "median_metadata_completeness_pct": 37.0968,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 66.67
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "Web version",
+              "median_identity_pct": 99.7923,
+              "median_discrepancies": 8.0,
+              "median_metadata_completeness_pct": 30.5085,
+              "clade_hit_pct": 66.67,
+              "lineage_hit_pct": 66.67
+            },
+            {
+              "name": "nf-core/viralrecon",
+              "n_labs": 4,
+              "version": "3.0.0",
+              "median_identity_pct": 99.8778,
+              "median_discrepancies": 2.5,
+              "median_metadata_completeness_pct": 91.5254,
+              "clade_hit_pct": 75.0,
+              "lineage_hit_pct": 58.33
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+        },
+        "dehosting": {
+          "total_number": 1,
+          "softwares": [
+            {
+              "name": "Kraken2",
+              "n_labs": 4,
+              "version": "2.1.6",
+              "per_reads_host": 0.01
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/dehosting_metric_boxplots_by_pipeline.png"
+        },
+        "preprocessing": {
+          "total_number": 3,
+          "softwares": [
+            {
+              "name": "Fastp",
+              "n_labs": 1,
+              "version": "1.0.1",
+              "params": null,
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "NanoFilt",
+              "n_labs": 1,
+              "version": "2.6.0",
+              "params": "-q 8 -l 50 --headcrop 30 --tailcrop 30 --maxlength 50000",
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "Porechop",
+              "n_labs": 1,
+              "version": "0.3.2pre",
+              "params": "--discard_middle",
+              "number_of_reads_sequenced": 71109.0,
+              "pass_reads": 56514.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/preprocessing_metric_boxplots_by_pipeline.png"
+        },
+        "mapping": {
+          "total_number": 3,
+          "softwares": [
+            {
+              "name": "minimap2",
+              "n_labs": 3,
+              "version": "2.28-r1209",
+              "params": "-a -x map-ont -t 12",
+              "depth_of_coverage_threshold": "20x",
+              "per_reads_virus": 92.16
+            },
+            {
+              "name": "minimap2",
+              "n_labs": 1,
+              "version": "2.30",
+              "params": null,
+              "depth_of_coverage_threshold": null,
+              "per_reads_virus": null
+            },
+            {
+              "name": "minimap2",
+              "n_labs": 3,
+              "version": "2.30-r1287",
+              "params": "-x map-ont",
+              "depth_of_coverage_threshold": "10x",
+              "per_reads_virus": 47.6089
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/mapping_metric_boxplots_by_pipeline.png"
+        },
+        "consensus_software": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "Medaka consensus",
+              "n_labs": 1,
+              "version": "2.2.0",
+              "params": "--model r941_min_sup_g507 --chunk_len 800 --chunk_ovlp 400",
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.4591,
+              "median_discrepancies": 12.0
+            },
+            {
+              "name": "Medaka consensus",
+              "n_labs": 1,
+              "version": "2.2.1",
+              "params": "-m r941_min_hac_variant_g507 -r N",
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.7823,
+              "median_discrepancies": 17.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.17",
+              "params": "--min-depth 20",
+              "consensus_genome_length": 29856.0,
+              "median_identity_pct": 99.5049,
+              "median_discrepancies": 1.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.2.2",
+              "params": "-m",
+              "consensus_genome_length": 29260.0,
+              "median_identity_pct": 99.8896,
+              "median_discrepancies": 3.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 3,
+              "version": "1.22",
+              "params": "--min-depth 20",
+              "consensus_genome_length": 29898.5,
+              "median_identity_pct": 99.4647,
+              "median_discrepancies": 7.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "2.5",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 99.8794,
+              "median_discrepancies": 4.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/consensus_metric_boxplots_by_pipeline.png"
+        },
+        "variant_calling": {
+          "total_number": 8,
+          "softwares": [
+            {
+              "name": "Clair3",
+              "n_labs": 1,
+              "version": "1.0.10",
+              "params": "--enable_long_indel --chunk_size=10000 --haploid_precise --no_phasing_for_fa --threads='12' --platform='ont' --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+              "number_of_variants_in_consensus": 94.0,
+              "median_discrepancies": 0.0,
+              "number_of_variants_with_effect": 66.0
+            },
+            {
+              "name": "Clair3",
+              "n_labs": 1,
+              "version": "1.0.11",
+              "params": "--enable_long_indel --chunk_size=10000 --haploid_precise –no_phasing_for_fa --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+              "number_of_variants_in_consensus": 72.0,
+              "median_discrepancies": 22.0,
+              "number_of_variants_with_effect": 46.0
+            },
+            {
+              "name": "Clair3",
+              "n_labs": 1,
+              "version": "1.2.0",
+              "params": "run_clair3.sh --enable_long_indel --chunk_size 10000 --haploid_sensitive --no_phasing_for_fa --bam_fn ${bam} --ref_fn ${reference} --platform ont --model_path “r1041_e82_400bps_sup_g615\" --include_all_ctgs --enable_variant_calling_at_sequence_head_and_tail",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 1.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Clair3",
+              "n_labs": 1,
+              "version": "1.6.2",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 0.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Clair3",
+              "n_labs": 1,
+              "version": "artic_1.8.5",
+              "params": "--platform='ont' --model_path='r1041_e82_400bps_hac_v430' --haploid_sensitive --enable_long_indel --no_phasing_for_fa --enable_variant_calling_at_sequence_head_and_tail",
+              "number_of_variants_in_consensus": 93.0,
+              "median_discrepancies": 1.0,
+              "number_of_variants_with_effect": 71.0
+            },
+            {
+              "name": "Medaka",
+              "n_labs": 1,
+              "version": "1.2.1",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 20.5,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Medaka",
+              "n_labs": 1,
+              "version": "2.2.0",
+              "params": "--model r941_min_sup_variant_g507 --chunk_len 800 --chunk_ovlp 400",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 22.0,
+              "number_of_variants_with_effect": null
+            },
+            {
+              "name": "Medaka",
+              "n_labs": 1,
+              "version": "2.2.1",
+              "params": "-m r941_min_hac_variant_g507",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": 46.0,
+              "number_of_variants_with_effect": null
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/variant_calling_metric_boxplots_by_pipeline.png"
+        },
+        "clade_assignment": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.11.0",
+              "database_version": null,
+              "clade_discordance_pct": 100.0,
+              "clade_hit_pct": 0.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.18.0",
+              "database_version": "2026-01-14–19-24-43Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 6,
+              "version": "3.18.1",
+              "database_version": "2026-01-06--14-59-32Z",
+              "clade_discordance_pct": 10.0,
+              "clade_hit_pct": 90.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.18.2",
+              "database_version": "3.0.0",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.18.3",
+              "database_version": "3.0.0",
+              "clade_discordance_pct": null,
+              "clade_hit_pct": null
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.8.1",
+              "database_version": "2026-01-06T14:59:32Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/clade_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "lineage_assignment": {
+          "total_number": 4,
+          "softwares": [
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "database_version": "4.3.4",
+              "lineage_discordance_pct": 33.33,
+              "lineage_hit_pct": 66.67
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 2,
+              "version": "3.18.1",
+              "database_version": "4.3.4",
+              "lineage_discordance_pct": 16.67,
+              "lineage_hit_pct": 83.33
+            },
+            {
+              "name": "Pangolin",
+              "n_labs": 2,
+              "version": "4.3.1",
+              "database_version": "1.37",
+              "lineage_discordance_pct": 50.0,
+              "lineage_hit_pct": 50.0
+            },
+            {
+              "name": "Pangolin",
+              "n_labs": 4,
+              "version": "4.3.4",
+              "database_version": "v1.37",
+              "lineage_discordance_pct": 50.0,
+              "lineage_hit_pct": 50.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/SARS2/lineage_assignment_metric_boxplots_by_pipeline.png"
+        }
+      }
     },
-
-    "FLU1": { "name": "Influenza, Illumina", "total_labs": 18, "total_fasta": 18, "total_vcf": 14,
-      "metadata_completeness_median": 90.0,
-      "metadata_completeness_max_pct": 100,
-      "metadata_completeness_min_pct": 15,
-      "consensus": { "median_identity": 99.50, "median_discrepancies": 5, "min_discrepancies": 0, "max_discrepancies": 80,
-        "most_frequent_discrepancy_pattern": "Nucleotide stretch instead of stretch of Ns",
+    "FLU1": {
+      "name": "Influenza virus, Illumina",
+      "total_labs": 12,
+      "total_fasta": 47,
+      "total_vcf": 38,
+      "metadata_completeness_median": 53.6638,
+      "metadata_completeness_min_pct": 25.0,
+      "metadata_completeness_max_pct": 88.2591,
+      "consensus": {
+        "median_identity": 96.0697,
+        "median_discrepancies": 21.0,
+        "total_median_discrepancies": 21.0,
+        "min_discrepancies": 1.0,
+        "max_discrepancies": 246.0,
+        "median_identity_pct": 96.0697,
+        "identity_pct_min": 91.8643,
+        "identity_pct_max": 98.4016,
         "samples": [
           {
             "collecting_lab_sample_id": "FLU1",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 96.0697,
+            "median_discrepancies": 11.0,
+            "min": 7.0,
+            "max": 162.0,
+            "wrong_nt": 11.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.5,
+            "ns2nt": 0.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "FLU2",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 96.1502,
+            "median_discrepancies": 6.5,
+            "min": 1.0,
+            "max": 246.0,
+            "wrong_nt": 1.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 5.0
           },
           {
             "collecting_lab_sample_id": "FLU3",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": null,
+            "median_discrepancies": null,
+            "min": null,
+            "max": null,
+            "wrong_nt": null,
+            "ambiguity2nt": null,
+            "nt2ambigity": null,
+            "ns2nt": null,
+            "nt2ns": null,
+            "insertions": null,
+            "deletions": null
           },
           {
             "collecting_lab_sample_id": "FLU4",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 96.2127,
+            "median_discrepancies": 23.0,
+            "min": 15.0,
+            "max": 188.0,
+            "wrong_nt": 3.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 15.0
           },
           {
             "collecting_lab_sample_id": "FLU5",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 95.9483,
+            "median_discrepancies": 27.5,
+            "min": 15.0,
+            "max": 186.0,
+            "wrong_nt": 5.5,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 2.5,
+            "insertions": 0.0,
+            "deletions": 15.0
           }
         ],
-        "by_type": { "wrong_nt": { "median": 1, "iqr": [0, 2] }, "ns2nt": { "median": 2, "iqr": [0, 10] }, "nt2ns": { "median": 0, "iqr": [0, 1] }, "insertions": { "median": 0, "iqr": [0, 1] }, "deletions": { "median": 0, "iqr": [0, 1] } },
+        "discrepancy_breakdown": {
+          "wrong_nt": {
+            "median": 5.0,
+            "min": 0.0,
+            "max": 162.0
+          },
+          "ambiguity2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "nt2ambiguity": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 208.0
+          },
+          "ns2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "nt2ns": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 121.0
+          },
+          "insertions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 1.0
+          },
+          "deletions": {
+            "median": 12.0,
+            "min": 0.0,
+            "max": 18.0
+          }
+        },
+        "most_frequent_discrepancy_pattern": "deletions",
         "fig_discrepancies_boxplot_by_sample": "figures/FLU1/consensus_discrepancies_boxplot_by_sample.png",
-        "fig_discrepancy_type_barplot": "figures/FLU1/consensus_discrepancy_type_barplot.png"
+        "fig_discrepancies_stacked_by_sample": "figures/FLU1/consensus_discrepancies_stacked_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/FLU1/consensus_discrepancy_type_boxplot.png"
       },
-      "typing": { "lineage_hit_pct": 88.0, "clade_hit_pct": 7.0, "discordance_pct": 5.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 1] }, "clade": { "median": 0, "iqr": [0, 1] } },
-        "fig_stacked_bar_by_sample": "figures/FLU1/typing_outcome_stackedbar_by_sample.png",
-        "fig_error_distribution": "figures/FLU1/typing_error_distribution.png"
+      "variant": {
+        "median_variants_in_consensus": 485.5,
+        "min_variants_in_consensus": 449.0,
+        "max_variants_in_consensus": 1797.0,
+        "median_variants_in_consensus_vcf": 174.0,
+        "min_variants_in_consensus_vcf": 0.0,
+        "max_variants_in_consensus_vcf": 1356.0,
+        "median_discrepancies_in_reported_variants": 247.5,
+        "min_discrepancies_in_reported_variants": 8.0,
+        "max_discrepancies_in_reported_variants": 1797.0,
+        "median_variants_in_vcf": 306.0,
+        "min_variants_in_vcf": 0.0,
+        "max_variants_in_vcf": 39071.0,
+        "samples": [
+          {
+            "collecting_lab_sample_id": "FLU1",
+            "variants_in_consensus": {
+              "median": 1587.0,
+              "min": 1377.0,
+              "max": 1797.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 383.0,
+              "min": 0.0,
+              "max": 1356.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 909.0,
+              "min": 21.0,
+              "max": 1797.0
+            },
+            "variants_in_vcf": {
+              "median": 383.0,
+              "min": 14.0,
+              "max": 37523.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU2",
+            "variants_in_consensus": {
+              "median": 972.0,
+              "min": 449.0,
+              "max": 1495.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 168.0,
+              "min": 0.0,
+              "max": 618.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 751.5,
+              "min": 8.0,
+              "max": 1495.0
+            },
+            "variants_in_vcf": {
+              "median": 522.0,
+              "min": 43.0,
+              "max": 39071.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU3",
+            "variants_in_consensus": {
+              "median": null,
+              "min": null,
+              "max": null
+            },
+            "variants_in_consensus_vcf": {
+              "median": 203.0,
+              "min": 0.0,
+              "max": 406.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": null,
+              "min": null,
+              "max": null
+            },
+            "variants_in_vcf": {
+              "median": 207.5,
+              "min": 0.0,
+              "max": 415.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU4",
+            "variants_in_consensus": {
+              "median": 480.0,
+              "min": 468.0,
+              "max": 492.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 138.5,
+              "min": 0.0,
+              "max": 591.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 247.5,
+              "min": 27.0,
+              "max": 468.0
+            },
+            "variants_in_vcf": {
+              "median": 306.5,
+              "min": 50.0,
+              "max": 25977.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU5",
+            "variants_in_consensus": {
+              "median": 467.0,
+              "min": 455.0,
+              "max": 479.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 174.0,
+              "min": 0.0,
+              "max": 512.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 247.0,
+              "min": 15.0,
+              "max": 479.0
+            },
+            "variants_in_vcf": {
+              "median": 174.0,
+              "min": 6.0,
+              "max": 34996.0
+            }
+          }
+        ]
+      },
+      "typing": {
+        "total_classification_matches_median": 7.0,
+        "total_classification_matches_min": 3.0,
+        "total_classification_matches_max": 8.0,
+        "lineage_hit_pct": 89.58,
+        "clade_hit_pct": 68.75,
+        "discordance_pct": 6.25,
+        "samples": [
+          {
+            "collecting_lab_sample_id": "FLU1",
+            "lineage_hit_pct": 91.67,
+            "clade_hit_pct": 58.33
+          },
+          {
+            "collecting_lab_sample_id": "FLU2",
+            "lineage_hit_pct": 100.0,
+            "clade_hit_pct": 75.0
+          },
+          {
+            "collecting_lab_sample_id": "FLU3",
+            "lineage_hit_pct": null,
+            "clade_hit_pct": null
+          },
+          {
+            "collecting_lab_sample_id": "FLU4",
+            "lineage_hit_pct": 91.67,
+            "clade_hit_pct": 66.67
+          },
+          {
+            "collecting_lab_sample_id": "FLU5",
+            "lineage_hit_pct": 75.0,
+            "clade_hit_pct": 75.0
+          }
+        ],
+        "fig_stacked_bar_by_sample": "figures/FLU1/typing_outcome_stackedbar_by_sample.png"
       },
       "qc": {
-        "match_rate_pct": 92.0,
-        "matches": 276,
-        "discrepancies": 24,
-        "total_evaluations": 300,
+        "match_rate_pct": 80.0,
+        "matches": 12,
+        "discrepancies": 3,
+        "total_evaluations": 15,
         "samples": [
-          { "collecting_lab_sample_id": "FLU1", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU2", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU3", "gold_standard_qc": "Fail", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU4", "gold_standard_qc": "Pass", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU5", "gold_standard_qc": "Fail", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          {
+            "sample_id": "FLU1",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 66.67,
+            "matches": 2,
+            "discrepancies": 1,
+            "total_evaluations": 3
+          },
+          {
+            "sample_id": "FLU2",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 3,
+            "discrepancies": 0,
+            "total_evaluations": 3
+          },
+          {
+            "sample_id": "FLU3",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 100.0,
+            "matches": 3,
+            "discrepancies": 0,
+            "total_evaluations": 3
+          },
+          {
+            "sample_id": "FLU4",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 66.67,
+            "matches": 2,
+            "discrepancies": 1,
+            "total_evaluations": 3
+          },
+          {
+            "sample_id": "FLU5",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 66.67,
+            "matches": 2,
+            "discrepancies": 1,
+            "total_evaluations": 3
+          }
         ],
-        "fig_match_rate_by_sample": "figures/FLU1/qc_match_rate_by_sample.png"
+        "fig_qc_match_by_sample": "figures/FLU1/qc_match_by_sample.png"
       },
-      "pipeline": { "total_number": 5, "configurations": [], "fig_scatter_positioning": "figures/FLU1/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU1/pipeline_metric_boxplots_by_pipeline.png" }
+      "metadata_metrics": {
+        "samples": [
+          {
+            "sample_id": "FLU1",
+            "per_genome_greater_10x": {
+              "median": 98.285,
+              "min": 96.0,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 211192.0,
+              "min": 54197.0,
+              "max": 224891.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "per_reads_virus": {
+              "median": 74.04,
+              "min": 30.92,
+              "max": 74.83
+            },
+            "per_reads_host": {
+              "median": 19.59,
+              "min": 16.48,
+              "max": 25.16
+            }
+          },
+          {
+            "sample_id": "FLU2",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 99.24,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 7963.0,
+              "min": 649.0,
+              "max": 10394.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.56
+            },
+            "per_reads_virus": {
+              "median": 52.97,
+              "min": 25.97,
+              "max": 63.72
+            },
+            "per_reads_host": {
+              "median": 24.365,
+              "min": 7.71,
+              "max": 33.24
+            }
+          },
+          {
+            "sample_id": "FLU3",
+            "per_genome_greater_10x": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "depth_of_coverage_value": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "per_reads_virus": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "per_reads_host": {
+              "median": 80.535,
+              "min": 68.38,
+              "max": 99.42
+            }
+          },
+          {
+            "sample_id": "FLU4",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 96.67,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 1377.0,
+              "min": 113.0,
+              "max": 1713.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 4.54
+            },
+            "per_reads_virus": {
+              "median": 24.5,
+              "min": 9.26,
+              "max": 27.24
+            },
+            "per_reads_host": {
+              "median": 38.82,
+              "min": 10.24,
+              "max": 43.86
+            }
+          },
+          {
+            "sample_id": "FLU5",
+            "per_genome_greater_10x": {
+              "median": 89.145,
+              "min": 87.57,
+              "max": 91.11
+            },
+            "depth_of_coverage_value": {
+              "median": 6342.0,
+              "min": 556.0,
+              "max": 8604.0
+            },
+            "per_Ns": {
+              "median": 8.82,
+              "min": 0.0,
+              "max": 12.99
+            },
+            "per_reads_virus": {
+              "median": 64.18,
+              "min": 31.46,
+              "max": 77.17
+            },
+            "per_reads_host": {
+              "median": 8.17,
+              "min": 4.49,
+              "max": 12.2
+            }
+          }
+        ]
+      },
+      "benchmarking": {
+        "bioinformatics_protocol": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "Custom pipeline/workflow",
+              "n_labs": 4,
+              "median_identity_pct": 96.1815,
+              "median_discrepancies": 11.0,
+              "median_metadata_completeness_pct": 60.7143,
+              "clade_hit_pct": 43.75,
+              "lineage_hit_pct": 93.75
+            },
+            {
+              "name": "DRAGEN Targeted Microbial",
+              "n_labs": 1,
+              "version": "1.1.0",
+              "median_identity_pct": 98.2127,
+              "median_discrepancies": 14.0,
+              "median_metadata_completeness_pct": 39.2857,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 100.0
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "median_identity_pct": 92.912,
+              "median_discrepancies": 162.0,
+              "median_metadata_completeness_pct": 41.0714,
+              "clade_hit_pct": 75.0,
+              "lineage_hit_pct": 50.0
+            },
+            {
+              "name": "IRMA",
+              "n_labs": 1,
+              "median_identity_pct": 96.11,
+              "median_discrepancies": 11.0,
+              "median_metadata_completeness_pct": 32.0755,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 100.0
+            },
+            {
+              "name": "IRMA",
+              "n_labs": 3,
+              "version": "1.2.0",
+              "median_identity_pct": 95.8939,
+              "median_discrepancies": 18.5,
+              "median_metadata_completeness_pct": 39.2857,
+              "clade_hit_pct": 58.33,
+              "lineage_hit_pct": 91.67
+            },
+            {
+              "name": "IRMA",
+              "n_labs": 2,
+              "version": "1.3.1",
+              "median_identity_pct": 96.009,
+              "median_discrepancies": 13.5,
+              "median_metadata_completeness_pct": 62.9717,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 87.5
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+        },
+        "dehosting": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "2.1.3",
+              "per_reads_host": 25.04
+            },
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "2.1.6",
+              "per_reads_host": null
+            },
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "DRAGEN Microbial Amplicon",
+              "per_reads_host": null
+            },
+            {
+              "name": "NCBI Human Read Scrubber",
+              "n_labs": 1,
+              "version": "2.0.0",
+              "per_reads_host": 23.69
+            },
+            {
+              "name": "bowtie2",
+              "n_labs": 1,
+              "version": "2.5.1",
+              "per_reads_host": 10.24
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/dehosting_metric_boxplots_by_pipeline.png"
+        },
+        "preprocessing": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "Custom preprocessing script",
+              "n_labs": 1,
+              "params": "FaQCs --ascii 33 --min_L 50 --avg_q 30",
+              "number_of_reads_sequenced": 1841284.0,
+              "pass_reads": 1060538.0
+            },
+            {
+              "name": "Fastp",
+              "n_labs": 1,
+              "version": "0.20.0",
+              "params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe",
+              "number_of_reads_sequenced": 1841284.0,
+              "pass_reads": 1841260.0
+            },
+            {
+              "name": "Fastp",
+              "n_labs": 3,
+              "version": "0.24.0",
+              "params": "--detect_adapter_for_pe --correction --length_required 45 --qualified_quality_phred 25 --average_qual 30 --cut_front --cut_tail --trim_front1 5 --trim_tail1 5 --trim_front2 5 --trim_tail2 5",
+              "number_of_reads_sequenced": 1841359.0,
+              "pass_reads": 1295030.0
+            },
+            {
+              "name": "Fastp",
+              "n_labs": 1,
+              "version": "1.0.1",
+              "params": null,
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "IRMA custom script",
+              "n_labs": 1,
+              "version": "1.2.0",
+              "params": null,
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "Trimmomatic",
+              "n_labs": 1,
+              "version": "0.39",
+              "params": "LEADING:30 TRAILING:30 SLIDINGWINDOW:10:30",
+              "number_of_reads_sequenced": 1841284.0,
+              "pass_reads": 535168.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/preprocessing_metric_boxplots_by_pipeline.png"
+        },
+        "mapping": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "BLAT",
+              "n_labs": 1,
+              "version": "IRMA 1.3.0-rc1",
+              "params": "Default (IRMA module FLU_AD)",
+              "depth_of_coverage_threshold": "1x",
+              "per_reads_virus": 25.97
+            },
+            {
+              "name": "BLAT",
+              "n_labs": 1,
+              "version": "v.36",
+              "params": null,
+              "depth_of_coverage_threshold": null,
+              "per_reads_virus": null
+            },
+            {
+              "name": "BLAT",
+              "n_labs": 2,
+              "version": "v35",
+              "params": null,
+              "depth_of_coverage_threshold": "10x",
+              "per_reads_virus": 63.72
+            },
+            {
+              "name": "bwa mem",
+              "n_labs": 2,
+              "version": "0.7.19-r1273",
+              "params": "-p -Y -v 2",
+              "depth_of_coverage_threshold": "10x",
+              "per_reads_virus": null
+            },
+            {
+              "name": "minimap2",
+              "n_labs": 1,
+              "version": "2.26-r1175",
+              "params": "-ax sr",
+              "depth_of_coverage_threshold": "20x",
+              "per_reads_virus": null
+            },
+            {
+              "name": "minimap2",
+              "n_labs": 1,
+              "version": "DRAGEN Microbial Amplicon ad-hoc version",
+              "params": null,
+              "depth_of_coverage_threshold": null,
+              "per_reads_virus": null
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/mapping_metric_boxplots_by_pipeline.png"
+        },
+        "assembly": {
+          "total_number": 4,
+          "softwares": [
+            {
+              "name": "LABEL",
+              "n_labs": 1,
+              "version": "IRMA 1.3.0-rc1",
+              "params": "Default (IRMA module FLU_AD)",
+              "consensus_genome_length": 13139.0,
+              "median_identity_pct": 96.11,
+              "median_discrepancies": 11.0
+            },
+            {
+              "name": "LABEL",
+              "n_labs": 1,
+              "version": "v0.6.5",
+              "params": null,
+              "consensus_genome_length": 13134.5,
+              "median_identity_pct": 95.7597,
+              "median_discrepancies": 41.0
+            },
+            {
+              "name": "Megahit",
+              "n_labs": 1,
+              "version": "DRAGEN Microbial Amplicon ad hoc version",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 98.2127,
+              "median_discrepancies": 14.0
+            },
+            {
+              "name": "SPAdes",
+              "n_labs": 1,
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 96.11,
+              "median_discrepancies": 11.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/assembly_metric_boxplots_by_pipeline.png"
+        },
+        "consensus_software": {
+          "total_number": 7,
+          "softwares": [
+            {
+              "name": "IRMA consensus",
+              "n_labs": 1,
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 95.7184,
+              "median_discrepancies": 47.0
+            },
+            {
+              "name": "IRMA consensus",
+              "n_labs": 2,
+              "version": "1.2.0",
+              "params": "MIN_AMBIG=0.25 MIN_CONS_SUPPORT=10",
+              "consensus_genome_length": 13134.5,
+              "median_identity_pct": 96.009,
+              "median_discrepancies": 13.5
+            },
+            {
+              "name": "IRMA consensus",
+              "n_labs": 1,
+              "version": "1.3.1",
+              "params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
+              "consensus_genome_length": 13139.0,
+              "median_identity_pct": 96.11,
+              "median_discrepancies": 13.5
+            },
+            {
+              "name": "Ivar consensus",
+              "n_labs": 1,
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 92.912,
+              "median_discrepancies": 162.0
+            },
+            {
+              "name": "Ivar consensus",
+              "n_labs": 1,
+              "version": "1.4.3",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 97.7533,
+              "median_discrepancies": 8.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.17",
+              "params": "AF > 0.50",
+              "consensus_genome_length": 13136.0,
+              "median_identity_pct": 96.535,
+              "median_discrepancies": 48.0
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.21",
+              "params": "mosdepth -x -Q 1 | awk '$4<=10'",
+              "consensus_genome_length": 13.1835,
+              "median_identity_pct": 96.6422,
+              "median_discrepancies": 1.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/consensus_metric_boxplots_by_pipeline.png"
+        },
+        "variant_calling": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "Custom variant calling script",
+              "n_labs": 1,
+              "params": "-f 0.25 -d 10",
+              "number_of_variants_in_consensus": 473.5,
+              "median_discrepancies": null
+            },
+            {
+              "name": "IRMA custom VariantCaller",
+              "n_labs": 1,
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            },
+            {
+              "name": "IRMA custom VariantCaller",
+              "n_labs": 2,
+              "version": "1.2.0",
+              "params": null,
+              "number_of_variants_in_consensus": 987.0,
+              "median_discrepancies": null
+            },
+            {
+              "name": "Ivar",
+              "n_labs": 1,
+              "version": "1.4.3",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            },
+            {
+              "name": "Octopus",
+              "n_labs": 1,
+              "version": "0.7.4",
+              "params": "-P 1",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            },
+            {
+              "name": "lofreq",
+              "n_labs": 1,
+              "version": "2.1.5",
+              "params": "indelqual --dindel // call-parallel --pp-threads 64 --call-indels",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/variant_calling_metric_boxplots_by_pipeline.png"
+        },
+        "clade_assignment": {
+          "total_number": 3,
+          "softwares": [
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.13.1",
+              "database_version": "2026-01-14--08-53-00Z",
+              "clade_discordance_pct": 25.0,
+              "clade_hit_pct": 75.0
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 5,
+              "version": "3.18.1",
+              "database_version": "2026-01-14--19-24-43Z",
+              "clade_discordance_pct": 3.7,
+              "clade_hit_pct": 96.3
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.9.1",
+              "database_version": "2026-01-14--19-24-43Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/clade_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "type_assignment": {
+          "total_number": 3,
+          "softwares": [
+            {
+              "name": "Custom typing script",
+              "n_labs": 4,
+              "database_version": "v2",
+              "type_discordance_pct": 12.5,
+              "type_hit_pct": 87.5
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "database_version": "2.2.2",
+              "type_discordance_pct": 50.0,
+              "type_hit_pct": 50.0
+            },
+            {
+              "name": "IRMA typing",
+              "n_labs": 5,
+              "database_version": "1.2.0",
+              "type_discordance_pct": 5.0,
+              "type_hit_pct": 95.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/type_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "subtype_assignment": {
+          "total_number": 7,
+          "softwares": [
+            {
+              "name": "Custom subtyping script",
+              "n_labs": 3,
+              "database_version": "v2",
+              "subtype_discordance_pct": 16.67,
+              "subtype_hit_pct": 83.33
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "database_version": "2.2.2",
+              "subtype_discordance_pct": 50.0,
+              "subtype_hit_pct": 50.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 1,
+              "database_version": "influenza A & B, genome sets version 2",
+              "subtype_discordance_pct": 25.0,
+              "subtype_hit_pct": 75.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 2,
+              "version": "1.2.0",
+              "database_version": "1",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 1,
+              "version": "1.3.0-rc1",
+              "database_version": "1.3.0-rc1",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 1,
+              "version": "1.3.1",
+              "database_version": null,
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            },
+            {
+              "name": "MASH",
+              "n_labs": 1,
+              "version": "2.3",
+              "database_version": "2.3",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU1/subtype_assignment_metric_boxplots_by_pipeline.png"
+        }
+      }
     },
-
-    "FLU2": { "name": "Influenza, Nanopore", "total_labs": 16, "total_fasta": 16, "total_vcf": 12,
-      "metadata_completeness_median": 90.0,
-      "metadata_completeness_max_pct": 100,
-      "metadata_completeness_min_pct": 15,    
-      "consensus": { "median_identity": 98.80, "median_discrepancies": 20, "min_discrepancies": 0, "max_discrepancies": 200,
-        "most_frequent_discrepancy_pattern": "Deletion relative to gold standard",
-                "samples": [
+    "FLU2": {
+      "name": "Influenza virus, Oxford Nanopore Technologies",
+      "total_labs": 10,
+      "total_fasta": 49,
+      "total_vcf": 39,
+      "metadata_completeness_median": 55.4515,
+      "metadata_completeness_min_pct": 7.1429,
+      "metadata_completeness_max_pct": 87.1429,
+      "consensus": {
+        "median_identity": 95.7331,
+        "median_discrepancies": 20.0,
+        "total_median_discrepancies": 20.0,
+        "min_discrepancies": 0.0,
+        "max_discrepancies": 3051.0,
+        "median_identity_pct": 95.7331,
+        "identity_pct_min": 0.0562,
+        "identity_pct_max": 98.5542,
+        "samples": [
           {
             "collecting_lab_sample_id": "FLU6",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 95.6851,
+            "median_discrepancies": 0.0,
+            "min": 0.0,
+            "max": 378.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           },
           {
             "collecting_lab_sample_id": "FLU7",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 95.5529,
+            "median_discrepancies": 41.0,
+            "min": 7.0,
+            "max": 348.0,
+            "wrong_nt": 5.5,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 6.5,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 5.0
           },
           {
             "collecting_lab_sample_id": "FLU8",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 95.8026,
+            "median_discrepancies": 40.0,
+            "min": 20.0,
+            "max": 305.0,
+            "wrong_nt": 9.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 3.0,
+            "insertions": 0.0,
+            "deletions": 17.0
           },
           {
             "collecting_lab_sample_id": "FLU9",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 95.4682,
+            "median_discrepancies": 68.0,
+            "min": 4.0,
+            "max": 3051.0,
+            "wrong_nt": 19.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 1.0,
+            "insertions": 0.0,
+            "deletions": 5.5
           },
           {
             "collecting_lab_sample_id": "FLU10",
-            "median_identity_pct": 99.95,
-            "median_discrepancies": 1,
-            "iqr_discrepancies": [0, 2]
+            "median_identity_pct": 96.0473,
+            "median_discrepancies": 0.0,
+            "min": 0.0,
+            "max": 403.0,
+            "wrong_nt": 0.0,
+            "ambiguity2nt": 0.0,
+            "nt2ambigity": 0.0,
+            "ns2nt": 0.0,
+            "nt2ns": 0.0,
+            "insertions": 0.0,
+            "deletions": 0.0
           }
         ],
-        "by_type": { "wrong_nt": { "median": 2, "iqr": [0, 4] }, "ns2nt": { "median": 6, "iqr": [2, 20] }, "nt2ns": { "median": 0, "iqr": [0, 2] }, "insertions": { "median": 2, "iqr": [0, 5] }, "deletions": { "median": 1, "iqr": [0, 4] } },
+        "discrepancy_breakdown": {
+          "wrong_nt": {
+            "median": 3.0,
+            "min": 0.0,
+            "max": 2967.0
+          },
+          "ambiguity2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "nt2ambiguity": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 345.0
+          },
+          "ns2nt": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 16.0
+          },
+          "nt2ns": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 64.0
+          },
+          "insertions": {
+            "median": 0.0,
+            "min": 0.0,
+            "max": 45.0
+          },
+          "deletions": {
+            "median": 5.0,
+            "min": 0.0,
+            "max": 70.0
+          }
+        },
+        "most_frequent_discrepancy_pattern": "deletions",
         "fig_discrepancies_boxplot_by_sample": "figures/FLU2/consensus_discrepancies_boxplot_by_sample.png",
-        "fig_discrepancy_type_barplot": "figures/FLU2/consensus_discrepancy_type_barplot.png"
+        "fig_discrepancies_stacked_by_sample": "figures/FLU2/consensus_discrepancies_stacked_by_sample.png",
+        "fig_discrepancy_type_boxplot": "figures/FLU2/consensus_discrepancy_type_boxplot.png"
       },
-      "typing": { "lineage_hit_pct": 82.0, "clade_hit_pct": 10.0, "discordance_pct": 8.0, "samples": [], "errors": { "lineage": { "median": 0, "iqr": [0, 2] }, "clade": { "median": 1, "iqr": [0, 2] } },
-        "fig_stacked_bar_by_sample": "figures/FLU2/typing_outcome_stackedbar_by_sample.png",
-        "fig_error_distribution": "figures/FLU2/typing_error_distribution.png"
+      "variant": {
+        "median_variants_in_consensus": 468.5,
+        "min_variants_in_consensus": 377.0,
+        "max_variants_in_consensus": 1794.0,
+        "median_variants_in_consensus_vcf": 271.5,
+        "min_variants_in_consensus_vcf": 0.0,
+        "max_variants_in_consensus_vcf": 1363.0,
+        "median_discrepancies_in_reported_variants": 377.0,
+        "min_discrepancies_in_reported_variants": 8.0,
+        "max_discrepancies_in_reported_variants": 1794.0,
+        "median_variants_in_vcf": 1143.0,
+        "min_variants_in_vcf": 0.0,
+        "max_variants_in_vcf": 21455.0,
+        "samples": [
+          {
+            "collecting_lab_sample_id": "FLU6",
+            "variants_in_consensus": {
+              "median": 1542.5,
+              "min": 1434.0,
+              "max": 1651.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 408.5,
+              "min": 0.0,
+              "max": 1067.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 1651.0,
+              "min": 1651.0,
+              "max": 1651.0
+            },
+            "variants_in_vcf": {
+              "median": 2833.0,
+              "min": 911.0,
+              "max": 4872.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU7",
+            "variants_in_consensus": {
+              "median": 430.0,
+              "min": 419.0,
+              "max": 435.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 303.5,
+              "min": 0.0,
+              "max": 487.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 217.5,
+              "min": 16.0,
+              "max": 419.0
+            },
+            "variants_in_vcf": {
+              "median": 970.5,
+              "min": 219.0,
+              "max": 2892.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU8",
+            "variants_in_consensus": {
+              "median": 475.0,
+              "min": 462.0,
+              "max": 492.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 355.0,
+              "min": 0.0,
+              "max": 475.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 241.5,
+              "min": 21.0,
+              "max": 462.0
+            },
+            "variants_in_vcf": {
+              "median": 1000.0,
+              "min": 414.0,
+              "max": 2796.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU9",
+            "variants_in_consensus": {
+              "median": 399.0,
+              "min": 377.0,
+              "max": 458.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 92.5,
+              "min": 0.0,
+              "max": 408.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 198.5,
+              "min": 20.0,
+              "max": 377.0
+            },
+            "variants_in_vcf": {
+              "median": 751.5,
+              "min": 0.0,
+              "max": 11792.0
+            }
+          },
+          {
+            "collecting_lab_sample_id": "FLU10",
+            "variants_in_consensus": {
+              "median": 1605.0,
+              "min": 1371.0,
+              "max": 1794.0
+            },
+            "variants_in_consensus_vcf": {
+              "median": 505.0,
+              "min": 0.0,
+              "max": 1363.0
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 901.0,
+              "min": 8.0,
+              "max": 1794.0
+            },
+            "variants_in_vcf": {
+              "median": 4541.0,
+              "min": 1061.0,
+              "max": 21455.0
+            }
+          }
+        ]
+      },
+      "typing": {
+        "total_classification_matches_median": 7.5,
+        "total_classification_matches_min": 0.0,
+        "total_classification_matches_max": 10.0,
+        "lineage_hit_pct": 74.0,
+        "clade_hit_pct": 66.0,
+        "discordance_pct": 20.0,
+        "samples": [
+          {
+            "collecting_lab_sample_id": "FLU6",
+            "lineage_hit_pct": 70.0,
+            "clade_hit_pct": 80.0
+          },
+          {
+            "collecting_lab_sample_id": "FLU7",
+            "lineage_hit_pct": 90.0,
+            "clade_hit_pct": 80.0
+          },
+          {
+            "collecting_lab_sample_id": "FLU8",
+            "lineage_hit_pct": 90.0,
+            "clade_hit_pct": 80.0
+          },
+          {
+            "collecting_lab_sample_id": "FLU9",
+            "lineage_hit_pct": 50.0,
+            "clade_hit_pct": 20.0
+          },
+          {
+            "collecting_lab_sample_id": "FLU10",
+            "lineage_hit_pct": 70.0,
+            "clade_hit_pct": 70.0
+          }
+        ],
+        "fig_stacked_bar_by_sample": "figures/FLU2/typing_outcome_stackedbar_by_sample.png"
       },
       "qc": {
-        "match_rate_pct": 92.0,
-        "matches": 276,
-        "discrepancies": 24,
-        "total_evaluations": 300,
+        "match_rate_pct": 100.0,
+        "matches": 10,
+        "discrepancies": 0,
+        "total_evaluations": 10,
         "samples": [
-          { "collecting_lab_sample_id": "FLU6", "gold_standard_qc": "Pass", "match_rate_pct": 95.0, "matches": 95, "discrepancies": 5, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU7", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU8", "gold_standard_qc": "Pass", "match_rate_pct": 91.0, "matches": 91, "discrepancies": 9, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU9", "gold_standard_qc": "Fail", "match_rate_pct": 88.0, "matches": 88, "discrepancies": 12, "total_evaluations": 100 },
-          { "collecting_lab_sample_id": "FLU10", "gold_standard_qc": "Pass", "match_rate_pct": 90.0, "matches": 90, "discrepancies": 10, "total_evaluations": 100 }
+          {
+            "sample_id": "FLU6",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 2,
+            "discrepancies": 0,
+            "total_evaluations": 2
+          },
+          {
+            "sample_id": "FLU7",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 2,
+            "discrepancies": 0,
+            "total_evaluations": 2
+          },
+          {
+            "sample_id": "FLU8",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 2,
+            "discrepancies": 0,
+            "total_evaluations": 2
+          },
+          {
+            "sample_id": "FLU9",
+            "gold_standard_qc": "Fail",
+            "match_rate_pct": 100.0,
+            "matches": 2,
+            "discrepancies": 0,
+            "total_evaluations": 2
+          },
+          {
+            "sample_id": "FLU10",
+            "gold_standard_qc": "Pass",
+            "match_rate_pct": 100.0,
+            "matches": 2,
+            "discrepancies": 0,
+            "total_evaluations": 2
+          }
         ],
-        "fig_match_rate_by_sample": "figures/FLU2/qc_match_rate_by_sample.png"
+        "fig_qc_match_by_sample": "figures/FLU2/qc_match_by_sample.png"
       },
-      "pipeline": { "total_number": 6, "configurations": [], "fig_scatter_positioning": "figures/FLU2/pipeline_scatter_positioning.png", "fig_metric_boxplots_by_pipeline": "figures/FLU2/pipeline_metric_boxplots_by_pipeline.png" }
+      "metadata_metrics": {
+        "samples": [
+          {
+            "sample_id": "FLU6",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 100.0,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 308.5,
+              "min": 304.0,
+              "max": 350.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.16
+            },
+            "per_reads_virus": {
+              "median": 4.0838,
+              "min": 0.64,
+              "max": 5.0
+            },
+            "per_reads_host": {
+              "median": 55.53,
+              "min": 20.2678,
+              "max": 95.8
+            }
+          },
+          {
+            "sample_id": "FLU7",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 99.07,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 256.0,
+              "min": 254.0,
+              "max": 266.0
+            },
+            "per_Ns": {
+              "median": 1.475,
+              "min": 1.07,
+              "max": 1.48
+            },
+            "per_reads_virus": {
+              "median": 74.2342,
+              "min": 39.08,
+              "max": 86.5
+            },
+            "per_reads_host": {
+              "median": 2.37,
+              "min": 1.0776,
+              "max": 3.44
+            }
+          },
+          {
+            "sample_id": "FLU8",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 96.57,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 247.5,
+              "min": 236.0,
+              "max": 254.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "per_reads_virus": {
+              "median": 76.1113,
+              "min": 38.06,
+              "max": 90.3
+            },
+            "per_reads_host": {
+              "median": 5.8,
+              "min": 2.7289,
+              "max": 7.68
+            }
+          },
+          {
+            "sample_id": "FLU9",
+            "per_genome_greater_10x": {
+              "median": 87.05,
+              "min": 86.94,
+              "max": 87.47
+            },
+            "depth_of_coverage_value": {
+              "median": 758.5,
+              "min": 734.0,
+              "max": 834.0
+            },
+            "per_Ns": {
+              "median": 6.25,
+              "min": 0.0,
+              "max": 12.53
+            },
+            "per_reads_virus": {
+              "median": 66.1683,
+              "min": 33.57,
+              "max": 78.9
+            },
+            "per_reads_host": {
+              "median": 3.22,
+              "min": 1.3617,
+              "max": 5.54
+            }
+          },
+          {
+            "sample_id": "FLU10",
+            "per_genome_greater_10x": {
+              "median": 100.0,
+              "min": 96.6,
+              "max": 100.0
+            },
+            "depth_of_coverage_value": {
+              "median": 1156.0,
+              "min": 922.0,
+              "max": 1599.0
+            },
+            "per_Ns": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "per_reads_virus": {
+              "median": 16.046,
+              "min": 4.24,
+              "max": 17.9
+            },
+            "per_reads_host": {
+              "median": 49.7,
+              "min": 19.9961,
+              "max": 81.56
+            }
+          }
+        ]
+      },
+      "benchmarking": {
+        "bioinformatics_protocol": {
+          "total_number": 6,
+          "softwares": [
+            {
+              "name": "Custom pipeline/workflow",
+              "n_labs": 3,
+              "median_identity_pct": 95.989,
+              "median_discrepancies": 20.5,
+              "median_metadata_completeness_pct": 60.7143,
+              "clade_hit_pct": 57.14,
+              "lineage_hit_pct": 78.57
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "median_identity_pct": 95.7007,
+              "median_discrepancies": 40.0,
+              "median_metadata_completeness_pct": 39.2857,
+              "clade_hit_pct": 80.0,
+              "lineage_hit_pct": 60.0
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "Web version",
+              "median_identity_pct": 96.54,
+              "median_discrepancies": 4.0,
+              "median_metadata_completeness_pct": 32.0755,
+              "clade_hit_pct": 60.0,
+              "lineage_hit_pct": 60.0
+            },
+            {
+              "name": "IRMA",
+              "n_labs": 1,
+              "version": "1.2.0",
+              "median_identity_pct": 94.889,
+              "median_discrepancies": 268.0,
+              "median_metadata_completeness_pct": 87.5,
+              "clade_hit_pct": 80.0,
+              "lineage_hit_pct": 100.0
+            },
+            {
+              "name": "IRMA",
+              "n_labs": 3,
+              "version": "1.3.1",
+              "median_identity_pct": 95.6366,
+              "median_discrepancies": 6.0,
+              "median_metadata_completeness_pct": 64.2857,
+              "clade_hit_pct": 81.82,
+              "lineage_hit_pct": 90.91
+            },
+            {
+              "name": "IRMA",
+              "n_labs": 1,
+              "version": "v1.3.1",
+              "median_identity_pct": 95.9044,
+              "median_discrepancies": 7.0,
+              "median_metadata_completeness_pct": 67.9245,
+              "clade_hit_pct": 100.0,
+              "lineage_hit_pct": 100.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+        },
+        "dehosting": {
+          "total_number": 3,
+          "softwares": [
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "2.1.2",
+              "per_reads_host": 5.8
+            },
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "2.1.3",
+              "per_reads_host": 2.7289
+            },
+            {
+              "name": "Kraken2",
+              "n_labs": 1,
+              "version": "2.1.6",
+              "per_reads_host": null
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/dehosting_metric_boxplots_by_pipeline.png"
+        },
+        "preprocessing": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "FiltLong",
+              "n_labs": 1,
+              "version": "0.2.1",
+              "params": "--min_length 100 --keep_percent 98",
+              "number_of_reads_sequenced": 20489.0,
+              "pass_reads": 17217.0
+            },
+            {
+              "name": "IRMA custom script",
+              "n_labs": 1,
+              "params": "Default IRMA",
+              "number_of_reads_sequenced": 20489.0,
+              "pass_reads": 17942.0
+            },
+            {
+              "name": "IRMA custom script",
+              "n_labs": 1,
+              "version": "1.3.1",
+              "params": null,
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "NanoFilt",
+              "n_labs": 1,
+              "version": "2.6.0",
+              "params": "-q 8 -l 50 --headcrop 30 --tailcrop 30 --maxlength 50000",
+              "number_of_reads_sequenced": null,
+              "pass_reads": null
+            },
+            {
+              "name": "Porechop",
+              "n_labs": 2,
+              "version": "v0.2.4",
+              "params": "-q 7 -l 300 --maxlength 2500",
+              "number_of_reads_sequenced": 20489.0,
+              "pass_reads": 14129.5
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/preprocessing_metric_boxplots_by_pipeline.png"
+        },
+        "mapping": {
+          "total_number": 4,
+          "softwares": [
+            {
+              "name": "BLAT",
+              "n_labs": 1,
+              "params": "Default IRMA",
+              "depth_of_coverage_threshold": "Default IRMA",
+              "per_reads_virus": 77.6
+            },
+            {
+              "name": "BLAT",
+              "n_labs": 1,
+              "version": "IRMA 1.3.0-rc1",
+              "params": "Default (IRMA module FLU_AD)",
+              "depth_of_coverage_threshold": "1x",
+              "per_reads_virus": 33.57
+            },
+            {
+              "name": "BLAT",
+              "n_labs": 2,
+              "version": "v35",
+              "params": null,
+              "depth_of_coverage_threshold": "50x",
+              "per_reads_virus": 78.9
+            },
+            {
+              "name": "minimap2",
+              "n_labs": 2,
+              "version": "2.30-r1287",
+              "params": "-ax map-ont",
+              "depth_of_coverage_threshold": null,
+              "per_reads_virus": null
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/mapping_metric_boxplots_by_pipeline.png"
+        },
+        "assembly": {
+          "total_number": 3,
+          "softwares": [
+            {
+              "name": "Flye",
+              "n_labs": 1,
+              "version": "2.9.6-b1802",
+              "params": "--nano-raw --iterations 2",
+              "consensus_genome_length": null,
+              "median_identity_pct": 96.0597,
+              "median_discrepancies": 0.0
+            },
+            {
+              "name": "LABEL",
+              "n_labs": 1,
+              "version": "IRMA 1.3.0-rc1",
+              "params": "Default (IRMA module FLU_AD)",
+              "consensus_genome_length": 13132.0,
+              "median_identity_pct": 95.9184,
+              "median_discrepancies": 7.0
+            },
+            {
+              "name": "LABEL",
+              "n_labs": 1,
+              "version": "v0.6.5",
+              "params": null,
+              "consensus_genome_length": 13123.0,
+              "median_identity_pct": 94.889,
+              "median_discrepancies": 268.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/assembly_metric_boxplots_by_pipeline.png"
+        },
+        "consensus_software": {
+          "total_number": 5,
+          "softwares": [
+            {
+              "name": "IRMA consensus",
+              "n_labs": 2,
+              "params": "Default IRMA",
+              "consensus_genome_length": null,
+              "median_identity_pct": 95.605,
+              "median_discrepancies": 13.5
+            },
+            {
+              "name": "IRMA consensus",
+              "n_labs": 1,
+              "version": "1.2.0",
+              "params": "MIN_AMBIG=0.25 MIN_CONS_QUALITY=10 MIN_CONS_SUPPORT=20 QUAL_THRESHOLD=10",
+              "consensus_genome_length": 13123.0,
+              "median_identity_pct": 94.889,
+              "median_discrepancies": 268.0
+            },
+            {
+              "name": "IRMA consensus",
+              "n_labs": 2,
+              "version": "1.3.1",
+              "params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
+              "consensus_genome_length": 13123.0,
+              "median_identity_pct": 95.9114,
+              "median_discrepancies": 3.0
+            },
+            {
+              "name": "Medaka consensus",
+              "n_labs": 1,
+              "version": "2.2.1",
+              "params": "-m r941_min_hac_variant_g507 -r N",
+              "consensus_genome_length": null,
+              "median_identity_pct": 97.1551,
+              "median_discrepancies": 37.5
+            },
+            {
+              "name": "bcftools consensus",
+              "n_labs": 1,
+              "version": "1.23",
+              "params": null,
+              "consensus_genome_length": null,
+              "median_identity_pct": 95.1296,
+              "median_discrepancies": 248.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/consensus_metric_boxplots_by_pipeline.png"
+        },
+        "variant_calling": {
+          "total_number": 7,
+          "softwares": [
+            {
+              "name": "Custom variant calling script",
+              "n_labs": 1,
+              "params": "-f 0.25 -d 10",
+              "number_of_variants_in_consensus": 463.5,
+              "median_discrepancies": null
+            },
+            {
+              "name": "IRMA custom VariantCaller",
+              "n_labs": 1,
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            },
+            {
+              "name": "IRMA custom VariantCaller",
+              "n_labs": 1,
+              "version": "1.2.0",
+              "params": null,
+              "number_of_variants_in_consensus": 462.0,
+              "median_discrepancies": null
+            },
+            {
+              "name": "IRMA custom VariantCaller",
+              "n_labs": 1,
+              "version": "1.3.1",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            },
+            {
+              "name": "Medaka",
+              "n_labs": 1,
+              "params": "default MEDAKA",
+              "number_of_variants_in_consensus": 475.0,
+              "median_discrepancies": null
+            },
+            {
+              "name": "Medaka",
+              "n_labs": 1,
+              "version": "2.2.1",
+              "params": "-m r941_min_hac_variant_g507",
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            },
+            {
+              "name": "bcftools",
+              "n_labs": 1,
+              "version": "1.23",
+              "params": null,
+              "number_of_variants_in_consensus": null,
+              "median_discrepancies": null
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/variant_calling_metric_boxplots_by_pipeline.png"
+        },
+        "clade_assignment": {
+          "total_number": 2,
+          "softwares": [
+            {
+              "name": "Nextclade",
+              "n_labs": 6,
+              "version": "3.18.1",
+              "database_version": "2026-01-14--19-24-43Z",
+              "clade_discordance_pct": 12.12,
+              "clade_hit_pct": 87.88
+            },
+            {
+              "name": "Nextclade",
+              "n_labs": 1,
+              "version": "3.9.1",
+              "database_version": "2025-09-09--12-13-13Z",
+              "clade_discordance_pct": 0.0,
+              "clade_hit_pct": 100.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/clade_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "type_assignment": {
+          "total_number": 4,
+          "softwares": [
+            {
+              "name": "ABRicate",
+              "n_labs": 1,
+              "database_version": "2.2.2",
+              "type_discordance_pct": 0.0,
+              "type_hit_pct": 100.0
+            },
+            {
+              "name": "Custom typing script",
+              "n_labs": 1,
+              "database_version": null,
+              "type_discordance_pct": 60.0,
+              "type_hit_pct": 40.0
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "database_version": "2.2.2",
+              "type_discordance_pct": 40.0,
+              "type_hit_pct": 60.0
+            },
+            {
+              "name": "IRMA typing",
+              "n_labs": 4,
+              "database_version": "influenza A & B, genome sets version 2",
+              "type_discordance_pct": 5.0,
+              "type_hit_pct": 95.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/type_assignment_metric_boxplots_by_pipeline.png"
+        },
+        "subtype_assignment": {
+          "total_number": 7,
+          "softwares": [
+            {
+              "name": "ABRicate",
+              "n_labs": 1,
+              "version": "1.0.1",
+              "database_version": "2.2.2",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            },
+            {
+              "name": "Custom subtyping script",
+              "n_labs": 1,
+              "database_version": null,
+              "subtype_discordance_pct": 60.0,
+              "subtype_hit_pct": 40.0
+            },
+            {
+              "name": "INSaFLU",
+              "n_labs": 1,
+              "version": "2.2.2",
+              "database_version": "2.2.2",
+              "subtype_discordance_pct": 40.0,
+              "subtype_hit_pct": 60.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 1,
+              "database_version": "influenza A & B, genome sets version 2",
+              "subtype_discordance_pct": 20.0,
+              "subtype_hit_pct": 80.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 1,
+              "version": "1.2.0",
+              "database_version": "1",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 1,
+              "version": "1.3.0-rc1",
+              "database_version": "1.3.0-rc1",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            },
+            {
+              "name": "IRMA subtyping",
+              "n_labs": 2,
+              "version": "1.3.1",
+              "database_version": "v1.3.1",
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
+            }
+          ],
+          "fig_metric_boxplots": "figures/FLU2/subtype_assignment_metric_boxplots_by_pipeline.png"
+        }
+      }
     }
-    }
+  }
 }
