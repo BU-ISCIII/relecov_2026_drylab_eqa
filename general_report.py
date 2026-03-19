@@ -682,15 +682,18 @@ def make_qc_match_rate_by_component_plot(
     components = general_data.get("components", {})
 
     component_names = []
-    match_counts = []
-    discrepancy_counts = []
+    match_rates = []
+    discrepancy_rates = []
 
     for comp_code, comp_data in components.items():
         matches, discrepancies = qc_hits_discrepancies_from_component(comp_data)
+        total = matches + discrepancies
+        match_rate = 100.0 * matches / total if total else 0.0
+        discrepancy_rate = 100.0 * discrepancies / total if total else 0.0
 
         component_names.append(comp_code)
-        match_counts.append(matches)
-        discrepancy_counts.append(discrepancies)
+        match_rates.append(match_rate)
+        discrepancy_rates.append(discrepancy_rate)
 
     output_dir = ensure_network_figures_dir(figures_dir)
     output_path = output_dir / output_filename
@@ -698,14 +701,44 @@ def make_qc_match_rate_by_component_plot(
     plt.figure(figsize=(10, 6))
     x_positions = list(range(len(component_names)))
 
-    plt.bar(x_positions, match_counts, label="Match", color=CBF_COLORS["match"])
-    plt.bar(x_positions, discrepancy_counts, bottom=match_counts, label="Discrepancy", color=CBF_COLORS["discrepancy"])
+    match_bars = plt.bar(x_positions, match_rates, label="Match", color=CBF_COLORS["match"])
+    discrepancy_bars = plt.bar(x_positions, discrepancy_rates, bottom=match_rates, label="Discrepancy", color=CBF_COLORS["discrepancy"])
 
     plt.xticks(x_positions, component_names)
     plt.xlabel("Component")
-    plt.ylabel("Total number of QC evaluations")
+    plt.ylabel("QC evaluations (%)")
     plt.title(title)
+    plt.ylim(0, 100)
     plt.legend()
+
+    for bar, value in zip(match_bars, match_rates):
+        if value <= 0:
+            continue
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            value / 2,
+            f"{value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    for bar, match_value, discrepancy_value in zip(discrepancy_bars, match_rates, discrepancy_rates):
+        if discrepancy_value <= 0:
+            continue
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            match_value + discrepancy_value / 2,
+            f"{discrepancy_value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
