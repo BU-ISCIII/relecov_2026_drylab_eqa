@@ -27,8 +27,6 @@
     "classification_summary": "figures/network/classification_summary.png",
     "metadata_completeness": "figures/network/metadata_completeness.png",
     "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png",
-    "classification_summary_lineage_type": "figures/network/classification_summary_lineage_type.png",
-    "classification_summary_clade": "figures/network/classification_summary_clade.png",
     "metadata_completeness_distribution": "figures/network/metadata_completeness_distribution.png"
   },
   "general_results": {

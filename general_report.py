@@ -303,6 +303,63 @@ def make_stacked_classification_plot(
     return str(output_path)
 
 
+def make_combined_classification_summary_plot(
+    general_data: Dict[str, Any],
+    figures_dir: str | Path,
+    output_filename: str = "classification_summary.png",
+) -> str:
+    components = general_data.get("components", {})
+    component_names = list(components.keys())
+
+    lineage_hit_counts = []
+    lineage_discrepancy_counts = []
+    clade_hit_counts = []
+    clade_discrepancy_counts = []
+
+    for comp_code, comp_data in components.items():
+        lineage_hits, lineage_discrepancies = classification_hits_discrepancies_from_component(comp_data, "lineage_type")
+        clade_hits, clade_discrepancies = classification_hits_discrepancies_from_component(comp_data, "clade")
+
+        component_names.append(comp_code)
+        lineage_hit_counts.append(lineage_hits)
+        lineage_discrepancy_counts.append(lineage_discrepancies)
+        clade_hit_counts.append(clade_hits)
+        clade_discrepancy_counts.append(clade_discrepancies)
+
+    # Remove duplicated names introduced while collecting counts.
+    component_names = list(components.keys())
+    x_positions = list(range(len(component_names)))
+
+    output_dir = ensure_network_figures_dir(figures_dir)
+    output_path = output_dir / output_filename
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
+
+    axes[0].bar(x_positions, lineage_hit_counts, color=CBF_COLORS["match"], label="Match")
+    axes[0].bar(x_positions, lineage_discrepancy_counts, bottom=lineage_hit_counts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
+    axes[0].set_xticks(x_positions)
+    axes[0].set_xticklabels(component_names)
+    axes[0].set_xlabel("Component")
+    axes[0].set_ylabel("Total number of assignments")
+    axes[0].set_title("A. Lineage/type assignments")
+    axes[0].legend()
+
+    axes[1].bar(x_positions, clade_hit_counts, color=CBF_COLORS["match"], label="Match")
+    axes[1].bar(x_positions, clade_discrepancy_counts, bottom=clade_hit_counts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
+    axes[1].set_xticks(x_positions)
+    axes[1].set_xticklabels(component_names)
+    axes[1].set_xlabel("Component")
+    axes[1].set_title("B. Clade assignments")
+    axes[1].legend()
+
+    fig.suptitle("Distribution of classification outcomes across participating laboratories")
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
 def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int, int]:
     """
     Calculate total QC matches and discrepancies across all samples of one component.
@@ -683,20 +740,9 @@ def generate_network_figures(
         figures_dir=figures_dir,
     )
 
-    outputs["classification_summary_lineage_type"] = make_stacked_classification_plot(
+    outputs["classification_summary"] = make_combined_classification_summary_plot(
         general_data=general_data,
         figures_dir=figures_dir,
-        mode="lineage_type",
-        output_filename="classification_summary_lineage_type.png",
-        title="Network-level lineage/type assignment performance summary",
-    )
-
-    outputs["classification_summary_clade"] = make_stacked_classification_plot(
-        general_data=general_data,
-        figures_dir=figures_dir,
-        mode="clade",
-        output_filename="classification_summary_clade.png",
-        title="Network-level clade assignment performance summary",
     )
 
     outputs["metadata_completeness_distribution"] = make_metadata_completeness_distribution_plot(

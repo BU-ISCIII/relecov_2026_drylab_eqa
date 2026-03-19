@@ -674,15 +674,11 @@ Across components, classification concordance was generally high, with only limi
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-{{ render_figure(general.figures.classification_summary_lineage_type, "Network-level lineage/type assignment performance summary.") }}
+{{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.") }}
 
-![classification_summary_lineage_type](./figures/network/classification_summary_lineage_type.png)
+![classification_summary](./figures/network/classification_summary.png)
 
-{{ render_figure(general.figures.classification_summary_clade, "Network-level clade assignment performance summary.") }}
-
-![classification_summary_clade](./figures/network/classification_summary_clade.png)
-
-**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Stacked bars represent the total number of classification outcomes across all samples and laboratories for each component. Bars are partitioned into **Hits** (correct assignments relative to the curated gold standard) and **Discrepancies** (incorrect assignments). Separate panels show results for **lineage/type assignments** and **clade assignments**.
+**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the total number of classification outcomes across all samples and laboratories for each component. Bars are partitioned into **Hits** (correct assignments relative to the curated gold standard) and **Discrepancies** (incorrect assignments).
 
 ### 5.5. Metadata completeness and compliance
 
