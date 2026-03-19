@@ -50,6 +50,36 @@ COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS = {
     "FLU2": 410.0,
 }
 
+CONSENSUS_DISCREPANCY_TYPE_ORDER = [
+    "wrong_nt",
+    "ambiguity2nt",
+    "nt2ambiguity",
+    "ns2nt",
+    "nt2ns",
+    "insertions",
+    "deletions",
+]
+
+CONSENSUS_DISCREPANCY_TYPE_LABELS = {
+    "wrong_nt": "Wrong nucleotide",
+    "ambiguity2nt": "Ambiguity instead\nof nucleotide",
+    "nt2ambiguity": "Nucleotide instead\nof ambiguity",
+    "ns2nt": "Stretch of Ns\ninstead of nucleotide",
+    "nt2ns": "Nucleotide stretch\ninstead of Ns",
+    "insertions": "Insertion relative\nto gold standard",
+    "deletions": "Deletion relative\nto gold standard",
+}
+
+CONSENSUS_DISCREPANCY_TYPE_COLORS = {
+    "wrong_nt": "#0072B2",
+    "ambiguity2nt": "#56B4E9",
+    "nt2ambiguity": "#009E73",
+    "ns2nt": "#F0E442",
+    "nt2ns": "#E69F00",
+    "insertions": "#D55E00",
+    "deletions": "#CC79A7",
+}
+
 
 def load_json(path: str | Path) -> Any:
     with open(path, "r", encoding="utf-8") as handle:
@@ -534,6 +564,63 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
     return str(output_path)
 
 
+def make_component_consensus_discrepancies_stacked_by_sample(
+    general_data: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "consensus_discrepancies_stacked_by_sample.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    samples = comp_data.get("consensus", {}).get("samples", [])
+    if not samples:
+        return str(output_path)
+
+    sample_names = [sample.get("collecting_lab_sample_id") for sample in samples if sample.get("collecting_lab_sample_id")]
+    if not sample_names:
+        return str(output_path)
+
+    stacked_values = {key: [] for key in CONSENSUS_DISCREPANCY_TYPE_ORDER}
+    for sample in samples:
+        for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+            value = safe_number(sample.get(key))
+            stacked_values[key].append(value if value is not None else 0.0)
+
+    x_positions = list(range(len(sample_names)))
+    bottoms = [0.0] * len(sample_names)
+
+    plt.figure(figsize=(max(8, len(sample_names) * 1.15), 6))
+
+    for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+        values = stacked_values[key]
+        plt.bar(
+            x_positions,
+            values,
+            bottom=bottoms,
+            label=CONSENSUS_DISCREPANCY_TYPE_LABELS.get(key, key),
+            color=CONSENSUS_DISCREPANCY_TYPE_COLORS[key],
+        )
+        bottoms = [bottom + value for bottom, value in zip(bottoms, values)]
+
+    plt.xticks(x_positions, sample_names, rotation=45, ha="right")
+    plt.xlabel("Sample")
+    plt.ylabel("Median consensus discrepancies")
+    plt.title(f"{comp_code} consensus discrepancy types by sample")
+    plt.legend(
+        title="Discrepancy type",
+        bbox_to_anchor=(1.02, 1),
+        loc="upper left",
+        frameon=False,
+    )
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_consensus_summary_plot(
     labs: List[Dict[str, Any]],
     figures_dir: str | Path,
@@ -935,6 +1022,11 @@ def generate_component_figures(
         make_component_consensus_discrepancies_boxplot_by_sample(
             general_data=general_data,
             labs=labs,
+            comp_code=comp_code,
+            figures_dir=figures_dir,
+        )
+        make_component_consensus_discrepancies_stacked_by_sample(
+            general_data=general_data,
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
