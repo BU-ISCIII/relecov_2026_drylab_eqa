@@ -570,6 +570,7 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
 
 def make_component_consensus_discrepancies_stacked_by_sample(
     general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
     comp_code: str,
     figures_dir: str | Path,
     output_filename: str = "consensus_discrepancies_stacked_by_sample.png",
@@ -578,19 +579,39 @@ def make_component_consensus_discrepancies_stacked_by_sample(
     output_path = output_dir / output_filename
 
     comp_data = general_data.get("components", {}).get(comp_code, {})
-    samples = comp_data.get("consensus", {}).get("samples", [])
-    if not samples:
-        return str(output_path)
-
-    sample_names = [sample.get("collecting_lab_sample_id") for sample in samples if sample.get("collecting_lab_sample_id")]
+    sample_names = [
+        sample.get("collecting_lab_sample_id")
+        for sample in comp_data.get("consensus", {}).get("samples", [])
+        if sample.get("collecting_lab_sample_id")
+    ]
     if not sample_names:
         return str(output_path)
 
     stacked_values = {key: [] for key in CONSENSUS_DISCREPANCY_TYPE_ORDER}
-    for sample in samples:
+    for sample_id in sample_names:
+        totals = {key: 0.0 for key in CONSENSUS_DISCREPANCY_TYPE_ORDER}
+        for lab in labs:
+            comp = lab.get("components", {}).get(comp_code)
+            if not comp:
+                continue
+
+            sample = comp.get("samples", {}).get(sample_id)
+            if not sample:
+                continue
+
+            consensus = sample.get("consensus", {})
+            gi = safe_number(consensus.get("genome_identity_pct"))
+            if gi is None:
+                continue
+
+            discrepancy_breakdown = consensus.get("discrepancy_breakdown", {})
+            for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+                value = safe_number(discrepancy_breakdown.get(key))
+                if value is not None:
+                    totals[key] += value
+
         for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
-            value = safe_number(sample.get(key))
-            stacked_values[key].append(value if value is not None else 0.0)
+            stacked_values[key].append(totals[key])
 
     x_positions = list(range(len(sample_names)))
     bottoms = [0.0] * len(sample_names)
@@ -610,7 +631,7 @@ def make_component_consensus_discrepancies_stacked_by_sample(
 
     plt.xticks(x_positions, sample_names, rotation=45, ha="right")
     plt.xlabel("Sample")
-    plt.ylabel("Median consensus discrepancies")
+    plt.ylabel("Total consensus discrepancies")
     plt.title(f"{comp_code} consensus discrepancy types by sample")
     plt.legend(
         title="Discrepancy type",
@@ -1145,6 +1166,7 @@ def generate_component_figures(
         )
         make_component_consensus_discrepancies_stacked_by_sample(
             general_data=general_data,
+            labs=labs,
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
