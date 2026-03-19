@@ -927,9 +927,7 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![classification_summary](./example_images/classification_summary.png)
-
-> Esta pero desagregada por muestra y stacked por discrepancia
+![variant_discrepancies_stacked_by_sample](./figures/SARS1/variant_discrepancies_stacked_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
 

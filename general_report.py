@@ -84,6 +84,30 @@ CONSENSUS_DISCREPANCY_TYPE_COLORS = {
     "deletions": "#CC79A7",
 }
 
+VARIANT_DISCREPANCY_TYPE_ORDER = [
+    "wrong_nt",
+    "insertions",
+    "deletions",
+    "missing",
+    "denovo",
+]
+
+VARIANT_DISCREPANCY_TYPE_LABELS = {
+    "wrong_nt": "Wrong nucleotide",
+    "insertions": "Insertions",
+    "deletions": "Deletions",
+    "missing": "Missing expected\nvariants",
+    "denovo": "De novo\nvariants",
+}
+
+VARIANT_DISCREPANCY_TYPE_COLORS = {
+    "wrong_nt": "#0072B2",
+    "insertions": "#E69F00",
+    "deletions": "#CC79A7",
+    "missing": "#56B4E9",
+    "denovo": "#D55E00",
+}
+
 
 def load_json(path: str | Path) -> Any:
     with open(path, "r", encoding="utf-8") as handle:
@@ -760,6 +784,83 @@ def make_component_consensus_discrepancy_type_boxplot(
     return str(output_path)
 
 
+def make_component_variant_discrepancies_stacked_by_sample(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "variant_discrepancies_stacked_by_sample.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    sample_names = [
+        sample.get("collecting_lab_sample_id")
+        for sample in comp_data.get("variant", {}).get("samples", [])
+        if sample.get("collecting_lab_sample_id")
+    ]
+    if not sample_names:
+        return str(output_path)
+
+    stacked_values = {key: [] for key in VARIANT_DISCREPANCY_TYPE_ORDER}
+    for sample_id in sample_names:
+        totals = {key: 0.0 for key in VARIANT_DISCREPANCY_TYPE_ORDER}
+        for lab in labs:
+            comp = lab.get("components", {}).get(comp_code)
+            if not comp:
+                continue
+
+            sample = comp.get("samples", {}).get(sample_id)
+            if not sample:
+                continue
+
+            variants = sample.get("variants", {})
+            total_discrepancies = safe_number(variants.get("total_discrepancies"))
+            if total_discrepancies is None:
+                continue
+
+            for key in VARIANT_DISCREPANCY_TYPE_ORDER:
+                value = safe_number(variants.get(key))
+                if value is not None:
+                    totals[key] += value
+
+        for key in VARIANT_DISCREPANCY_TYPE_ORDER:
+            stacked_values[key].append(totals[key])
+
+    x_positions = list(range(len(sample_names)))
+    bottoms = [0.0] * len(sample_names)
+
+    plt.figure(figsize=(max(8, len(sample_names) * 1.15), 6))
+    for key in VARIANT_DISCREPANCY_TYPE_ORDER:
+        values = stacked_values[key]
+        plt.bar(
+            x_positions,
+            values,
+            bottom=bottoms,
+            label=VARIANT_DISCREPANCY_TYPE_LABELS.get(key, key),
+            color=VARIANT_DISCREPANCY_TYPE_COLORS[key],
+        )
+        bottoms = [bottom + value for bottom, value in zip(bottoms, values)]
+
+    plt.legend(
+        title="Discrepancy type",
+        bbox_to_anchor=(1.02, 1),
+        loc="upper left",
+        frameon=False,
+    )
+
+    plt.xticks(x_positions, sample_names, rotation=45, ha="right")
+    plt.xlabel("Sample")
+    plt.ylabel("Total variant discrepancies")
+    plt.title(f"{comp_code} variant discrepancy types by sample")
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_consensus_summary_plot(
     labs: List[Dict[str, Any]],
     figures_dir: str | Path,
@@ -1176,6 +1277,13 @@ def generate_component_figures(
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
+        if comp_code.startswith("SARS"):
+            make_component_variant_discrepancies_stacked_by_sample(
+                general_data=general_data,
+                labs=labs,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
 
 
 def collect_software_groups(
@@ -1910,6 +2018,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "dominant_discrepancy_pattern": dominant_metric_key(variant_breakdown_summary),
                 "most_frequent_discrepancy_pattern": dominant_metric_key(variant_breakdown_summary),
                 "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/variant_discrepancies_boxplot_by_sample.png",
+                "fig_discrepancies_stacked_by_sample": f"figures/{comp_code}/variant_discrepancies_stacked_by_sample.png",
                 "fig_discrepancy_type_boxplot": f"figures/{comp_code}/variant_discrepancy_type_boxplot.png",
             }
         else:
