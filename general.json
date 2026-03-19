@@ -62,9 +62,11 @@
       "max_variants_in_vcf": 39071.0
     },
     "classification": {
-      "sars_cov_2_concordance_pct": 77.66,
+      "sars_lineage_concordance_pct": 77.66,
       "influenza_type_concordance_pct": 81.63,
       "sars_clade_concordance_pct": 73.4,
+      "influenza_clade_concordance_pct": 67.35,
+      "sars_cov_2_concordance_pct": 77.66,
       "flu_clade_concordance_pct": 67.35
     }
   },

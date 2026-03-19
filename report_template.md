@@ -662,10 +662,10 @@ Together, Figure {{ fig_counter.value }} and Table {{ table_counter.value }} hig
 
 Lineage, Subtype and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
 
-- SARS-CoV-2 lineage assignment: **{{ pct(general.general_results.classification.sars_cov_2_concordance_pct) }}** concordance.
+- SARS-CoV-2 lineage assignment: **{{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}** concordance.
 - Influenza type/subtype identification: **{{ pct(general.general_results.classification.influenza_type_concordance_pct) }}** concordance.
 - SARS-CoV-2 clade assignment: **{{ pct(general.general_results.classification.sars_clade_concordance_pct) }}** concordance.
-- Influenza clade assignment: **{{ pct(general.general_results.classification.flu_clade_concordance_pct) }}** concordance.
+- Influenza clade assignment: **{{ pct(general.general_results.classification.influenza_clade_concordance_pct) }}** concordance.
 
 Across components, classification concordance was generally high, with only limited inter-laboratory variability. Observed discrepancies were mainly associated with (TODO revisar que tenga sentido):
 

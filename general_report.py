@@ -2256,9 +2256,11 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "max_variants_in_vcf": max_or_none(influenza_variants_in_vcf),
             },
             "classification": {
-                "sars_cov_2_concordance_pct": pct(sars_lineage_matches, sars_lineage_total),
+                "sars_lineage_concordance_pct": pct(sars_lineage_matches, sars_lineage_total),
                 "influenza_type_concordance_pct": pct(flu_type_matches, flu_type_total),
                 "sars_clade_concordance_pct": pct(sars_clade_matches, sars_clade_total),
+                "influenza_clade_concordance_pct": pct(flu_clade_matches, flu_clade_total),
+                "sars_cov_2_concordance_pct": pct(sars_lineage_matches, sars_lineage_total),
                 "flu_clade_concordance_pct": pct(flu_clade_matches, flu_clade_total),
             },
         },
