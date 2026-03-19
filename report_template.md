@@ -715,16 +715,18 @@ Incomplete parameter reporting limited the ability to fully reconstruct or repro
 
 #### Controlled Vocabulary Compliance
 
-Compliance with predefined controlled vocabularies was evaluated to assess standardisation readiness: (TODO: rellenar esto a mano con el excel de drive)
+Compliance with controlled vocabulary requirements was assessed to determine the degree of metadata standardisation achieved across participating laboratories. Only fields expected to contain predefined categorical values were considered in this analysis; free-text fields such as software versions, file names, and parameter descriptions were excluded.
 
-- XXX (TODO) of submissions were fully compliant with controlled vocabulary requirements in dropdown menus.
-- XXX (TODO) contained at least one free-text substitution where a predefined dropdown was required.
+- 26.32% of submissions (5 laboratories) were fully compliant with controlled vocabulary requirements.
+- 73.68% (14 laboratories) required at least one manual correction due to the use of a non-standard value in a controlled field.
 
-The most common compliance issues included (TODO revisar si es cierto):
+The most common compliance issues included:
 
-- Free-text entry of software names instead of predefined values.
-- Inconsistent declaration of lineage assignment tools.
-- Ambiguous reporting of reference genome identifiers.
+- Use of free-text entries instead of predefined software names in dropdown-based metadata fields, which prevented direct validation against the harmonised template.
+- Incorrect or inconsistent completion of lineage, clade, influenza type, or subtype fields.
+- Missing mandatory fields requiring subsequent normalisation.
+
+A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred despite the fact that the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to allow laboratories to review the available options and request the incorporation of missing software tools into the schema, and despite explicit instructions on how mandatory fields without available data should be completed.
 
 #### Sample Quality Control Assessment
 
