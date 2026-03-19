@@ -772,7 +772,10 @@ Substantial diversity was observed in the selection of core analytical tools (TO
 
 - Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct tools or versions )
 - Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct tools or versions )
-- Lineage/type and clade assignment software ( {{ general.metadata_completeness.total_lineage_softwares }} tools or versions )
+- SARS-CoV-2 lineage assignment software ( {{ general.metadata_completeness.total_lineage_assignment_softwares }} distinct tools or versions )
+- Clade assignment software ( {{ general.metadata_completeness.total_clade_assignment_softwares }} distinct tools or versions )
+- Influenza type assignment software ( {{ general.metadata_completeness.total_type_assignment_softwares }} distinct tools or versions )
+- Influenza subtype assignment software ( {{ general.metadata_completeness.total_subtype_assignment_softwares }} distinct tools or versions )
 
 Comparative performance analyses stratified by component are presented in Section 6, where software-level differences are evaluated within homogeneous analytical contexts (SARS-CoV-2 Illumina, SARS-CoV-2 Nanopore, Influenza Illumina, Influenza Nanopore).
 

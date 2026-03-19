@@ -961,7 +961,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
     all_workflows = set()
     consensus_softwares = set()
     variant_softwares = set()
-    lineage_softwares = set()
+    lineage_assignment_softwares = set()
+    clade_assignment_softwares = set()
+    type_assignment_softwares = set()
+    subtype_assignment_softwares = set()
 
     components_out: Dict[str, Any] = {}
 
@@ -1070,21 +1073,21 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     )
 
                     if sig:
-                        lineage_softwares.add(sig)
+                        lineage_assignment_softwares.add(sig)
                 else:
                     sig = software_signature(
                         sample.get("software_benchmarking", {}).get("type_assignment_software_name"),
                         None,
                     )
                     if sig:
-                        lineage_softwares.add(sig)
+                        type_assignment_softwares.add(sig)
 
                     sig = software_signature(
                         sample.get("software_benchmarking", {}).get("subtype_assignment_software_name"),
                         sample.get("software_benchmarking", {}).get("subtype_assignment_software_version"),
                     )
                     if sig:
-                        lineage_softwares.add(sig)
+                        subtype_assignment_softwares.add(sig)
 
                 sig = software_signature(
                     sample.get("software_benchmarking", {}).get("clade_assignment_software_name"),
@@ -1092,7 +1095,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 )
 
                 if sig:
-                    variant_softwares.add(sig)
+                    clade_assignment_softwares.add(sig)
 
                 expected_qc = expected_sample.get("expected_qc")
                 reported_qc = sample.get("qc_test")
@@ -2241,7 +2244,16 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "total_workflows": len(all_workflows),
             "total_consensus_softwares": len(consensus_softwares),
             "total_variant_softwares": len(variant_softwares),
-            "total_lineage_softwares": len(lineage_softwares),
+            "total_lineage_assignment_softwares": len(lineage_assignment_softwares),
+            "total_clade_assignment_softwares": len(clade_assignment_softwares),
+            "total_type_assignment_softwares": len(type_assignment_softwares),
+            "total_subtype_assignment_softwares": len(subtype_assignment_softwares),
+            "total_classification_softwares": len(
+                lineage_assignment_softwares
+                | clade_assignment_softwares
+                | type_assignment_softwares
+                | subtype_assignment_softwares
+            ),
             "primary_incompleteness_drivers": [name for name, _ in global_driver_counter.most_common(10)],
         },
         "qc": {
