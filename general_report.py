@@ -21,6 +21,28 @@ FIGURE_PATHS = {
     "qc_match_rate_by_component": "figures/network/qc_match_rate_by_component.png",
 }
 
+CBF_COLORS = {
+    "match": "#0072B2",
+    "discrepancy": "#E69F00",
+    "high_freq_only": "#D55E00",
+    "low_freq_only": "#56B4E9",
+    "high_and_low_freq": "#009E73",
+    "box_sars1": "#56B4E9",
+    "box_sars2": "#0072B2",
+    "box_flu1": "#E69F00",
+    "box_flu2": "#CC79A7",
+    "box_default": "#999999",
+    "median": "#000000",
+    "outlier": "#CC79A7",
+}
+
+COMPONENT_BOX_COLORS = {
+    "SARS1": CBF_COLORS["box_sars1"],
+    "SARS2": CBF_COLORS["box_sars2"],
+    "FLU1": CBF_COLORS["box_flu1"],
+    "FLU2": CBF_COLORS["box_flu2"],
+}
+
 
 def load_json(path: str | Path) -> Any:
     with open(path, "r", encoding="utf-8") as handle:
@@ -183,6 +205,27 @@ def ensure_network_figures_dir(figures_dir: str | Path) -> Path:
     return output_dir
 
 
+def style_boxplot(bp: Dict[str, Any], labels: List[str]) -> None:
+    for patch, label in zip(bp["boxes"], labels):
+        patch.set_facecolor(COMPONENT_BOX_COLORS.get(label, CBF_COLORS["box_default"]))
+        patch.set_edgecolor("#333333")
+        patch.set_alpha(0.65)
+
+    for median_line in bp["medians"]:
+        median_line.set_color(CBF_COLORS["median"])
+        median_line.set_linewidth(2)
+
+    for whisker in bp["whiskers"]:
+        whisker.set_color("#444444")
+    for cap in bp["caps"]:
+        cap.set_color("#444444")
+    for flier in bp["fliers"]:
+        flier.set_marker("o")
+        flier.set_markerfacecolor("white")
+        flier.set_markeredgecolor("#444444")
+        flier.set_markersize(5)
+
+
 def classification_hits_discrepancies_from_component(
     comp_data: Dict[str, Any],
     mode: str,
@@ -245,8 +288,8 @@ def make_stacked_classification_plot(
     plt.figure(figsize=(10, 6))
     x_positions = list(range(len(component_names)))
 
-    plt.bar(x_positions, hit_counts, label="Match")
-    plt.bar(x_positions, discrepancy_counts, bottom=hit_counts, label="Discrepancy")
+    plt.bar(x_positions, hit_counts, label="Match", color=CBF_COLORS["match"])
+    plt.bar(x_positions, discrepancy_counts, bottom=hit_counts, label="Discrepancy", color=CBF_COLORS["discrepancy"])
 
     plt.xticks(x_positions, component_names)
     plt.xlabel("Component")
@@ -329,7 +372,8 @@ def make_consensus_summary_plot(
         outlier_annotations.append((idx + 1, outliers_above_limit))
 
     plt.figure(figsize=(10, 6))
-    plt.boxplot(plotted_data, labels=component_names, showfliers=True)
+    bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
+    style_boxplot(bp, component_names)
     plt.xlabel("Component")
     plt.ylabel("Consensus discrepancies")
     plt.title(title)
@@ -347,7 +391,7 @@ def make_consensus_summary_plot(
             ha="center",
             va="center",
             fontsize=18,
-            color="red",
+            color=CBF_COLORS["outlier"],
             fontweight="bold",
         )
         plt.text(
@@ -357,7 +401,7 @@ def make_consensus_summary_plot(
             ha="center",
             va="top",
             fontsize=9,
-            color="red",
+            color=CBF_COLORS["outlier"],
         )
 
     plt.tight_layout()
@@ -419,7 +463,8 @@ def make_variant_summary_plot(
         outlier_annotations.append((idx + 1, outliers_above_limit))
 
     plt.figure(figsize=(8, 6))
-    plt.boxplot(plotted_data, labels=component_names, showfliers=True)
+    bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
+    style_boxplot(bp, component_names)
     plt.xlabel("Component")
     plt.ylabel("Variant discrepancies")
     plt.title(title)
@@ -437,7 +482,7 @@ def make_variant_summary_plot(
             ha="center",
             va="center",
             fontsize=18,
-            color="red",
+            color=CBF_COLORS["outlier"],
             fontweight="bold",
         )
         plt.text(
@@ -447,7 +492,7 @@ def make_variant_summary_plot(
             ha="center",
             va="top",
             fontsize=9,
-            color="red",
+            color=CBF_COLORS["outlier"],
         )
 
     plt.tight_layout()
@@ -480,7 +525,15 @@ def make_sars_variant_reporting_summary_plot(
         return str(output_path)
 
     plt.figure(figsize=(8, 6))
-    bars = plt.bar(labels, values, color=["#4C78A8", "#F58518", "#54A24B"][: len(values)])
+    bars = plt.bar(
+        labels,
+        values,
+        color=[
+            CBF_COLORS["high_and_low_freq"],
+            CBF_COLORS["low_freq_only"],
+            CBF_COLORS["high_freq_only"],
+        ][: len(values)],
+    )
     plt.xlabel("Reporting mode")
     plt.ylabel("Laboratories (%)")
     plt.title(title)
@@ -526,7 +579,15 @@ def make_influenza_variant_reporting_summary_plot(
         return str(output_path)
 
     plt.figure(figsize=(8, 6))
-    bars = plt.bar(labels, values, color=["#4C78A8", "#F58518", "#54A24B"][: len(values)])
+    bars = plt.bar(
+        labels,
+        values,
+        color=[
+            CBF_COLORS["high_and_low_freq"],
+            CBF_COLORS["low_freq_only"],
+            CBF_COLORS["high_freq_only"],
+        ][: len(values)],
+    )
     plt.xlabel("Reporting mode")
     plt.ylabel("Laboratories (%)")
     plt.title(title)
@@ -574,8 +635,8 @@ def make_qc_match_rate_by_component_plot(
     plt.figure(figsize=(10, 6))
     x_positions = list(range(len(component_names)))
 
-    plt.bar(x_positions, match_counts, label="Match")
-    plt.bar(x_positions, discrepancy_counts, bottom=match_counts, label="Discrepancy")
+    plt.bar(x_positions, match_counts, label="Match", color=CBF_COLORS["match"])
+    plt.bar(x_positions, discrepancy_counts, bottom=match_counts, label="Discrepancy", color=CBF_COLORS["discrepancy"])
 
     plt.xticks(x_positions, component_names)
     plt.xlabel("Component")
@@ -739,7 +800,8 @@ def make_metadata_completeness_distribution_plot(
         return str(output_path)
 
     plt.figure(figsize=(10, 6))
-    plt.boxplot(data, labels=component_names)
+    bp = plt.boxplot(data, labels=component_names, patch_artist=True)
+    style_boxplot(bp, component_names)
 
     plt.xlabel("Component")
     plt.ylabel("Metadata completeness (%)")
