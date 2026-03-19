@@ -595,7 +595,7 @@ Variant evaluation included structural reporting characteristics and methodologi
 - {{ general.general_results.sars_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
 - {{ general.general_results.sars_variants.high_freq_only_pct }} reported only high-frequency variants.
 
-Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components.
+Additionally, a total of {{ general.general_results.sars_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -607,8 +607,6 @@ general.figures.sars_variant_reporting_summary,
 ) }}
 
 ![influenza_variant_reporting_summary](./example_images/influenza_variant_reporting_summary.png)
-
-> Como esta pero para SARS
 
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
