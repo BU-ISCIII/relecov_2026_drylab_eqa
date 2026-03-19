@@ -43,6 +43,13 @@ COMPONENT_BOX_COLORS = {
     "FLU2": CBF_COLORS["box_flu2"],
 }
 
+COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS = {
+    "SARS1": None,
+    "SARS2": None,
+    "FLU1": None,
+    "FLU2": 410.0,
+}
+
 
 def load_json(path: str | Path) -> Any:
     with open(path, "r", encoding="utf-8") as handle:
@@ -201,6 +208,12 @@ def most_common_or_none(values: Iterable[Any]) -> Any:
 
 def ensure_network_figures_dir(figures_dir: str | Path) -> Path:
     output_dir = Path(figures_dir) / "network"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return output_dir
+
+
+def ensure_component_figures_dir(figures_dir: str | Path, comp_code: str) -> Path:
+    output_dir = Path(figures_dir) / comp_code
     output_dir.mkdir(parents=True, exist_ok=True)
     return output_dir
 
@@ -397,6 +410,128 @@ def collect_consensus_discrepancies_by_component(labs: List[Dict[str, Any]]) -> 
                 discrepancies_by_component[comp_code].append(total_discrepancies)
 
     return discrepancies_by_component
+
+
+def collect_consensus_discrepancies_by_sample(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+) -> Dict[str, List[float]]:
+    discrepancies_by_sample: Dict[str, List[float]] = defaultdict(list)
+
+    for lab in labs:
+        comp = lab.get("components", {}).get(comp_code)
+        if not comp:
+            continue
+
+        for sample_id, sample in comp.get("samples", {}).items():
+            consensus = sample.get("consensus", {})
+            genome_identity_pct = safe_number(consensus.get("genome_identity_pct"))
+            total_discrepancies = safe_number(consensus.get("total_discrepancies"))
+
+            if genome_identity_pct is None or total_discrepancies is None:
+                continue
+
+            discrepancies_by_sample[sample_id].append(total_discrepancies)
+
+    return discrepancies_by_sample
+
+
+def make_component_consensus_discrepancies_boxplot_by_sample(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "consensus_discrepancies_boxplot_by_sample.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    sample_order = [
+        sample.get("collecting_lab_sample_id")
+        for sample in comp_data.get("consensus", {}).get("samples", [])
+        if sample.get("collecting_lab_sample_id")
+    ]
+    discrepancies_by_sample = collect_consensus_discrepancies_by_sample(labs, comp_code)
+
+    sample_names = [sample_id for sample_id in sample_order if discrepancies_by_sample.get(sample_id)]
+    data = [discrepancies_by_sample[sample_id] for sample_id in sample_names]
+
+    if not data:
+        return str(output_path)
+
+    y_limit = COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code)
+    plotted_data = [list(values) for values in data]
+    outlier_annotations = []
+
+    if y_limit is not None:
+        for idx, values in enumerate(data):
+            outliers_above_limit = sorted([value for value in values if value > y_limit], reverse=True)
+            if not outliers_above_limit:
+                continue
+
+            excluded_outlier = outliers_above_limit[0]
+            removed = False
+            filtered_values = []
+            for value in values:
+                if not removed and value == excluded_outlier:
+                    removed = True
+                    continue
+                filtered_values.append(value)
+
+            if removed and filtered_values:
+                plotted_data[idx] = filtered_values
+                outlier_annotations.append((idx + 1, excluded_outlier))
+
+    plotted_max = max(max(values) for values in plotted_data if values)
+    y_upper = y_limit if y_limit is not None else (plotted_max * 1.15 if plotted_max > 0 else 1.0)
+
+    plt.figure(figsize=(max(8, len(sample_names) * 1.15), 6))
+    bp = plt.boxplot(
+        plotted_data,
+        labels=sample_names,
+        showfliers=True,
+        patch_artist=True,
+    )
+    style_boxplot(bp, [comp_code] * len(sample_names))
+    plt.xlabel("Sample")
+    plt.ylabel("Consensus discrepancies")
+    plt.title(f"{comp_code} consensus discrepancies by sample")
+    plt.xticks(rotation=45, ha="right")
+
+    plt.ylim(0, y_upper)
+
+    if outlier_annotations:
+        outlier_color = COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"])
+        for x_pos, display_value in outlier_annotations:
+            y_marker = y_upper * 0.95
+            y_text = y_upper * 0.91
+            plt.text(
+                x_pos,
+                y_marker,
+                "*",
+                ha="center",
+                va="center",
+                fontsize=18,
+                color=outlier_color,
+                fontweight="bold",
+            )
+            plt.text(
+                x_pos,
+                y_text,
+                f"Outlier: {display_value:g}",
+                ha="center",
+                va="top",
+                fontsize=9,
+                color=outlier_color,
+                fontweight="bold",
+            )
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
 
 
 def make_consensus_summary_plot(
@@ -789,6 +924,20 @@ def generate_network_figures(
     )
 
     return outputs
+
+
+def generate_component_figures(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    figures_dir: str | Path = "figures",
+) -> None:
+    for comp_code in general_data.get("components", {}).keys():
+        make_component_consensus_discrepancies_boxplot_by_sample(
+            general_data=general_data,
+            labs=labs,
+            comp_code=comp_code,
+            figures_dir=figures_dir,
+        )
 
 
 def collect_software_groups(
@@ -2317,6 +2466,12 @@ def main() -> None:
     general = build_general(expected_data, labs)
 
     generated_figures = generate_network_figures(
+        general_data=general,
+        labs=labs,
+        figures_dir=args.figures_dir,
+    )
+
+    generate_component_figures(
         general_data=general,
         labs=labs,
         figures_dir=args.figures_dir,

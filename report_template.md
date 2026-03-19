@@ -832,7 +832,7 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+![fig_discrepancies_boxplot_by_sample](./figures/SARS2/consensus_discrepancies_boxplot_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
