@@ -621,9 +621,21 @@ At network level:
 
 Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling or mapping (from a total of {{ general.general_results.influenza_variants.total_distinct_fragments }} distinct fragment references), across influenza components.
 
+Structural summary metrics derived from submitted influenza consensus sequences and VCF files are presented in Table {{ table_counter.value + 1 }}. These metrics capture the overall magnitude of reported variats in the metadata file and the discrepancy between reported variants with an allele frequency >= 75% in the metadata file and the VCF file, rather than direct nucleotide-level accuracy against a unified reference coordinate system.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level structural summary of influenza variant reporting.**
+
+| Metric | Network median | Min-max |
+|---|---:|---:|
+| Variants in consensus | {{ general.general_results.influenza_variants.median_variants_in_consensus }} | {{ general.general_results.influenza_variants.min_variants_in_consensus }}–{{ general.general_results.influenza_variants.max_variants_in_consensus }} |
+| Variants represented in consensus VCF | {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_consensus_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_consensus_vcf }} |
+| Discrepancies in reported variants | {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }} | {{ general.general_results.influenza_variants.min_discrepancies_in_reported_variants }}–{{ general.general_results.influenza_variants.max_discrepancies_in_reported_variants }} |
+| Total variants in VCF | {{ general.general_results.influenza_variants.median_variants_in_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_vcf }} |
+
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figures {{ fig_counter.value }} and {{ fig_counter.value + 1 }} summarize the distribution of variant reporting practices and reference genome usage across participating laboratories for influenza components.
+Figure {{ fig_counter.value }} summarizes the distribution of variant reporting practices across participating laboratories for influenza components.
 
 {{ render_figure(
 general.figures.influenza_variant_reporting_summary,
@@ -634,9 +646,7 @@ general.figures.influenza_variant_reporting_summary,
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
-These findings highlight considerable methodological heterogeneity in influenza variant analysis within the network. (TODO revisar) Differences in allele frequency thresholds and reference genome selection represent key drivers of inter-laboratory variability and limit direct comparability of variant-level results under a unified coordinate framework.
-
-**_Figure {{ fig_counter.value }}_. Network-level variant detection performance across components**. Boxplots display the distribution of nucleotide discrepancies between submitted VCF files and the curated reference variant set. The central line represents the median, boxes indicate the interquartile range, and whiskers denote the full observed range across participating laboratories.
+Together, Figure {{ fig_counter.value }} and Table {{ table_counter.value }} highlight considerable methodological heterogeneity in influenza variant analysis within the network. Differences in allele frequency thresholds, reference genome selection, and the number of variants retained in consensus or VCF outputs are likely to be key drivers of inter-laboratory variability and limit direct comparability of variant-level results under a unified coordinate framework. (TODO ver si es verdad)
 
 ### 5.4. Lineage, Subtype and Clade Assignment
 
