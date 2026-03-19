@@ -560,7 +560,7 @@ The most common discrepancies were: (TODO verificar si es verdad)
 
 Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
 
-![consensus_summary](./example_images/consensus_summary.png)
+![consensus_summary](./figures/network/consensus_summary.png)
 
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
@@ -586,6 +586,8 @@ Illumina-based analysis generally demonstrated higher concordance and lower fals
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
 ![variant_summary](./example_images/variant_summary.png)
+
+**_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
 
 Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
 
@@ -1281,6 +1283,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% endif %}
 
 {% if comp_net.benchmarking.subtype_assignment %}
+
 ##### Subtype Assignment Software Name
 
 Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component.
@@ -1409,6 +1412,7 @@ The EQA therefore provides a robust technical basis for harmonised, performance-
 
 {% if labdata %}
 # 9. Individual Laboratory Technical Report
+
 ## Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})
 
 This section provides a detailed technical assessment of the analytical results submitted by **{{ labdata.lab.lab_cod }}** within the 2026 RELECOV Dry-Lab EQA. Performance metrics are benchmarked against curated gold standards and contextualised relative to aggregated network-wide performance distributions. Network medians and interquartile ranges are provided for comparative interpretation, without disclosure of other laboratories’ identities.
