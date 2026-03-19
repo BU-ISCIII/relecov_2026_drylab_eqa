@@ -922,6 +922,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
     metadata_incomplete_samples = 0
     metadata_evaluable_samples = 0
+    params_slots_total = 0
+    params_slots_missing = 0
 
     all_workflows = set()
     consensus_softwares = set()
@@ -989,6 +991,24 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     metadata_evaluable_samples += 1
                     if filled_fields is None or filled_fields < total_expected_fields:
                         metadata_incomplete_samples += 1
+
+                sb = sample.get("software_benchmarking", {})
+                params_slots_total += 4
+
+                if not is_meaningful(sb.get("preprocessing_params")):
+                    params_slots_missing += 1
+
+                if not (
+                    is_meaningful(sb.get("mapping_params"))
+                    or is_meaningful(sb.get("assembly_params"))
+                ):
+                    params_slots_missing += 1
+
+                if not is_meaningful(sb.get("variant_calling_params")):
+                    params_slots_missing += 1
+
+                if not is_meaningful(sb.get("consensus_params")):
+                    params_slots_missing += 1
 
                 wf = get_workflow_signature(sample)
                 if wf:
@@ -2183,7 +2203,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "coverage_threshold_pct": pct(coverage_threshold_count, coverage_threshold_total),
             "frequency_threshold_pct": pct(frequency_threshold_count, frequency_threshold_total),
             "reference_genome_pct": pct(reference_genome_count, reference_genome_total),
-            "incomplete_parameters_pct": pct(metadata_incomplete_samples, metadata_evaluable_samples),
+            "incomplete_parameters_pct": pct(params_slots_missing, params_slots_total),
+            "filled_parameters_pct": pct(params_slots_total - params_slots_missing, params_slots_total),
             "total_workflows": len(all_workflows),
             "total_consensus_softwares": len(consensus_softwares),
             "total_variant_softwares": len(variant_softwares),
