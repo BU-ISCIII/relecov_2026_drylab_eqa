@@ -861,6 +861,82 @@ def make_component_variant_discrepancies_stacked_by_sample(
     return str(output_path)
 
 
+def make_component_variant_discrepancy_type_boxplot(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "variant_discrepancy_type_boxplot.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    labels = []
+    data = []
+    used_keys = []
+
+    for key in VARIANT_DISCREPANCY_TYPE_ORDER:
+        values = []
+        for lab in labs:
+            comp = lab.get("components", {}).get(comp_code)
+            if not comp:
+                continue
+
+            for sample in comp.get("samples", {}).values():
+                variants = sample.get("variants", {})
+                total_discrepancies = safe_number(variants.get("total_discrepancies"))
+                if total_discrepancies is None:
+                    continue
+
+                value = safe_number(variants.get(key))
+                if value is not None:
+                    values.append(value)
+
+        if values:
+            used_keys.append(key)
+            labels.append(VARIANT_DISCREPANCY_TYPE_LABELS.get(key, key))
+            data.append(values)
+
+    if not data:
+        return str(output_path)
+
+    plt.figure(figsize=(max(9, len(labels) * 1.35), 6))
+    bp = plt.boxplot(
+        data,
+        labels=labels,
+        showfliers=True,
+        patch_artist=True,
+    )
+
+    for patch, key in zip(bp["boxes"], used_keys):
+        patch.set_facecolor(VARIANT_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]))
+        patch.set_edgecolor("#333333")
+        patch.set_alpha(0.75)
+
+    for median_line in bp["medians"]:
+        median_line.set_color(CBF_COLORS["median"])
+        median_line.set_linewidth(2)
+
+    for whisker in bp["whiskers"]:
+        whisker.set_color("#444444")
+    for cap in bp["caps"]:
+        cap.set_color("#444444")
+    for flier in bp["fliers"]:
+        flier.set_marker("o")
+        flier.set_markerfacecolor("white")
+        flier.set_markeredgecolor("#444444")
+        flier.set_markersize(5)
+
+    plt.xticks(rotation=20, ha="center")
+    plt.xlabel("Discrepancy type")
+    plt.ylabel("Number of discrepancies")
+    plt.title(f"{comp_code} variant discrepancy types")
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_consensus_summary_plot(
     labs: List[Dict[str, Any]],
     figures_dir: str | Path,
@@ -1280,6 +1356,11 @@ def generate_component_figures(
         if comp_code.startswith("SARS"):
             make_component_variant_discrepancies_stacked_by_sample(
                 general_data=general_data,
+                labs=labs,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+            make_component_variant_discrepancy_type_boxplot(
                 labs=labs,
                 comp_code=comp_code,
                 figures_dir=figures_dir,

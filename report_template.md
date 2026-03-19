@@ -954,7 +954,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
   "Composition of variant discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
+![variant_discrepancy_type_boxplot](./figures/SARS1/variant_discrepancy_type_boxplot.png)
 > Como este pero en el eje X los tipos de sustituciones
 
 **Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
