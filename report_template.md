@@ -43,7 +43,7 @@
     - [4.2. Evaluation of Consensus Genome Reconstruction Performance](#42-evaluation-of-consensus-genome-reconstruction-performance)
     - [4.3. Evaluation of Variant Detection Accuracy](#43-evaluation-of-variant-detection-accuracy)
       - [4.3.1. SARS-CoV-2](#431-sars-cov-2)
-      - [4.3.2. Influenza](#432-influenza)
+      - [4.3.2. Descriptive and Structural Variant Reporting Metrics](#432-descriptive-and-structural-variant-reporting-metrics)
     - [4.4. Evaluation of Lineage, Subtype and Clade Assignment](#44-evaluation-of-lineage-subtype-and-clade-assignment)
       - [SARS-CoV-2](#sars-cov-2)
       - [Influenza virus](#influenza-virus)
@@ -389,23 +389,33 @@ Comparative analyses were performed to assess the influence of: (TODO verificar 
 - Variant filtering criteria
 - Reference genome selection
 
-#### 4.3.2. SARS-CoV-2 Influenza
+#### 4.3.2. Descriptive and Structural Variant Reporting Metrics
 
-SARS-CoV-2 and Influenza variant evaluation also included escriptive and structural reporting metrics, including:
+In addition to nucleotide-level discrepancy analysis for SARS-CoV-2, both SARS-CoV-2 and influenza submissions were evaluated using descriptive and structural reporting metrics to characterise reporting behaviour and methodological heterogeneity across laboratories.
 
-- Number of laboratories reporting high-frequency variants.
+For both viruses, the following reporting practice metrics were collected:
+
+- Number of laboratories reporting high-frequency variants only.
 - Number of laboratories reporting both high- and low-frequency variants.
 - Number of laboratories reporting exclusively low-frequency variants.
-- Total number of distinct reference genomes employed for variant calling, disaggregated by influenza segment in the case of influenza.
+- Total number of distinct reference genomes employed for variant calling or mapping.
+
+For influenza virus, additional structural summary metrics were calculated because direct coordinate-harmonised comparison of all submitted variants was not methodologically robust across segment-specific reference backbones:
+
+- Number of variants with an allele frequency higher than 75%.
+- Number of variants with an allele frequency higher than 75% derived from VCF files.
+- Total number of variants present in the submitted VCF.
+- Discrepancies between variants with an allele frequency higher than 75% reported in the metadata and in the VCF file.
 
 These metrics provide insight into:
 
 - Variant reporting practices across laboratories.
 - Heterogeneity in allele frequency thresholds.
 - Diversity of reference genome usage.
+- Internal consistency between consensus outputs and submitted VCF files.
 - Degree of methodological standardisation within the network.
 
-This evaluation approach allows characterisation of variant reporting behaviour while acknowledging the need of harmonization in inherent reference-dependent analyses.
+This evaluation approach allows characterisation of variant reporting behaviour while acknowledging the need for harmonisation in inherently reference-dependent analyses, particularly for segmented influenza genomes.
 
 ### 4.4. Evaluation of Lineage, Subtype and Clade Assignment
 
