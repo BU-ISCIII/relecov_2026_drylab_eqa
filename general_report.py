@@ -50,6 +50,10 @@ COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS = {
     "FLU2": 410.0,
 }
 
+COMPONENT_CONSENSUS_TYPE_BOXPLOT_Y_LIMITS = {
+    "FLU2": 400.0,
+}
+
 CONSENSUS_DISCREPANCY_TYPE_ORDER = [
     "wrong_nt",
     "ambiguity2nt",
@@ -621,6 +625,120 @@ def make_component_consensus_discrepancies_stacked_by_sample(
     return str(output_path)
 
 
+def make_component_consensus_discrepancy_type_boxplot(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "consensus_discrepancy_type_boxplot.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    labels = []
+    data = []
+    used_keys = []
+    outlier_annotations = []
+    y_limit = COMPONENT_CONSENSUS_TYPE_BOXPLOT_Y_LIMITS.get(comp_code)
+    for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+        values = []
+        for lab in labs:
+            comp = lab.get("components", {}).get(comp_code)
+            if not comp:
+                continue
+
+            for sample in comp.get("samples", {}).values():
+                consensus = sample.get("consensus", {})
+                gi = safe_number(consensus.get("genome_identity_pct"))
+                if gi is None:
+                    continue
+
+                discrepancy_breakdown = consensus.get("discrepancy_breakdown", {})
+                value = safe_number(discrepancy_breakdown.get(key))
+                if value is not None:
+                    values.append(value)
+
+        if values:
+            plotted_values = list(values)
+            if y_limit is not None:
+                outliers_above_limit = sorted([value for value in plotted_values if value > y_limit], reverse=True)
+                if outliers_above_limit:
+                    plotted_values = [value for value in plotted_values if value <= y_limit]
+                    if plotted_values:
+                        outlier_annotations.append((len(labels) + 1, outliers_above_limit))
+
+            if not plotted_values:
+                continue
+
+            used_keys.append(key)
+            labels.append(CONSENSUS_DISCREPANCY_TYPE_LABELS.get(key, key))
+            data.append(plotted_values)
+
+    if not data:
+        return str(output_path)
+
+    plt.figure(figsize=(max(9, len(labels) * 1.35), 6))
+    bp = plt.boxplot(
+        data,
+        labels=labels,
+        showfliers=True,
+        patch_artist=True,
+    )
+
+    for patch, key in zip(bp["boxes"], used_keys):
+        patch.set_facecolor(CONSENSUS_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]))
+        patch.set_edgecolor("#333333")
+        patch.set_alpha(0.75)
+
+    for median_line in bp["medians"]:
+        median_line.set_color(CBF_COLORS["median"])
+        median_line.set_linewidth(2)
+
+    for whisker in bp["whiskers"]:
+        whisker.set_color("#444444")
+    for cap in bp["caps"]:
+        cap.set_color("#444444")
+    for flier in bp["fliers"]:
+        flier.set_marker("o")
+        flier.set_markerfacecolor("white")
+        flier.set_markeredgecolor("#444444")
+        flier.set_markersize(5)
+
+    plt.xticks(rotation=20, ha="center")
+    plt.xlabel("Discrepancy type")
+    plt.ylabel("Number of discrepancies per sample")
+    plt.title(f"{comp_code} consensus discrepancy types")
+    if y_limit is not None:
+        plt.ylim(0, y_limit)
+        for x_pos, outliers in outlier_annotations:
+            outlier_color = CONSENSUS_DISCREPANCY_TYPE_COLORS.get(used_keys[x_pos - 1], CBF_COLORS["outlier"])
+            plt.text(
+                x_pos,
+                y_limit * 0.95,
+                "*",
+                ha="center",
+                va="center",
+                fontsize=18,
+                color=outlier_color,
+                fontweight="bold",
+            )
+            plt.text(
+                x_pos,
+                y_limit * 0.91,
+                f"Outlier: {outliers[0]:g}",
+                ha="center",
+                va="top",
+                fontsize=9,
+                color=outlier_color,
+                fontweight="bold",
+            )
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_consensus_summary_plot(
     labs: List[Dict[str, Any]],
     figures_dir: str | Path,
@@ -1027,6 +1145,12 @@ def generate_component_figures(
         )
         make_component_consensus_discrepancies_stacked_by_sample(
             general_data=general_data,
+            comp_code=comp_code,
+            figures_dir=figures_dir,
+        )
+        make_component_consensus_discrepancy_type_boxplot(
+            general_data=general_data,
+            labs=labs,
             comp_code=comp_code,
             figures_dir=figures_dir,
         )

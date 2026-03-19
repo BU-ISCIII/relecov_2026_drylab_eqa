@@ -855,9 +855,7 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Consensus discrepancy types per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![classification_summary](./example_images/classification_summary.png)
-
-> Esta pero desagregada por muestra y stacked por discrepancia
+![classification_summary](./figures/SARS1/consensus_discrepancies_stacked_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
 
@@ -886,8 +884,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
   "Composition of consensus discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
-> Como este pero en el eje X los tipos de sustituciones
+![fig_discrepancies_boxplot_by_sample](./figures/SARS1/consensus_discrepancy_type_boxplot.png)
 
 **Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
