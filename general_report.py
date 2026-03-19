@@ -457,6 +457,52 @@ def make_variant_summary_plot(
     return str(output_path)
 
 
+def make_sars_variant_reporting_summary_plot(
+    general_data: Dict[str, Any],
+    figures_dir: str | Path,
+    output_filename: str = "sars_variant_reporting_summary.png",
+    title: str = "SARS-CoV-2 variant reporting practices across the network",
+) -> str:
+    output_dir = ensure_network_figures_dir(figures_dir)
+    output_path = output_dir / output_filename
+
+    sars_variants = general_data.get("general_results", {}).get("sars_variants", {})
+    categories = [
+        ("High + low freq", safe_number(sars_variants.get("high_and_low_freq_pct"))),
+        ("Low freq only", safe_number(sars_variants.get("low_freq_only_pct"))),
+        ("High freq only", safe_number(sars_variants.get("high_freq_only_pct"))),
+    ]
+
+    labels = [label for label, value in categories if value is not None]
+    values = [value for _, value in categories if value is not None]
+
+    if not values:
+        return str(output_path)
+
+    plt.figure(figsize=(8, 6))
+    bars = plt.bar(labels, values, color=["#4C78A8", "#F58518", "#54A24B"][: len(values)])
+    plt.xlabel("Reporting mode")
+    plt.ylabel("Laboratories (%)")
+    plt.title(title)
+    plt.ylim(0, 100)
+
+    for bar, value in zip(bars, values):
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            value + 1.5,
+            f"{value:.2f}%",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_qc_match_rate_by_component_plot(
     general_data: Dict[str, Any],
     figures_dir: str | Path,
@@ -511,6 +557,11 @@ def generate_network_figures(
 
     outputs["variant_summary"] = make_variant_summary_plot(
         labs=labs,
+        figures_dir=figures_dir,
+    )
+
+    outputs["sars_variant_reporting_summary"] = make_sars_variant_reporting_summary_plot(
+        general_data=general_data,
         figures_dir=figures_dir,
     )
 
