@@ -697,8 +697,6 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 
 ![metadata_completeness_distribution](./figures/network/metadata_completeness_distribution.png)
 
-> TODO: Como este pero con el eje Y los porcentajes de completeness por componente
-
 **_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields.
 
 **100% percent of the laboratorios required either clarification through e-mail contact or correction during validation steps.**
@@ -707,8 +705,8 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 
 Although core pipeline tools were generally reported, variability was observed in the level of parameter detail provided.
 
-- {{ pct(general.metadata_completeness.software_names_pct) }} of laboratories reported exact software names.
-- {{ pct(general.metadata_completeness.software_version_pct) }} reported exact software versions.
+- {{ pct(general.metadata_completeness.software_names_pct) }} of laboratories reported software names.
+- {{ pct(general.metadata_completeness.software_version_pct) }} reported software versions.
 - {{ pct(general.metadata_completeness.coverage_threshold_pct) }} specified minimum coverage thresholds.
 - {{ pct(general.metadata_completeness.frequency_threshold_pct) }} declared allele frequency thresholds used for consensus incorporation.
 - {{ pct(general.metadata_completeness.reference_genome_pct) }} reported the reference genome accession or identifier.
