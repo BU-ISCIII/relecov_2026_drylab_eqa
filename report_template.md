@@ -584,7 +584,7 @@ Illumina-based analysis generally demonstrated higher concordance and discrepanc
 
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
-![variant_summary](./example_images/variant_summary.png)
+![variant_summary](./figures/network/variant_summary.png)
 
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
 
@@ -605,7 +605,7 @@ general.figures.sars_variant_reporting_summary,
 "SARS-CoV-2 variant reporting practices across the network."
 ) }}
 
-![influenza_variant_reporting_summary](./example_images/influenza_variant_reporting_summary.png)
+![sars_variant_reporting_summary](./figures/network/sars_variant_reporting_summary.png)
 
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
@@ -619,7 +619,7 @@ At network level:
 - {{ general.general_results.influenza_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
 - {{ general.general_results.influenza_variants.high_freq_only_pct }} reported only high-frequency variants.
 
-Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across influenza components, considering eight fragments.
+Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling or mapping (from a total of {{ general.general_results.influenza_variants.total_distinct_fragments }} distinct fragment references), across influenza components.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -630,7 +630,7 @@ general.figures.influenza_variant_reporting_summary,
 "Influenza variant reporting practices across the network."
 ) }}
 
-![influenza_variant_reporting_summary](./example_images/influenza_variant_reporting_summary.png)
+![influenza_variant_reporting_summary](./figures/network/influenza_variant_reporting_summary.png)
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
