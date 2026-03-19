@@ -384,6 +384,8 @@ def make_consensus_summary_plot(
         display_value = outliers[0]
         y_marker = fixed_y_upper * 0.95
         y_text = fixed_y_upper * 0.91
+        component_label = component_names[x_pos - 1]
+        outlier_color = COMPONENT_BOX_COLORS.get(component_label, CBF_COLORS["outlier"])
         plt.text(
             x_pos,
             y_marker,
@@ -391,7 +393,7 @@ def make_consensus_summary_plot(
             ha="center",
             va="center",
             fontsize=18,
-            color=CBF_COLORS["outlier"],
+            color=outlier_color,
             fontweight="bold",
         )
         plt.text(
@@ -401,7 +403,8 @@ def make_consensus_summary_plot(
             ha="center",
             va="top",
             fontsize=9,
-            color=CBF_COLORS["outlier"],
+            color=outlier_color,
+            fontweight="bold",
         )
 
     plt.tight_layout()
@@ -475,6 +478,8 @@ def make_variant_summary_plot(
         display_value = outliers[0]
         y_marker = fixed_y_upper * 0.95
         y_text = fixed_y_upper * 0.91
+        component_label = component_names[x_pos - 1]
+        outlier_color = COMPONENT_BOX_COLORS.get(component_label, CBF_COLORS["outlier"])
         plt.text(
             x_pos,
             y_marker,
@@ -482,7 +487,7 @@ def make_variant_summary_plot(
             ha="center",
             va="center",
             fontsize=18,
-            color=CBF_COLORS["outlier"],
+            color=outlier_color,
             fontweight="bold",
         )
         plt.text(
@@ -492,7 +497,8 @@ def make_variant_summary_plot(
             ha="center",
             va="top",
             fontsize=9,
-            color=CBF_COLORS["outlier"],
+            color=outlier_color,
+            fontweight="bold",
         )
 
     plt.tight_layout()
