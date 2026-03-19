@@ -8,6 +8,7 @@ from statistics import median
 from typing import Any, Dict, Iterable, List, Optional
 
 import matplotlib.pyplot as plt
+from matplotlib.cbook import boxplot_stats
 
 FIGURE_PATHS = {
     "consensus_summary": "figures/network/consensus_summary.png",
@@ -276,6 +277,96 @@ def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int
     return total_matches, total_discrepancies
 
 
+def collect_consensus_discrepancies_by_component(labs: List[Dict[str, Any]]) -> Dict[str, List[float]]:
+    """
+    Collect sample-level consensus discrepancy counts grouped by component.
+    Only observations with a non-null genome identity are considered evaluable.
+    """
+    discrepancies_by_component: Dict[str, List[float]] = defaultdict(list)
+
+    for lab in labs:
+        for comp_code, comp in lab.get("components", {}).items():
+            for sample in comp.get("samples", {}).values():
+                consensus = sample.get("consensus", {})
+                genome_identity_pct = safe_number(consensus.get("genome_identity_pct"))
+                total_discrepancies = safe_number(consensus.get("total_discrepancies"))
+
+                if genome_identity_pct is None or total_discrepancies is None:
+                    continue
+
+                discrepancies_by_component[comp_code].append(total_discrepancies)
+
+    return discrepancies_by_component
+
+
+def make_consensus_summary_plot(
+    labs: List[Dict[str, Any]],
+    figures_dir: str | Path,
+    output_filename: str = "consensus_summary.png",
+    title: str = "Consensus genome discrepancies relative to the gold standard",
+) -> str:
+    output_dir = ensure_network_figures_dir(figures_dir)
+    output_path = output_dir / output_filename
+
+    discrepancies_by_component = collect_consensus_discrepancies_by_component(labs)
+    component_order = ["SARS1", "SARS2", "FLU1", "FLU2"]
+    component_names = [comp for comp in component_order if discrepancies_by_component.get(comp)]
+    data = [list(discrepancies_by_component[comp]) for comp in component_names]
+
+    if not data:
+        return str(output_path)
+
+    fixed_y_upper = 500.0
+    plotted_data = [list(vals) for vals in data]
+    outlier_annotations = []
+
+    for idx, values in enumerate(data):
+        outliers_above_limit = sorted([value for value in values if value > fixed_y_upper], reverse=True)
+        if not outliers_above_limit:
+            continue
+
+        plotted_data[idx] = [value for value in values if value <= fixed_y_upper]
+        outlier_annotations.append((idx + 1, outliers_above_limit))
+
+    plt.figure(figsize=(10, 6))
+    plt.boxplot(plotted_data, labels=component_names, showfliers=True)
+    plt.xlabel("Component")
+    plt.ylabel("Consensus discrepancies")
+    plt.title(title)
+    plt.ylim(0, fixed_y_upper)
+    plt.xlim(0.5, len(component_names) + 0.5)
+
+    for x_pos, outliers in outlier_annotations:
+        display_value = outliers[0]
+        y_marker = fixed_y_upper * 0.95
+        y_text = fixed_y_upper * 0.91
+        plt.text(
+            x_pos,
+            y_marker,
+            "*",
+            ha="center",
+            va="center",
+            fontsize=18,
+            color="red",
+            fontweight="bold",
+        )
+        plt.text(
+            x_pos,
+            y_text,
+            f"Outlier: {display_value:g}",
+            ha="center",
+            va="top",
+            fontsize=9,
+            color="red",
+        )
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_qc_match_rate_by_component_plot(
     general_data: Dict[str, Any],
     figures_dir: str | Path,
@@ -322,6 +413,11 @@ def generate_network_figures(
     figures_dir: str | Path = "figures",
 ) -> Dict[str, str]:
     outputs = {}
+
+    outputs["consensus_summary"] = make_consensus_summary_plot(
+        labs=labs,
+        figures_dir=figures_dir,
+    )
 
     outputs["classification_summary_lineage_type"] = make_stacked_classification_plot(
         general_data=general_data,
