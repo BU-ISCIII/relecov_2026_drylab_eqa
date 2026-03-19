@@ -649,6 +649,72 @@
         "fig_discrepancy_type_boxplot": "figures/SARS1/consensus_discrepancy_type_boxplot.png"
       },
       "variant": {
+        "median_variants_in_consensus": 61.0,
+        "min_variants_in_consensus": 30.0,
+        "max_variants_in_consensus": 100.0,
+        "variants_in_consensus_summary": {
+          "median": 61.0,
+          "min": 30.0,
+          "max": 100.0,
+          "observed_count": 25,
+          "zero_count": 0,
+          "missing_or_null_count": 0
+        },
+        "median_variants_in_consensus_vcf": 64.0,
+        "min_variants_in_consensus_vcf": 7.0,
+        "max_variants_in_consensus_vcf": 104.0,
+        "variants_in_consensus_vcf_summary": {
+          "median": 64.0,
+          "min": 7.0,
+          "max": 104.0,
+          "observed_count": 76,
+          "zero_count": 0,
+          "missing_or_null_count": 0
+        },
+        "median_variants_with_effect": 47.0,
+        "min_variants_with_effect": 6.0,
+        "max_variants_with_effect": 72.0,
+        "variants_with_effect_summary": {
+          "median": 47.0,
+          "min": 6.0,
+          "max": 72.0,
+          "observed_count": 25,
+          "zero_count": 0,
+          "missing_or_null_count": 0
+        },
+        "median_discrepancies_in_reported_variants": 0.0,
+        "min_discrepancies_in_reported_variants": 0.0,
+        "max_discrepancies_in_reported_variants": 54.0,
+        "discrepancies_in_reported_variants_summary": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 54.0,
+          "observed_count": 25,
+          "zero_count": 15,
+          "missing_or_null_count": 0
+        },
+        "median_variants_with_effect_vcf": 47.5,
+        "min_variants_with_effect_vcf": 4.0,
+        "max_variants_with_effect_vcf": 73.0,
+        "variants_with_effect_vcf_summary": {
+          "median": 47.5,
+          "min": 4.0,
+          "max": 73.0,
+          "observed_count": 66,
+          "zero_count": 0,
+          "missing_or_null_count": 0
+        },
+        "median_discrepancies_in_reported_variants_effect": 2.5,
+        "min_discrepancies_in_reported_variants_effect": 0.0,
+        "max_discrepancies_in_reported_variants_effect": 18.0,
+        "discrepancies_in_reported_variants_effect_summary": {
+          "median": 2.5,
+          "min": 0.0,
+          "max": 18.0,
+          "observed_count": 20,
+          "zero_count": 3,
+          "missing_or_null_count": 0
+        },
         "median_discrepancies": 9.0,
         "total_median_discrepancies": 9.0,
         "min_discrepancies": 0.0,
@@ -675,6 +741,54 @@
         "samples": [
           {
             "collecting_lab_sample_id": "SARS1",
+            "variants_in_consensus": {
+              "median": 30.0,
+              "min": 30.0,
+              "max": 38.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "variants_in_consensus_vcf": {
+              "median": 30.0,
+              "min": 8.0,
+              "max": 45.0,
+              "observed_count": 12,
+              "zero_count": 0,
+              "missing_or_null_count": 4
+            },
+            "variants_with_effect": {
+              "median": 22.0,
+              "min": 6.0,
+              "max": 25.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 3.0,
+              "observed_count": 5,
+              "zero_count": 3,
+              "missing_or_null_count": 11
+            },
+            "variants_with_effect_vcf": {
+              "median": 22.0,
+              "min": 22.0,
+              "max": 29.0,
+              "observed_count": 10,
+              "zero_count": 0,
+              "missing_or_null_count": 6
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 2.0,
+              "min": 0.0,
+              "max": 16.0,
+              "observed_count": 4,
+              "zero_count": 1,
+              "missing_or_null_count": 12
+            },
             "median_discrepancies": 6.0,
             "min": 2.0,
             "max": 48.0,
@@ -747,6 +861,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS2",
+            "variants_in_consensus": {
+              "median": 61.0,
+              "min": 61.0,
+              "max": 69.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "variants_in_consensus_vcf": {
+              "median": 61.0,
+              "min": 51.0,
+              "max": 76.0,
+              "observed_count": 16,
+              "zero_count": 0,
+              "missing_or_null_count": 0
+            },
+            "variants_with_effect": {
+              "median": 45.0,
+              "min": 43.0,
+              "max": 52.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 7.0,
+              "observed_count": 5,
+              "zero_count": 3,
+              "missing_or_null_count": 11
+            },
+            "variants_with_effect_vcf": {
+              "median": 45.0,
+              "min": 42.0,
+              "max": 49.0,
+              "observed_count": 14,
+              "zero_count": 0,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 1.5,
+              "min": 0.0,
+              "max": 7.0,
+              "observed_count": 4,
+              "zero_count": 1,
+              "missing_or_null_count": 12
+            },
             "median_discrepancies": 8.0,
             "min": 0.0,
             "max": 30.0,
@@ -819,6 +981,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS3",
+            "variants_in_consensus": {
+              "median": 92.0,
+              "min": 92.0,
+              "max": 100.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "variants_in_consensus_vcf": {
+              "median": 92.0,
+              "min": 9.0,
+              "max": 104.0,
+              "observed_count": 16,
+              "zero_count": 0,
+              "missing_or_null_count": 0
+            },
+            "variants_with_effect": {
+              "median": 66.0,
+              "min": 61.0,
+              "max": 72.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 6.0,
+              "observed_count": 5,
+              "zero_count": 3,
+              "missing_or_null_count": 11
+            },
+            "variants_with_effect_vcf": {
+              "median": 64.0,
+              "min": 56.0,
+              "max": 73.0,
+              "observed_count": 14,
+              "zero_count": 0,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 2.5,
+              "min": 1.0,
+              "max": 8.0,
+              "observed_count": 4,
+              "zero_count": 0,
+              "missing_or_null_count": 12
+            },
             "median_discrepancies": 20.0,
             "min": 0.0,
             "max": 70.0,
@@ -891,6 +1101,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS4",
+            "variants_in_consensus": {
+              "median": 70.0,
+              "min": 45.0,
+              "max": 76.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "variants_in_consensus_vcf": {
+              "median": 73.0,
+              "min": 7.0,
+              "max": 92.0,
+              "observed_count": 16,
+              "zero_count": 0,
+              "missing_or_null_count": 0
+            },
+            "variants_with_effect": {
+              "median": 52.0,
+              "min": 27.0,
+              "max": 53.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 1.0,
+              "min": 0.0,
+              "max": 54.0,
+              "observed_count": 5,
+              "zero_count": 2,
+              "missing_or_null_count": 11
+            },
+            "variants_with_effect_vcf": {
+              "median": 50.5,
+              "min": 4.0,
+              "max": 64.0,
+              "observed_count": 14,
+              "zero_count": 0,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 3.0,
+              "min": 0.0,
+              "max": 12.0,
+              "observed_count": 4,
+              "zero_count": 1,
+              "missing_or_null_count": 12
+            },
             "median_discrepancies": 9.0,
             "min": 0.0,
             "max": 520.0,
@@ -963,6 +1221,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS5",
+            "variants_in_consensus": {
+              "median": 56.0,
+              "min": 52.0,
+              "max": 61.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "variants_in_consensus_vcf": {
+              "median": 56.5,
+              "min": 51.0,
+              "max": 92.0,
+              "observed_count": 16,
+              "zero_count": 0,
+              "missing_or_null_count": 0
+            },
+            "variants_with_effect": {
+              "median": 46.0,
+              "min": 41.0,
+              "max": 53.0,
+              "observed_count": 5,
+              "zero_count": 0,
+              "missing_or_null_count": 11
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 1.0,
+              "observed_count": 5,
+              "zero_count": 4,
+              "missing_or_null_count": 11
+            },
+            "variants_with_effect_vcf": {
+              "median": 42.0,
+              "min": 37.0,
+              "max": 64.0,
+              "observed_count": 14,
+              "zero_count": 0,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 7.0,
+              "min": 1.0,
+              "max": 18.0,
+              "observed_count": 4,
+              "zero_count": 0,
+              "missing_or_null_count": 12
+            },
             "median_discrepancies": 9.0,
             "min": 2.0,
             "max": 85.0,
@@ -2355,6 +2661,72 @@
         "fig_discrepancy_type_boxplot": "figures/SARS2/consensus_discrepancy_type_boxplot.png"
       },
       "variant": {
+        "median_variants_in_consensus": 73.0,
+        "min_variants_in_consensus": 10.0,
+        "max_variants_in_consensus": 118.0,
+        "variants_in_consensus_summary": {
+          "median": 73.0,
+          "min": 10.0,
+          "max": 118.0,
+          "observed_count": 15,
+          "zero_count": 0,
+          "missing_or_null_count": 0
+        },
+        "median_variants_in_consensus_vcf": 73.0,
+        "min_variants_in_consensus_vcf": 0.0,
+        "max_variants_in_consensus_vcf": 217.0,
+        "variants_in_consensus_vcf_summary": {
+          "median": 73.0,
+          "min": 0.0,
+          "max": 217.0,
+          "observed_count": 39,
+          "zero_count": 5,
+          "missing_or_null_count": 0
+        },
+        "median_variants_with_effect": 48.0,
+        "min_variants_with_effect": 5.0,
+        "max_variants_with_effect": 83.0,
+        "variants_with_effect_summary": {
+          "median": 48.0,
+          "min": 5.0,
+          "max": 83.0,
+          "observed_count": 15,
+          "zero_count": 0,
+          "missing_or_null_count": 0
+        },
+        "median_discrepancies_in_reported_variants": 0.0,
+        "min_discrepancies_in_reported_variants": 0.0,
+        "max_discrepancies_in_reported_variants": 2.0,
+        "discrepancies_in_reported_variants_summary": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 2.0,
+          "observed_count": 15,
+          "zero_count": 13,
+          "missing_or_null_count": 0
+        },
+        "median_variants_with_effect_vcf": 49.5,
+        "min_variants_with_effect_vcf": 0.0,
+        "max_variants_with_effect_vcf": 141.0,
+        "variants_with_effect_vcf_summary": {
+          "median": 49.5,
+          "min": 0.0,
+          "max": 141.0,
+          "observed_count": 38,
+          "zero_count": 5,
+          "missing_or_null_count": 0
+        },
+        "median_discrepancies_in_reported_variants_effect": 1.0,
+        "min_discrepancies_in_reported_variants_effect": 0.0,
+        "max_discrepancies_in_reported_variants_effect": 5.0,
+        "discrepancies_in_reported_variants_effect_summary": {
+          "median": 1.0,
+          "min": 0.0,
+          "max": 5.0,
+          "observed_count": 15,
+          "zero_count": 5,
+          "missing_or_null_count": 0
+        },
         "median_discrepancies": 5.5,
         "total_median_discrepancies": 5.5,
         "min_discrepancies": 0.0,
@@ -2381,6 +2753,54 @@
         "samples": [
           {
             "collecting_lab_sample_id": "SARS6",
+            "variants_in_consensus": {
+              "median": 117.0,
+              "min": 95.0,
+              "max": 118.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "variants_in_consensus_vcf": {
+              "median": 107.5,
+              "min": 0.0,
+              "max": 217.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "variants_with_effect": {
+              "median": 78.0,
+              "min": 57.0,
+              "max": 83.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "observed_count": 3,
+              "zero_count": 3,
+              "missing_or_null_count": 7
+            },
+            "variants_with_effect_vcf": {
+              "median": 70.0,
+              "min": 0.0,
+              "max": 141.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 1.0,
+              "min": 0.0,
+              "max": 5.0,
+              "observed_count": 3,
+              "zero_count": 1,
+              "missing_or_null_count": 7
+            },
             "median_discrepancies": 2.0,
             "min": 0.0,
             "max": 32.0,
@@ -2453,6 +2873,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS7",
+            "variants_in_consensus": {
+              "median": 94.0,
+              "min": 73.0,
+              "max": 97.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "variants_in_consensus_vcf": {
+              "median": 86.0,
+              "min": 0.0,
+              "max": 176.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "variants_with_effect": {
+              "median": 67.0,
+              "min": 48.0,
+              "max": 71.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 2.0,
+              "observed_count": 3,
+              "zero_count": 2,
+              "missing_or_null_count": 7
+            },
+            "variants_with_effect_vcf": {
+              "median": 59.5,
+              "min": 0.0,
+              "max": 126.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 1.0,
+              "min": 0.0,
+              "max": 5.0,
+              "observed_count": 3,
+              "zero_count": 1,
+              "missing_or_null_count": 7
+            },
             "median_discrepancies": 19.0,
             "min": 0.0,
             "max": 26.0,
@@ -2525,6 +2993,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS8",
+            "variants_in_consensus": {
+              "median": 93.0,
+              "min": 72.0,
+              "max": 94.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "variants_in_consensus_vcf": {
+              "median": 86.5,
+              "min": 0.0,
+              "max": 178.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "variants_with_effect": {
+              "median": 66.0,
+              "min": 46.0,
+              "max": 71.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "observed_count": 3,
+              "zero_count": 3,
+              "missing_or_null_count": 7
+            },
+            "variants_with_effect_vcf": {
+              "median": 60.5,
+              "min": 0.0,
+              "max": 123.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 1.0,
+              "min": 0.0,
+              "max": 5.0,
+              "observed_count": 3,
+              "zero_count": 1,
+              "missing_or_null_count": 7
+            },
             "median_discrepancies": 21.0,
             "min": 0.0,
             "max": 46.0,
@@ -2597,6 +3113,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS9",
+            "variants_in_consensus": {
+              "median": 16.0,
+              "min": 14.0,
+              "max": 20.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "variants_in_consensus_vcf": {
+              "median": 16.0,
+              "min": 0.0,
+              "max": 32.0,
+              "observed_count": 7,
+              "zero_count": 1,
+              "missing_or_null_count": 3
+            },
+            "variants_with_effect": {
+              "median": 8.0,
+              "min": 7.0,
+              "max": 14.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 1.0,
+              "observed_count": 3,
+              "zero_count": 2,
+              "missing_or_null_count": 7
+            },
+            "variants_with_effect_vcf": {
+              "median": 10.0,
+              "min": 0.0,
+              "max": 19.0,
+              "observed_count": 7,
+              "zero_count": 1,
+              "missing_or_null_count": 3
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 1.0,
+              "min": 1.0,
+              "max": 2.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
             "median_discrepancies": 6.0,
             "min": 0.0,
             "max": 157.0,
@@ -2669,6 +3233,54 @@
           },
           {
             "collecting_lab_sample_id": "SARS10",
+            "variants_in_consensus": {
+              "median": 11.0,
+              "min": 10.0,
+              "max": 12.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "variants_in_consensus_vcf": {
+              "median": 10.5,
+              "min": 0.0,
+              "max": 12.0,
+              "observed_count": 8,
+              "zero_count": 1,
+              "missing_or_null_count": 2
+            },
+            "variants_with_effect": {
+              "median": 5.0,
+              "min": 5.0,
+              "max": 7.0,
+              "observed_count": 3,
+              "zero_count": 0,
+              "missing_or_null_count": 7
+            },
+            "discrepancies_in_reported_variants": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 0.0,
+              "observed_count": 3,
+              "zero_count": 3,
+              "missing_or_null_count": 7
+            },
+            "variants_with_effect_vcf": {
+              "median": 5.0,
+              "min": 0.0,
+              "max": 5.0,
+              "observed_count": 7,
+              "zero_count": 1,
+              "missing_or_null_count": 3
+            },
+            "discrepancies_in_reported_variants_effect": {
+              "median": 0.0,
+              "min": 0.0,
+              "max": 2.0,
+              "observed_count": 3,
+              "zero_count": 2,
+              "missing_or_null_count": 7
+            },
             "median_discrepancies": 1.0,
             "min": 0.0,
             "max": 203.0,

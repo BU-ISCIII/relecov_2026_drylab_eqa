@@ -1738,12 +1738,24 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if comp_expected.get("virus") == "SARS-CoV-2":
             variant_discs = []
             variant_successful_hits = []
+            variant_in_consensus_all = []
+            variant_in_consensus_vcf_all = []
+            variant_with_effect_all = []
+            discrepancy_reported_all = []
+            variant_with_effect_vcf_all = []
+            discrepancy_reported_effect_all = []
             variant_breakdown_all = defaultdict(list)
             variant_samples = []
 
             for sample_id, expected_sample in comp_expected["samples"].items():
                 tds = []
                 successful_hits_vals = []
+                variants_in_consensus_vals = []
+                variants_in_consensus_vcf_vals = []
+                variants_with_effect_vals = []
+                discrepancies_in_reported_variants_vals = []
+                variants_with_effect_vcf_vals = []
+                discrepancies_in_reported_variants_effect_vals = []
                 bd = defaultdict(list)
 
                 for lab in participating_labs:
@@ -1751,6 +1763,12 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     if not sample:
                         tds.append(None)
                         successful_hits_vals.append(None)
+                        variants_in_consensus_vals.append(None)
+                        variants_in_consensus_vcf_vals.append(None)
+                        variants_with_effect_vals.append(None)
+                        discrepancies_in_reported_variants_vals.append(None)
+                        variants_with_effect_vcf_vals.append(None)
+                        discrepancies_in_reported_variants_effect_vals.append(None)
                         for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                             bd[key].append(None)
                         continue
@@ -1759,6 +1777,12 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
                     td = safe_number(var.get("total_discrepancies"))
                     sh = safe_number(var.get("successful_hits"))
+                    nivc = safe_number(var.get("number_of_variants_in_consensus"))
+                    nivcv = safe_number(var.get("number_of_variants_in_consensus_vcf"))
+                    nwee = safe_number(var.get("number_of_variants_with_effect"))
+                    dirv = safe_number(var.get("discrepancies_in_reported_variants"))
+                    nweev = safe_number(var.get("number_of_variants_with_effect_vcf"))
+                    dirve = safe_number(var.get("discrepancies_in_reported_variants_effect"))
 
                     tds.append(td)
                     if td is not None:
@@ -1767,6 +1791,30 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     successful_hits_vals.append(sh)
                     if sh is not None:
                         variant_successful_hits.append(sh)
+
+                    variants_in_consensus_vals.append(nivc)
+                    if nivc is not None:
+                        variant_in_consensus_all.append(nivc)
+
+                    variants_in_consensus_vcf_vals.append(nivcv)
+                    if nivcv is not None:
+                        variant_in_consensus_vcf_all.append(nivcv)
+
+                    variants_with_effect_vals.append(nwee)
+                    if nwee is not None:
+                        variant_with_effect_all.append(nwee)
+
+                    discrepancies_in_reported_variants_vals.append(dirv)
+                    if dirv is not None:
+                        discrepancy_reported_all.append(dirv)
+
+                    variants_with_effect_vcf_vals.append(nweev)
+                    if nweev is not None:
+                        variant_with_effect_vcf_all.append(nweev)
+
+                    discrepancies_in_reported_variants_effect_vals.append(dirve)
+                    if dirve is not None:
+                        discrepancy_reported_effect_all.append(dirve)
 
                     for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                         v = safe_number(var.get(key))
@@ -1780,9 +1828,21 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     key: summarize_numeric_values(vals, total_count=len(participating_labs))
                     for key, vals in bd.items()
                 }
+                variants_in_consensus_summary = summarize_numeric_values(variants_in_consensus_vals, total_count=len(participating_labs))
+                variants_in_consensus_vcf_summary = summarize_numeric_values(variants_in_consensus_vcf_vals, total_count=len(participating_labs))
+                variants_with_effect_summary = summarize_numeric_values(variants_with_effect_vals, total_count=len(participating_labs))
+                discrepancies_in_reported_variants_summary = summarize_numeric_values(discrepancies_in_reported_variants_vals, total_count=len(participating_labs))
+                variants_with_effect_vcf_summary = summarize_numeric_values(variants_with_effect_vcf_vals, total_count=len(participating_labs))
+                discrepancies_in_reported_variants_effect_summary = summarize_numeric_values(discrepancies_in_reported_variants_effect_vals, total_count=len(participating_labs))
 
                 variant_samples.append({
                     "collecting_lab_sample_id": sample_id,
+                    "variants_in_consensus": variants_in_consensus_summary,
+                    "variants_in_consensus_vcf": variants_in_consensus_vcf_summary,
+                    "variants_with_effect": variants_with_effect_summary,
+                    "discrepancies_in_reported_variants": discrepancies_in_reported_variants_summary,
+                    "variants_with_effect_vcf": variants_with_effect_vcf_summary,
+                    "discrepancies_in_reported_variants_effect": discrepancies_in_reported_variants_effect_summary,
                     "median_discrepancies": discrepancy_summary["median"],
                     "min": discrepancy_summary["min"],
                     "max": discrepancy_summary["max"],
@@ -1801,11 +1861,41 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
             variant_discrepancy_summary = summarize_numeric_values(variant_discs)
             successful_hits_component_summary = summarize_numeric_values(variant_successful_hits)
+            variants_in_consensus_component_summary = summarize_numeric_values(variant_in_consensus_all)
+            variants_in_consensus_vcf_component_summary = summarize_numeric_values(variant_in_consensus_vcf_all)
+            variants_with_effect_component_summary = summarize_numeric_values(variant_with_effect_all)
+            discrepancies_in_reported_variants_component_summary = summarize_numeric_values(discrepancy_reported_all)
+            variants_with_effect_vcf_component_summary = summarize_numeric_values(variant_with_effect_vcf_all)
+            discrepancies_in_reported_variants_effect_component_summary = summarize_numeric_values(discrepancy_reported_effect_all)
             variant_breakdown_summary = {
                 key: summarize_numeric_values(vals)
                 for key, vals in variant_breakdown_all.items()
             }
             comp_obj["variant"] = {
+                "median_variants_in_consensus": variants_in_consensus_component_summary["median"],
+                "min_variants_in_consensus": variants_in_consensus_component_summary["min"],
+                "max_variants_in_consensus": variants_in_consensus_component_summary["max"],
+                "variants_in_consensus_summary": variants_in_consensus_component_summary,
+                "median_variants_in_consensus_vcf": variants_in_consensus_vcf_component_summary["median"],
+                "min_variants_in_consensus_vcf": variants_in_consensus_vcf_component_summary["min"],
+                "max_variants_in_consensus_vcf": variants_in_consensus_vcf_component_summary["max"],
+                "variants_in_consensus_vcf_summary": variants_in_consensus_vcf_component_summary,
+                "median_variants_with_effect": variants_with_effect_component_summary["median"],
+                "min_variants_with_effect": variants_with_effect_component_summary["min"],
+                "max_variants_with_effect": variants_with_effect_component_summary["max"],
+                "variants_with_effect_summary": variants_with_effect_component_summary,
+                "median_discrepancies_in_reported_variants": discrepancies_in_reported_variants_component_summary["median"],
+                "min_discrepancies_in_reported_variants": discrepancies_in_reported_variants_component_summary["min"],
+                "max_discrepancies_in_reported_variants": discrepancies_in_reported_variants_component_summary["max"],
+                "discrepancies_in_reported_variants_summary": discrepancies_in_reported_variants_component_summary,
+                "median_variants_with_effect_vcf": variants_with_effect_vcf_component_summary["median"],
+                "min_variants_with_effect_vcf": variants_with_effect_vcf_component_summary["min"],
+                "max_variants_with_effect_vcf": variants_with_effect_vcf_component_summary["max"],
+                "variants_with_effect_vcf_summary": variants_with_effect_vcf_component_summary,
+                "median_discrepancies_in_reported_variants_effect": discrepancies_in_reported_variants_effect_component_summary["median"],
+                "min_discrepancies_in_reported_variants_effect": discrepancies_in_reported_variants_effect_component_summary["min"],
+                "max_discrepancies_in_reported_variants_effect": discrepancies_in_reported_variants_effect_component_summary["max"],
+                "discrepancies_in_reported_variants_effect_summary": discrepancies_in_reported_variants_effect_component_summary,
                 "median_discrepancies": variant_discrepancy_summary["median"],
                 "total_median_discrepancies": round(sum(v for v in [variant_discrepancy_summary["median"]] if v is not None), 4) if variant_discrepancy_summary["median"] is not None else None,
                 "min_discrepancies": variant_discrepancy_summary["min"],

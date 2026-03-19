@@ -365,7 +365,7 @@ This heterogeneity prevented robust coordinate harmonisation across submissions 
 
 A curated reference variant set was generated for each SARS-CoV-2 sample. Variant positions were standardized relative to a defined coordinate system referred to the references used by Nextclade.
 
-Submitted .vcf files were: (TODO verificar si es verdad)
+Submitted .vcf files were:
 
 - Converted to a standardised long table format for coordinate comparison
 - Compared position-by-position with the reference variant set
@@ -375,6 +375,8 @@ Differences between submitted variants and reference variant set were categorise
 - **Wrong nucleotide**: A nucleotide different from the allowed reference or ambiguity code.
 - **Insertion relative to gold standard**
 - **Deletion relative to gold standard**
+- **Missing variant**: Variants present in the reference but missing in the sample.
+- **De novo**: Variants present in the sample but missing in the reference set.
 
 Each insertion, deletion, or contiguous stretch of Ns was counted as a single event.
 
@@ -386,7 +388,6 @@ Comparative analyses were performed to assess the influence of: (TODO verificar 
 
 - Allele frequency thresholds
 - Minimum coverage thresholds
-- Variant filtering criteria
 - Reference genome selection
 
 #### 4.3.2. Descriptive and Structural Variant Reporting Metrics
@@ -888,22 +889,35 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 **Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
 
-{% if comp_net.variant %}
-
 #### 6.{{ loop.index }}.3. Variant Detection Accuracy
+
+{% if comp_net.variant.median_discrepancies is defined %}
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}) and a meadian of total discrepancies for all the smaples in  {{ comp_code }} of {{ comp_net.variant.total_median_discrepancies }}.
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}.
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level variant calling metrics per sample for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median discrepancies | Discrepancies min-max | Median wrong nucleotide | Median Insertions | Median Deletions |
-|---|---:|---:|---:|---:|---:|---:|
+| Sample ID | Successful hits | Variants >75% AF in metadata | Variants >75% AF in VCF | Variants with effect in metadata | Variants with effect in VCF | Discrepancies metadata vs VCF | Effect discrepancies metadata vs VCF |
+|---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} | {{ s.wrong_nt }} | {{ s.insertions }} | {{ s.deletions }} |
+| {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.variants_with_effect.median if s.variants_with_effect and s.variants_with_effect.median is not none else "NA" }} | {{ s.variants_with_effect_vcf.median if s.variants_with_effect_vcf and s.variants_with_effect_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants_effect.median if s.discrepancies_in_reported_variants_effect and s.discrepancies_in_reported_variants_effect.median is not none else "NA" }} |
 {% endfor %}
+
+Table {{ table_counter.value }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant calling profile per sample for {{ comp_code }}.**
+
+| Sample ID | Successful hits | Median discrepancies | Discrepancies min-max | Wrong nucleotide | Insertions | Deletions | Missing | De novo |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+{% for s in comp_net.variant.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.median_discrepancies if s.median_discrepancies is not none else "NA" }} | {{ s.min if s.min is not none else "NA" }} – {{ s.max if s.max is not none else "NA" }} | {{ s.wrong_nt if s.wrong_nt is not none else "NA" }} | {{ s.insertions if s.insertions is not none else "NA" }} | {{ s.deletions if s.deletions is not none else "NA" }} | {{ s.missing if s.missing is not none else "NA" }} | {{ s.denovo if s.denovo is not none else "NA" }} |
+{% endfor %}
+
+Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
 
@@ -929,6 +943,8 @@ Discrepancy type composition (aggregated across all submitted variant calls for 
 | Incorrect nucleotide | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.variant.discrepancy_breakdown.wrong_nt.max }} |
 | Insertion relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.insertions.median }} | {{ comp_net.variant.discrepancy_breakdown.insertions.min }}–{{ comp_net.variant.discrepancy_breakdown.insertions.max }} |
 | Deletions relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.deletions.median }} | {{ comp_net.variant.discrepancy_breakdown.deletions.min }}–{{ comp_net.variant.discrepancy_breakdown.deletions.max }} |
+| Missing expected variants | {{ comp_net.variant.discrepancy_breakdown.missing.median }} | {{ comp_net.variant.discrepancy_breakdown.missing.min }}–{{ comp_net.variant.discrepancy_breakdown.missing.max }} |
+| De novo variants | {{ comp_net.variant.discrepancy_breakdown.denovo.median }} | {{ comp_net.variant.discrepancy_breakdown.denovo.min }}–{{ comp_net.variant.discrepancy_breakdown.denovo.max }} |
 
 The dominant discrepancy pattern observed in {{ comp_code }} was {{ comp_net.variant.dominant_discrepancy_pattern }}.
 
@@ -944,6 +960,31 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 > Como este pero en el eje X los tipos de sustituciones
 
 **Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+
+{% else %}
+
+For the {{ comp_code }} component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} variants with allele frequency above 75% reported in the metadata template, compared with {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }}, while the median total number of variants present in the submitted VCF files was {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }}.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Network-level influenza variant reporting metrics per sample for {{ comp_code }}.**
+
+| Sample ID | Variants >75% AF in metadata | Variants >75% AF in consensus VCF | Discrepancies between metadata and VCF | Total variants in VCF |
+|---|---:|---:|---:|---:|
+{% for s in comp_net.variant.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.variants_in_vcf.median if s.variants_in_vcf and s.variants_in_vcf.median is not none else "NA" }} |
+{% endfor %}
+
+Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, the median number of high-frequency variants reported in the metadata template, the corresponding number represented in the submitted VCF, the discrepancies between both representations, and the total number of variants observed in the submitted VCF files.
+
+{% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Aggregated influenza variant reporting metrics for {{ comp_code }}.**
+
+| Metric | Network median | Network min-max |
+|---|---:|---:|
+| Variants >75% AF in metadata | {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus if comp_net.variant.min_variants_in_consensus is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus if comp_net.variant.max_variants_in_consensus is not none else "NA" }} |
+| Variants >75% AF in consensus VCF | {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus_vcf if comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus_vcf if comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
+| Discrepancies between metadata and VCF | {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }} | {{ comp_net.variant.min_discrepancies_in_reported_variants if comp_net.variant.min_discrepancies_in_reported_variants is not none else "NA" }}–{{ comp_net.variant.max_discrepancies_in_reported_variants if comp_net.variant.max_discrepancies_in_reported_variants is not none else "NA" }} |
+| Total variants in VCF | {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_vcf if comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_vcf if comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
 
 {% endif %}
 
