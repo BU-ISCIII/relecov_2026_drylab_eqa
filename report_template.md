@@ -576,12 +576,11 @@ For SARS-CoV-2 compoents (SARS1 and SARS2), variant detection accuracy was asses
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Illumina-based analysis generally demonstrated higher concordance and lower false-positive rates compared to Nanopore-based analysis (TODO verificar si es verdad). The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Observed variability in variant detection performance was associated with:
+Illumina-based analysis generally demonstrated higher concordance and discrepancy rates compared to Nanopore-based analysis (TODO verificar si es verdad). The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Observed variability in variant detection performance was associated with:
 
-- Allele frequency thresholds used for consensus incorporation
-- Filtering of low-frequency variants
+- Allele frequency thresholds used for incorporation into vcf files
 - Reference genome selection
-- Variant normalization practices
+- Variant normalization practices (variant caller software and params)
 
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
