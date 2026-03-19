@@ -237,24 +237,24 @@ def classification_hits_discrepancies_from_component(
     """
     typing = comp_data.get("typing", {})
     samples = typing.get("samples", [])
-    total_labs = comp_data.get("total_labs", 0)
 
     total_hits = 0
     total_discrepancies = 0
 
     for sample in samples:
         if mode == "lineage_type":
-            hit_pct = sample.get("lineage_hit_pct")
+            sample_hits = safe_int(sample.get("lineage_hits")) or 0
+            sample_total = safe_int(sample.get("lineage_total")) or 0
         elif mode == "clade":
-            hit_pct = sample.get("clade_hit_pct")
+            sample_hits = safe_int(sample.get("clade_hits")) or 0
+            sample_total = safe_int(sample.get("clade_total")) or 0
         else:
             raise ValueError(f"Unknown classification mode: {mode}")
 
-        if hit_pct is None or total_labs == 0:
+        if sample_total == 0:
             continue
 
-        sample_hits = round(total_labs * hit_pct / 100.0)
-        sample_discrepancies = total_labs - sample_hits
+        sample_discrepancies = sample_total - sample_hits
 
         total_hits += sample_hits
         total_discrepancies += sample_discrepancies
@@ -1001,13 +1001,42 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             for sample_id, sample in comp.get("samples", {}).items():
                 expected_sample = comp_expected["samples"][sample_id]
 
-                software_names_total += 1
-                if is_meaningful(sample.get("software_benchmarking", {}).get("bioinformatics_protocol_software_name")):
-                    software_names_count += 1
+                sb = sample.get("software_benchmarking", {})
 
-                software_version_total += 1
-                if is_meaningful(sample.get("software_benchmarking", {}).get("bioinformatics_protocol_software_version")):
-                    software_version_count += 1
+                software_name_slots = [
+                    is_meaningful(sb.get("bioinformatics_protocol_software_name")),
+                    is_meaningful(sb.get("dehosting_method_software_name")),
+                    is_meaningful(sb.get("preprocessing_software_name")),
+                    is_meaningful(sb.get("mapping_software_name")) or is_meaningful(sb.get("assembly")),
+                    is_meaningful(sb.get("variant_calling_software_name")),
+                    is_meaningful(sb.get("consensus_sequence_software_name")),
+                    is_meaningful(sb.get("clade_assignment_software_name")),
+                ]
+
+                software_version_slots = [
+                    is_meaningful(sb.get("bioinformatics_protocol_software_version")),
+                    is_meaningful(sb.get("dehosting_method_software_version")),
+                    is_meaningful(sb.get("preprocessing_software_version")),
+                    is_meaningful(sb.get("mapping_software_version")) or is_meaningful(sb.get("assembly_version")),
+                    is_meaningful(sb.get("variant_calling_software_version")),
+                    is_meaningful(sb.get("consensus_sequence_software_version")),
+                    is_meaningful(sb.get("clade_assignment_software_version")),
+                ]
+
+                if comp_expected.get("virus") == "SARS-CoV-2":
+                    software_name_slots.append(is_meaningful(sb.get("lineage_assignment_software_name")))
+                    software_version_slots.append(is_meaningful(sb.get("lineage_assignment_software_version")))
+                else:
+                    software_name_slots.append(is_meaningful(sb.get("type_assignment_software_name")))
+                    software_name_slots.append(is_meaningful(sb.get("subtype_assignment_software_name")))
+                    software_version_slots.append(is_meaningful(sb.get("type_assignment_software_version")))
+                    software_version_slots.append(is_meaningful(sb.get("subtype_assignment_software_version")))
+
+                software_names_total += len(software_name_slots)
+                software_names_count += sum(1 for filled in software_name_slots if filled)
+
+                software_version_total += len(software_version_slots)
+                software_version_count += sum(1 for filled in software_version_slots if filled)
 
                 coverage_threshold_total += 1
                 if is_meaningful(sample.get("software_benchmarking", {}).get("depth_of_coverage_threshold")):
@@ -1028,7 +1057,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     if filled_fields is None or filled_fields < total_expected_fields:
                         metadata_incomplete_samples += 1
 
-                sb = sample.get("software_benchmarking", {})
                 params_slots_total += 4
 
                 if not is_meaningful(sb.get("preprocessing_params")):
@@ -1493,9 +1521,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         lineage_total = 0
         clade_hits = 0
         clade_total = 0
-        discordant_evaluations = 0
-        classification_evaluable_total = 0
-
         # 1. Total matches per lab across all samples of the component
         for lab in participating_labs:
             lab_total_matches = 0
@@ -1523,11 +1548,6 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     clade_total += 1
                     if cm is True:
                         clade_hits += 1
-
-                if nd is not None and (lm is not None or cm is not None):
-                    classification_evaluable_total += 1
-                    if nd == 2:
-                        discordant_evaluations += 1
 
             classification_matches_per_lab.append(lab_total_matches)
 
@@ -1559,7 +1579,13 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
             per_sample_cls.append({
                 "collecting_lab_sample_id": sample_id,
+                "lineage_hits": sample_lineage_hits,
+                "lineage_total": sample_lineage_total,
+                "lineage_discrepancies": sample_lineage_total - sample_lineage_hits,
                 "lineage_hit_pct": pct(sample_lineage_hits, sample_lineage_total) if sample_lineage_total else None,
+                "clade_hits": sample_clade_hits,
+                "clade_total": sample_clade_total,
+                "clade_discrepancies": sample_clade_total - sample_clade_hits,
                 "clade_hit_pct": pct(sample_clade_hits, sample_clade_total) if sample_clade_total else None,
             })
 
@@ -1567,13 +1593,19 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "total_classification_matches_median": median_or_none(classification_matches_per_lab),
             "total_classification_matches_min": min_or_none(classification_matches_per_lab),
             "total_classification_matches_max": max_or_none(classification_matches_per_lab),
+            "lineage_hits": lineage_hits,
+            "lineage_discrepancies": lineage_total - lineage_hits,
+            "lineage_total": lineage_total,
             "lineage_hit_pct": pct(lineage_hits, lineage_total),
+            "lineage_discrepancies_pct": pct(lineage_total - lineage_hits, lineage_total),
+            "clade_hits": clade_hits,
+            "clade_discrepancies": clade_total - clade_hits,
+            "clade_total": clade_total,
             "clade_hit_pct": pct(clade_hits, clade_total),
-            "discordance_pct": pct(discordant_evaluations, classification_evaluable_total),
+            "clade_discrepancies_pct": pct(clade_total - clade_hits, clade_total),
             "samples": per_sample_cls,
             "fig_stacked_bar_by_sample": f"figures/{comp_code}/typing_outcome_stackedbar_by_sample.png",
         }
-
 
         qc_matches_comp = qc_disc_comp = qc_total_comp = 0
         qc_samples = []
@@ -2237,7 +2269,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "software_names_pct": pct(software_names_count, software_names_total),
             "software_version_pct": pct(software_version_count, software_version_total),
             "coverage_threshold_pct": pct(coverage_threshold_count, coverage_threshold_total),
-            "frequency_threshold_pct": pct(frequency_threshold_count, frequency_threshold_total),
+            "variant_calling_params_pct": pct(frequency_threshold_count, frequency_threshold_total),
             "reference_genome_pct": pct(reference_genome_count, reference_genome_total),
             "incomplete_parameters_pct": pct(params_slots_missing, params_slots_total),
             "filled_parameters_pct": pct(params_slots_total - params_slots_missing, params_slots_total),

@@ -705,10 +705,10 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 
 Although core pipeline tools were generally reported, variability was observed in the level of parameter detail provided.
 
-- {{ pct(general.metadata_completeness.software_names_pct) }} of laboratories reported software names.
-- {{ pct(general.metadata_completeness.software_version_pct) }} reported software versions.
+- {{ pct(general.metadata_completeness.software_names_pct) }} of the maximum software-name fields were completed across submitted samples.
+- {{ pct(general.metadata_completeness.software_version_pct) }} of the maximum software-version fields were completed across submitted samples.
 - {{ pct(general.metadata_completeness.coverage_threshold_pct) }} specified minimum coverage thresholds.
-- {{ pct(general.metadata_completeness.frequency_threshold_pct) }} declared allele frequency thresholds used for consensus incorporation.
+- {{ pct(general.metadata_completeness.variant_calling_params_pct) }} reported `variant_calling_params`, containing the potential allele frequency thresholds.
 - {{ pct(general.metadata_completeness.reference_genome_pct) }} reported the reference genome accession or identifier.
 
 Incomplete parameter reporting limited the ability to fully reconstruct or reproduce analytical workflows in {{ pct(general.metadata_completeness.incomplete_parameters_pct) }} of submissions.
