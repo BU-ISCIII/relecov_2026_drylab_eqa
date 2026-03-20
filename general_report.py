@@ -2635,6 +2635,7 @@ def collect_lab_consensus_metric_distribution_data(
         "lab_values": lab_values,
         "outlier_annotations": outlier_annotations,
         "lab_outlier_annotations": lab_outlier_annotations,
+        "has_lab_values": any(value is not None for value in lab_values),
     }
 
 def make_lab_consensus_distribution_panel_plot(
@@ -2665,7 +2666,10 @@ def make_lab_consensus_distribution_panel_plot(
         metric_key="genome_identity_pct",
     )
 
-    if not discrepancy_data["sample_names"] and not identity_data["sample_names"]:
+    if (
+        (not discrepancy_data["sample_names"] or not discrepancy_data["has_lab_values"])
+        and (not identity_data["sample_names"] or not identity_data["has_lab_values"])
+    ):
         return str(output_path)
 
     max_samples = max(
@@ -2695,7 +2699,7 @@ def make_lab_consensus_distribution_panel_plot(
 
     for ax, title, ylabel, panel_data, y_limit, percent_axis in panel_specs:
         sample_names = panel_data["sample_names"]
-        if not sample_names:
+        if not sample_names or not panel_data["has_lab_values"]:
             ax.set_visible(False)
             continue
 
@@ -2881,6 +2885,7 @@ def collect_lab_variant_metric_distribution_data(
         "lab_values": lab_values,
         "outlier_annotations": outlier_annotations,
         "lab_outlier_annotations": lab_outlier_annotations,
+        "has_lab_values": any(value is not None for value in lab_values),
     }
 
 
@@ -2907,6 +2912,8 @@ def make_lab_variant_boxplot_panel_figure(
             y_limit=y_limit,
         )
         if panel_data["sample_names"]:
+            if not panel_data["has_lab_values"]:
+                continue
             max_samples = max(max_samples, len(panel_data["sample_names"]))
             panel_data_specs.append((title, ylabel, panel_data, y_limit, percent_axis))
 
@@ -3165,18 +3172,29 @@ def generate_individual_lab_figures(
                 figures_dir=figures_dir,
             )
             if (safe_int(comp.get("metadata", {}).get("vcf_submitted")) or 0) >= 1:
-                make_lab_variant_metrics_distribution_plot(
-                    labs=labs,
-                    lab=lab,
-                    comp_code=comp_code,
-                    figures_dir=figures_dir,
-                )
-                make_lab_variant_metadata_vs_vcf_distribution_plot(
-                    labs=labs,
-                    lab=lab,
-                    comp_code=comp_code,
-                    figures_dir=figures_dir,
-                )
+                if comp_code.startswith("SARS"):
+                    make_lab_variant_metrics_distribution_plot(
+                        labs=labs,
+                        lab=lab,
+                        comp_code=comp_code,
+                        figures_dir=figures_dir,
+                        output_filename="variant_metadata_vs_vcf_distribution.png",
+                    )
+                    make_lab_variant_metadata_vs_vcf_distribution_plot(
+                        labs=labs,
+                        lab=lab,
+                        comp_code=comp_code,
+                        figures_dir=figures_dir,
+                        output_filename="variant_metrics_distribution.png",
+                    )
+                else:
+                    make_lab_variant_metadata_vs_vcf_distribution_plot(
+                        labs=labs,
+                        lab=lab,
+                        comp_code=comp_code,
+                        figures_dir=figures_dir,
+                        output_filename="variant_metrics_distribution.png",
+                    )
 
 
 def collect_software_groups(
