@@ -3080,6 +3080,7 @@ def make_lab_workflow_positioning_boxplot(
     lab_code = get_lab_identifier(lab)
     output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
     output_path = output_dir / output_filename
+    component_color = COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["box_default"])
 
     panel_data_specs = []
     for title, ylabel, extractor, color, y_limits in WORKFLOW_POSITIONING_METRICS:
@@ -3108,7 +3109,7 @@ def make_lab_workflow_positioning_boxplot(
             showfliers=True,
         )
         for patch in bp["boxes"]:
-            patch.set_facecolor(color)
+            patch.set_facecolor(component_color)
             patch.set_edgecolor("#333333")
             patch.set_alpha(0.65)
         for median_line in bp["medians"]:
@@ -3129,7 +3130,7 @@ def make_lab_workflow_positioning_boxplot(
             bp,
             data,
             [1],
-            [color],
+            [component_color],
         )
         add_lab_result_diamond(
             ax=ax,
