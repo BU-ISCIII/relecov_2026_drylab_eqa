@@ -1695,14 +1695,35 @@ Positioning was evaluated based on four primary performance indicators:
 4. Metadata completeness
 
 {% set table_counter.value = table_counter.value + 1 %}
+**Table {{ table_counter.value }}. Declared workflow configuration for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
+
+{% if comp_code in ["SARS1", "SARS2"] %}
+| Sample ID | Bioinformatics protocol | Dehosting | Pre-processing | Mapping/Assembly | Variant calling | Consensus sequence | Lineage assignment | Clade assignment |
+|---|---|---|---|---|---|---|---|---|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+{% set sb = s.software_benchmarking %}
+| {{ collecting_lab_sample_id }} | {{ software_label(sb.bioinformatics_protocol_software_name, sb.bioinformatics_protocol_software_version) }} | {{ software_label(sb.dehosting_method_software_name, sb.dehosting_method_software_version) }} | {{ software_label(sb.preprocessing_software_name, sb.preprocessing_software_version) }} | {% if sb.mapping_software_name %}{{ software_label(sb.mapping_software_name, sb.mapping_software_version) }}{% elif sb.assembly %}{{ software_label(sb.assembly, sb.assembly_version) }}{% else %}NA{% endif %} | {{ software_label(sb.variant_calling_software_name, sb.variant_calling_software_version) }} | {{ software_label(sb.consensus_sequence_software_name, sb.consensus_sequence_software_version) }} | {{ software_label(sb.lineage_assignment_software_name, sb.lineage_assignment_software_version, sb.lineage_assignment_database_version) }} | {{ software_label(sb.clade_assignment_software_name, sb.clade_assignment_software_version, sb.clade_assignment_software_database_version) }} |
+{% endfor %}
+{% else %}
+| Sample ID | Bioinformatics protocol | Dehosting | Pre-processing | Mapping/Assembly | Variant calling | Consensus sequence | Type assignment | Subtype assignment | Clade assignment |
+|---|---|---|---|---|---|---|---|---|---|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+{% set sb = s.software_benchmarking %}
+| {{ collecting_lab_sample_id }} | {{ software_label(sb.bioinformatics_protocol_software_name, sb.bioinformatics_protocol_software_version) }} | {{ software_label(sb.dehosting_method_software_name, sb.dehosting_method_software_version) }} | {{ software_label(sb.preprocessing_software_name, sb.preprocessing_software_version) }} | {% if sb.mapping_software_name %}{{ software_label(sb.mapping_software_name, sb.mapping_software_version) }}{% elif sb.assembly %}{{ software_label(sb.assembly, sb.assembly_version) }}{% else %}NA{% endif %} | {{ software_label(sb.variant_calling_software_name, sb.variant_calling_software_version) }} | {{ software_label(sb.consensus_sequence_software_name, sb.consensus_sequence_software_version) }} | {{ software_label(sb.type_assignment_software_name, sb.type_assignment_software_version, sb.type_assignment_software_database_version) }} | {{ software_label(sb.subtype_assignment_software_name, sb.subtype_assignment_software_version, sb.subtype_assignment_software_database_version) }} | {{ software_label(sb.clade_assignment_software_name, sb.clade_assignment_software_version, sb.clade_assignment_software_database_version) }} |
+{% endfor %}
+{% endif %}
+
+Table {{ table_counter.value }} summarises the software configuration declared by **{{ labdata.lab.lab_cod }}** for each analysed sample in {{ comp_code }}.
+
+{% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Workflow performance positioning for {{ labdata.lab.lab_cod }} within the network ({{ comp_code }}).**
 
 | Metric | {{ labdata.lab.lab_cod }} workflow | Network median | Network min - max |
 |---|---:|---:|---:|
-| Total number of discrepancies | {{ comp.software_benchmarking.total_number_discrepancies }} | {{ general.components[comp_code].consensus.total_median_discrepancies }} | {{ general.components[comp_code].consensus.min_discrepancies }} - {{ general.components[comp_code].consensus.max_discrepancies }} |
-| Median genome identity (%) | {{ pct(comp.software_benchmarking.median_genome_identity_pct, 4) }} | {{ pct(general.components[comp_code].consensus.median_identity_pct, 4) }} | {{ general.components[comp_code].consensus.identity_pct_min }} - {{ general.components[comp_code].consensus.identity_pct_max }} |
-| Total classification matches | {{ comp.software_benchmarking.total_classification_matches }} | {{ general.components[comp_code].typing.total_classification_matches_meadian }} | {{ general.components[comp_code].typing.total_classification_matches_min }} - {{ general.components[comp_code].typing.total_classification_matches_max }}|
-| Metadata completeness (%) | {{ pct(comp.metadata.completeness_pct, 2) }} | {{ pct(general.components[comp_code].metadata_completeness_median, 2) }} | {{ general.components[comp_code].metadata_completeness_min_pct }} - {{ general.components[comp_code].metadata_completeness_max_pct }} |
+| Total number of discrepancies | {{ comp.total_number_discrepancies_consensus if comp.total_number_discrepancies_consensus is not none else "NA" }} | {{ general.components[comp_code].consensus.total_median_discrepancies if general.components[comp_code].consensus.total_median_discrepancies is not none else "NA" }} | {{ general.components[comp_code].consensus.min_discrepancies if general.components[comp_code].consensus.min_discrepancies is not none else "NA" }} - {{ general.components[comp_code].consensus.max_discrepancies if general.components[comp_code].consensus.max_discrepancies is not none else "NA" }} |
+| Median genome identity (%) | {{ pct(comp.median_genome_identity_pct, 4) if comp.median_genome_identity_pct is not none else "NA" }} | {{ pct(general.components[comp_code].consensus.median_identity_pct, 4) if general.components[comp_code].consensus.median_identity_pct is not none else "NA" }} | {{ general.components[comp_code].consensus.identity_pct_min if general.components[comp_code].consensus.identity_pct_min is not none else "NA" }} - {{ general.components[comp_code].consensus.identity_pct_max if general.components[comp_code].consensus.identity_pct_max is not none else "NA" }} |
+| Total classification matches | {{ comp.total_classification_matches if comp.total_classification_matches is not none else "NA" }} | {{ general.components[comp_code].typing.total_classification_matches_median if general.components[comp_code].typing.total_classification_matches_median is not none else "NA" }} | {{ general.components[comp_code].typing.total_classification_matches_min if general.components[comp_code].typing.total_classification_matches_min is not none else "NA" }} - {{ general.components[comp_code].typing.total_classification_matches_max if general.components[comp_code].typing.total_classification_matches_max is not none else "NA" }}|
+| Metadata completeness (%) | {{ pct(comp.metadata.completeness_pct, 2) if comp.metadata.completeness_pct is not none else "NA" }} | {{ pct(general.components[comp_code].metadata_completeness_median, 2) if general.components[comp_code].metadata_completeness_median is not none else "NA" }} | {{ general.components[comp_code].metadata_completeness_min_pct if general.components[comp_code].metadata_completeness_min_pct is not none else "NA" }} - {{ general.components[comp_code].metadata_completeness_max_pct if general.components[comp_code].metadata_completeness_max_pct is not none else "NA" }} |
 
 Table {{ table_counter.value }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. Network medians and (min-max) ranges provide a reference distribution against which the positioning of the declared workflow can be interpreted.
 
