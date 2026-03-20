@@ -44,6 +44,9 @@ COMPONENT_BOX_COLORS = {
     "FLU2": CBF_COLORS["box_flu2"],
 }
 
+LAB_HIGHLIGHT_FACE_COLOR = "#000000"
+LAB_HIGHLIGHT_EDGE_COLOR = (1.0, 1.0, 1.0, 0.8)
+
 COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS = {
     "SARS1": None,
     "SARS2": None,
@@ -277,6 +280,21 @@ def ensure_component_figures_dir(figures_dir: str | Path, comp_code: str) -> Pat
     return output_dir
 
 
+def ensure_lab_component_figures_dir(figures_dir: str | Path, lab_code: str, comp_code: str) -> Path:
+    output_dir = Path(figures_dir) / "labs" / lab_code / comp_code
+    output_dir.mkdir(parents=True, exist_ok=True)
+    return output_dir
+
+
+def get_lab_identifier(lab: Dict[str, Any]) -> str:
+    lab_meta = lab.get("lab", {})
+    return (
+        str(lab_meta.get("lab_cod")).strip()
+        if is_meaningful(lab_meta.get("lab_cod"))
+        else str(lab_meta.get("submitting_institution_id", "unknown_lab")).strip()
+    )
+
+
 def style_boxplot(bp: Dict[str, Any], labels: List[str]) -> None:
     for patch, label in zip(bp["boxes"], labels):
         patch.set_facecolor(COMPONENT_BOX_COLORS.get(label, CBF_COLORS["box_default"]))
@@ -392,6 +410,35 @@ def align_boxplot_fliers(
             aligned_x.append(xs[matched_index])
 
         flier.set_xdata(aligned_x)
+
+
+def add_lab_result_diamond(
+    ax: Any,
+    positions: List[float],
+    values: List[Optional[float]],
+) -> None:
+    xs = []
+    ys = []
+    for pos, value in zip(positions, values):
+        numeric_value = safe_number(value)
+        if numeric_value is None:
+            continue
+        xs.append(pos)
+        ys.append(numeric_value)
+
+    if not xs:
+        return
+
+    ax.scatter(
+        xs,
+        ys,
+        s=64,
+        marker="D",
+        facecolor=LAB_HIGHLIGHT_FACE_COLOR,
+        edgecolor=LAB_HIGHLIGHT_EDGE_COLOR,
+        linewidth=1.4,
+        zorder=6,
+    )
 
 
 def classification_hits_discrepancies_from_component(
@@ -2531,6 +2578,254 @@ def generate_component_figures(
             )
 
 
+def collect_lab_consensus_metric_distribution_data(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    metric_key: str,
+    y_limit: Optional[float] = None,
+) -> Dict[str, Any]:
+    sample_order = list(lab.get("components", {}).get(comp_code, {}).get("samples", {}).keys())
+    sample_names = []
+    network_data = []
+    lab_values = []
+    outlier_annotations: List[tuple[int, float]] = []
+
+    for sample_id in sample_order:
+        sample_values = []
+        for network_lab in labs:
+            sample = network_lab.get("components", {}).get(comp_code, {}).get("samples", {}).get(sample_id)
+            if not sample:
+                continue
+            value = safe_number(sample.get("consensus", {}).get(metric_key))
+            if value is not None:
+                sample_values.append(value)
+
+        lab_sample = lab.get("components", {}).get(comp_code, {}).get("samples", {}).get(sample_id)
+        lab_value = safe_number(lab_sample.get("consensus", {}).get(metric_key)) if lab_sample else None
+
+        if not sample_values and lab_value is None:
+            continue
+
+        if y_limit is not None and sample_values:
+            outliers_above_limit = sorted([value for value in sample_values if value > y_limit], reverse=True)
+            plotted_values = [value for value in sample_values if value <= y_limit]
+            if outliers_above_limit and plotted_values:
+                sample_values = plotted_values
+                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
+
+        sample_names.append(sample_id)
+        network_data.append(sample_values)
+        lab_values.append(lab_value)
+
+    return {
+        "sample_names": sample_names,
+        "network_data": network_data,
+        "lab_values": lab_values,
+        "outlier_annotations": outlier_annotations,
+    }
+
+def make_lab_consensus_distribution_panel_plot(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "consensus_distribution_panel.png",
+) -> str:
+    lab_code = get_lab_identifier(lab)
+    output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
+    output_path = output_dir / output_filename
+
+    discrepancy_data = collect_lab_consensus_metric_distribution_data(
+        general_data=general_data,
+        labs=labs,
+        lab=lab,
+        comp_code=comp_code,
+        metric_key="total_discrepancies",
+        y_limit=COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code),
+    )
+    identity_data = collect_lab_consensus_metric_distribution_data(
+        general_data=general_data,
+        labs=labs,
+        lab=lab,
+        comp_code=comp_code,
+        metric_key="genome_identity_pct",
+    )
+
+    if not discrepancy_data["sample_names"] and not identity_data["sample_names"]:
+        return str(output_path)
+
+    max_samples = max(
+        len(discrepancy_data["sample_names"]),
+        len(identity_data["sample_names"]),
+        1,
+    )
+    fig, axes = plt.subplots(1, 2, figsize=(max(12, max_samples * 2.0), 6))
+    panel_specs = [
+        (
+            axes[0],
+            "A. Consensus discrepancies",
+            "Consensus discrepancies",
+            discrepancy_data,
+            COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code),
+            False,
+        ),
+        (
+            axes[1],
+            "B. Genome identity",
+            "Genome identity (%)",
+            identity_data,
+            None,
+            True,
+        ),
+    ]
+
+    for ax, title, ylabel, panel_data, y_limit, percent_axis in panel_specs:
+        sample_names = panel_data["sample_names"]
+        if not sample_names:
+            ax.set_visible(False)
+            continue
+
+        network_data = panel_data["network_data"]
+        lab_values = panel_data["lab_values"]
+        bp = ax.boxplot(
+            network_data,
+            labels=sample_names,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot(bp, [comp_code] * len(sample_names))
+        add_component_boxplot_points(
+            ax,
+            bp,
+            network_data,
+            list(range(1, len(sample_names) + 1)),
+            [comp_code] * len(sample_names),
+        )
+        add_lab_result_diamond(ax, list(range(1, len(sample_names) + 1)), lab_values)
+
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.tick_params(axis="x", rotation=0, labelsize=9)
+
+        if percent_axis:
+            ax.set_ylim(0, 100)
+        elif y_limit is not None:
+            ax.set_ylim(0, y_limit)
+            annotate_outlier_caps(
+                ax,
+                panel_data["outlier_annotations"],
+                y_limit,
+                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+            )
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
+def make_lab_consensus_discrepancy_breakdown_plot(
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "consensus_discrepancy_breakdown_by_sample.png",
+) -> str:
+    lab_code = get_lab_identifier(lab)
+    output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
+    output_path = output_dir / output_filename
+
+    comp = lab.get("components", {}).get(comp_code, {})
+    samples = comp.get("samples", {})
+
+    sample_names = []
+    stacked_values = {key: [] for key in CONSENSUS_DISCREPANCY_TYPE_ORDER}
+
+    for sample_id, sample in samples.items():
+        breakdown = sample.get("consensus", {}).get("discrepancy_breakdown", {})
+        raw_values = [
+            safe_number(breakdown.get(key))
+            for key in CONSENSUS_DISCREPANCY_TYPE_ORDER
+        ]
+        if all(value is None for value in raw_values):
+            continue
+
+        sample_counts = {}
+        for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+            value = safe_number(breakdown.get(key))
+            sample_counts[key] = 0.0 if value is None else value
+
+        sample_names.append(sample_id)
+        for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+            stacked_values[key].append(sample_counts[key])
+
+    if not sample_names:
+        return str(output_path)
+
+    fig, ax = plt.subplots(figsize=(max(10, len(sample_names) * 1.8), 6))
+    x_positions = np.arange(len(sample_names))
+    bottoms = np.zeros(len(sample_names))
+
+    for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
+        values = stacked_values[key]
+        ax.bar(
+            x_positions,
+            values,
+            bottom=bottoms,
+            color=CONSENSUS_DISCREPANCY_TYPE_COLORS[key],
+            edgecolor="#4A4A4A",
+            linewidth=0.8,
+            label=CONSENSUS_DISCREPANCY_TYPE_LABELS[key].replace("\n", " "),
+        )
+        bottoms = bottoms + np.array(values)
+
+    ax.set_title(f"{comp_code} discrepancy type breakdown for {lab_code}")
+    ax.set_ylabel("Discrepancies (n)")
+    ax.set_xticks(x_positions)
+    ax.set_xticklabels(sample_names, fontsize=9)
+    ax.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.18),
+        ncol=3,
+        frameon=False,
+        fontsize=8,
+    )
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
+def generate_individual_lab_figures(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    figures_dir: str | Path = "figures",
+) -> None:
+    for lab in labs:
+        lab_code = get_lab_identifier(lab)
+        if not lab_code:
+            continue
+
+        for comp_code in lab.get("components", {}).keys():
+            make_lab_consensus_distribution_panel_plot(
+                general_data=general_data,
+                labs=labs,
+                lab=lab,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+            make_lab_consensus_discrepancy_breakdown_plot(
+                lab=lab,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+
+
 def collect_software_groups(
     participating_labs: List[Dict[str, Any]],
     comp_code: str,
@@ -4201,7 +4496,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-data", required=True, help="Path to expected_data.json")
     parser.add_argument("--labs-dir", required=True, help="Directory containing per-lab JSON files")
     parser.add_argument("--output", required=True, help="Output general.json path")
-    parser.add_argument("--figures-dir", default="figures", help="Base directory where figures will be written")
+    parser.add_argument("--figures-dir", default="./figures", help="Base directory where all figures will be written")
     return parser.parse_args()
 
 
@@ -4218,6 +4513,12 @@ def main() -> None:
     )
 
     generate_component_figures(
+        general_data=general,
+        labs=labs,
+        figures_dir=args.figures_dir,
+    )
+
+    generate_individual_lab_figures(
         general_data=general,
         labs=labs,
         figures_dir=args.figures_dir,
