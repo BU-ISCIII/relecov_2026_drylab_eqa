@@ -666,6 +666,104 @@ def make_component_typing_outcome_stacked_bar_by_sample(
     return str(output_path)
 
 
+def make_component_qc_match_by_sample_plot(
+    general_data: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "qc_match_by_sample.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    samples = comp_data.get("qc", {}).get("samples", [])
+    if not samples:
+        return str(output_path)
+
+    sample_names = [
+        sample.get("collecting_lab_sample_id") or sample.get("sample_id")
+        for sample in samples
+        if sample.get("collecting_lab_sample_id") or sample.get("sample_id")
+    ]
+    if not sample_names:
+        return str(output_path)
+
+    match_rates = []
+    discrepancy_rates = []
+
+    for sample in samples:
+        match_rate = safe_number(sample.get("match_rate_pct"))
+        match_rates.append(match_rate if match_rate is not None else np.nan)
+        discrepancy_rates.append(100.0 - match_rate if match_rate is not None else np.nan)
+
+    x_positions = np.arange(len(sample_names))
+    width = 0.62
+
+    plt.figure(figsize=(max(9, len(sample_names) * 1.35), 6))
+    match_bars = plt.bar(
+        x_positions,
+        match_rates,
+        width=width,
+        color=CBF_COLORS["match"],
+        label="Match",
+    )
+    discrepancy_bars = plt.bar(
+        x_positions,
+        discrepancy_rates,
+        width=width,
+        bottom=match_rates,
+        color=CBF_COLORS["discrepancy"],
+        label="Discrepancy",
+    )
+
+    plt.xticks(x_positions, sample_names, rotation=45, ha="right")
+    plt.xlabel("Sample")
+    plt.ylabel("QC evaluations (%)")
+    plt.ylim(0, 100)
+    plt.title(f"{comp_code} QC concordance by sample")
+    plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.28), ncol=2)
+
+    for bar, value in zip(match_bars, match_rates):
+        if value is None or np.isnan(value) or value <= 0:
+            continue
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            value / 2,
+            f"{value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    for bar, match_value, discrepancy_value in zip(discrepancy_bars, match_rates, discrepancy_rates):
+        if (
+            match_value is None
+            or discrepancy_value is None
+            or np.isnan(match_value)
+            or np.isnan(discrepancy_value)
+            or discrepancy_value <= 0
+        ):
+            continue
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            match_value + discrepancy_value / 2,
+            f"{discrepancy_value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    plt.tight_layout(rect=(0, 0.08, 1, 1))
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int, int]:
     """
     Calculate total QC matches and discrepancies across all samples of one component.
@@ -1910,6 +2008,11 @@ def generate_component_figures(
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
+        make_component_qc_match_by_sample_plot(
+            general_data=general_data,
+            comp_code=comp_code,
+            figures_dir=figures_dir,
+        )
 
 
 def collect_software_groups(
@@ -2849,6 +2952,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     qc_total_comp += 1
             qc_samples.append({
                 "sample_id": sample_id,
+                "collecting_lab_sample_id": sample_id,
                 "gold_standard_qc": expected_qc,
                 "match_rate_pct": pct(sample_qc_matches, sample_qc_total),
                 "matches": sample_qc_matches,

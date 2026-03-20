@@ -955,7 +955,6 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 ) }}
 
 ![variant_discrepancy_type_boxplot](./figures/SARS1/variant_discrepancy_type_boxplot.png)
-> Como este pero en el eje X los tipos de sustituciones
 
 **Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -992,6 +991,8 @@ Figure {{ fig_counter.value + 1 }} summarises influenza variant reporting patter
   "Influenza variant reporting summary by sample for " ~ comp_code ~ "."
 ) }}
 
+![variant_discrepancy_type_boxplot](./figures/FLU1/influenza_variant_reporting_summary_by_sample.png)
+
 **Figure {{ fig_counter.value }}. Influenza variant reporting summary by sample for {{ comp_code }}.** Panel A shows, for each sample, the distribution across participating laboratories of the number of variants with allele frequency above 75% reported in the metadata template, the corresponding number represented in the consensus-derived VCF, and the discrepancies between both representations. Panel B shows the distribution across participating laboratories of the total number of variants present in the submitted VCF files for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range within the plotted scale, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
@@ -1022,6 +1023,8 @@ Table {{ table_counter.value }} summarises the sample-level lineage/subtype and 
   "Classification outcome distribution per sample for " ~ comp_code ~ "."
 ) }}
 
+![variant_discrepancy_type_boxplot](./figures/SARS1/typing_outcome_stackedbar_by_sample.png)
+
 **Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment matches and discrepancies across participating laboratories for each sample. Panel B shows the corresponding proportion for clade assignments. Stacked bars represent Match and Discrepancy outcomes relative to the curated gold standard classification.
 
 #### 6.{{ loop.index }}.5. Sample Quality Control Assessment
@@ -1042,16 +1045,15 @@ Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pc
 | {{ s.collecting_lab_sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
 {% endfor %}
 
-Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample, relative to the gold standard definition.
-
 {% set fig_counter.value = fig_counter.value + 1 %}
-
-As shown in Figure {{ fig_counter.value }}, sample-level QC concordance varied within {{ comp_code }}, highlighting samples where quality interpretation was less consistent across laboratories (TODO verificar si es verdad).
+Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample, relative to the gold standard definition. As shown in Figure {{ fig_counter.value }}, sample-level QC concordance varied within {{ comp_code }}, highlighting samples where quality interpretation was less consistent across laboratories (TODO verificar si es verdad).
 
 {{ render_figure(
 comp_net.qc.fig_qc_match_by_sample,
 "Sample-level QC concordance for " ~ comp_code ~ " (Match vs Discrepancy relative to the gold standard)."
 ) }}
+
+![variant_discrepancy_type_boxplot](./figures/SARS1/typing_outcome_stackedbar_by_sample.png)
 
 **_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match vs Discrepancy outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status.
 

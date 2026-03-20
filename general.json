@@ -1469,6 +1469,7 @@
         "samples": [
           {
             "sample_id": "SARS1",
+            "collecting_lab_sample_id": "SARS1",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 100.0,
             "matches": 8,
@@ -1477,6 +1478,7 @@
           },
           {
             "sample_id": "SARS2",
+            "collecting_lab_sample_id": "SARS2",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 8,
@@ -1485,6 +1487,7 @@
           },
           {
             "sample_id": "SARS3",
+            "collecting_lab_sample_id": "SARS3",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 8,
@@ -1493,6 +1496,7 @@
           },
           {
             "sample_id": "SARS4",
+            "collecting_lab_sample_id": "SARS4",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 12.5,
             "matches": 1,
@@ -1501,6 +1505,7 @@
           },
           {
             "sample_id": "SARS5",
+            "collecting_lab_sample_id": "SARS5",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 0.0,
             "matches": 0,
@@ -3482,6 +3487,7 @@
         "samples": [
           {
             "sample_id": "SARS6",
+            "collecting_lab_sample_id": "SARS6",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 80.0,
             "matches": 4,
@@ -3490,6 +3496,7 @@
           },
           {
             "sample_id": "SARS7",
+            "collecting_lab_sample_id": "SARS7",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 80.0,
             "matches": 4,
@@ -3498,6 +3505,7 @@
           },
           {
             "sample_id": "SARS8",
+            "collecting_lab_sample_id": "SARS8",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 20.0,
             "matches": 1,
@@ -3506,6 +3514,7 @@
           },
           {
             "sample_id": "SARS9",
+            "collecting_lab_sample_id": "SARS9",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 80.0,
             "matches": 4,
@@ -3514,6 +3523,7 @@
           },
           {
             "sample_id": "SARS10",
+            "collecting_lab_sample_id": "SARS10",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 80.0,
             "matches": 4,
@@ -4911,6 +4921,7 @@
         "samples": [
           {
             "sample_id": "FLU1",
+            "collecting_lab_sample_id": "FLU1",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 66.67,
             "matches": 2,
@@ -4919,6 +4930,7 @@
           },
           {
             "sample_id": "FLU2",
+            "collecting_lab_sample_id": "FLU2",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 3,
@@ -4927,6 +4939,7 @@
           },
           {
             "sample_id": "FLU3",
+            "collecting_lab_sample_id": "FLU3",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 100.0,
             "matches": 3,
@@ -4935,6 +4948,7 @@
           },
           {
             "sample_id": "FLU4",
+            "collecting_lab_sample_id": "FLU4",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 66.67,
             "matches": 2,
@@ -4943,6 +4957,7 @@
           },
           {
             "sample_id": "FLU5",
+            "collecting_lab_sample_id": "FLU5",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 66.67,
             "matches": 2,
@@ -6467,6 +6482,7 @@
         "samples": [
           {
             "sample_id": "FLU6",
+            "collecting_lab_sample_id": "FLU6",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 2,
@@ -6475,6 +6491,7 @@
           },
           {
             "sample_id": "FLU7",
+            "collecting_lab_sample_id": "FLU7",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 2,
@@ -6483,6 +6500,7 @@
           },
           {
             "sample_id": "FLU8",
+            "collecting_lab_sample_id": "FLU8",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 2,
@@ -6491,6 +6509,7 @@
           },
           {
             "sample_id": "FLU9",
+            "collecting_lab_sample_id": "FLU9",
             "gold_standard_qc": "Fail",
             "match_rate_pct": 100.0,
             "matches": 2,
@@ -6499,6 +6518,7 @@
           },
           {
             "sample_id": "FLU10",
+            "collecting_lab_sample_id": "FLU10",
             "gold_standard_qc": "Pass",
             "match_rate_pct": 100.0,
             "matches": 2,
