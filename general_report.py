@@ -2821,6 +2821,325 @@ def make_lab_consensus_discrepancy_breakdown_plot(
     return str(output_path)
 
 
+def get_variant_reporting_mode_label(sample: Dict[str, Any]) -> Optional[str]:
+    variants = sample.get("variants", {})
+    if variants.get("high_and_low_freq") is True:
+        return "High + low freq"
+    if variants.get("high_freq_only") is True:
+        return "High freq only"
+    if variants.get("low_freq_only") is True:
+        return "Low freq only"
+    return None
+
+
+def collect_lab_variant_metric_distribution_data(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    extractor,
+    y_limit: Optional[float] = None,
+) -> Dict[str, Any]:
+    sample_order = list(lab.get("components", {}).get(comp_code, {}).get("samples", {}).keys())
+    sample_names = []
+    network_data = []
+    lab_values = []
+    outlier_annotations: List[tuple[int, float]] = []
+    lab_outlier_annotations: List[tuple[int, float]] = []
+
+    for sample_id in sample_order:
+        sample_values = []
+        for network_lab in labs:
+            sample = network_lab.get("components", {}).get(comp_code, {}).get("samples", {}).get(sample_id)
+            if not sample:
+                continue
+            value = safe_number(extractor(sample))
+            if value is not None:
+                sample_values.append(value)
+
+        lab_sample = lab.get("components", {}).get(comp_code, {}).get("samples", {}).get(sample_id)
+        lab_value = safe_number(extractor(lab_sample)) if lab_sample else None
+
+        if not sample_values and lab_value is None:
+            continue
+
+        if y_limit is not None and sample_values:
+            outliers_above_limit = sorted([value for value in sample_values if value > y_limit], reverse=True)
+            plotted_values = [value for value in sample_values if value <= y_limit]
+            if outliers_above_limit and plotted_values:
+                sample_values = plotted_values
+                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
+        if y_limit is not None and lab_value is not None and lab_value > y_limit:
+            lab_outlier_annotations.append((len(sample_names) + 1, lab_value))
+
+        sample_names.append(sample_id)
+        network_data.append(sample_values)
+        lab_values.append(lab_value)
+
+    return {
+        "sample_names": sample_names,
+        "network_data": network_data,
+        "lab_values": lab_values,
+        "outlier_annotations": outlier_annotations,
+        "lab_outlier_annotations": lab_outlier_annotations,
+    }
+
+
+def make_lab_variant_boxplot_panel_figure(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str,
+    panel_specs: List[tuple[str, str, Any, Optional[float], bool]],
+) -> str:
+    lab_code = get_lab_identifier(lab)
+    output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
+    output_path = output_dir / output_filename
+
+    panel_data_specs = []
+    max_samples = 1
+    for title, ylabel, extractor, y_limit, percent_axis in panel_specs:
+        panel_data = collect_lab_variant_metric_distribution_data(
+            labs=labs,
+            lab=lab,
+            comp_code=comp_code,
+            extractor=extractor,
+            y_limit=y_limit,
+        )
+        if panel_data["sample_names"]:
+            max_samples = max(max_samples, len(panel_data["sample_names"]))
+            panel_data_specs.append((title, ylabel, panel_data, y_limit, percent_axis))
+
+    if not panel_data_specs:
+        return str(output_path)
+
+    n_panels = len(panel_data_specs)
+    ncols = 1 if n_panels == 1 else 2
+    nrows = int(np.ceil(n_panels / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(max(12, max_samples * 2.0), 4.8 * nrows))
+    axes = np.atleast_1d(axes).flatten()
+
+    for ax, (title, ylabel, panel_data, y_limit, percent_axis) in zip(axes, panel_data_specs):
+        sample_names = panel_data["sample_names"]
+        network_data = panel_data["network_data"]
+        lab_values = panel_data["lab_values"]
+        bp = ax.boxplot(
+            network_data,
+            labels=sample_names,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot(bp, [comp_code] * len(sample_names))
+        add_component_boxplot_points(
+            ax,
+            bp,
+            network_data,
+            list(range(1, len(sample_names) + 1)),
+            [comp_code] * len(sample_names),
+        )
+        add_lab_result_diamond(
+            ax,
+            list(range(1, len(sample_names) + 1)),
+            lab_values,
+            y_upper=y_limit,
+        )
+
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.tick_params(axis="x", rotation=0, labelsize=9)
+
+        if percent_axis:
+            ax.set_ylim(0, 100)
+        elif y_limit is not None:
+            ax.set_ylim(0, y_limit)
+            combined_annotations = list(panel_data["outlier_annotations"])
+            for annotation in panel_data.get("lab_outlier_annotations", []):
+                if annotation not in combined_annotations:
+                    combined_annotations.append(annotation)
+            annotate_outlier_caps(
+                ax,
+                combined_annotations,
+                y_limit,
+                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+            )
+
+    for ax in axes[len(panel_data_specs):]:
+        ax.set_visible(False)
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
+def make_lab_variant_metrics_distribution_plot(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "variant_metrics_distribution.png",
+) -> str:
+    if comp_code.startswith("SARS"):
+        panel_specs = [
+            (
+                "A. Total discrepancies",
+                "Total discrepancies",
+                lambda s: s.get("variants", {}).get("total_discrepancies"),
+                None,
+                False,
+            ),
+            (
+                "B. Successful hits",
+                "Successful hits",
+                lambda s: s.get("variants", {}).get("successful_hits"),
+                None,
+                False,
+            ),
+        ]
+    else:
+        panel_specs = [
+            (
+                "A. Reported variants (AF >=75%)",
+                "Reported variants (AF >=75%)",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus"),
+                None,
+                False,
+            ),
+            (
+                "B. Variants in VCF (AF >=75%)",
+                "Variants in VCF (AF >=75%)",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus_vcf"),
+                None,
+                False,
+            ),
+            (
+                "C. Metadata-VCF discrepancies",
+                "Metadata-VCF discrepancies",
+                lambda s: s.get("variants", {}).get("discrepancies_in_reported_variants"),
+                None,
+                False,
+            ),
+            (
+                "D. Total variants in VCF",
+                "Total variants in VCF",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_vcf"),
+                None,
+                False,
+            ),
+        ]
+
+    return make_lab_variant_boxplot_panel_figure(
+        labs=labs,
+        lab=lab,
+        comp_code=comp_code,
+        figures_dir=figures_dir,
+        output_filename=output_filename,
+        panel_specs=panel_specs,
+    )
+
+
+def make_lab_variant_metadata_vs_vcf_distribution_plot(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "variant_metadata_vs_vcf_distribution.png",
+) -> str:
+    if comp_code.startswith("SARS"):
+        panel_specs = [
+            (
+                "A. Reported variants (AF >=75%)",
+                "Reported variants (AF >=75%)",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus"),
+                None,
+                False,
+            ),
+            (
+                "B. Variants in VCF (AF >=75%)",
+                "Variants in VCF (AF >=75%)",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus_vcf"),
+                None,
+                False,
+            ),
+            (
+                "C. Variants with effect",
+                "Variants with effect",
+                lambda s: s.get("variants", {}).get("number_of_variants_with_effect"),
+                None,
+                False,
+            ),
+            (
+                "D. Variants with effect in VCF",
+                "Variants with effect in VCF",
+                lambda s: s.get("variants", {}).get("number_of_variants_with_effect_vcf"),
+                None,
+                False,
+            ),
+            (
+                "E. Metadata-VCF discrepancies",
+                "Metadata-VCF discrepancies",
+                lambda s: s.get("variants", {}).get("discrepancies_in_reported_variants"),
+                None,
+                False,
+            ),
+            (
+                "F. Effect discrepancies",
+                "Effect discrepancies",
+                lambda s: s.get("variants", {}).get("discrepancies_in_reported_variants_effect"),
+                None,
+                False,
+            ),
+        ]
+    else:
+        panel_specs = [
+            (
+                "A. Reported variants (AF >=75%)",
+                "Reported variants (AF >=75%)",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus"),
+                None,
+                False,
+            ),
+            (
+                "B. Variants in VCF (AF >=75%)",
+                "Variants in VCF (AF >=75%)",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus_vcf"),
+                None,
+                False,
+            ),
+            (
+                "C. Variants with effect",
+                "Variants with effect",
+                lambda s: s.get("variants", {}).get("number_of_variants_with_effect"),
+                None,
+                False,
+            ),
+            (
+                "D. Metadata-VCF discrepancies",
+                "Metadata-VCF discrepancies",
+                lambda s: s.get("variants", {}).get("discrepancies_in_reported_variants"),
+                None,
+                False,
+            ),
+            (
+                "E. Total variants in VCF",
+                "Total variants in VCF",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_vcf"),
+                None,
+                False,
+            ),
+        ]
+
+    return make_lab_variant_boxplot_panel_figure(
+        labs=labs,
+        lab=lab,
+        comp_code=comp_code,
+        figures_dir=figures_dir,
+        output_filename=output_filename,
+        panel_specs=panel_specs,
+    )
+
+
 def generate_individual_lab_figures(
     general_data: Dict[str, Any],
     labs: List[Dict[str, Any]],
@@ -2832,6 +3151,7 @@ def generate_individual_lab_figures(
             continue
 
         for comp_code in lab.get("components", {}).keys():
+            comp = lab.get("components", {}).get(comp_code, {})
             make_lab_consensus_distribution_panel_plot(
                 general_data=general_data,
                 labs=labs,
@@ -2844,6 +3164,19 @@ def generate_individual_lab_figures(
                 comp_code=comp_code,
                 figures_dir=figures_dir,
             )
+            if (safe_int(comp.get("metadata", {}).get("vcf_submitted")) or 0) >= 1:
+                make_lab_variant_metrics_distribution_plot(
+                    labs=labs,
+                    lab=lab,
+                    comp_code=comp_code,
+                    figures_dir=figures_dir,
+                )
+                make_lab_variant_metadata_vs_vcf_distribution_plot(
+                    labs=labs,
+                    lab=lab,
+                    comp_code=comp_code,
+                    figures_dir=figures_dir,
+                )
 
 
 def collect_software_groups(

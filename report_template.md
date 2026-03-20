@@ -1475,6 +1475,8 @@ This section provides a detailed technical assessment of the analytical results 
 
 The purpose of this section is to support technical optimisation, parameter harmonisation, and alignment with the analytical standards defined within RELECOV 2.0.
 
+Only files, metadata fields, and derived analytical metrics actually provided by the laboratory are displayed in this individual report. If a file was not submitted, or a metadata field was not provided, the corresponding table entries, panels, or figures are omitted for that laboratory.
+
 ## 9.1. Participation Overview
 
 The laboratory analysed **{{ labdata.components | length }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
@@ -1508,6 +1510,8 @@ Number of ssubmitted outputs:
 
 - `.fasta`: **{{ comp.metadata.fasta_submitted }} out of {{ comp.metadata.fasta_expected }} minimum expected**
 - `.vcf`: **{{ comp.metadata.vcf_submitted }} out of {{ comp.metadata.vcf_expected }} minimum expected**
+
+Sections, tables, and figures below are shown only when the corresponding files or metadata were provided for this component. Missing submissions or non-reported metadata fields are not displayed for **{{ labdata.lab.lab_cod }}**.
 
 Regarding metadata completeness for {{ comp_code }}:
 
@@ -1585,59 +1589,69 @@ For SARS-CoV-2, variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_co
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample variant detection performance metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Total number of discrepancies | Netwrok median total number of discrepancies | Total wrong variant | Total insertion relative to gold standard | Total deletion relative to gold standard |
-|---|---:|---:|---:|
+| Sample ID | Reporting mode | {{ labdata.lab.lab_cod }} total discrepancies | Network median total discrepancies | {{ labdata.lab.lab_cod }} successful hits | Network median successful hits | Wrong variants | Insertions | Deletions | Missing expected variants | De novo variants |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
-| {{ collecting_lab_sample_id }} | {{ s.variants.total_discrepancies }} | {{ general.components[comp_code].variant.samples[collecting_lab_sample_id].median_discrepancies }} | {{ s.variants.wrong_nt }} | {{ s.variants.insertions }} | {{ s.variants.deletions }} |
+{% set ns = (general.components[comp_code].variant.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) %}
+| {{ collecting_lab_sample_id }} | {{ "High + low freq" if s.variants.high_and_low_freq else ("High freq only" if s.variants.high_freq_only else ("Low freq only" if s.variants.low_freq_only else "NA")) }} | {{ s.variants.total_discrepancies if s.variants.total_discrepancies is not none else "NA" }} | {{ ns.median_discrepancies if ns else "NA" }} | {{ s.variants.successful_hits if s.variants.successful_hits is not none else "NA" }} | {{ ns.median_successful_hits if ns else "NA" }} | {{ s.variants.wrong_nt if s.variants.wrong_nt is not none else "NA" }} | {{ s.variants.insertions if s.variants.insertions is not none else "NA" }} | {{ s.variants.deletions if s.variants.deletions is not none else "NA" }} | {{ s.variants.missing if s.variants.missing is not none else "NA" }} | {{ s.variants.denovo if s.variants.denovo is not none else "NA" }} |
 {% endfor %}
 
-The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set.
+The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set and benchmark the laboratory’s results against the network median for the same sample.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
 Figure {{ fig_counter.value }} illustrates the distribution of variant detection performance metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 {{ render_figure(
-  "figures/labs/{{ lab_code }}/{{ comp_code }}/variant_metrics_distribution.png",
+  "figures/labs/{{ lab_code }}/{{ comp_code }}/variant_metadata_vs_vcf_distribution.png",
   comp_code ~ ": distribution of variant detection metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range across the network, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
-
->>> Este boxplot en plan eje x: muestra, eje Y numero de discrepancias, igual hay que hacer uno por tipo de discrepancia para cada muestra para toda la red? Too much?
+**Figure {{ fig_counter.value }}. Variant detection performance across participating laboratories ({{ comp_code }}).** Panel A shows the distribution of total variant discrepancies per sample across the RELECOV network. Panel B shows the corresponding distribution of successful hits per sample. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range across the network, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 {% endif %}
 
-Finallty, the total number of variants with AF higher than 75% and the total number of variants with effect reported in the metadata excel, were compared against the real values in the reported .vcf files.
-
 {% if comp_code in ["FLU1", "FLU2"] %}
-
-The total number of variants with AF higher than 75% and the total number of variants with effect reported by **{{ labdata.lab.lab_cod }}** in the metadata excel, were compared agains the real values in the reported Variant call files (`.vcf`) submitted in the {{ comp_code }} component
+For influenza components, evaluation focused on structural reporting metrics and concordance between metadata-reported and VCF-derived variant counts for each sample.
+{% else %}
+The laboratory-reported variant counts declared in the metadata were also compared against the values derived directly from the submitted VCF files for each sample.
 {% endif %}
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Concordance between metadata-reported and VCF-derived variant counts for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
+{% if comp_code in ["SARS1", "SARS2"] %}
+**Table {{ table_counter.value }}. Metadata-reported and VCF-derived variant metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Metadata: variants (AF > 75%) | VCF-derived variants (AF > 75%) | Metadata: variants with effect | VCF-derived variants with effect |
-|---|---:|---:|---:|---:|
+| Sample ID | Reporting mode | Metadata: variants (AF >=75%) | VCF-derived variants (AF >=75%) | Metadata: variants with effect | VCF-derived variants with effect | Metadata-VCF discrepancies | Effect discrepancies |
+|---|---|---:|---:|---:|---:|---:|---:|
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
-| {{ collecting_lab_sample_id }} | {{ s.variants.number_of_variants_in_consensus if s.variants and s.variants.number_of_variants_in_consensus is not none else "NA" }} | {{ s.variants.number_of_variants_in_consensus_vcf if s.variants and s.variants.number_of_variants_in_consensus_vcf is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect if s.variants and s.variants.number_of_variants_with_effect is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect_vcf if s.variants and s.variants.number_of_variants_with_effect_vcf is not none else "NA" }} |
+| {{ collecting_lab_sample_id }} | {{ "High + low freq" if s.variants.high_and_low_freq else ("High freq only" if s.variants.high_freq_only else ("Low freq only" if s.variants.low_freq_only else "NA")) }} | {{ s.variants.number_of_variants_in_consensus if s.variants and s.variants.number_of_variants_in_consensus is not none else "NA" }} | {{ s.variants.number_of_variants_in_consensus_vcf if s.variants and s.variants.number_of_variants_in_consensus_vcf is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect if s.variants and s.variants.number_of_variants_with_effect is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect_vcf if s.variants and s.variants.number_of_variants_with_effect_vcf is not none else "NA" }} | {{ s.variants.discrepancies_in_reported_variants if s.variants and s.variants.discrepancies_in_reported_variants is not none else "NA" }} | {{ s.variants.discrepancies_in_reported_variants_effect if s.variants and s.variants.discrepancies_in_reported_variants_effect is not none else "NA" }} |
 {% endfor %}
+{% else %}
+**Table {{ table_counter.value }}. Metadata-reported and VCF-derived variant metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-The total number of variants with allele frequency above 75%, and the total number of variants with predicted effect reported by **{{ labdata.lab.lab_cod }}** in the metadata template, were compared against the corresponding values derived from the submitted variant call files (`.vcf`) for the {{ comp_code }} component.
-
-{% if comp.component_figures.variant_metadata_vs_vcf_distribution %}
+| Sample ID | Reporting mode | Metadata: variants (AF >=75%) | VCF-derived variants (AF >=75%) | Metadata: variants with effect | Metadata-VCF discrepancies | Total variants in VCF |
+|---|---|---:|---:|---:|---:|---:|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ "High + low freq" if s.variants.high_and_low_freq else ("High freq only" if s.variants.high_freq_only else ("Low freq only" if s.variants.low_freq_only else "NA")) }} | {{ s.variants.number_of_variants_in_consensus if s.variants and s.variants.number_of_variants_in_consensus is not none else "NA" }} | {{ s.variants.number_of_variants_in_consensus_vcf if s.variants and s.variants.number_of_variants_in_consensus_vcf is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect if s.variants and s.variants.number_of_variants_with_effect is not none else "NA" }} | {{ s.variants.discrepancies_in_reported_variants if s.variants and s.variants.discrepancies_in_reported_variants is not none else "NA" }} | {{ s.variants.number_of_variants_in_vcf if s.variants and s.variants.number_of_variants_in_vcf is not none else "NA" }} |
+{% endfor %}
+{% endif %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the agreement between metadata-reported and VCF-derived variant counts across samples for **{{ labdata.lab.lab_cod }}**.
+{% if comp_code in ["SARS1", "SARS2"] %}
+Figure {{ fig_counter.value }} illustrates the distribution of metadata-reported and VCF-derived variant metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% else %}
+Figure {{ fig_counter.value }} illustrates the distribution of influenza-specific reporting metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% endif %}
 
 {{ render_figure(
-  "figures/labs/{{ lab_code }}/{{ comp_code }}/variant_metadata_vs_vcf_distribution.png",
-  comp_code ~ ": agreement between metadata-reported and VCF-derived variant counts for " ~ labdata.lab.lab_cod ~ "."
+  "figures/labs/{{ lab_code }}/{{ comp_code }}/variant_metrics_distribution.png",
+  comp_code ~ ": distribution of variant reporting metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Comparison of metadata-reported and VCF-derived variant counts for {{ labdata.lab.lab_cod }} ({{ comp_code }}).** The figure compares, for each sample, the number of variants with allele frequency above 75% and the number of variants with predicted effect as reported in the metadata template versus the values derived directly from the submitted VCF files.
-
+{% if comp_code in ["SARS1", "SARS2"] %}
+**Figure {{ fig_counter.value }}. Metadata-reported and VCF-derived variant metrics across participating laboratories ({{ comp_code }}).** Panels summarise the sample-level distributions of reported variants with AF >=75%, VCF-derived variants with AF >=75%, reported variants with effect, VCF-derived variants with effect, metadata-VCF discrepancies, and effect discrepancies across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% else %}
+**Figure {{ fig_counter.value }}. Influenza-specific variant reporting metrics across participating laboratories ({{ comp_code }}).** Panels summarise the sample-level distributions of reported variants with AF >=75%, VCF-derived variants with AF >=75%, reported variants with effect, metadata-VCF discrepancies, and total variants present in the submitted VCF files across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 {% endif %}
 {% endif %}
 
