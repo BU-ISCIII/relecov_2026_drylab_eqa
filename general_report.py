@@ -542,20 +542,25 @@ def make_component_typing_outcome_stacked_bar_by_sample(
     if not samples:
         return str(output_path)
 
-    sample_names = [
-        sample.get("collecting_lab_sample_id")
-        for sample in samples
+    evaluable_samples = [
+        sample for sample in samples
         if sample.get("collecting_lab_sample_id")
+        and (
+            safe_number(sample.get("lineage_hit_pct")) is not None
+            or safe_number(sample.get("clade_hit_pct")) is not None
+        )
     ]
-    if not sample_names:
+    if not evaluable_samples:
         return str(output_path)
+
+    sample_names = [sample.get("collecting_lab_sample_id") for sample in evaluable_samples]
 
     lineage_match_rates = []
     lineage_discrepancy_rates = []
     clade_match_rates = []
     clade_discrepancy_rates = []
 
-    for sample in samples:
+    for sample in evaluable_samples:
         lineage_hit_pct = safe_number(sample.get("lineage_hit_pct"))
         clade_hit_pct = safe_number(sample.get("clade_hit_pct"))
 
@@ -680,18 +685,23 @@ def make_component_qc_match_by_sample_plot(
     if not samples:
         return str(output_path)
 
+    evaluable_samples = [
+        sample for sample in samples
+        if (sample.get("collecting_lab_sample_id") or sample.get("sample_id"))
+        and safe_number(sample.get("match_rate_pct")) is not None
+    ]
+    if not evaluable_samples:
+        return str(output_path)
+
     sample_names = [
         sample.get("collecting_lab_sample_id") or sample.get("sample_id")
-        for sample in samples
-        if sample.get("collecting_lab_sample_id") or sample.get("sample_id")
+        for sample in evaluable_samples
     ]
-    if not sample_names:
-        return str(output_path)
 
     match_rates = []
     discrepancy_rates = []
 
-    for sample in samples:
+    for sample in evaluable_samples:
         match_rate = safe_number(sample.get("match_rate_pct"))
         match_rates.append(match_rate if match_rate is not None else np.nan)
         discrepancy_rates.append(100.0 - match_rate if match_rate is not None else np.nan)
@@ -1442,11 +1452,20 @@ def make_component_influenza_variant_reporting_summary(
     if not samples:
         return str(output_path)
 
-    sample_names = [sample.get("collecting_lab_sample_id") for sample in samples if sample.get("collecting_lab_sample_id")]
+    metrics_by_sample = collect_influenza_variant_reporting_by_sample(labs, comp_code)
+    sample_names = [
+        sample.get("collecting_lab_sample_id")
+        for sample in samples
+        if sample.get("collecting_lab_sample_id")
+        and any(metrics_by_sample.get(sample.get("collecting_lab_sample_id"), {}).get(metric_key, []) for metric_key in [
+            "number_of_variants_in_consensus",
+            "number_of_variants_in_consensus_vcf",
+            "discrepancies_in_reported_variants",
+            "number_of_variants_in_vcf",
+        ])
+    ]
     if not sample_names:
         return str(output_path)
-
-    metrics_by_sample = collect_influenza_variant_reporting_by_sample(labs, comp_code)
 
     fig, axes = plt.subplots(
         1,
