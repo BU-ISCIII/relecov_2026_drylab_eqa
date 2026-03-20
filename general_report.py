@@ -3302,6 +3302,61 @@ def make_lab_qc_match_rate_plot(
     return str(output_path)
 
 
+def make_lab_metadata_metrics_panel_plot(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "metadata_metrics_panel.png",
+) -> str:
+    panel_specs = [
+        (
+            "A. Genome >10x",
+            "Genome >10x (%)",
+            lambda s: s.get("metadata_metrics", {}).get("per_genome_greater_10x"),
+            100.0,
+            True,
+        ),
+        (
+            "B. Depth of coverage",
+            "Depth of coverage",
+            lambda s: s.get("metadata_metrics", {}).get("depth_of_coverage_value"),
+            None,
+            False,
+        ),
+        (
+            "C. Ns",
+            "Ns (%)",
+            lambda s: s.get("metadata_metrics", {}).get("per_Ns"),
+            100.0,
+            True,
+        ),
+        (
+            "D. Viral reads",
+            "Reads virus (%)",
+            lambda s: s.get("metadata_metrics", {}).get("per_reads_virus"),
+            100.0,
+            True,
+        ),
+        (
+            "E. Host reads",
+            "Reads host (%)",
+            lambda s: s.get("metadata_metrics", {}).get("per_reads_host"),
+            100.0,
+            True,
+        ),
+    ]
+
+    return make_lab_variant_boxplot_panel_figure(
+        labs=labs,
+        lab=lab,
+        comp_code=comp_code,
+        figures_dir=figures_dir,
+        output_filename=output_filename,
+        panel_specs=panel_specs,
+    )
+
+
 def collect_lab_variant_metric_distribution_data(
     labs: List[Dict[str, Any]],
     lab: Dict[str, Any],
@@ -3651,6 +3706,12 @@ def generate_individual_lab_figures(
             )
             make_lab_qc_match_rate_plot(
                 general_data=general_data,
+                lab=lab,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+            make_lab_metadata_metrics_panel_plot(
+                labs=labs,
                 lab=lab,
                 comp_code=comp_code,
                 figures_dir=figures_dir,

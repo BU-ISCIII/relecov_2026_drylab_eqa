@@ -1749,7 +1749,7 @@ Figure {{ fig_counter.value }} illustrates the position of the workflow declared
 
 This section summarises selected quantitative analytical metrics declared in the metadata submission of **{{ labdata.lab.lab_cod }}**, disaggregated by sample within the {{ comp_code }} component.
 
-Only metrics explicitly provided by the laboratory are included in the comparative assessment. Network-level medians and (min-max) ranges are shown for contextual interpretation.
+Only metrics explicitly provided by the laboratory are included in the comparative assessment. Because laboratories may not complete all quantitative metadata fields for every sample, tables and panels below include only those metrics that were actually reported by **{{ labdata.lab.lab_cod }}**. Network-level medians and (min-max) ranges are shown for contextual interpretation.
 
 #### Sample Quality Control Assessment
 
@@ -1785,10 +1785,26 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 
 #### Other metrics
 
+{% set metadata_metric_labels = {
+  "per_genome_greater_10x": "% Genome > 10x",
+  "depth_of_coverage_value": "Depth of coverage mean value",
+  "per_Ns": "% Ns",
+  "per_reads_virus": "% Reads virus",
+  "per_reads_host": "% Reads host"
+} %}
+{% set metadata_metrics_reported = namespace(count=0) %}
 {% for collecting_lab_sample_id, s in comp.samples.items() %}
 {% set m = s.metadata_metrics %}
 {% if m %}
-{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) %}
+{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("sample_id","equalto",collecting_lab_sample_id) | list | first) %}
+{% set sample_metrics = namespace(count=0) %}
+{% for metric_key in metadata_metric_labels.keys() %}
+{% if m.get(metric_key) is not none %}
+{% set sample_metrics.count = sample_metrics.count + 1 %}
+{% endif %}
+{% endfor %}
+{% if sample_metrics.count > 0 %}
+{% set metadata_metrics_reported.count = metadata_metrics_reported.count + sample_metrics.count %}
 
 {% set table_counter.value = table_counter.value + 1 %}
 
@@ -1798,16 +1814,10 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 
 | Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
 |---|---:|---:|---:|
-{% for metric_key, metric_label in {
-  "per_genome_greater_10x": "% Genome > 10x",
-  "depth_of_coverage_value": "Depth of coverage Mean value",
-  "per_Ns": "%Ns",
-  "per_reads_virus": "%Reads virus",
-  "per_reads_host": "%Reads host"
-}.items() %}
+{% for metric_key, metric_label in metadata_metric_labels.items() %}
 {% if m.get(metric_key) is not none %}
 
-| {{ metric_label }} | {{ m[metric_key] }} | {{ ns.[metric_key].median }} | {{ ns.[metric_key].min }} - {{ ns.[metric_key].max }} |
+| {{ metric_label }} | {{ m[metric_key] }} | {{ ns[metric_key].median if ns and ns.get(metric_key) else "NA" }} | {{ ns[metric_key].min if ns and ns.get(metric_key) else "NA" }} - {{ ns[metric_key].max if ns and ns.get(metric_key) else "NA" }} |
 {% endif %}
 {% endfor %}
 
@@ -1815,7 +1825,9 @@ Table {{ table_counter.value }} contextualises laboratory-reported analytical pa
 
 {% endif %}
 {% endfor %}
+{% endif %}
 
+{% if metadata_metrics_reported.count > 0 %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
 Figure {{ fig_counter.value }} illustrates the distribution of metadata-derived analytical metrics across participating laboratories for the {{ comp_code }} component.
@@ -1825,8 +1837,12 @@ Figure {{ fig_counter.value }} illustrates the distribution of metadata-derived 
   comp_code ~ ": distribution of metadata-derived analytical metrics across the network per sample; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of metadata-derived analytical metrics across participating laboratories ({{ comp_code }}).**  
-Panels summarise the distribution of selected quantitative analytical parameters declared in the metadata template (e.g., genome coverage, depth of coverage, read composition, and variant counts). Grey distributions represent network-level variability, while the black diamond corresponds to the values reported by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Distribution of metadata-derived analytical metrics across participating laboratories ({{ comp_code }}).**
+Panels summarise the per-sample distributions across participating laboratories of selected quantitative analytical parameters declared in the metadata template, including genome coverage above 10x, depth of coverage, proportion of Ns, and read composition. Only metrics actually reported by **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the values reported by **{{ labdata.lab.lab_cod }}**.
+{% else %}
+
+No comparative metadata-derived analytical metrics figure is shown for {{ comp_code }} because **{{ labdata.lab.lab_cod }}** did not report any evaluable quantitative metadata metrics for this component.
+{% endif %}
 
 {% endfor %}
 
