@@ -3014,6 +3014,147 @@ def make_lab_classification_dimension_concordance_plot(
     return str(output_path)
 
 
+WORKFLOW_POSITIONING_METRICS = [
+    (
+        "A. Total consensus discrepancies",
+        "Total discrepancies",
+        lambda comp: comp.get("total_number_discrepancies_consensus"),
+        CBF_COLORS["discrepancy"],
+        None,
+    ),
+    (
+        "B. Median genome identity",
+        "Genome identity (%)",
+        lambda comp: comp.get("median_genome_identity_pct"),
+        CBF_COLORS["match"],
+        (0, 100),
+    ),
+    (
+        "C. Total classification matches",
+        "Classification matches",
+        lambda comp: comp.get("total_classification_matches"),
+        CBF_COLORS["high_and_low_freq"],
+        None,
+    ),
+    (
+        "D. Metadata completeness",
+        "Metadata completeness (%)",
+        lambda comp: comp.get("metadata", {}).get("completeness_pct"),
+        CBF_COLORS["box_flu2"],
+        (0, 100),
+    ),
+]
+
+
+def collect_lab_workflow_positioning_data(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    extractor,
+) -> Dict[str, Any]:
+    network_values = []
+    for network_lab in labs:
+        comp = network_lab.get("components", {}).get(comp_code)
+        if not comp:
+            continue
+        value = safe_number(extractor(comp))
+        if value is not None:
+            network_values.append(value)
+
+    lab_comp = lab.get("components", {}).get(comp_code, {})
+    lab_value = safe_number(extractor(lab_comp))
+
+    return {
+        "network_values": network_values,
+        "lab_value": lab_value,
+    }
+
+
+def make_lab_workflow_positioning_boxplot(
+    labs: List[Dict[str, Any]],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "workflow_positioning_boxplots.png",
+) -> str:
+    lab_code = get_lab_identifier(lab)
+    output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
+    output_path = output_dir / output_filename
+
+    panel_data_specs = []
+    for title, ylabel, extractor, color, y_limits in WORKFLOW_POSITIONING_METRICS:
+        metric_data = collect_lab_workflow_positioning_data(
+            labs=labs,
+            lab=lab,
+            comp_code=comp_code,
+            extractor=extractor,
+        )
+        if not metric_data["network_values"] or metric_data["lab_value"] is None:
+            continue
+        panel_data_specs.append((title, ylabel, metric_data, color, y_limits))
+
+    if not panel_data_specs:
+        return str(output_path)
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+    axes = axes.flatten()
+
+    for ax, (title, ylabel, metric_data, color, y_limits) in zip(axes, panel_data_specs):
+        data = [metric_data["network_values"]]
+        bp = ax.boxplot(
+            data,
+            patch_artist=True,
+            widths=0.5,
+            showfliers=True,
+        )
+        for patch in bp["boxes"]:
+            patch.set_facecolor(color)
+            patch.set_edgecolor("#333333")
+            patch.set_alpha(0.65)
+        for median_line in bp["medians"]:
+            median_line.set_color(CBF_COLORS["median"])
+            median_line.set_linewidth(2)
+        for whisker in bp["whiskers"]:
+            whisker.set_color("#444444")
+        for cap in bp["caps"]:
+            cap.set_color("#444444")
+        for flier in bp["fliers"]:
+            flier.set_marker("o")
+            flier.set_markerfacecolor("white")
+            flier.set_markeredgecolor("#444444")
+            flier.set_markersize(5)
+
+        add_colored_boxplot_points(
+            ax,
+            bp,
+            data,
+            [1],
+            [color],
+        )
+        add_lab_result_diamond(
+            ax=ax,
+            positions=[0.84],
+            values=[metric_data["lab_value"]],
+            y_upper=y_limits[1] if y_limits is not None else None,
+        )
+
+        ax.set_xticks([1])
+        ax.set_xticklabels(["Network"])
+        ax.set_ylabel(ylabel)
+        ax.set_title(title)
+        if y_limits is not None:
+            ax.set_ylim(*y_limits)
+
+    for ax in axes[len(panel_data_specs):]:
+        ax.set_visible(False)
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
 def collect_lab_variant_metric_distribution_data(
     labs: List[Dict[str, Any]],
     lab: Dict[str, Any],
@@ -3351,6 +3492,12 @@ def generate_individual_lab_figures(
             )
             make_lab_classification_dimension_concordance_plot(
                 general_data=general_data,
+                lab=lab,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+            make_lab_workflow_positioning_boxplot(
+                labs=labs,
                 lab=lab,
                 comp_code=comp_code,
                 figures_dir=figures_dir,

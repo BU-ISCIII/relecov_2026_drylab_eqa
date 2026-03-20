@@ -17,6 +17,13 @@
     </figure>
   {% endif %}
 {%- endmacro %}
+{% macro software_label(name, version=None, db_version=None) -%}
+  {% if name %}
+    {{ name }}{% if version %} ({{ version }}){% endif %}{% if db_version %}; DB {{ db_version }}{% endif %}
+  {% else %}
+    NA
+  {% endif %}
+{%- endmacro %}
 
 {% set fig_counter = namespace(value=0) %}
 {% set table_counter = namespace(value=0) %}
@@ -1729,14 +1736,14 @@ Table {{ table_counter.value }} contextualises the performance of the declared w
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the comparative positioning of declared workflows within the network for the {{ comp_code }} component.
+Figure {{ fig_counter.value }} illustrates the position of the workflow declared by **{{ labdata.lab.lab_cod }}** within the network-wide distribution of key performance indicators for the {{ comp_code }} component.
 
 {{ render_figure(
-  "figures/labs/{{ lab_code }}/{{ comp_code }}/workflow_bar_plot.png",
-  comp_code ~ ": workflow positioning across the network (grey), with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond."
+  "figures/labs/{{ lab_code }}/{{ comp_code }}/workflow_positioning_boxplots.png",
+  comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond."
 ) }}
 
-**Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.** Each bar represents a declared analytical workflow reported by participating laboratories dissagregated by metric. The y-axis represents each of the metrics. The black diamond corresponds to the workflow declared by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.** Multi-panel boxplots summarise the laboratory-level distribution across the network for total consensus discrepancies, median genome identity, total classification matches, and metadata completeness. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 ## 9.{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)
 
