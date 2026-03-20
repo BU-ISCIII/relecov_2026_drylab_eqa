@@ -774,6 +774,157 @@ def make_component_qc_match_by_sample_plot(
     return str(output_path)
 
 
+def format_software_label(name: Any, version: Any) -> str:
+    clean_name = str(name).strip() if is_meaningful(name) else "Unknown"
+    clean_version = str(version).strip() if is_meaningful(version) else "Version N/A"
+    clean_name = "\n".join(clean_name.split())
+    if str(name).strip() == "Custom pipeline/workflow":
+        return clean_name
+    return f"{clean_name}\n{clean_version}"
+
+
+def make_component_bioinformatics_protocol_metric_boxplots(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "bioinformatics_protocol_metric_boxplots_by_pipeline.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    groups = collect_software_groups(
+        labs,
+        comp_code,
+        "bioinformatics_protocol_software_name",
+        "bioinformatics_protocol_software_version",
+    )
+    if not groups:
+        return str(output_path)
+
+    ordered_groups = sorted(
+        groups.items(),
+        key=lambda item: (
+            str(item[0][0]).lower() if item[0][0] is not None else "",
+            str(item[0][1]).lower() if item[0][1] is not None else "",
+        ),
+    )
+
+    group_labels = [format_software_label(name, version) for (name, version), _ in ordered_groups]
+    identities_by_group = []
+    discrepancies_by_group = []
+    metadata_completeness_by_group = []
+    exact_classification_by_group = []
+
+    for (_, _), records in ordered_groups:
+        identities = []
+        discrepancies = []
+        metadata_completeness = []
+        exact_classification = []
+
+        for record in records:
+            sample = record["sample"]
+            cons = sample.get("consensus", {})
+            cls = sample.get("classification", {})
+
+            genome_identity = safe_number(cons.get("genome_identity_pct"))
+            total_discrepancies = safe_number(cons.get("total_discrepancies"))
+            filled_fields = safe_number(sample.get("filled_fields"))
+            total_expected_fields = safe_number(sample.get("total_expected_fields"))
+            number_matches = safe_number(cls.get("number_matches"))
+            number_discrepancies = safe_number(cls.get("number_discrepancies"))
+
+            if genome_identity is not None:
+                identities.append(genome_identity)
+            if total_discrepancies is not None:
+                discrepancies.append(total_discrepancies)
+            if (
+                filled_fields is not None
+                and total_expected_fields is not None
+                and total_expected_fields > 0
+            ):
+                metadata_completeness.append(100.0 * filled_fields / total_expected_fields)
+            if (
+                number_matches is not None
+                and number_discrepancies is not None
+                and (number_matches + number_discrepancies) > 0
+            ):
+                exact_classification.append(
+                    100.0 * number_matches / (number_matches + number_discrepancies)
+                )
+
+        identities_by_group.append(identities)
+        discrepancies_by_group.append(discrepancies)
+        metadata_completeness_by_group.append(metadata_completeness)
+        exact_classification_by_group.append(exact_classification)
+
+    discrepancy_y_limit = 500.0 if comp_code == "FLU2" else None
+    metric_panels = [
+        ("A. Genome identity", "Genome identity (%)", identities_by_group, None),
+        ("B. Discrepancies", "Consensus discrepancies", discrepancies_by_group, discrepancy_y_limit),
+        ("C. Metadata completeness", "Metadata completeness (%)", metadata_completeness_by_group, None),
+        ("D. Exact classification concordance", "Exact classification concordance (%)", exact_classification_by_group, None),
+    ]
+
+    if not any(any(values) for _, _, panel_data, _ in metric_panels for values in panel_data):
+        return str(output_path)
+
+    fig, axes = plt.subplots(2, 2, figsize=(max(12, len(group_labels) * 1.6), 10))
+    axes = axes.flatten()
+
+    for ax, (title, ylabel, panel_data, y_limit) in zip(axes, metric_panels):
+        plotted_data = [list(values) for values in panel_data]
+        outlier_annotations = []
+
+        if y_limit is not None:
+            for idx, values in enumerate(panel_data):
+                outliers_above_limit = sorted([value for value in values if value > y_limit], reverse=True)
+                if not outliers_above_limit:
+                    continue
+
+                plotted_values = [value for value in values if value <= y_limit]
+                if not plotted_values:
+                    continue
+
+                plotted_data[idx] = plotted_values
+                outlier_annotations.append((idx + 1, outliers_above_limit[0]))
+
+        bp = ax.boxplot(
+            plotted_data,
+            labels=group_labels,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot(bp, [comp_code] * len(group_labels))
+        add_component_boxplot_points(
+            ax,
+            bp,
+            plotted_data,
+            list(range(1, len(group_labels) + 1)),
+            [comp_code] * len(group_labels),
+        )
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.tick_params(axis="x", rotation=0, labelsize=8)
+
+        if ylabel.endswith("(%)"):
+            ax.set_ylim(0, 100)
+        elif y_limit is not None:
+            ax.set_ylim(0, y_limit)
+            annotate_outlier_caps(
+                ax,
+                outlier_annotations,
+                y_limit,
+                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+            )
+
+    fig.suptitle(f"{comp_code} performance metrics by bioinformatics protocol")
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
 def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int, int]:
     """
     Calculate total QC matches and discrepancies across all samples of one component.
@@ -2032,6 +2183,11 @@ def generate_component_figures(
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
+        make_component_bioinformatics_protocol_metric_boxplots(
+            labs=labs,
+            comp_code=comp_code,
+            figures_dir=figures_dir,
+        )
 
 
 def collect_software_groups(
@@ -2044,7 +2200,9 @@ def collect_software_groups(
 
     for lab in participating_labs:
         lab_id = lab["lab"]["submitting_institution_id"]
-        comp = lab["components"][comp_code]
+        comp = lab.get("components", {}).get(comp_code)
+        if not comp:
+            continue
 
         for sample_id, sample in comp.get("samples", {}).items():
             sb = sample.get("software_benchmarking", {})
