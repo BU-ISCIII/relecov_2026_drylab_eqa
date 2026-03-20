@@ -528,6 +528,144 @@ def make_combined_classification_summary_plot(
     return str(output_path)
 
 
+def make_component_typing_outcome_stacked_bar_by_sample(
+    general_data: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "typing_outcome_stackedbar_by_sample.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    samples = comp_data.get("typing", {}).get("samples", [])
+    if not samples:
+        return str(output_path)
+
+    sample_names = [
+        sample.get("collecting_lab_sample_id")
+        for sample in samples
+        if sample.get("collecting_lab_sample_id")
+    ]
+    if not sample_names:
+        return str(output_path)
+
+    lineage_match_rates = []
+    lineage_discrepancy_rates = []
+    clade_match_rates = []
+    clade_discrepancy_rates = []
+
+    for sample in samples:
+        lineage_hit_pct = safe_number(sample.get("lineage_hit_pct"))
+        clade_hit_pct = safe_number(sample.get("clade_hit_pct"))
+
+        lineage_match_rates.append(lineage_hit_pct if lineage_hit_pct is not None else np.nan)
+        lineage_discrepancy_rates.append(100.0 - lineage_hit_pct if lineage_hit_pct is not None else np.nan)
+        clade_match_rates.append(clade_hit_pct if clade_hit_pct is not None else np.nan)
+        clade_discrepancy_rates.append(100.0 - clade_hit_pct if clade_hit_pct is not None else np.nan)
+
+    x_positions = np.arange(len(sample_names))
+    width = 0.62
+
+    fig, axes = plt.subplots(1, 2, figsize=(max(12, len(sample_names) * 1.5), 6.6), sharey=True)
+
+    lineage_match_bars = axes[0].bar(
+        x_positions,
+        lineage_match_rates,
+        width=width,
+        color=CBF_COLORS["match"],
+        label="Match",
+    )
+    lineage_discrepancy_bars = axes[0].bar(
+        x_positions,
+        lineage_discrepancy_rates,
+        width=width,
+        bottom=lineage_match_rates,
+        color=CBF_COLORS["discrepancy"],
+        label="Discrepancy",
+    )
+    axes[0].set_xticks(x_positions)
+    axes[0].set_xticklabels(sample_names, rotation=45, ha="right")
+    axes[0].set_xlabel("Sample")
+    axes[0].set_ylabel("Assignments (%)")
+    axes[0].set_ylim(0, 100)
+    axes[0].set_title("A. Lineage/Subtype assignments")
+
+    clade_match_bars = axes[1].bar(
+        x_positions,
+        clade_match_rates,
+        width=width,
+        color=CBF_COLORS["match"],
+        label="Match",
+    )
+    clade_discrepancy_bars = axes[1].bar(
+        x_positions,
+        clade_discrepancy_rates,
+        width=width,
+        bottom=clade_match_rates,
+        color=CBF_COLORS["discrepancy"],
+        label="Discrepancy",
+    )
+    axes[1].set_xticks(x_positions)
+    axes[1].set_xticklabels(sample_names, rotation=45, ha="right")
+    axes[1].set_xlabel("Sample")
+    axes[1].set_ylim(0, 100)
+    axes[1].set_title("B. Clade assignments")
+
+    for ax, match_bars, discrepancy_bars, match_rates, discrepancy_rates in [
+        (axes[0], lineage_match_bars, lineage_discrepancy_bars, lineage_match_rates, lineage_discrepancy_rates),
+        (axes[1], clade_match_bars, clade_discrepancy_bars, clade_match_rates, clade_discrepancy_rates),
+    ]:
+        for bar, value in zip(match_bars, match_rates):
+            if value is None or np.isnan(value) or value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                value / 2,
+                f"{value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+        for bar, match_value, discrepancy_value in zip(discrepancy_bars, match_rates, discrepancy_rates):
+            if (
+                match_value is None
+                or discrepancy_value is None
+                or np.isnan(match_value)
+                or np.isnan(discrepancy_value)
+                or discrepancy_value <= 0
+            ):
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                match_value + discrepancy_value / 2,
+                f"{discrepancy_value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+    fig.legend(
+        handles=[lineage_match_bars[0], lineage_discrepancy_bars[0]],
+        labels=["Match", "Discrepancy"],
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.02),
+        ncol=2,
+        frameon=False,
+    )
+    fig.suptitle(f"{comp_code} classification outcome distribution by sample")
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
 def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int, int]:
     """
     Calculate total QC matches and discrepancies across all samples of one component.
@@ -1767,6 +1905,11 @@ def generate_component_figures(
                 comp_code=comp_code,
                 figures_dir=figures_dir,
             )
+        make_component_typing_outcome_stacked_bar_by_sample(
+            general_data=general_data,
+            comp_code=comp_code,
+            figures_dir=figures_dir,
+        )
 
 
 def collect_software_groups(

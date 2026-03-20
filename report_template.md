@@ -1014,7 +1014,7 @@ Across all participating laboratories:
 | {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.lineage_hit_pct) }} | {{ "%.2f"|format(s.clade_hit_pct) }} |
 {% endfor %}
 
-Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
+Table {{ table_counter.value }} summarises the sample-level lineage/subtype and clade concordance rates for {{ comp_code }}. Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
@@ -1022,14 +1022,7 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of classification o
   "Classification outcome distribution per sample for " ~ comp_code ~ "."
 ) }}
 
-![classification_summary](./example_images/classification_summary.png)
-
-> Esta pero desagregada por Linaje, Subtipo, y por muestra y usando Match/Discrepancy
-
-**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Stacked bars represent the proportion of lineage/subtype and clade assignments match across participating laboratories for each sample relative to the curated gold standard classification.
-
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level classification error counts for {{ comp_code }}.**
+**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment matches and discrepancies across participating laboratories for each sample. Panel B shows the corresponding proportion for clade assignments. Stacked bars represent Match and Discrepancy outcomes relative to the curated gold standard classification.
 
 #### 6.{{ loop.index }}.5. Sample Quality Control Assessment
 
