@@ -443,6 +443,8 @@ For SARS-CoV-2 and Influenza viruses, concordance was assessed as:
 - **Match**, when lineage/subtype or clade was correct.
 - **Discrepancy**, when one of the classifications was incorrect.
 
+If a laboratory did not report a lineage/subtype or clade assignment, that missing classification was also counted as a **Discrepancy** for evaluation purposes. Although these metadata fields were not mandatory in the submission template, participating RELECOV laboratories are expected to be able to determine both classification dimensions for analysed samples.
+
 Discrepancies were investigated to determine whether they resulted from: (TODO verificar si es verdad)
 
 - Use of outdated lineage databases
