@@ -575,7 +575,7 @@ Figure {{ fig_counter.value }} summarises consensus genome reconstruction perfor
 
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
-**_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
+**_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 ### 5.3. Variant Detection Accuracy
 
@@ -597,7 +597,7 @@ Illumina-based analysis generally demonstrated higher concordance and discrepanc
 
 ![variant_summary](./figures/network/variant_summary.png)
 
-**_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range.
+**_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
 
@@ -698,7 +698,7 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 
 ![metadata_completeness_distribution](./figures/network/metadata_completeness_distribution.png)
 
-**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields.
+**_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 **100% percent of the laboratorios required either clarification through e-mail contact or correction during validation steps.**
 
@@ -835,7 +835,7 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 
 ![fig_discrepancies_boxplot_by_sample](./figures/SARS2/consensus_discrepancies_boxplot_by_sample.png)
 
-**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 Considering discrepancy type composition aggregated by sample for {{ comp_code }}:
 
@@ -887,7 +887,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 ![fig_discrepancies_boxplot_by_sample](./figures/SARS1/consensus_discrepancy_type_boxplot.png)
 
-**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 #### 6.{{ loop.index }}.3. Variant Detection Accuracy
 
@@ -957,7 +957,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 ![variant_discrepancy_type_boxplot](./figures/SARS1/variant_discrepancy_type_boxplot.png)
 > Como este pero en el eje X los tipos de sustituciones
 
-**Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range.
+**Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% else %}
 
@@ -983,6 +983,16 @@ Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, 
 | Variants >75% AF in consensus VCF | {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus_vcf if comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus_vcf if comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
 | Discrepancies between metadata and VCF | {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }} | {{ comp_net.variant.min_discrepancies_in_reported_variants if comp_net.variant.min_discrepancies_in_reported_variants is not none else "NA" }}–{{ comp_net.variant.max_discrepancies_in_reported_variants if comp_net.variant.max_discrepancies_in_reported_variants is not none else "NA" }} |
 | Total variants in VCF | {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_vcf if comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_vcf if comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
+
+Figure {{ fig_counter.value + 1 }} summarises influenza variant reporting patterns across samples in {{ comp_code }}, showing the distribution of laboratory-level observations for agreement between metadata-reported and VCF-derived high-frequency variants and for the overall number of variants observed in the submitted VCF files.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{{ render_figure(
+  comp_net.variant.fig_reporting_summary_by_sample,
+  "Influenza variant reporting summary by sample for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Influenza variant reporting summary by sample for {{ comp_code }}.** Panel A shows, for each sample, the distribution across participating laboratories of the number of variants with allele frequency above 75% reported in the metadata template, the corresponding number represented in the consensus-derived VCF, and the discrepancies between both representations. Panel B shows the distribution across participating laboratories of the total number of variants present in the submitted VCF files for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range within the plotted scale, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1078,7 +1088,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by pipeline configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by bioinformatics protocols. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by bioinformatics protocols. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1106,7 +1116,7 @@ Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metri
   "Distribution of percentage of host reads metrics by dehosting software version for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise laboratory-level percentage of host reads by dehosting software version. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each version.
+**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise laboratory-level percentage of host reads by dehosting software version. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each version, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1134,7 +1144,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by pre-processing software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pre-processing software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by pre-processing software. Panels display Number of reads sequenced and Reads passing filters. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pre-processing software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by pre-processing software. Panels display Number of reads sequenced and Reads passing filters. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1162,7 +1172,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by mapping software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared mapping software configuration for {{ comp_code }}.** Boxplots summarise laboratory-level performance stratified by mapping software. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared mapping software configuration for {{ comp_code }}.** Boxplots summarise laboratory-level performance stratified by mapping software. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1190,7 +1200,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by assembly software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by assembly software. Panels display the consensus genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by assembly software. Panels display the consensus genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1218,7 +1228,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by consensus software. Panels display the consensus genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by consensus software. Panels display the consensus genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1246,7 +1256,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by variant calling software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by variant calling software. Panels display the median number of variants per sample, the median number of variants with effect per sample and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by variant calling software. Panels display the median number of variants per sample, the median number of variants with effect per sample and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1274,7 +1284,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by clade assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared clade assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by clade assignment software. Panels display the % of clade matches and the % of clade discrepancies. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared clade assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by clade assignment software. Panels display the % of clade matches and the % of clade discrepancies. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1302,7 +1312,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by lineage assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared lineage assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by lineage assignment software. Panels display the % of lineage matches and the % of lineage discrepancies. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared lineage assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by lineage assignment software. Panels display the % of lineage matches and the % of lineage discrepancies. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1330,7 +1340,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by type assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared type assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by type assignment software. Panels display the variant valling genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared type assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by type assignment software. Panels display the variant valling genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1359,7 +1369,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by subtype assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared subtype assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by subtype assignment software. Panels display the variant valling genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, and whiskers denote the full observed range across laboratories using each configuration.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared subtype assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise laboratory-level performance stratified by subtype assignment software. Panels display the variant valling genome length, the median genome identity and the median number of discrepancies per sample. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range across laboratories using each configuration, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1557,7 +1567,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of median nucleotide
   comp_code ~ ": distribution of median discrepancies per sample across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of median consensus discrepancies per sample across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of nucleotide discrepancies relative to the curated gold standard across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Distribution of median consensus discrepancies per sample across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of nucleotide discrepancies relative to the curated gold standard across the RELECOV network. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 >>> Este boxplot en plan eje x: muestra, eje Y numero de discrepancias, igual hay que hacer uno por tipo de discrepancia para cada muestra para toda la red? Too much?
 
@@ -1589,7 +1599,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of variant detection
   comp_code ~ ": distribution of variant detection metrics across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, and whiskers represent the full observed range across the network. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Distribution of variant detection performance across participating laboratories ({{ comp_code }}).** Boxplots represent the distribution of laboratory-level variant detection metrics relative to the curated reference variant set. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range across the network, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The red marker corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 
 >>> Este boxplot en plan eje x: muestra, eje Y numero de discrepancias, igual hay que hacer uno por tipo de discrepancia para cada muestra para toda la red? Too much?
 

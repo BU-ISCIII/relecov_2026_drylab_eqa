@@ -1385,6 +1385,7 @@
         "dominant_discrepancy_pattern": "denovo",
         "most_frequent_discrepancy_pattern": "denovo",
         "fig_discrepancies_boxplot_by_sample": "figures/SARS1/variant_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancies_stacked_by_sample": "figures/SARS1/variant_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/SARS1/variant_discrepancy_type_boxplot.png"
       },
       "typing": {
@@ -3397,6 +3398,7 @@
         "dominant_discrepancy_pattern": "denovo",
         "most_frequent_discrepancy_pattern": "denovo",
         "fig_discrepancies_boxplot_by_sample": "figures/SARS2/variant_discrepancies_boxplot_by_sample.png",
+        "fig_discrepancies_stacked_by_sample": "figures/SARS2/variant_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/SARS2/variant_discrepancy_type_boxplot.png"
       },
       "typing": {
@@ -4825,7 +4827,8 @@
               "missing_or_null_count": 1
             }
           }
-        ]
+        ],
+        "fig_reporting_summary_by_sample": "figures/FLU1/influenza_variant_reporting_summary_by_sample.png"
       },
       "typing": {
         "total_classification_matches_median": 7.0,
@@ -6380,7 +6383,8 @@
               "missing_or_null_count": 4
             }
           }
-        ]
+        ],
+        "fig_reporting_summary_by_sample": "figures/FLU2/influenza_variant_reporting_summary_by_sample.png"
       },
       "typing": {
         "total_classification_matches_median": 7.5,

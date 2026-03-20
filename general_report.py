@@ -8,6 +8,7 @@ from statistics import median
 from typing import Any, Dict, Iterable, List, Optional
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.cbook import boxplot_stats
 
 FIGURE_PATHS = {
@@ -297,6 +298,102 @@ def style_boxplot(bp: Dict[str, Any], labels: List[str]) -> None:
         flier.set_markersize(5)
 
 
+def add_component_boxplot_points(
+    ax: Any,
+    bp: Dict[str, Any],
+    data: List[List[float]],
+    positions: List[float],
+    labels: List[str],
+) -> None:
+    jittered_positions = build_jittered_positions(data, positions)
+    for xs, values, label in zip(jittered_positions, data, labels):
+        if not values:
+            continue
+        ax.scatter(
+            xs,
+            values,
+            s=16,
+            color=COMPONENT_BOX_COLORS.get(label, CBF_COLORS["box_default"]),
+            alpha=0.35,
+            edgecolors="none",
+            zorder=3,
+        )
+    align_boxplot_fliers(bp, data, jittered_positions)
+
+
+def add_colored_boxplot_points(
+    ax: Any,
+    bp: Dict[str, Any],
+    data: List[List[float]],
+    positions: List[float],
+    colors: List[str],
+) -> None:
+    jittered_positions = build_jittered_positions(data, positions)
+    for xs, values, color in zip(jittered_positions, data, colors):
+        if not values:
+            continue
+        ax.scatter(
+            xs,
+            values,
+            s=16,
+            color=color,
+            alpha=0.35,
+            edgecolors="none",
+            zorder=3,
+        )
+    align_boxplot_fliers(bp, data, jittered_positions)
+
+
+def build_jittered_positions(
+    data: List[List[float]],
+    positions: List[float],
+    jitter_width: float = 0.04,
+) -> List[List[float]]:
+    rng = np.random.default_rng(42)
+    jittered_positions: List[List[float]] = []
+    for pos, values in zip(positions, data):
+        if not values:
+            jittered_positions.append([])
+            continue
+        jitter = rng.uniform(-jitter_width, jitter_width, size=len(values))
+        jittered_positions.append(list(np.full(len(values), pos) + jitter))
+    return jittered_positions
+
+
+def align_boxplot_fliers(
+    bp: Dict[str, Any],
+    data: List[List[float]],
+    jittered_positions: List[List[float]],
+) -> None:
+    for flier, values, xs in zip(bp["fliers"], data, jittered_positions):
+        flier_y = list(flier.get_ydata())
+        if not flier_y or not values:
+            continue
+
+        centered_x = list(flier.get_xdata())
+        used_indices = set()
+        aligned_x = []
+
+        for y_value in flier_y:
+            matched_index = None
+
+            for idx, value in enumerate(values):
+                if idx in used_indices:
+                    continue
+                if value == y_value or np.isclose(value, y_value, rtol=0.0, atol=1e-9):
+                    matched_index = idx
+                    break
+
+            if matched_index is None:
+                aligned_x.append(centered_x[0] if centered_x else 0.0)
+                continue
+
+            used_indices.add(matched_index)
+            aligned_x.append(xs[matched_index])
+
+        flier.set_xdata(aligned_x)
+
+
 def classification_hits_discrepancies_from_component(
     comp_data: Dict[str, Any],
     mode: str,
@@ -552,6 +649,13 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
         patch_artist=True,
     )
     style_boxplot(bp, [comp_code] * len(sample_names))
+    add_component_boxplot_points(
+        plt.gca(),
+        bp,
+        plotted_data,
+        list(range(1, len(sample_names) + 1)),
+        [comp_code] * len(sample_names),
+    )
     plt.xlabel("Sample")
     plt.ylabel("Consensus discrepancies")
     plt.title(f"{comp_code} consensus discrepancies by sample")
@@ -748,6 +852,13 @@ def make_component_consensus_discrepancy_type_boxplot(
         flier.set_markerfacecolor("white")
         flier.set_markeredgecolor("#444444")
         flier.set_markersize(5)
+    add_colored_boxplot_points(
+        plt.gca(),
+        bp,
+        data,
+        list(range(1, len(labels) + 1)),
+        [CONSENSUS_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]) for key in used_keys],
+    )
 
     plt.xticks(rotation=20, ha="center")
     plt.xlabel("Discrepancy type")
@@ -925,6 +1036,13 @@ def make_component_variant_discrepancy_type_boxplot(
         flier.set_markerfacecolor("white")
         flier.set_markeredgecolor("#444444")
         flier.set_markersize(5)
+    add_colored_boxplot_points(
+        plt.gca(),
+        bp,
+        data,
+        list(range(1, len(labels) + 1)),
+        [VARIANT_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]) for key in used_keys],
+    )
 
     plt.xticks(rotation=20, ha="center")
     plt.xlabel("Discrepancy type")
@@ -933,6 +1051,269 @@ def make_component_variant_discrepancy_type_boxplot(
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
+
+    return str(output_path)
+
+
+INFLUENZA_REPORTING_METRICS = [
+    ("number_of_variants_in_consensus", ">75% AF in metadata", "#0072B2"),
+    ("number_of_variants_in_consensus_vcf", ">75% AF in VCF files", "#009E73"),
+    ("discrepancies_in_reported_variants", "Metadata-VCF discrepancies", "#E69F00"),
+]
+
+INFLUENZA_TOTAL_VCF_COLOR = "#CC79A7"
+
+
+def collect_influenza_variant_reporting_by_sample(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+) -> Dict[str, Dict[str, List[float]]]:
+    metrics_by_sample: Dict[str, Dict[str, List[float]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+
+    for lab in labs:
+        comp = lab.get("components", {}).get(comp_code)
+        if not comp:
+            continue
+
+        for sample_id, sample in comp.get("samples", {}).items():
+            variants = sample.get("variants", {})
+            for metric_key, _, _ in INFLUENZA_REPORTING_METRICS:
+                value = safe_number(variants.get(metric_key))
+                if value is not None:
+                    metrics_by_sample[sample_id][metric_key].append(value)
+
+            total_vcf = safe_number(variants.get("number_of_variants_in_vcf"))
+            if total_vcf is not None:
+                metrics_by_sample[sample_id]["number_of_variants_in_vcf"].append(total_vcf)
+
+    return metrics_by_sample
+
+
+def style_boxplot_with_color(bp: Dict[str, Any], color: str) -> None:
+    for patch in bp["boxes"]:
+        patch.set_facecolor(color)
+        patch.set_edgecolor("#333333")
+        patch.set_alpha(0.75)
+
+    for median_line in bp["medians"]:
+        median_line.set_color(CBF_COLORS["median"])
+        median_line.set_linewidth(2)
+
+    for whisker in bp["whiskers"]:
+        whisker.set_color("#444444")
+    for cap in bp["caps"]:
+        cap.set_color("#444444")
+    for flier in bp["fliers"]:
+        flier.set_marker("o")
+        flier.set_markerfacecolor("white")
+        flier.set_markeredgecolor("#444444")
+        flier.set_markersize(5)
+
+
+def trim_boxplot_extreme_outliers(
+    data: List[List[float]],
+) -> tuple[List[List[float]], List[tuple[int, float]]]:
+    trimmed_data: List[List[float]] = []
+    outlier_annotations: List[tuple[int, float]] = []
+
+    for idx, values in enumerate(data, start=1):
+        plotted_values = list(values)
+        if len(values) >= 4:
+            stats = boxplot_stats(values)[0]
+            whisker_high = safe_number(stats.get("whishi"))
+            max_value = max(values)
+            if (
+                whisker_high is not None
+                and whisker_high > 0
+                and max_value > whisker_high * 2
+            ):
+                candidate_values = [value for value in values if value <= whisker_high]
+                if candidate_values:
+                    plotted_values = candidate_values
+                    outlier_annotations.append((idx, max_value))
+
+        trimmed_data.append(plotted_values)
+
+    return trimmed_data, outlier_annotations
+
+
+def add_boxplot_points(
+    ax: Any,
+    bp: Dict[str, Any],
+    data: List[List[float]],
+    positions: List[float],
+    color: str,
+) -> None:
+    jittered_positions = build_jittered_positions(data, positions)
+    for xs, values in zip(jittered_positions, data):
+        if not values:
+            continue
+        ax.scatter(
+            xs,
+            values,
+            s=16,
+            color=color,
+            alpha=0.45,
+            edgecolors="none",
+            zorder=3,
+        )
+    align_boxplot_fliers(bp, data, jittered_positions)
+
+
+def annotate_outlier_caps(
+    ax: Any,
+    annotations: List[tuple[float, float]],
+    y_upper: float,
+    color: str,
+) -> None:
+    for x_pos, display_value in annotations:
+        ax.text(
+            x_pos,
+            y_upper * 0.95,
+            "*",
+            ha="center",
+            va="center",
+            fontsize=18,
+            color=color,
+            fontweight="bold",
+        )
+        ax.text(
+            x_pos,
+            y_upper * 0.91,
+            f"Outlier:\n{display_value:g}",
+            ha="center",
+            va="top",
+            fontsize=9,
+            color=color,
+            fontweight="bold",
+        )
+
+
+def make_component_influenza_variant_reporting_summary(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "influenza_variant_reporting_summary_by_sample.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    samples = comp_data.get("variant", {}).get("samples", [])
+    if not samples:
+        return str(output_path)
+
+    sample_names = [sample.get("collecting_lab_sample_id") for sample in samples if sample.get("collecting_lab_sample_id")]
+    if not sample_names:
+        return str(output_path)
+
+    metrics_by_sample = collect_influenza_variant_reporting_by_sample(labs, comp_code)
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(max(12, len(sample_names) * 1.8), 6.5),
+        gridspec_kw={"width_ratios": [2.6, 1.2]},
+    )
+
+    base_positions = np.arange(1, len(sample_names) + 1)
+    offsets = [-0.27, 0.0, 0.27]
+    box_width = 0.22
+
+    panel_a_max = 0.0
+    panel_a_annotations = []
+
+    for offset, (metric_key, label, color) in zip(offsets, INFLUENZA_REPORTING_METRICS):
+        metric_data = [
+            list(metrics_by_sample.get(sample_id, {}).get(metric_key, []))
+            for sample_id in sample_names
+        ]
+        positions = [pos + offset for pos in base_positions]
+
+        trimmed_data, outlier_annotations = trim_boxplot_extreme_outliers(metric_data)
+        valid_data = [values for values in trimmed_data if values]
+        if not valid_data:
+            continue
+
+        bp = axes[0].boxplot(
+            trimmed_data,
+            positions=positions,
+            widths=box_width,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot_with_color(bp, color)
+        add_boxplot_points(axes[0], bp, trimmed_data, positions, color)
+
+        panel_a_max = max(panel_a_max, max(max(values) for values in valid_data))
+        panel_a_annotations.extend((positions[idx - 1], value, color) for idx, value in outlier_annotations)
+
+    panel_a_upper = panel_a_max * 1.18 if panel_a_max > 0 else 1.0
+    axes[0].set_ylim(0, panel_a_upper)
+    for x_pos, display_value, color in panel_a_annotations:
+        annotate_outlier_caps(axes[0], [(x_pos, display_value)], panel_a_upper, color)
+
+    axes[0].set_xticks(base_positions)
+    axes[0].set_xticklabels(sample_names, rotation=45, ha="right")
+    axes[0].set_xlim(0.5, len(sample_names) + 0.5)
+    axes[0].set_ylabel("Number of variants")
+    axes[0].set_title("A. High-frequency variant reporting")
+    axes[0].legend(
+        handles=[
+            plt.Line2D([0], [0], color=color, lw=8, alpha=0.75)
+            for _, _, color in INFLUENZA_REPORTING_METRICS
+        ],
+        labels=[label for _, label, _ in INFLUENZA_REPORTING_METRICS],
+        frameon=False,
+        loc="upper right",
+    )
+
+    total_vcf_data = [
+        list(metrics_by_sample.get(sample_id, {}).get("number_of_variants_in_vcf", []))
+        for sample_id in sample_names
+    ]
+    trimmed_total_vcf_data, total_vcf_outliers = trim_boxplot_extreme_outliers(total_vcf_data)
+    valid_total_vcf_data = [values for values in trimmed_total_vcf_data if values]
+    if valid_total_vcf_data:
+        bp_total = axes[1].boxplot(
+            trimmed_total_vcf_data,
+            positions=base_positions,
+            widths=0.5,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot_with_color(bp_total, INFLUENZA_TOTAL_VCF_COLOR)
+        add_boxplot_points(
+            axes[1],
+            bp_total,
+            trimmed_total_vcf_data,
+            list(base_positions),
+            INFLUENZA_TOTAL_VCF_COLOR,
+        )
+
+        panel_b_max = max(max(values) for values in valid_total_vcf_data)
+        panel_b_upper = panel_b_max * 1.18 if panel_b_max > 0 else 1.0
+        axes[1].set_ylim(0, panel_b_upper)
+        annotate_outlier_caps(
+            axes[1],
+            [(base_positions[idx - 1], value) for idx, value in total_vcf_outliers],
+            panel_b_upper,
+            INFLUENZA_TOTAL_VCF_COLOR,
+        )
+
+    axes[1].set_xticks(base_positions)
+    axes[1].set_xticklabels(sample_names, rotation=45, ha="right")
+    axes[1].set_xlim(0.5, len(sample_names) + 0.5)
+    axes[1].set_ylabel("Total variants in VCF")
+    axes[1].set_title("B. Total variants in VCF")
+
+    fig.suptitle(f"{comp_code} influenza variant reporting summary by sample")
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
     return str(output_path)
 
@@ -969,6 +1350,13 @@ def make_consensus_summary_plot(
     plt.figure(figsize=(10, 6))
     bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
     style_boxplot(bp, component_names)
+    add_component_boxplot_points(
+        plt.gca(),
+        bp,
+        plotted_data,
+        list(range(1, len(component_names) + 1)),
+        component_names,
+    )
     plt.xlabel("Component")
     plt.ylabel("Consensus discrepancies")
     plt.title(title)
@@ -1063,6 +1451,13 @@ def make_variant_summary_plot(
     plt.figure(figsize=(8, 6))
     bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
     style_boxplot(bp, component_names)
+    add_component_boxplot_points(
+        plt.gca(),
+        bp,
+        plotted_data,
+        list(range(1, len(component_names) + 1)),
+        component_names,
+    )
     plt.xlabel("Component")
     plt.ylabel("Variant discrepancies")
     plt.title(title)
@@ -1365,6 +1760,13 @@ def generate_component_figures(
                 comp_code=comp_code,
                 figures_dir=figures_dir,
             )
+        if comp_code.startswith("FLU"):
+            make_component_influenza_variant_reporting_summary(
+                general_data=general_data,
+                labs=labs,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
 
 
 def collect_software_groups(
@@ -1463,6 +1865,13 @@ def make_metadata_completeness_distribution_plot(
     plt.figure(figsize=(10, 6))
     bp = plt.boxplot(data, labels=component_names, patch_artist=True)
     style_boxplot(bp, component_names)
+    add_component_boxplot_points(
+        plt.gca(),
+        bp,
+        data,
+        list(range(1, len(component_names) + 1)),
+        component_names,
+    )
 
     plt.xlabel("Component")
     plt.ylabel("Metadata completeness (%)")
@@ -2179,6 +2588,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "max_variants_in_vcf": variants_in_vcf_summary["max"],
                 "variants_in_vcf_summary": variants_in_vcf_summary,
                 "samples": variant_samples,
+                "fig_reporting_summary_by_sample": f"figures/{comp_code}/influenza_variant_reporting_summary_by_sample.png",
             }
 
         classification_matches_per_lab = []
