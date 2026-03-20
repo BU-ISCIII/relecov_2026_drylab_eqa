@@ -416,18 +416,24 @@ def add_lab_result_diamond(
     ax: Any,
     positions: List[float],
     values: List[Optional[float]],
+    y_upper: Optional[float] = None,
 ) -> None:
     xs = []
     ys = []
+    clipped_annotations: List[tuple[float, float]] = []
     for pos, value in zip(positions, values):
         numeric_value = safe_number(value)
         if numeric_value is None:
             continue
+        plotted_value = numeric_value
+        if y_upper is not None and numeric_value > y_upper:
+            plotted_value = y_upper * 0.97
+            clipped_annotations.append((pos, numeric_value))
         xs.append(pos)
-        ys.append(numeric_value)
+        ys.append(plotted_value)
 
     if not xs:
-        return
+        return []
 
     ax.scatter(
         xs,
@@ -439,6 +445,7 @@ def add_lab_result_diamond(
         linewidth=1.4,
         zorder=6,
     )
+    return clipped_annotations
 
 
 def classification_hits_discrepancies_from_component(
@@ -2591,6 +2598,7 @@ def collect_lab_consensus_metric_distribution_data(
     network_data = []
     lab_values = []
     outlier_annotations: List[tuple[int, float]] = []
+    lab_outlier_annotations: List[tuple[int, float]] = []
 
     for sample_id in sample_order:
         sample_values = []
@@ -2614,6 +2622,8 @@ def collect_lab_consensus_metric_distribution_data(
             if outliers_above_limit and plotted_values:
                 sample_values = plotted_values
                 outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
+        if y_limit is not None and lab_value is not None and lab_value > y_limit:
+            lab_outlier_annotations.append((len(sample_names) + 1, lab_value))
 
         sample_names.append(sample_id)
         network_data.append(sample_values)
@@ -2624,6 +2634,7 @@ def collect_lab_consensus_metric_distribution_data(
         "network_data": network_data,
         "lab_values": lab_values,
         "outlier_annotations": outlier_annotations,
+        "lab_outlier_annotations": lab_outlier_annotations,
     }
 
 def make_lab_consensus_distribution_panel_plot(
@@ -2704,7 +2715,12 @@ def make_lab_consensus_distribution_panel_plot(
             list(range(1, len(sample_names) + 1)),
             [comp_code] * len(sample_names),
         )
-        add_lab_result_diamond(ax, list(range(1, len(sample_names) + 1)), lab_values)
+        add_lab_result_diamond(
+            ax,
+            list(range(1, len(sample_names) + 1)),
+            lab_values,
+            y_upper=y_limit,
+        )
 
         ax.set_title(title)
         ax.set_ylabel(ylabel)
@@ -2714,9 +2730,13 @@ def make_lab_consensus_distribution_panel_plot(
             ax.set_ylim(0, 100)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
+            combined_annotations = list(panel_data["outlier_annotations"])
+            for annotation in panel_data.get("lab_outlier_annotations", []):
+                if annotation not in combined_annotations:
+                    combined_annotations.append(annotation)
             annotate_outlier_caps(
                 ax,
-                panel_data["outlier_annotations"],
+                combined_annotations,
                 y_limit,
                 COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
             )
