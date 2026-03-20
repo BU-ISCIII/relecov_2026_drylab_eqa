@@ -1413,24 +1413,21 @@ For RELECOV 2.0, the clearest priorities emerging from this exercise are:
 
 ## 8. Conclusions
 
-(TODO verificar si tiene sentido)
+The 2026 RELECOV Dry-Lab EQA shows that participating laboratories already have substantial bioinformatic capacity for respiratory virus genomic surveillance, but that performance and comparability still depend strongly on the analytical context in which each task is performed.
 
-The 2026 RELECOV Dry-Lab EQA demonstrates that the network possesses strong bioinformatic capacity for respiratory virus genomic surveillance, with high overall concordance in consensus genome reconstruction and classification tasks.
+Consensus genome reconstruction was generally strongest in the Illumina-based components, while broader performance ranges in SARS2 and FLU2 indicate that a subset of submissions remained highly sensitive to masking behaviour, coverage thresholds, and consensus-generation choices. Variant analysis showed that direct SARS-CoV-2 comparison against curated reference sets is feasible, whereas influenza reporting remained much more heterogeneous because of mixed allele frequency reporting strategies, multiple reference backbones, and large discrepancies between metadata-reported and VCF-derived summaries.
 
-Illumina-based workflows showed highly consistent performance across laboratories. Nanopore-based analyses exhibited greater variability, particularly in challenging genomic regions, indicating the need for platform-specific harmonisation guidance.
+Classification and QC interpretation further showed that harmonisation challenges are not limited to core sequence processing. Lineage/type assignment was more concordant than clade assignment, and part of the excess clade discordance in SARS-CoV-2 appears to reflect metadata completion and nomenclature problems in the clade field itself. QC interpretation was also unevenly reported, with only a subset of laboratories providing explicit sample-level QC assessments in the metadata template.
 
-Variant detection performance was generally robust but sensitive to threshold and filtering heterogeneity, supporting the definition of minimal reporting standards.
+Overall, the results support RELECOV 2.0 priorities centred on:
 
-Metadata evaluation revealed that while core analytical information is routinely reported, variability in parameter documentation and controlled vocabulary compliance remains a limiting factor for full interoperability.
+- minimum performance standards for consensus reconstruction and variant reporting
+- clearer rules for masking, coverage thresholds, and allele frequency reporting
+- stronger metadata requirements for software versions, parameters, and reference genomes
+- improved consistency in classification and QC field completion
+- component-aware benchmarking rather than a single cross-context workflow ranking
 
-No single analytical workflow was universally optimal. Performance was influenced by the interaction between software selection, parameter configuration, and sequencing technology.
-
-Collectively, these findings provide a technical foundation for:
-
-- Defining minimum analytical performance criteria
-- Establishing harmonised metadata standards
-- Guiding workflow standardisation within RELECOV 2.0
-- Supporting long-term sustainability of national genomic surveillance infrastructure
+Taken together, these findings provide a practical basis for harmonising analytical expectations across the network while preserving the methodological flexibility needed for different pathogens, sequencing platforms, and surveillance scenarios.
 
 The EQA therefore provides a robust technical basis for harmonised, performance-driven genomic surveillance within RELECOV 2.0.
 
