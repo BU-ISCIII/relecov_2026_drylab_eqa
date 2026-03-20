@@ -798,6 +798,15 @@ def format_software_label(name: Any, version: Any) -> str:
     return f"{clean_name}\n{clean_version}"
 
 
+def extract_variant_reporting_mode_pct(sample: Dict[str, Any], mode_key: str) -> Optional[float]:
+    var = sample.get("variants", {})
+    mode_keys = ["high_and_low_freq", "high_freq_only", "low_freq_only"]
+    mode_values = [var.get(key) for key in mode_keys]
+    if all(value is None for value in mode_values):
+        return None
+    return 100.0 if var.get(mode_key) is True else 0.0
+
+
 def make_component_bioinformatics_protocol_metric_boxplots(
     labs: List[Dict[str, Any]],
     comp_code: str,
@@ -982,6 +991,25 @@ def make_component_benchmark_metric_boxplots(
     figures_dir: str | Path,
     benchmark_key: str,
 ) -> Optional[str]:
+    variant_calling_panels = (
+        [
+            ("A. Allele frequency patterns", "Number of different allele frequency patterns", lambda s: extract_variant_reporting_mode_pct(s, "high_and_low_freq")),
+            ("B. Reported variants with AF >=75%", "Number of variants", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_in_consensus"))),
+            ("C. Variants with AF >=75% in VCF", "Number of variants", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_in_consensus_vcf"))),
+            ("D. Variants with effect", "Number of variants", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_with_effect"))),
+            ("E. Metadata-VCF discrepancies", "Number of discrepancies", lambda s: safe_number(s.get("variants", {}).get("discrepancies_in_reported_variants"))),
+            ("F. Total variants in VCF", "Number of variants in VCF", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_in_vcf"))),
+        ]
+        if comp_code.startswith("FLU")
+        else [
+            ("A. Allele frequency patterns", "Number of different allele frequency patterns", lambda s: extract_variant_reporting_mode_pct(s, "high_and_low_freq")),
+            ("B. Discrepancies in reported variants with AF>=75% in VCF", "Number of discrepancies", lambda s: safe_number(s.get("variants", {}).get("discrepancies_in_reported_variants"))),
+            ("C. Discrepancy in reported variants with effect", "Number of discrepancies", lambda s: safe_number(s.get("variants", {}).get("discrepancies_in_reported_variants_effect"))),
+            ("D. Successful hits", "Number of successful hits", lambda s: safe_number(s.get("variants", {}).get("successful_hits"))),
+            ("E. Total discrepancies", "Number of discrepancies", lambda s: safe_number(s.get("variants", {}).get("total_discrepancies"))),
+        ]
+    )
+
     benchmark_configs = {
         "dehosting": {
             "name_field": "dehosting_method_software_name",
@@ -1038,11 +1066,7 @@ def make_component_benchmark_metric_boxplots(
             "version_field": "variant_calling_software_version",
             "output_filename": "variant_calling_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by variant calling software",
-            "panels": [
-                ("A. Reported variants with AF >=75%", "Total reported variants", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_in_consensus"))),
-                ("B. Reported variants with effect", "Total reported variants with effect", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_with_effect"))),
-                ("C. Discrepancies", "Variant discrepancies", lambda s: safe_number(s.get("variants", {}).get("total_discrepancies"))),
-            ],
+            "panels": variant_calling_panels,
         },
         "clade_assignment": {
             "name_field": "clade_assignment_software_name",
@@ -1118,6 +1142,7 @@ def make_component_benchmark_metric_boxplots(
             group_metric_values.append({
                 "label": label,
                 "panels": per_panel_values,
+                "records": records,
             })
 
     metric_panels = []
@@ -1133,15 +1158,61 @@ def make_component_benchmark_metric_boxplots(
         return str(output_path)
 
     n_panels = len(metric_panels)
-    ncols = 2 if n_panels > 1 else 1
+    ncols = 1 if n_panels == 1 else 2
     nrows = int(np.ceil(n_panels / ncols))
     max_groups_in_panel = max(len(panel_groups) for _, _, _, panel_groups in metric_panels)
-    fig, axes = plt.subplots(nrows, ncols, figsize=(max(12, max_groups_in_panel * 1.6), 4.8 * nrows))
+    fig_width = max(14, max_groups_in_panel * 2.1)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, 4.8 * nrows))
     axes = np.atleast_1d(axes).flatten()
 
     for ax, (title, ylabel, panel_idx, panel_groups) in zip(axes, metric_panels):
         panel_labels = [group["label"] for group in panel_groups]
         panel_data = [group["panels"][panel_idx] for group in panel_groups]
+
+        if benchmark_key == "variant_calling" and panel_idx == 0:
+            mode_keys = ["high_and_low_freq", "low_freq_only", "high_freq_only"]
+            mode_labels = ["High + low freq", "Low freq only", "High freq only"]
+            mode_colors = [
+                CBF_COLORS["high_and_low_freq"],
+                CBF_COLORS["low_freq_only"],
+                CBF_COLORS["high_freq_only"],
+            ]
+            x_positions = np.arange(len(panel_labels))
+            bottoms = np.zeros(len(panel_labels))
+
+            for mode_key, mode_label, mode_color in zip(mode_keys, mode_labels, mode_colors):
+                counts = [
+                    sum(
+                        1
+                        for record in group["records"]
+                        if record["sample"].get("variants", {}).get(mode_key) is True
+                    )
+                    for group in panel_groups
+                ]
+                ax.bar(
+                    x_positions,
+                    counts,
+                    bottom=bottoms,
+                    color=mode_color,
+                    edgecolor="#4A4A4A",
+                    linewidth=0.8,
+                    label=mode_label,
+                )
+                bottoms = bottoms + np.array(counts)
+
+            ax.set_title(title)
+            ax.set_ylabel("Samples (n)")
+            ax.set_xticks(x_positions)
+            ax.set_xticklabels(panel_labels, fontsize=8)
+            ax.legend(
+                loc="upper left",
+                bbox_to_anchor=(1.02, 1.0),
+                borderaxespad=0.0,
+                frameon=False,
+                fontsize=8,
+            )
+            continue
+
         bp = ax.boxplot(
             panel_data,
             labels=panel_labels,
@@ -1169,6 +1240,8 @@ def make_component_benchmark_metric_boxplots(
 
     fig.suptitle(f"{comp_code} {config['title']}")
     fig.tight_layout()
+    if benchmark_key == "variant_calling" and ncols > 1:
+        fig.subplots_adjust(wspace=0.38, hspace=0.35, top=0.92)
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
