@@ -571,7 +571,6 @@ The most common discrepancies were: (TODO verificar si es verdad)
 
 Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
 
-![consensus_summary](./figures/network/consensus_summary.png)
 
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
@@ -595,7 +594,6 @@ Illumina-based analysis generally demonstrated higher concordance and discrepanc
 
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
-![variant_summary](./figures/network/variant_summary.png)
 
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -616,7 +614,6 @@ general.figures.sars_variant_reporting_summary,
 "SARS-CoV-2 variant reporting practices across the network."
 ) }}
 
-![sars_variant_reporting_summary](./figures/network/sars_variant_reporting_summary.png)
 
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
@@ -653,7 +650,6 @@ general.figures.influenza_variant_reporting_summary,
 "Influenza variant reporting practices across the network."
 ) }}
 
-![influenza_variant_reporting_summary](./figures/network/influenza_variant_reporting_summary.png)
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
@@ -677,7 +673,6 @@ Across components, classification concordance was generally high, with only limi
 
 {{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.") }}
 
-![classification_summary](./figures/network/classification_summary.png)
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the total number of classification outcomes across all samples and laboratories for each component. Bars are partitioned into **Hits** (correct assignments relative to the curated gold standard) and **Discrepancies** (incorrect assignments).
 
@@ -696,7 +691,6 @@ Optional analytical fields contributed disproportionately to incompleteness (TOD
 {{ render_figure(general.figures.metadata_completeness_distribution,
   "Distribution of metadata completeness across participating laboratories.") }}
 
-![metadata_completeness_distribution](./figures/network/metadata_completeness_distribution.png)
 
 **_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -747,7 +741,6 @@ general.figures.qc_match_rate_by_component,
 "QC concordance by component (Match vs Discrepancy relative to the gold standard)."
 ) }}
 
-![qc_match_rate_by_component](./figures/network/qc_match_rate_by_component.png)
 
 **_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Stacked bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
 
@@ -833,7 +826,6 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./figures/SARS2/consensus_discrepancies_boxplot_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -856,7 +848,6 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Consensus discrepancy types per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![classification_summary](./figures/SARS1/consensus_discrepancies_stacked_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
 
@@ -885,7 +876,6 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
   "Composition of consensus discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./figures/SARS1/consensus_discrepancy_type_boxplot.png)
 
 **Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -927,7 +917,6 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![variant_discrepancies_stacked_by_sample](./figures/SARS1/variant_discrepancies_stacked_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
 
@@ -954,7 +943,6 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
   "Composition of variant discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
-![variant_discrepancy_type_boxplot](./figures/SARS1/variant_discrepancy_type_boxplot.png)
 
 **Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -991,7 +979,6 @@ Figure {{ fig_counter.value + 1 }} summarises influenza variant reporting patter
   "Influenza variant reporting summary by sample for " ~ comp_code ~ "."
 ) }}
 
-![influenza_variant_reporting_summary_by_sample](./figures/FLU1/influenza_variant_reporting_summary_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Influenza variant reporting summary by sample for {{ comp_code }}.** Panel A shows, for each sample, the distribution across participating laboratories of the number of variants with allele frequency above 75% reported in the metadata template, the corresponding number represented in the consensus-derived VCF, and the discrepancies between both representations. Panel B shows the distribution across participating laboratories of the total number of variants present in the submitted VCF files for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range within the plotted scale, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -1023,7 +1010,6 @@ Table {{ table_counter.value }} summarises the sample-level lineage/subtype and 
   "Classification outcome distribution per sample for " ~ comp_code ~ "."
 ) }}
 
-![typing_outcome_stackedbar_by_sample](./figures/SARS1/typing_outcome_stackedbar_by_sample.png)
 
 **Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment matches and discrepancies across participating laboratories for each sample. Panel B shows the corresponding proportion for clade assignments. Stacked bars represent Match and Discrepancy outcomes relative to the curated gold standard classification.
 
@@ -1053,7 +1039,6 @@ comp_net.qc.fig_qc_match_by_sample,
 "Sample-level QC concordance for " ~ comp_code ~ " (Match vs Discrepancy relative to the gold standard)."
 ) }}
 
-![typing_outcome_stackedbar_by_sample](./figures/SARS1/typing_outcome_stackedbar_by_sample.png)
 
 **_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match vs Discrepancy outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status.
 
@@ -1083,7 +1068,6 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by pipeline configuration for " ~ comp_code ~ "."
 ) }}
 
-![bioinformatics_protocol_metric_boxplots_by_pipeline](./figures/SARS1/bioinformatics_protocol_metric_boxplots_by_pipeline.png)
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panels display genome identity (%), discrepancy counts, metadata completeness (%), and exact classification concordance (%). The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
@@ -1671,7 +1655,6 @@ Figure {{ fig_counter.value }} presents the concordance distribution for lineage
   comp_code ~ ": lineage/type and clade concordance across the network; red marker indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-![fig_discrepancies_boxplot_by_sample](./example_images/fig_discrepancies_boxplot_by_sample.png)
 
 > Como esta pero por muestra y separado por Lineage y Clade y separado por discrepancia y por matches.
 
