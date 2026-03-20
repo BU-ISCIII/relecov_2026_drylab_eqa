@@ -3749,9 +3749,13 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
         def build_variant_metrics(records):
             params = []
+            high_and_low_freq = []
+            high_freq_only = []
+            low_freq_only = []
             n_variants = []
+            n_variants_vcf = []
             n_effect = []
-            discrepancies = []
+            discrepancies_reported = []
 
             for r in records:
                 sample = r["sample"]
@@ -3762,27 +3766,76 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 if is_meaningful(vp):
                     params.append(vp)
 
+                hal = extract_variant_reporting_mode_pct(sample, "high_and_low_freq")
+                hfo = extract_variant_reporting_mode_pct(sample, "high_freq_only")
+                lfo = extract_variant_reporting_mode_pct(sample, "low_freq_only")
                 nvic = safe_number(var.get("number_of_variants_in_consensus"))
-                td = safe_number(var.get("total_discrepancies"))
+                nivcv = safe_number(var.get("number_of_variants_in_consensus_vcf"))
+                dirv = safe_number(var.get("discrepancies_in_reported_variants"))
 
+                if hal is not None:
+                    high_and_low_freq.append(hal)
+                if hfo is not None:
+                    high_freq_only.append(hfo)
+                if lfo is not None:
+                    low_freq_only.append(lfo)
                 if nvic is not None:
                     n_variants.append(nvic)
-                if td is not None:
-                    discrepancies.append(td)
+                if nivcv is not None:
+                    n_variants_vcf.append(nivcv)
+                if dirv is not None:
+                    discrepancies_reported.append(dirv)
 
-                if comp_expected.get("virus") == "SARS-CoV-2":
-                    nvw = safe_number(var.get("number_of_variants_with_effect"))
-                    if nvw is not None:
-                        n_effect.append(nvw)
+                nvw = safe_number(var.get("number_of_variants_with_effect"))
+                if nvw is not None:
+                    n_effect.append(nvw)
 
             out = {
                 "params": most_common_or_none(params),
+                "high_and_low_freq_pct": median_or_none(high_and_low_freq),
+                "high_freq_only_pct": median_or_none(high_freq_only),
+                "low_freq_only_pct": median_or_none(low_freq_only),
                 "number_of_variants_in_consensus": median_or_none(n_variants),
-                "median_discrepancies": median_or_none(discrepancies),
+                "number_of_variants_in_consensus_vcf": median_or_none(n_variants_vcf),
+                "number_of_variants_with_effect": median_or_none(n_effect),
+                "discrepancies_in_reported_variants": median_or_none(discrepancies_reported),
             }
 
             if comp_expected.get("virus") == "SARS-CoV-2":
-                out["number_of_variants_with_effect"] = median_or_none(n_effect)
+                n_effect_vcf = []
+                discrepancies_reported_effect = []
+                successful_hits = []
+                total_discrepancies = []
+
+                for r in records:
+                    var = r["sample"].get("variants", {})
+                    nweev = safe_number(var.get("number_of_variants_with_effect_vcf"))
+                    dirve = safe_number(var.get("discrepancies_in_reported_variants_effect"))
+                    sh = safe_number(var.get("successful_hits"))
+                    td = safe_number(var.get("total_discrepancies"))
+
+                    if nweev is not None:
+                        n_effect_vcf.append(nweev)
+                    if dirve is not None:
+                        discrepancies_reported_effect.append(dirve)
+                    if sh is not None:
+                        successful_hits.append(sh)
+                    if td is not None:
+                        total_discrepancies.append(td)
+
+                out["number_of_variants_with_effect_vcf"] = median_or_none(n_effect_vcf)
+                out["discrepancies_in_reported_variants_effect"] = median_or_none(discrepancies_reported_effect)
+                out["successful_hits"] = median_or_none(successful_hits)
+                out["total_discrepancies"] = median_or_none(total_discrepancies)
+            else:
+                n_variants_vcf_total = []
+
+                for r in records:
+                    niv = safe_number(r["sample"].get("variants", {}).get("number_of_variants_in_vcf"))
+                    if niv is not None:
+                        n_variants_vcf_total.append(niv)
+
+                out["number_of_variants_in_vcf"] = median_or_none(n_variants_vcf_total)
 
             return out
 

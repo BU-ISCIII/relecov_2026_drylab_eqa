@@ -1237,11 +1237,19 @@ Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_nu
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared variant calling software configurations for {{ comp_code }}.**
 
-| Variant calling software | Version | N labs | Configuration | Median number of variants per sample | Median number of variants with effect per sample | Median number of discrepancies per sample |
-|---|---:|---:|---:|---:|---:|---:|
+{% if comp_code[:3] == "FLU" %}
+| Variant calling software | Version | N labs | Configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median metadata-VCF discrepancies | Median total variants in VCF |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.variant_calling.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_with_effect }} |  {{ p.median_discrepancies }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
 {% endfor %}
+{% else %}
+| Variant calling software | Version | N labs | Configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.variant_calling.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
+{% endfor %}
+{% endif %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -1249,11 +1257,11 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
-  comp_net.benchmarking.preprocessing.fig_metric_boxplots,
+  comp_net.benchmarking.variant_calling.fig_metric_boxplots,
   "Distribution of performance metrics by variant calling software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by variant calling software. Panels display the number of variants in consensus, the number of variants with effect, and discrepancy counts. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level variant calling performance stratified by declared software configuration. Panels display virus-specific variant reporting, concordance, and discrepancy metrics for each evaluable sample. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
