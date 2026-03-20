@@ -293,7 +293,7 @@ The evaluation was structured into five independent analytical domains:
 
 Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking. Participation metrics were calculated at both component and laboratory level.
 
-All the scripts and templates used for evaluation and to generate reports and plots is publicly available [in github](https://github.com/BU-ISCIII/relecov_2026_drylab_eqa/blob/main/report_template.md)
+All the scripts and templates used for evaluation and to generate reports and plots is publicly available [in github](https://github.com/BU-ISCIII/relecov_2026_drylab_eqa)
 
 ### 4.1. Submission Completeness
 
@@ -1753,29 +1753,35 @@ Only metrics explicitly provided by the laboratory are included in the comparati
 
 #### Sample Quality Control Assessment
 
-{{ labdata.lab.lab_cod}} QC evaluations (Pass/Fail) were compared against the predefined gold standard QC status for each sample within {{ comp_code }}.
+{{ labdata.lab.lab_cod }} QC evaluations (Pass/Fail) were compared against the predefined gold standard QC status for each sample within {{ comp_code }}. Samples without a laboratory-reported QC assessment are shown as `NA` in the table and are omitted from the comparative figure.
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Sample-level QC assessment for {{ labdata.lab.lab_cod }} ({{ comp_code }}), benchmarked against network-level QC concordance.**
 
 | Sample ID | Reported QC | Gold standard QC | Network % Match |
-|---|---:|---:|---:|---:|
+|---|---|---|---:|
 {% for collecting_lab_sample_id, s in comp.samples.items() %}
 {% set ns = (general.components[comp_code].qc.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) %}
-| {{ collecting_lab_sample_id }} | {{ s.qc_test | default("NA") }} | {{ ns.gold_standard_qc }} | {{ pct(ns.match_rate_pct) if ns else "NA" }} |
+| {{ collecting_lab_sample_id }} | {{ s.qc_test if s.qc_test is not none else "NA" }} | {{ ns.gold_standard_qc if ns else "NA" }} | {{ pct(ns.match_rate_pct) if ns and ns.match_rate_pct is not none else "NA" }} |
 {% endfor %}
 
 Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.
 
+{% set qc_tests_reported = (comp.samples.values() | selectattr("qc_test", "ne", none) | list | length) > 0 %}
+{% if qc_tests_reported %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} contextualises the laboratory’s QC decisions relative to network-wide QC concordance per sample. The background bars represent the proportion of laboratories matching the gold standard, while the marker indicates the QC outcome reported by **{{ labdata.lab.lab_cod }}**.
+Figure {{ fig_counter.value }} contextualises the laboratory’s QC decision performance reported by **{{ labdata.lab.lab_cod }}** relative to network-wide QC concordance for each evaluable sample.
 
 {{ render_figure(
   "figures/labs/{{ lab_code }}/{{ comp_code }}/qc_match_rate.png",
   comp_code ~ ": sample-level QC concordance across the network, with " ~ labdata.lab.lab_cod ~ " highlighted."
 ) }}
 
-**_Figure {{ fig_counter.value }}_. Sample-level QC concordance across the network for {{ comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Bars represent the network-wide proportion of Match outcomes relative to the gold standard for each sample. The marker indicates whether **{{ labdata.lab.lab_cod }}** reported a Match or a Discrepancy for the corresponding sample.
+**_Figure {{ fig_counter.value }}_. Sample-level QC concordance across the network for {{ comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Stacked bars represent the network-wide proportions of Match and Discrepancy outcomes relative to the gold standard for each sample. The black diamond indicates whether **{{ labdata.lab.lab_cod }}** reported a Match or a Discrepancy for the corresponding evaluable sample.
+{% else %}
+
+No comparative QC concordance figure is shown for {{ comp_code }} because **{{ labdata.lab.lab_cod }}** did not report any sample-level QC assessment for this component.
+{% endif %}
 
 #### Other metrics
 

@@ -3156,6 +3156,152 @@ def make_lab_workflow_positioning_boxplot(
     return str(output_path)
 
 
+def collect_lab_qc_match_distribution_data(
+    general_data: Dict[str, Any],
+    lab: Dict[str, Any],
+    comp_code: str,
+) -> Dict[str, Any]:
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    network_samples = comp_data.get("qc", {}).get("samples", [])
+    lab_samples = lab.get("components", {}).get(comp_code, {}).get("samples", {})
+
+    sample_names: List[str] = []
+    match_rates: List[float] = []
+    discrepancy_rates: List[float] = []
+    lab_values: List[float] = []
+    lab_positions: List[float] = []
+
+    for sample in network_samples:
+        sample_id = sample.get("collecting_lab_sample_id") or sample.get("sample_id")
+        if not sample_id:
+            continue
+
+        network_match_pct = safe_number(sample.get("match_rate_pct"))
+        lab_sample = lab_samples.get(sample_id, {})
+        lab_match = lab_sample.get("qc_match")
+
+        if network_match_pct is None or lab_match is None:
+            continue
+
+        sample_names.append(sample_id)
+        match_rates.append(network_match_pct)
+        discrepancy_rates.append(100.0 - network_match_pct)
+
+        if lab_match is True:
+            lab_values.append(network_match_pct / 2.0)
+        else:
+            lab_values.append(network_match_pct + (100.0 - network_match_pct) / 2.0)
+        lab_positions.append(len(sample_names) - 1 - 0.22)
+
+    return {
+        "sample_names": sample_names,
+        "match_rates": match_rates,
+        "discrepancy_rates": discrepancy_rates,
+        "lab_values": lab_values,
+        "lab_positions": lab_positions,
+        "has_lab_values": any(value is not None for value in lab_values),
+    }
+
+
+def make_lab_qc_match_rate_plot(
+    general_data: Dict[str, Any],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "qc_match_rate.png",
+) -> str:
+    lab_code = get_lab_identifier(lab)
+    output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
+    output_path = output_dir / output_filename
+
+    panel_data = collect_lab_qc_match_distribution_data(
+        general_data=general_data,
+        lab=lab,
+        comp_code=comp_code,
+    )
+    if not panel_data["sample_names"] or not panel_data["has_lab_values"]:
+        return str(output_path)
+
+    sample_names = panel_data["sample_names"]
+    x_positions = np.arange(len(sample_names))
+    width = 0.62
+
+    fig, ax = plt.subplots(figsize=(max(10, len(sample_names) * 1.5), 6.4))
+
+    match_bars = ax.bar(
+        x_positions,
+        panel_data["match_rates"],
+        width=width,
+        color=CBF_COLORS["match"],
+        label="Match",
+    )
+    discrepancy_bars = ax.bar(
+        x_positions,
+        panel_data["discrepancy_rates"],
+        width=width,
+        bottom=panel_data["match_rates"],
+        color=CBF_COLORS["discrepancy"],
+        label="Discrepancy",
+    )
+    add_lab_result_diamond(
+        ax=ax,
+        positions=panel_data["lab_positions"],
+        values=panel_data["lab_values"],
+        y_upper=None,
+    )
+
+    ax.set_xticks(x_positions)
+    ax.set_xticklabels(sample_names, rotation=45, ha="right")
+    ax.set_xlabel("Sample")
+    ax.set_ylabel("QC outcomes (%)")
+    ax.set_ylim(0, 100)
+    ax.set_title(f"{comp_code} QC concordance across participating laboratories")
+
+    for bar, value in zip(match_bars, panel_data["match_rates"]):
+        if value <= 0:
+            continue
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            value / 2,
+            f"{value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    for bar, match_value, discrepancy_value in zip(
+        discrepancy_bars,
+        panel_data["match_rates"],
+        panel_data["discrepancy_rates"],
+    ):
+        if discrepancy_value <= 0:
+            continue
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            match_value + discrepancy_value / 2,
+            f"{discrepancy_value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    ax.legend(
+        loc="lower center",
+        bbox_to_anchor=(0.5, -0.3),
+        ncol=2,
+        frameon=False,
+    )
+    fig.tight_layout(rect=(0, 0.14, 1, 1))
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
 def collect_lab_variant_metric_distribution_data(
     labs: List[Dict[str, Any]],
     lab: Dict[str, Any],
@@ -3499,6 +3645,12 @@ def generate_individual_lab_figures(
             )
             make_lab_workflow_positioning_boxplot(
                 labs=labs,
+                lab=lab,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+            make_lab_qc_match_rate_plot(
+                general_data=general_data,
                 lab=lab,
                 comp_code=comp_code,
                 figures_dir=figures_dir,
