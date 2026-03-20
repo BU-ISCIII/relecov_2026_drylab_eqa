@@ -1662,7 +1662,7 @@ Lineage/type and clade assignments submitted by **{{ labdata.lab.lab_cod }}** we
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample lineage/type and clade assignment results for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Expected lineage/type | Reported lineage/type | Expected clade | Reported clade | Number of matches | Number of Discrepancies |s
+| Sample ID | Expected lineage/type | Reported lineage/type | Expected clade | Reported clade | Number of matches | Number of discrepancies |
 |---|---|---|---|---|---|---|
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 | {{ collecting_lab_sample_id }} | {{ s.classification.expected_lineage }} | {{ s.classification.lineage_assignment }} | {{ s.classification.expected_clade }} | {{ s.classification.clade_assignment }} | {{ s.classification.number_matches }} | {{ s.classification.number_discrepancies }} |
@@ -1672,17 +1672,14 @@ Table {{ table_counter.value }} summarises the concordance between expected and 
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} presents the concordance distribution for lineage/type and clade assignments across laboratories for each sample included in the {{ comp_code }} component. Grey markers represent the proportion of laboratories that reported the correct classification relative to the gold standard, while the black diamond indicates the classification outcome reported by {{ labdata.lab.lab_cod }}.
+Figure {{ fig_counter.value }} presents the distribution of classification outcomes across participating laboratories for each sample included in the {{ comp_code }} component, while highlighting the specific result reported by **{{ labdata.lab.lab_cod }}**.
 
 {{ render_figure(
   "figures/labs/{{ lab_code }}/{{ comp_code }}/classification_dimension_concordance.png",
-  comp_code ~ ": lineage/type and clade concordance across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
+  comp_code ~ ": lineage/type and clade classification outcomes across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-
-> Como esta pero por muestra y separado por Lineage y Clade y separado por discrepancia y por matches.
-
-**_Figure {{ fig_counter.value }}_. Lineage/type and clade concordance across participating laboratories ({{ comp_code }}).** Two panels display classification concordance for each sample. The upper panel represents lineage/type assignment accuracy, while the lower panel represents clade assignment accuracy. Grey markers correspond to the proportion of laboratories reporting correct classifications relative to the curated gold standard. The black diamond indicates the classification result obtained by {{ labdata.lab.lab_cod }}.
+**_Figure {{ fig_counter.value }}_. Lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Panel A shows the proportion of Match and Discrepancy outcomes for lineage/type assignments across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Stacked bars represent the percentage of laboratories with correct and incorrect classifications relative to the curated gold standard. The black diamond marks the result reported by **{{ labdata.lab.lab_cod }}**, positioned within the Match or Discrepancy segment for each evaluable sample.
 
 ## 9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance
 

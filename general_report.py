@@ -646,7 +646,10 @@ def make_component_typing_outcome_stacked_bar_by_sample(
     axes[0].set_xticks(x_positions)
     axes[0].set_xticklabels(sample_names, rotation=45, ha="right")
     axes[0].set_xlabel("Sample")
-    axes[0].set_ylabel("Assignments (%)")
+    for ax in axes:
+        if ax.get_visible():
+            ax.set_ylabel("Assignments (%)")
+            break
     axes[0].set_ylim(0, 100)
     axes[0].set_title("A. Lineage/Subtype assignments")
 
@@ -2836,6 +2839,181 @@ def get_variant_reporting_mode_label(sample: Dict[str, Any]) -> Optional[str]:
     return None
 
 
+def collect_lab_classification_distribution_data(
+    general_data: Dict[str, Any],
+    lab: Dict[str, Any],
+    comp_code: str,
+    mode: str,
+) -> Dict[str, Any]:
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    network_samples = comp_data.get("typing", {}).get("samples", [])
+    lab_samples = lab.get("components", {}).get(comp_code, {}).get("samples", {})
+
+    sample_names: List[str] = []
+    match_rates: List[float] = []
+    discrepancy_rates: List[float] = []
+    lab_values: List[float] = []
+
+    for sample in network_samples:
+        sample_id = sample.get("collecting_lab_sample_id")
+        if not sample_id:
+            continue
+
+        lab_sample = lab_samples.get(sample_id, {})
+        cls = lab_sample.get("classification", {})
+
+        if mode == "lineage_type":
+            network_match_pct = safe_number(sample.get("lineage_hit_pct"))
+            lab_match = cls.get("lineage_match")
+        else:
+            network_match_pct = safe_number(sample.get("clade_hit_pct"))
+            lab_match = cls.get("clade_match")
+
+        if network_match_pct is None or lab_match is None:
+            continue
+
+        sample_names.append(sample_id)
+        match_rates.append(network_match_pct)
+        discrepancy_rates.append(100.0 - network_match_pct)
+
+        if lab_match is True:
+            lab_values.append(network_match_pct / 2.0)
+        else:
+            lab_values.append(network_match_pct + (100.0 - network_match_pct) / 2.0)
+
+    return {
+        "sample_names": sample_names,
+        "match_rates": match_rates,
+        "discrepancy_rates": discrepancy_rates,
+        "lab_values": lab_values,
+        "lab_positions": [
+            (idx - 0.22) if value is not None else idx
+            for idx, value in enumerate(lab_values)
+        ],
+        "has_lab_values": any(value is not None for value in lab_values),
+    }
+
+
+def make_lab_classification_dimension_concordance_plot(
+    general_data: Dict[str, Any],
+    lab: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "classification_dimension_concordance.png",
+) -> str:
+    lab_code = get_lab_identifier(lab)
+    output_dir = ensure_lab_component_figures_dir(figures_dir, lab_code, comp_code)
+    output_path = output_dir / output_filename
+
+    panel_specs = [
+        (
+            "A. Lineage/Subtype assignments",
+            collect_lab_classification_distribution_data(general_data, lab, comp_code, "lineage_type"),
+        ),
+        (
+            "B. Clade assignments",
+            collect_lab_classification_distribution_data(general_data, lab, comp_code, "clade"),
+        ),
+    ]
+    visible_panels = [spec for spec in panel_specs if spec[1]["sample_names"] and spec[1]["has_lab_values"]]
+    if not visible_panels:
+        return str(output_path)
+
+    max_samples = max(len(panel_data["sample_names"]) for _, panel_data in visible_panels)
+    fig_width = max(12, max_samples * 1.5)
+    fig, axes = plt.subplots(1, 2, figsize=(fig_width, 6.6), sharey=True)
+    if not isinstance(axes, np.ndarray):
+        axes = np.array([axes])
+
+    legend_handles = None
+    width = 0.62
+
+    for ax, (title, panel_data) in zip(axes, panel_specs):
+        sample_names = panel_data["sample_names"]
+        if not sample_names or not panel_data["has_lab_values"]:
+            ax.set_visible(False)
+            continue
+
+        x_positions = np.arange(len(sample_names))
+        match_bars = ax.bar(
+            x_positions,
+            panel_data["match_rates"],
+            width=width,
+            color=CBF_COLORS["match"],
+            label="Match",
+        )
+        discrepancy_bars = ax.bar(
+            x_positions,
+            panel_data["discrepancy_rates"],
+            width=width,
+            bottom=panel_data["match_rates"],
+            color=CBF_COLORS["discrepancy"],
+            label="Discrepancy",
+        )
+        legend_handles = (match_bars[0], discrepancy_bars[0])
+
+        add_lab_result_diamond(
+            ax=ax,
+            positions=panel_data["lab_positions"],
+            values=panel_data["lab_values"],
+            y_upper=None,
+        )
+
+        ax.set_xticks(x_positions)
+        ax.set_xticklabels(sample_names, rotation=45, ha="right")
+        ax.set_xlabel("Sample")
+        ax.set_ylim(0, 100)
+        ax.set_title(title)
+
+        for bar, value in zip(match_bars, panel_data["match_rates"]):
+            if value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                value / 2,
+                f"{value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+        for bar, match_value, discrepancy_value in zip(
+            discrepancy_bars,
+            panel_data["match_rates"],
+            panel_data["discrepancy_rates"],
+        ):
+            if discrepancy_value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                match_value + discrepancy_value / 2,
+                f"{discrepancy_value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+    axes[0].set_ylabel("Assignments (%)")
+    if legend_handles is not None:
+        fig.legend(
+            handles=list(legend_handles),
+            labels=["Match", "Discrepancy"],
+            loc="lower center",
+            bbox_to_anchor=(0.5, 0.02),
+            ncol=2,
+            frameon=False,
+        )
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
 def collect_lab_variant_metric_distribution_data(
     labs: List[Dict[str, Any]],
     lab: Dict[str, Any],
@@ -3167,6 +3345,12 @@ def generate_individual_lab_figures(
                 figures_dir=figures_dir,
             )
             make_lab_consensus_discrepancy_breakdown_plot(
+                lab=lab,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
+            make_lab_classification_dimension_concordance_plot(
+                general_data=general_data,
                 lab=lab,
                 comp_code=comp_code,
                 figures_dir=figures_dir,
