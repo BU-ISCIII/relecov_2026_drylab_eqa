@@ -777,8 +777,23 @@ def make_component_qc_match_by_sample_plot(
 def format_software_label(name: Any, version: Any) -> str:
     clean_name = str(name).strip() if is_meaningful(name) else "Unknown"
     clean_version = str(version).strip() if is_meaningful(version) else "Version N/A"
-    clean_name = "\n".join(clean_name.split())
-    if str(name).strip() == "Custom pipeline/workflow":
+    name_lower = clean_name.lower()
+    version_lower = clean_version.lower()
+
+    if name_lower != "bwa mem":
+        clean_name = "\n".join(clean_name.split())
+
+    if clean_version in {
+        "DRAGEN Microbial Amplicon ad hoc version",
+        "DRAGEN Microbial Amplicon ad-hoc version",
+        "DRAGEN Microbial Amplicon",
+    }:
+        clean_version = "DRAGEN version"
+        version_lower = clean_version.lower()
+
+    if "custom" in name_lower:
+        return clean_name
+    if "dragen" in name_lower and "dragen" in version_lower:
         return clean_name
     return f"{clean_name}\n{clean_version}"
 
@@ -809,13 +824,9 @@ def make_component_bioinformatics_protocol_metric_boxplots(
         ),
     )
 
-    group_labels = [format_software_label(name, version) for (name, version), _ in ordered_groups]
-    identities_by_group = []
-    discrepancies_by_group = []
-    metadata_completeness_by_group = []
-    exact_classification_by_group = []
+    group_data = []
 
-    for (_, _), records in ordered_groups:
+    for (name, version), records in ordered_groups:
         identities = []
         discrepancies = []
         metadata_completeness = []
@@ -852,26 +863,44 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                     100.0 * number_matches / (number_matches + number_discrepancies)
                 )
 
-        identities_by_group.append(identities)
-        discrepancies_by_group.append(discrepancies)
-        metadata_completeness_by_group.append(metadata_completeness)
-        exact_classification_by_group.append(exact_classification)
+        if not any([identities, discrepancies, metadata_completeness, exact_classification]):
+            continue
+
+        group_data.append({
+            "label": format_software_label(name, version),
+            "panels": [
+                identities,
+                discrepancies,
+                metadata_completeness,
+                exact_classification,
+            ],
+        })
 
     discrepancy_y_limit = 500.0 if comp_code == "FLU2" else None
     metric_panels = [
-        ("A. Genome identity", "Genome identity (%)", identities_by_group, None),
-        ("B. Discrepancies", "Consensus discrepancies", discrepancies_by_group, discrepancy_y_limit),
-        ("C. Metadata completeness", "Metadata completeness (%)", metadata_completeness_by_group, None),
-        ("D. Exact classification concordance", "Exact classification concordance (%)", exact_classification_by_group, None),
+        ("A. Genome identity", "Genome identity (%)", 0, None),
+        ("B. Discrepancies", "Consensus discrepancies", 1, discrepancy_y_limit),
+        ("C. Metadata completeness", "Metadata completeness (%)", 2, None),
+        ("D. Exact classification concordance", "Exact classification concordance (%)", 3, None),
     ]
 
-    if not any(any(values) for _, _, panel_data, _ in metric_panels for values in panel_data):
+    if not group_data:
         return str(output_path)
 
-    fig, axes = plt.subplots(2, 2, figsize=(max(12, len(group_labels) * 1.6), 10))
+    fig, axes = plt.subplots(2, 2, figsize=(max(12, len(group_data) * 1.6), 10))
     axes = axes.flatten()
 
-    for ax, (title, ylabel, panel_data, y_limit) in zip(axes, metric_panels):
+    for ax, (title, ylabel, panel_idx, y_limit) in zip(axes, metric_panels):
+        panel_groups = [
+            group for group in group_data
+            if group["panels"][panel_idx]
+        ]
+        if not panel_groups:
+            ax.set_visible(False)
+            continue
+
+        panel_labels = [group["label"] for group in panel_groups]
+        panel_data = [list(group["panels"][panel_idx]) for group in panel_groups]
         plotted_data = [list(values) for values in panel_data]
         outlier_annotations = []
 
@@ -890,21 +919,23 @@ def make_component_bioinformatics_protocol_metric_boxplots(
 
         bp = ax.boxplot(
             plotted_data,
-            labels=group_labels,
+            labels=panel_labels,
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot(bp, [comp_code] * len(group_labels))
+        style_boxplot(bp, [comp_code] * len(panel_labels))
         add_component_boxplot_points(
             ax,
             bp,
             plotted_data,
-            list(range(1, len(group_labels) + 1)),
-            [comp_code] * len(group_labels),
+            list(range(1, len(panel_labels) + 1)),
+            [comp_code] * len(panel_labels),
         )
         ax.set_title(title)
         ax.set_ylabel(ylabel)
         ax.tick_params(axis="x", rotation=0, labelsize=8)
+        if "Reads" in ylabel:
+            ax.ticklabel_format(axis="y", style="plain", useOffset=False)
 
         if ylabel.endswith("(%)"):
             ax.set_ylim(0, 100)
@@ -918,6 +949,225 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             )
 
     fig.suptitle(f"{comp_code} performance metrics by bioinformatics protocol")
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    return str(output_path)
+
+
+def collect_benchmark_group_records(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    name_field: str,
+    version_field: Optional[str] = None,
+) -> List[tuple[str, List[Dict[str, Any]]]]:
+    groups = collect_software_groups(labs, comp_code, name_field, version_field)
+    ordered_groups = sorted(
+        groups.items(),
+        key=lambda item: (
+            str(item[0][0]).lower() if item[0][0] is not None else "",
+            str(item[0][1]).lower() if item[0][1] is not None else "",
+        ),
+    )
+    return [
+        (format_software_label(name, version), records)
+        for (name, version), records in ordered_groups
+    ]
+
+
+def make_component_benchmark_metric_boxplots(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+    figures_dir: str | Path,
+    benchmark_key: str,
+) -> Optional[str]:
+    benchmark_configs = {
+        "dehosting": {
+            "name_field": "dehosting_method_software_name",
+            "version_field": "dehosting_method_software_version",
+            "output_filename": "dehosting_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by de-hosting software",
+            "panels": [
+                ("A. Host reads", "Host reads (%)", lambda s: safe_number(s.get("metadata_metrics", {}).get("per_reads_host"))),
+            ],
+        },
+        "preprocessing": {
+            "name_field": "preprocessing_software_name",
+            "version_field": "preprocessing_software_version",
+            "output_filename": "preprocessing_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by pre-processing software",
+            "panels": [
+                ("A. Reads sequenced", "Reads sequenced", lambda s: safe_number(s.get("metadata_metrics", {}).get("number_of_reads_sequenced"))),
+                ("B. Reads passing filters", "Reads passing filters", lambda s: safe_number(s.get("metadata_metrics", {}).get("pass_reads"))),
+            ],
+        },
+        "mapping": {
+            "name_field": "mapping_software_name",
+            "version_field": "mapping_software_version",
+            "output_filename": "mapping_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by mapping software",
+            "panels": [
+                ("A. Viral reads", "Reads virus (%)", lambda s: safe_number(s.get("metadata_metrics", {}).get("per_reads_virus"))),
+            ],
+        },
+        "assembly": {
+            "name_field": "assembly",
+            "version_field": "assembly_version",
+            "output_filename": "assembly_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by assembly software",
+            "panels": [
+                ("A. Genome length", "Consensus genome length", lambda s: safe_number(s.get("consensus", {}).get("consensus_genome_length"))),
+                ("B. Genome identity", "Genome identity (%)", lambda s: safe_number(s.get("consensus", {}).get("genome_identity_pct"))),
+                ("C. Discrepancies", "Consensus discrepancies", lambda s: safe_number(s.get("consensus", {}).get("total_discrepancies"))),
+            ],
+        },
+        "consensus_software": {
+            "name_field": "consensus_sequence_software_name",
+            "version_field": "consensus_sequence_software_version",
+            "output_filename": "consensus_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by consensus software",
+            "panels": [
+                ("A. Genome length", "Consensus genome length", lambda s: safe_number(s.get("consensus", {}).get("consensus_genome_length"))),
+                ("B. Genome identity", "Genome identity (%)", lambda s: safe_number(s.get("consensus", {}).get("genome_identity_pct"))),
+                ("C. Discrepancies", "Consensus discrepancies", lambda s: safe_number(s.get("consensus", {}).get("total_discrepancies"))),
+            ],
+        },
+        "variant_calling": {
+            "name_field": "variant_calling_software_name",
+            "version_field": "variant_calling_software_version",
+            "output_filename": "variant_calling_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by variant calling software",
+            "panels": [
+                ("A. Reported variants with AF >=75%", "Total reported variants", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_in_consensus"))),
+                ("B. Reported variants with effect", "Total reported variants with effect", lambda s: safe_number(s.get("variants", {}).get("number_of_variants_with_effect"))),
+                ("C. Discrepancies", "Variant discrepancies", lambda s: safe_number(s.get("variants", {}).get("total_discrepancies"))),
+            ],
+        },
+        "clade_assignment": {
+            "name_field": "clade_assignment_software_name",
+            "version_field": "clade_assignment_software_version",
+            "output_filename": "clade_assignment_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by clade assignment software",
+            "panels": [
+                ("A. Clade concordance", "Clade concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("clade_match") is True else (0.0 if s.get("classification", {}).get("clade_match") is False else None)),
+                ("B. Clade discrepancy", "Clade discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("clade_match") is True else (100.0 if s.get("classification", {}).get("clade_match") is False else None)),
+            ],
+        },
+        "lineage_assignment": {
+            "name_field": "lineage_assignment_software_name",
+            "version_field": "lineage_assignment_software_version",
+            "output_filename": "lineage_assignment_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by lineage assignment software",
+            "panels": [
+                ("A. Lineage concordance", "Lineage concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+                ("B. Lineage discrepancy", "Lineage discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("lineage_match") is True else (100.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+            ],
+        },
+        "type_assignment": {
+            "name_field": "type_assignment_software_name",
+            "version_field": None,
+            "output_filename": "type_assignment_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by type assignment software",
+            "panels": [
+                ("A. Type concordance", "Type concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+                ("B. Type discrepancy", "Type discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("lineage_match") is True else (100.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+            ],
+        },
+        "subtype_assignment": {
+            "name_field": "subtype_assignment_software_name",
+            "version_field": "subtype_assignment_software_version",
+            "output_filename": "subtype_assignment_metric_boxplots_by_pipeline.png",
+            "title": "performance metrics by subtype assignment software",
+            "panels": [
+                ("A. Subtype concordance", "Subtype concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+                ("B. Subtype discrepancy", "Subtype discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("lineage_match") is True else (100.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+            ],
+        },
+    }
+
+    config = benchmark_configs.get(benchmark_key)
+    if not config:
+        return None
+
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / config["output_filename"]
+    groups = collect_benchmark_group_records(
+        labs,
+        comp_code,
+        config["name_field"],
+        config["version_field"],
+    )
+    if not groups:
+        return str(output_path)
+
+    group_metric_values = []
+    for label, records in groups:
+        per_panel_values = []
+        has_any = False
+        for _, _, extractor in config["panels"]:
+            values = []
+            for record in records:
+                value = extractor(record["sample"])
+                if value is not None:
+                    values.append(value)
+            if values:
+                has_any = True
+            per_panel_values.append(values)
+        if has_any:
+            group_metric_values.append({
+                "label": label,
+                "panels": per_panel_values,
+            })
+
+    metric_panels = []
+    for panel_idx, (panel_title, ylabel, _) in enumerate(config["panels"]):
+        panel_groups = [
+            group for group in group_metric_values
+            if group["panels"][panel_idx]
+        ]
+        if panel_groups:
+            metric_panels.append((panel_title, ylabel, panel_idx, panel_groups))
+
+    if not group_metric_values or not metric_panels:
+        return str(output_path)
+
+    n_panels = len(metric_panels)
+    ncols = 2 if n_panels > 1 else 1
+    nrows = int(np.ceil(n_panels / ncols))
+    max_groups_in_panel = max(len(panel_groups) for _, _, _, panel_groups in metric_panels)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(max(12, max_groups_in_panel * 1.6), 4.8 * nrows))
+    axes = np.atleast_1d(axes).flatten()
+
+    for ax, (title, ylabel, panel_idx, panel_groups) in zip(axes, metric_panels):
+        panel_labels = [group["label"] for group in panel_groups]
+        panel_data = [group["panels"][panel_idx] for group in panel_groups]
+        bp = ax.boxplot(
+            panel_data,
+            labels=panel_labels,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot(bp, [comp_code] * len(panel_labels))
+        add_component_boxplot_points(
+            ax,
+            bp,
+            panel_data,
+            list(range(1, len(panel_labels) + 1)),
+            [comp_code] * len(panel_labels),
+        )
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.tick_params(axis="x", rotation=0, labelsize=8)
+        if ylabel.endswith("(%)"):
+            ax.set_ylim(0, 100)
+        if "Reads" in ylabel:
+            ax.ticklabel_format(axis="y", style="plain", useOffset=False)
+
+    for ax in axes[len(metric_panels):]:
+        ax.set_visible(False)
+
+    fig.suptitle(f"{comp_code} {config['title']}")
     fig.tight_layout()
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
@@ -2188,6 +2438,24 @@ def generate_component_figures(
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
+        for benchmark_key in [
+            "dehosting",
+            "preprocessing",
+            "mapping",
+            "assembly",
+            "consensus_software",
+            "variant_calling",
+            "clade_assignment",
+            "lineage_assignment",
+            "type_assignment",
+            "subtype_assignment",
+        ]:
+            make_component_benchmark_metric_boxplots(
+                labs=labs,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+                benchmark_key=benchmark_key,
+            )
 
 
 def collect_software_groups(
