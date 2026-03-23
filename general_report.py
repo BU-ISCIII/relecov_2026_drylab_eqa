@@ -295,7 +295,19 @@ def get_lab_identifier(lab: Dict[str, Any]) -> str:
     )
 
 
-def style_boxplot(bp: Dict[str, Any], labels: List[str]) -> None:
+def style_boxplot_axes(ax: Any) -> None:
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(True)
+    ax.spines["bottom"].set_visible(True)
+
+
+def style_percent_boxplot_axis(ax: Any) -> None:
+    ax.set_ylim(0, 110)
+    ax.set_yticks(np.arange(0, 101, 20))
+
+
+def style_boxplot(bp: Dict[str, Any], labels: List[str], ax: Optional[Any] = None) -> None:
     for patch, label in zip(bp["boxes"], labels):
         patch.set_facecolor(COMPONENT_BOX_COLORS.get(label, CBF_COLORS["box_default"]))
         patch.set_edgecolor("#333333")
@@ -314,6 +326,7 @@ def style_boxplot(bp: Dict[str, Any], labels: List[str]) -> None:
         flier.set_markerfacecolor("white")
         flier.set_markeredgecolor("#444444")
         flier.set_markersize(5)
+    style_boxplot_axes(ax if ax is not None else plt.gca())
 
 
 def add_component_boxplot_points(
@@ -989,7 +1002,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot(bp, [comp_code] * len(panel_labels))
+        style_boxplot(bp, [comp_code] * len(panel_labels), ax=ax)
         add_component_boxplot_points(
             ax,
             bp,
@@ -1004,7 +1017,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             ax.ticklabel_format(axis="y", style="plain", useOffset=False)
 
         if ylabel.endswith("(%)"):
-            ax.set_ylim(0, 100)
+            style_percent_boxplot_axis(ax)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
             annotate_outlier_caps(
@@ -1276,7 +1289,7 @@ def make_component_benchmark_metric_boxplots(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot(bp, [comp_code] * len(panel_labels))
+        style_boxplot(bp, [comp_code] * len(panel_labels), ax=ax)
         add_component_boxplot_points(
             ax,
             bp,
@@ -1288,7 +1301,7 @@ def make_component_benchmark_metric_boxplots(
         ax.set_ylabel(ylabel)
         ax.tick_params(axis="x", rotation=0, labelsize=8)
         if ylabel.endswith("(%)"):
-            ax.set_ylim(0, 100)
+            style_percent_boxplot_axis(ax)
         if "Reads" in ylabel:
             ax.ticklabel_format(axis="y", style="plain", useOffset=False)
 
@@ -1425,7 +1438,7 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
         showfliers=True,
         patch_artist=True,
     )
-    style_boxplot(bp, [comp_code] * len(sample_names))
+    style_boxplot(bp, [comp_code] * len(sample_names), ax=plt.gca())
     add_component_boxplot_points(
         plt.gca(),
         bp,
@@ -1629,6 +1642,7 @@ def make_component_consensus_discrepancy_type_boxplot(
         flier.set_markerfacecolor("white")
         flier.set_markeredgecolor("#444444")
         flier.set_markersize(5)
+    style_boxplot_axes(plt.gca())
     add_colored_boxplot_points(
         plt.gca(),
         bp,
@@ -1813,6 +1827,7 @@ def make_component_variant_discrepancy_type_boxplot(
         flier.set_markerfacecolor("white")
         flier.set_markeredgecolor("#444444")
         flier.set_markersize(5)
+    style_boxplot_axes(plt.gca())
     add_colored_boxplot_points(
         plt.gca(),
         bp,
@@ -1868,7 +1883,7 @@ def collect_influenza_variant_reporting_by_sample(
     return metrics_by_sample
 
 
-def style_boxplot_with_color(bp: Dict[str, Any], color: str) -> None:
+def style_boxplot_with_color(bp: Dict[str, Any], color: str, ax: Optional[Any] = None) -> None:
     for patch in bp["boxes"]:
         patch.set_facecolor(color)
         patch.set_edgecolor("#333333")
@@ -1887,6 +1902,7 @@ def style_boxplot_with_color(bp: Dict[str, Any], color: str) -> None:
         flier.set_markerfacecolor("white")
         flier.set_markeredgecolor("#444444")
         flier.set_markersize(5)
+    style_boxplot_axes(ax if ax is not None else plt.gca())
 
 
 def trim_boxplot_extreme_outliers(
@@ -2031,7 +2047,7 @@ def make_component_influenza_variant_reporting_summary(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot_with_color(bp, color)
+        style_boxplot_with_color(bp, color, ax=axes[0])
         add_boxplot_points(axes[0], bp, trimmed_data, positions, color)
 
         panel_a_max = max(panel_a_max, max(max(values) for values in valid_data))
@@ -2071,7 +2087,7 @@ def make_component_influenza_variant_reporting_summary(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot_with_color(bp_total, INFLUENZA_TOTAL_VCF_COLOR)
+        style_boxplot_with_color(bp_total, INFLUENZA_TOTAL_VCF_COLOR, ax=axes[1])
         add_boxplot_points(
             axes[1],
             bp_total,
@@ -2135,7 +2151,7 @@ def make_consensus_summary_plot(
 
     plt.figure(figsize=(10, 6))
     bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
-    style_boxplot(bp, component_names)
+    style_boxplot(bp, component_names, ax=plt.gca())
     add_component_boxplot_points(
         plt.gca(),
         bp,
@@ -2236,7 +2252,7 @@ def make_variant_summary_plot(
 
     plt.figure(figsize=(8, 6))
     bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
-    style_boxplot(bp, component_names)
+    style_boxplot(bp, component_names, ax=plt.gca())
     add_component_boxplot_points(
         plt.gca(),
         bp,
@@ -2714,7 +2730,7 @@ def make_lab_consensus_distribution_panel_plot(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot(bp, [comp_code] * len(sample_names))
+        style_boxplot(bp, [comp_code] * len(sample_names), ax=ax)
         add_component_boxplot_points(
             ax,
             bp,
@@ -2734,7 +2750,7 @@ def make_lab_consensus_distribution_panel_plot(
         ax.tick_params(axis="x", rotation=0, labelsize=9)
 
         if percent_axis:
-            ax.set_ylim(0, 100)
+            style_percent_boxplot_axis(ax)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
             combined_annotations = list(panel_data["outlier_annotations"])
@@ -3124,6 +3140,7 @@ def make_lab_workflow_positioning_boxplot(
             flier.set_markerfacecolor("white")
             flier.set_markeredgecolor("#444444")
             flier.set_markersize(5)
+        style_boxplot_axes(ax)
 
         add_colored_boxplot_points(
             ax,
@@ -3144,7 +3161,10 @@ def make_lab_workflow_positioning_boxplot(
         ax.set_ylabel(ylabel)
         ax.set_title(title)
         if y_limits is not None:
-            ax.set_ylim(*y_limits)
+            if ylabel.endswith("(%)"):
+                style_percent_boxplot_axis(ax)
+            else:
+                ax.set_ylim(*y_limits)
 
     for ax in axes[len(panel_data_specs):]:
         ax.set_visible(False)
@@ -3457,7 +3477,7 @@ def make_lab_variant_boxplot_panel_figure(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot(bp, [comp_code] * len(sample_names))
+        style_boxplot(bp, [comp_code] * len(sample_names), ax=ax)
         add_component_boxplot_points(
             ax,
             bp,
@@ -3477,7 +3497,7 @@ def make_lab_variant_boxplot_panel_figure(
         ax.tick_params(axis="x", rotation=0, labelsize=9)
 
         if percent_axis:
-            ax.set_ylim(0, 100)
+            style_percent_boxplot_axis(ax)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
             combined_annotations = list(panel_data["outlier_annotations"])
@@ -3839,7 +3859,7 @@ def make_metadata_completeness_distribution_plot(
 
     plt.figure(figsize=(10, 6))
     bp = plt.boxplot(data, labels=component_names, patch_artist=True)
-    style_boxplot(bp, component_names)
+    style_boxplot(bp, component_names, ax=plt.gca())
     add_component_boxplot_points(
         plt.gca(),
         bp,
