@@ -2428,7 +2428,7 @@ def make_qc_match_rate_by_component_plot(
     plt.ylabel("QC evaluations (%)")
     plt.title(title)
     plt.ylim(0, 100)
-    plt.legend()
+    plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.22), ncol=2)
 
     for bar, value in zip(match_bars, match_rates):
         if value <= 0:
@@ -2458,7 +2458,7 @@ def make_qc_match_rate_by_component_plot(
             fontweight="bold",
         )
 
-    plt.tight_layout()
+    plt.tight_layout(rect=(0, 0.08, 1, 1))
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
 
