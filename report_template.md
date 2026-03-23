@@ -10,12 +10,12 @@
   {{ "%.{}f".format(decimals)|format(x) }}%
 {%- endmacro %}
 {% macro render_figure(path, caption=None) -%}
-  {% if path %}
-    <figure>
-      <img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="max-width: 100%;"/>
-      {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
-    </figure>
-  {% endif %}
+{% if path -%}
+<figure>
+<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="max-width: 100%;"/>
+{% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+</figure>
+{%- endif %}
 {%- endmacro %}
 {% macro software_label(name, version=None, db_version=None) -%}
   {% if name %}
@@ -63,7 +63,9 @@
   - [7.4. Workflow Diversity and Standardisation Balance](#74-workflow-diversity-and-standardisation-balance)
   - [7.5. Implications for RELECOV 2.0](#75-implications-for-relecov-20)
 - [8. Conclusions](#8-conclusions)
+{% if labdata %}
 - [9. Individual Laboratory Technical Report](#9-individual-laboratory-technical-report)
+{% endif %}
 
 ## Executive Summary
 
@@ -73,7 +75,7 @@ Across the network, consensus genome reconstruction performed best in the Illumi
 
 Variant reporting showed clear methodological heterogeneity. For SARS-CoV-2, the median number of discrepancies relative to the curated reference variant sets was {{ general.general_results.sars_variants.median_discrepancy_illumina }} in the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} in the Nanopore component. Influenza submissions were more heterogeneous structurally, with a median of {{ general.general_results.influenza_variants.median_variants_in_consensus }} high-frequency variants reported in metadata, compared with {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }} derived from submitted VCF files, and a median discrepancy of {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }} between both representations.
 
-Classification performance was consistently higher for lineage/type assignment than for clade assignment. SARS-CoV-2 lineage concordance reached {{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}, compared with {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} for clade assignment, while influenza type/subtype concordance reached {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}, compared with {{ pct(general.general_results.classification.influenza_clade_concordance_pct) }} for clade assignment. Review of submitted JSON files further indicated that part of the excess discordance in SARS clade assignment reflected field completion and nomenclature issues, including missing clade entries and lineage-like values entered in the clade field.
+Classification performance was consistently higher for lineage/type assignment than for clade assignment. SARS-CoV-2 lineage concordance reached {{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}, compared with {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} for clade assignment, while influenza type/subtype concordance reached {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}, compared with {{ pct(general.general_results.classification.influenza_clade_concordance_pct) }} for clade assignment. Review of submitted files further indicated that part of the excess discordance in clade assignment reflected field completion and nomenclature issues, including missing clade entries and lineage/type-like values entered in the clade field.
 
 Metadata completeness and reporting remain major priorities for harmonisation. The median metadata completeness rate across participating laboratories was {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Although software names were reported for {{ pct(general.metadata_completeness.software_names_pct) }} of expected fields, only {{ pct(general.metadata_completeness.software_version_pct) }} of software-version fields, {{ pct(general.metadata_completeness.coverage_threshold_pct) }} of coverage thresholds, {{ pct(general.metadata_completeness.variant_calling_params_pct) }} of variant-calling parameter fields, and {{ pct(general.metadata_completeness.reference_genome_pct) }} of reference genome identifiers were completed. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified, together with substantial diversity in consensus, variant calling, and classification software.
 
