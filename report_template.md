@@ -532,12 +532,12 @@ Component-level submission totals are presented in Section 6 and reflect both th
 
 ### 5.2. Consensus Genome Reconstruction Performance
 
-Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Across the two Illumina-based components, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the two Nanopore-based components. Nanopore-based datasets also showed broader overall identity ranges, particularly in SARS2 and FLU2, where low-identity outliers were present.
+Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Across the two Illumina-based components, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the two Nanopore-based components. Nanopore-based datasets also showed broader overall identity ranges, where low-identity outliers were present.
 
 Dominant discrepancy patterns differed by component:
 
-- In SARS1, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard (`ns2nt`).
-- In SARS2, the most frequent discrepancy category was defined nucleotides in the submitted consensus where stretches of Ns were present in the gold standard (`nt2ns`).
+- In SARS1, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard.
+- In SARS2, the most frequent discrepancy category was defined nucleotides in the submitted consensus where stretches of Ns were present in the gold standard.
 - FLU1 and FLU2 were both dominated by deletions relative to the gold standard.
 
 These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria.
@@ -1075,7 +1075,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_numb
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.**
 
-| Pre-processing software | Version | N labs | Configuration | Number of reads sequenced | Reads passing filters |
+| Pre-processing software | Version | N labs | Most common configuration | Number of reads sequenced | Reads passing filters |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.preprocessing.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
@@ -1103,7 +1103,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared mapping software configurations for {{ comp_code }}.**
 
-| Mapping software | Version | N labs | Configuration | Depth of coverage threshold | % Reads virus |
+| Mapping software | Version | N labs | Most common configuration | Depth of coverage threshold | % Reads virus |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.mapping.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
@@ -1131,7 +1131,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }}
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
 
-| Assembly software | Version | N labs | Configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
+| Assembly software | Version | N labs | Most common configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.assembly.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
@@ -1159,7 +1159,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared consensus software configurations for {{ comp_code }}.**
 
-| Consensus software | Version | N labs | Configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
+| Consensus software | Version | N labs | Most common configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.consensus_software.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
@@ -1188,13 +1188,13 @@ Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_nu
 **Table {{ table_counter.value }}. Performance summary of declared variant calling software configurations for {{ comp_code }}.**
 
 {% if comp_code[:3] == "FLU" %}
-| Variant calling software | Version | N labs | Configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median metadata-VCF discrepancies | Median total variants in VCF |
+| Variant calling software | Version | N labs | Most common configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median metadata-VCF discrepancies | Median total variants in VCF |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.variant_calling.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
 {% endfor %}
 {% else %}
-| Variant calling software | Version | N labs | Configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
+| Variant calling software | Version | N labs | Most common configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.variant_calling.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
