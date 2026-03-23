@@ -123,6 +123,7 @@ def build_environment(template_path: Path) -> Environment:
         keep_trailing_newline=True,
     )
     env.filters["format"] = safe_format_filter
+    env.globals["path_exists"] = lambda value: template_path.parent.joinpath(str(value)).exists() if value else False
     return env
 
 
