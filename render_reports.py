@@ -222,7 +222,29 @@ def postprocess_rendered_html(html_text: str) -> str:
     html_text = re.sub(r"<pre><code>\s*(<figure>.*?</figure>)\s*</code></pre>", r"\1", html_text, flags=re.DOTALL)
     html_text = re.sub(r"<p>\s*(<figure>.*?</figure>)\s*</p>", r"\1", html_text, flags=re.DOTALL)
     html_text = re.sub(r"<p>\s*(<div class=\"equation\">.*?</div>)\s*</p>", r"\1", html_text, flags=re.DOTALL)
+    html_text = wrap_wide_tables_for_landscape(html_text)
     return html_text
+
+
+def wrap_wide_tables_for_landscape(html_text: str) -> str:
+    table_pattern = re.compile(
+        r"(?P<header><p><strong>Table .*?</strong></p>\s*)?(?P<table><table>.*?</table>)",
+        re.DOTALL,
+    )
+
+    def replace_table(match: re.Match[str]) -> str:
+        header_html = match.group("header") or ""
+        table_html = match.group("table")
+        thead_match = re.search(r"<thead>(.*?)</thead>", table_html, re.DOTALL)
+        header_html = thead_match.group(1) if thead_match else table_html
+        column_count = len(re.findall(r"<th\b", header_html))
+        if column_count > 6:
+            table_with_class = table_html.replace("<table>", '<table class="wide-table">', 1)
+            caption_html = match.group("header") or ""
+            return f'<div class="landscape-section">{caption_html}{table_with_class}</div>'
+        return match.group(0)
+
+    return table_pattern.sub(replace_table, html_text)
 
 
 def markdown_to_html(markdown_text: str, title: str, css_text: str, base_dir: Path) -> str:

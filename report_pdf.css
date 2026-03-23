@@ -3,6 +3,11 @@
   margin: 18mm 16mm 18mm 16mm;
 }
 
+@page landscape {
+  size: A4 landscape;
+  margin: 14mm 14mm 14mm 14mm;
+}
+
 :root {
   --ink: #1f2d3d;
   --muted: #556677;
@@ -130,6 +135,18 @@ th {
   color: var(--brand);
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 700;
+}
+
+.landscape-section {
+  break-before: page;
+  break-after: page;
+  page: landscape;
+  page-break-before: always;
+  page-break-after: always;
+}
+
+.landscape-section .wide-table {
+  font-size: 8pt;
 }
 
 figure {
