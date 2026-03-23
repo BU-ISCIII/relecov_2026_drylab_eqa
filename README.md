@@ -112,6 +112,15 @@ python3 render_reports.py \
   --pdf-only
 ```
 
+Example: PDF generation from already rendered markdown files
+
+```bash
+python3 render_reports.py \
+  --input-markdown-dir rendered_reports/markdown \
+  --output-dir rendered_reports_from_existing_md \
+  --pdf-only
+```
+
 Important arguments:
 
 - `--template`: markdown Jinja template to render
@@ -122,6 +131,7 @@ Important arguments:
 - `--markdown-only`: render only markdown files
 - `--pdf-only`: render only PDF files
 - `--keep-html`: keep the intermediate HTML files used to create the PDFs
+- `--input-markdown-dir`: optional directory containing pre-rendered markdown files. If provided, the script skips Jinja rendering and generates PDFs directly from the existing markdown files
 
 Output:
 
@@ -140,5 +150,6 @@ If you want to generate the full reporting output from processed lab folders, th
 ## Notes
 
 - `render_reports.py` expects individual report JSONs compatible with the template, that is, files with top-level `lab`, `metadata`, and `components` sections.
+- If `--input-markdown-dir` is used, `render_reports.py` can generate PDFs directly from existing markdown files without needing `--template` or `--general-json`.
 - PDF generation currently uses a Chrome/Chromium executable available in `PATH`.
 - The report template is `report_template.md` and the PDF stylesheet is `report_pdf.css`.
