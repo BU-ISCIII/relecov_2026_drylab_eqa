@@ -781,7 +781,7 @@ Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.cons
 | Sample ID | Median genome identity (%) | Median discrepancies | Discrepancies min-max |
 |---|---:|---:|---:|
 {% for s in comp_net.consensus.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min_discrepancies }} – {{ s.max_discrepancies }} |
+| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min }} – {{ s.max }} |
 {% endfor %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
@@ -889,7 +889,7 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 Discrepancy type composition (aggregated across all submitted variant calls for {{ comp_code }}):
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
 |---|---:|---:|
@@ -1073,7 +1073,7 @@ Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metri
 Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.** The configuration column represents the most frequently reported parameter string among laboratories declaring that software and version.
 
 | Pre-processing software | Version | N labs | Most common configuration | Number of reads sequenced | Reads passing filters |
 |---|---:|---:|---:|---:|---:|
@@ -1106,7 +1106,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} 
 | Mapping software | Version | N labs | Most common configuration | Depth of coverage threshold | % Reads virus |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.mapping.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.depth_of_coverage_threshold if p.depth_of_coverage_threshold is not none else "N/A" }} | {{ p.per_reads_virus if p.per_reads_virus is not none else "N/A" }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
