@@ -157,15 +157,14 @@ figcaption {
 }
 
 .equation {
-  align-items: flex-start;
-  display: flex;
+  display: block;
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 10pt;
-  gap: 0.55rem;
-  justify-content: flex-start;
   margin: 0.9rem 0 1rem;
+  margin-left: 0;
   page-break-inside: avoid;
   text-align: left;
+  width: 100%;
 }
 
 .equation-lhs {
@@ -173,21 +172,26 @@ figcaption {
 }
 
 .equation-equals {
+  display: inline-block;
   font-weight: 700;
+  margin: 0 0.45rem;
 }
 
 .equation-fraction {
-  display: inline-flex;
+  display: inline-block;
   flex-direction: column;
   min-width: 16rem;
+  vertical-align: middle;
 }
 
 .equation-numerator {
+  display: block;
   border-bottom: 1.4px solid var(--ink);
   padding: 0 0.35rem 0.18rem;
 }
 
 .equation-denominator {
+  display: block;
   padding: 0.18rem 0.35rem 0;
 }
 
@@ -213,6 +217,11 @@ hr {
 #table-of-contents + ul {
   break-after: page;
   page-break-after: always;
+}
+
+#executive-summary {
+  break-before: page;
+  page-break-before: always;
 }
 
 #table-of-contents + ul ul > li {
