@@ -910,6 +910,10 @@ def make_component_bioinformatics_protocol_metric_boxplots(
         discrepancies = []
         metadata_completeness = []
         exact_classification = []
+        clade_hits = 0
+        clade_total = 0
+        lineage_hits = 0
+        lineage_total = 0
 
         for record in records:
             sample = record["sample"]
@@ -942,6 +946,18 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                     100.0 * number_matches / (number_matches + number_discrepancies)
                 )
 
+            clade_match = cls.get("clade_match")
+            if clade_match is not None:
+                clade_total += 1
+                if clade_match is True:
+                    clade_hits += 1
+
+            lineage_match = cls.get("lineage_match")
+            if lineage_match is not None:
+                lineage_total += 1
+                if lineage_match is True:
+                    lineage_hits += 1
+
         if not any([identities, discrepancies, metadata_completeness, exact_classification]):
             continue
 
@@ -953,6 +969,8 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                 metadata_completeness,
                 exact_classification,
             ],
+            "lineage_hit_pct": pct(lineage_hits, lineage_total),
+            "clade_hit_pct": pct(clade_hits, clade_total),
         })
 
     discrepancy_y_limit = 500.0 if comp_code == "FLU2" else None
@@ -1027,8 +1045,53 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                 COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
             )
 
+        if panel_idx == 1:
+            secondary_ax = ax.twinx()
+            lineage_color = CBF_COLORS["match"]
+            clade_color = CBF_COLORS["box_flu2"]
+            x_positions = list(range(1, len(panel_groups) + 1))
+            lineage_points = [safe_number(group.get("lineage_hit_pct")) for group in panel_groups]
+            clade_points = [safe_number(group.get("clade_hit_pct")) for group in panel_groups]
+
+            secondary_ax.plot(
+                x_positions,
+                lineage_points,
+                linestyle="--",
+                linewidth=1.4,
+                marker="o",
+                markersize=5,
+                color=lineage_color,
+                label="Lineage/Type accuracy",
+                zorder=4,
+            )
+            secondary_ax.plot(
+                x_positions,
+                clade_points,
+                linestyle="--",
+                linewidth=1.4,
+                marker="s",
+                markersize=5,
+                color=clade_color,
+                label="Clade accuracy",
+                zorder=4,
+            )
+            style_percent_boxplot_axis(secondary_ax)
+            secondary_ax.set_ylabel("Classification accuracy (%)")
+            secondary_ax.spines["top"].set_visible(False)
+            secondary_ax.spines["left"].set_visible(False)
+            secondary_ax.spines["right"].set_visible(True)
+            secondary_ax.tick_params(axis="y", colors="#444444")
+            secondary_ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.24),
+                borderaxespad=0.0,
+                frameon=False,
+                fontsize=8,
+                ncol=2,
+            )
+
     fig.suptitle(f"{comp_code} performance metrics by bioinformatics protocol")
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
