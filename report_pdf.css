@@ -102,8 +102,9 @@ blockquote {
 
 table {
   border-collapse: collapse;
-  font-size: 9.2pt;
+  font-size: 8.5pt;
   page-break-inside: avoid;
+  table-layout: fixed;
   width: 100%;
 }
 
@@ -117,9 +118,11 @@ tbody tr:nth-child(even) {
 
 th, td {
   border: 1px solid var(--line);
+  overflow-wrap: anywhere;
   padding: 0.36rem 0.44rem;
   text-align: left;
   vertical-align: top;
+  word-break: break-word;
 }
 
 th {
@@ -154,15 +157,15 @@ figcaption {
 }
 
 .equation {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 10pt;
   gap: 0.55rem;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 0.9rem 0 1rem;
   page-break-inside: avoid;
-  text-align: center;
+  text-align: left;
 }
 
 .equation-lhs {
@@ -205,6 +208,11 @@ hr {
   border-left: 3px solid var(--brand);
   margin-bottom: 0.35rem;
   padding: 0.35rem 0.6rem;
+}
+
+#table-of-contents + ul {
+  break-after: page;
+  page-break-after: always;
 }
 
 #table-of-contents + ul ul > li {

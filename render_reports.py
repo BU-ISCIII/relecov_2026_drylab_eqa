@@ -109,11 +109,11 @@ def collect_lab_jsons(labs_dir: Path) -> List[Tuple[Path, Dict[str, Any]]]:
 
 def safe_format_filter(value: Any, *args: Any, **kwargs: Any) -> str:
     if any(arg is None for arg in args) or any(v is None for v in kwargs.values()):
-        return "NA"
+        return "N/A"
     try:
         return str(value) % (kwargs or args)
     except Exception:
-        return "NA"
+        return "N/A"
 
 
 def build_environment(template_path: Path) -> Environment:
@@ -203,11 +203,18 @@ def replace_display_math_blocks(markdown_text: str) -> str:
     )
 
 
+def normalize_missing_markers(markdown_text: str) -> str:
+    markdown_text = re.sub(r"(?<![\w/.-])None(?![\w/.-])", "N/A", markdown_text)
+    markdown_text = re.sub(r"(?m)(\|\s*)NA(\s*(?=\|))", r"\1N/A\2", markdown_text)
+    return markdown_text
+
+
 def postprocess_rendered_markdown(markdown_text: str) -> str:
     cleaned = markdown_text.lstrip()
     cleaned = normalize_figure_blocks(cleaned)
     cleaned = normalize_table_spacing(cleaned)
     cleaned = replace_display_math_blocks(cleaned)
+    cleaned = normalize_missing_markers(cleaned)
     return cleaned
 
 
