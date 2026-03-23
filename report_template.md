@@ -613,8 +613,8 @@ Structural summary metrics derived from submitted influenza consensus sequences 
 
 | Metric | Network median | Min-max |
 |---|---:|---:|
-| Variants in consensus | {{ general.general_results.influenza_variants.median_variants_in_consensus }} | {{ general.general_results.influenza_variants.min_variants_in_consensus }}–{{ general.general_results.influenza_variants.max_variants_in_consensus }} |
-| Variants represented in consensus VCF | {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_consensus_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_consensus_vcf }} |
+| Variants with AF>=75% | {{ general.general_results.influenza_variants.median_variants_in_consensus }} | {{ general.general_results.influenza_variants.min_variants_in_consensus }}–{{ general.general_results.influenza_variants.max_variants_in_consensus }} |
+| Variants with AF>=75% in VCF | {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_consensus_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_consensus_vcf }} |
 | Discrepancies in reported variants | {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }} | {{ general.general_results.influenza_variants.min_discrepancies_in_reported_variants }}–{{ general.general_results.influenza_variants.max_discrepancies_in_reported_variants }} |
 | Total variants in VCF | {{ general.general_results.influenza_variants.median_variants_in_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_vcf }} |
 
