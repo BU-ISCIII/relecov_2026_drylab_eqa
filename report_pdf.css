@@ -238,9 +238,3 @@ h1 + h5 {
   font-style: italic;
   margin-top: -0.15rem;
 }
-
-table + p,
-figure + p {
-  color: var(--muted);
-  font-size: 9.2pt;
-}
