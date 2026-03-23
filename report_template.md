@@ -1010,7 +1010,7 @@ comp_net.qc.fig_qc_match_by_sample,
 
 #### 6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance
 
-{% if comp_net.benchmarking.pipeline %}
+{% if comp_net.benchmarking.bioinformatics_protocol %}
 ##### Bioinformatics protocol
 
 Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component.
