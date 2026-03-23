@@ -228,7 +228,7 @@ def postprocess_rendered_html(html_text: str) -> str:
 
 def wrap_wide_tables_for_landscape(html_text: str) -> str:
     table_pattern = re.compile(
-        r"(?P<header><p><strong>Table .*?</strong></p>\s*)?(?P<table><table>.*?</table>)",
+        r"(?P<header><p>(?:<em>)?<strong>Table\s+\d+.*?</p>\s*)?(?P<table><table>.*?</table>)",
         re.DOTALL,
     )
 

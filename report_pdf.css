@@ -145,6 +145,17 @@ th {
   page-break-after: always;
 }
 
+.landscape-section > p {
+  break-after: avoid;
+  margin-bottom: 0.3rem;
+  page-break-after: avoid;
+}
+
+.landscape-section > table {
+  break-before: avoid;
+  page-break-before: avoid;
+}
+
 .landscape-section .wide-table {
   font-size: 8pt;
 }
