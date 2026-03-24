@@ -677,7 +677,7 @@ Although core pipeline tools were generally reported, variability was observed i
 - {{ pct(general.metadata_completeness.software_names_pct) }} of the maximum software-name fields were completed across submitted samples.
 - {{ pct(general.metadata_completeness.software_version_pct) }} of the maximum software-version fields were completed across submitted samples.
 - {{ pct(general.metadata_completeness.coverage_threshold_pct) }} specified minimum coverage thresholds.
-- {{ pct(general.metadata_completeness.variant_calling_params_pct) }} reported `variant_calling_params`, containing the potential allele frequency thresholds.
+- {{ pct(general.metadata_completeness.variant_calling_params_pct) }} reported variant calling parameters, containing the potential allele frequency thresholds.
 - {{ pct(general.metadata_completeness.reference_genome_pct) }} reported the reference genome accession or identifier.
 
 Incomplete parameter reporting limited the ability to fully reconstruct or reproduce analytical workflows in {{ pct(general.metadata_completeness.incomplete_parameters_pct) }} of submissions.
@@ -851,7 +851,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}.
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
@@ -862,8 +862,6 @@ Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepan
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.variants_with_effect.median if s.variants_with_effect and s.variants_with_effect.median is not none else "NA" }} | {{ s.variants_with_effect_vcf.median if s.variants_with_effect_vcf and s.variants_with_effect_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants_effect.median if s.discrepancies_in_reported_variants_effect and s.discrepancies_in_reported_variants_effect.median is not none else "NA" }} |
 {% endfor %}
 
-Table {{ table_counter.value }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants.
-
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant calling profile per sample for {{ comp_code }}.**
 
@@ -873,8 +871,6 @@ Table {{ table_counter.value }} summarises the descriptive reporting metrics for
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.median_discrepancies if s.median_discrepancies is not none else "NA" }} | {{ s.min if s.min is not none else "NA" }} – {{ s.max if s.max is not none else "NA" }} | {{ s.wrong_nt if s.wrong_nt is not none else "NA" }} | {{ s.insertions if s.insertions is not none else "NA" }} | {{ s.deletions if s.deletions is not none else "NA" }} | {{ s.missing if s.missing is not none else "NA" }} | {{ s.denovo if s.denovo is not none else "NA" }} |
 {% endfor %}
 
-Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
-
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -882,7 +878,6 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
   comp_net.variant.fig_discrepancies_stacked_by_sample,
   "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
-
 
 **Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
 
