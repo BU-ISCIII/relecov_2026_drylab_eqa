@@ -307,6 +307,21 @@ def style_percent_boxplot_axis(ax: Any) -> None:
     ax.set_yticks(np.arange(0, 101, 20))
 
 
+def annotate_group_n_labs(ax: Any, positions: List[float], counts: List[int], y_offset: float = -0.22) -> None:
+    for x_pos, count in zip(positions, counts):
+        ax.text(
+            x_pos,
+            y_offset,
+            f"n={count}",
+            transform=ax.get_xaxis_transform(),
+            ha="center",
+            va="top",
+            fontsize=8,
+            color="#444444",
+            clip_on=False,
+        )
+
+
 def style_boxplot(bp: Dict[str, Any], labels: List[str], ax: Optional[Any] = None) -> None:
     for patch, label in zip(bp["boxes"], labels):
         patch.set_facecolor(COMPONENT_BOX_COLORS.get(label, CBF_COLORS["box_default"]))
@@ -971,6 +986,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             ],
             "lineage_hit_pct": pct(lineage_hits, lineage_total),
             "clade_hit_pct": pct(clade_hits, clade_total),
+            "n_labs": len({record["lab_id"] for record in records}),
         })
 
     discrepancy_y_limit = 500.0 if comp_code == "FLU2" else None
@@ -998,6 +1014,10 @@ def make_component_bioinformatics_protocol_metric_boxplots(
 
         panel_labels = [group["label"] for group in panel_groups]
         panel_data = [list(group["panels"][panel_idx]) for group in panel_groups]
+        panel_n_labs = [int(group.get("n_labs", 0)) for group in panel_groups]
+        panel_display_labels = [
+            f"{label}\n(n={n_labs})" for label, n_labs in zip(panel_labels, panel_n_labs)
+        ]
         plotted_data = [list(values) for values in panel_data]
         outlier_annotations = []
 
@@ -1016,7 +1036,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
 
         bp = ax.boxplot(
             plotted_data,
-            labels=panel_labels,
+            labels=panel_display_labels,
             showfliers=True,
             patch_artist=True,
         )
@@ -1083,7 +1103,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             secondary_ax.tick_params(axis="y", colors="#444444")
             secondary_ax.legend(
                 loc="upper center",
-                bbox_to_anchor=(0.5, -0.24),
+                bbox_to_anchor=(0.5, -0.34),
                 borderaxespad=0.0,
                 frameon=False,
                 fontsize=8,
@@ -1091,7 +1111,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             )
 
     fig.suptitle(f"{comp_code} performance metrics by bioinformatics protocol")
-    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.tight_layout(rect=(0, 0.14, 1, 1))
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
