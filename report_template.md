@@ -544,7 +544,7 @@ Dominant discrepancy patterns differed by component:
 - In SARS2, the most frequent discrepancy category was defined nucleotides in the submitted consensus where stretches of Ns were present in the gold standard.
 - FLU1 and FLU2 were both dominated by deletions relative to the gold standard.
 
-These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria.
+These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria. (IF YOU SEPARATED DISCUSSION THIS WOULD BE DISCUSSION)
 
 Across components, many discrepancy categories had medians of zero, indicating that errors tended to be concentrated in a smaller number of laboratories or samples rather than being uniformly distributed across the network.
 
@@ -563,11 +563,11 @@ Variant detection accuracy was evaluated following the methodological framework 
 
 #### 5.3.1. SARS-CoV-2
 
-For SARS-CoV-2 compoents (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ general.general_results.sars_variants.median_discrepancy_illumina }} for Illumina component and a median number of {{ general.general_results.sars_variants.median_discrepancy_nanopore }} for Nanopore component, discrepancies relative to the reference variant set.
+For SARS-CoV-2 components (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ general.general_results.sars_variants.median_discrepancy_illumina }} for Illumina component and a median number of {{ general.general_results.sars_variants.median_discrepancy_nanopore }} for Nanopore component, discrepancies relative to the reference variant set.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-For SARS-CoV-2, the median number of variant discrepancies was {{ general.general_results.sars_variants.median_discrepancy_illumina }} for the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} for the Nanopore component. The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Contextual factors documented in the metadata that may contribute to these differences included:
+The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Contextual factors documented in the metadata that may contribute to these differences included:
 
 - Allele frequency thresholds used for incorporation into vcf files
 - Reference genome selection
