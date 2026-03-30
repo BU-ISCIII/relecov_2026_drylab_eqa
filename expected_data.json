@@ -2,15 +2,8 @@
   "general": {
     "eqa_name": "RELECOV 2026 Dry Lab EQA",
     "total_invited": 52,
-    "total_participants": 17,
-    "total_participants_pct": 32.69,
-    "median_components_analysed_per_lab": 2.47,
-    "fasta_expected": 17,
-    "vcf_expected": 17,
-    "submission_rates_pct": {
-      "fasta": 100,
-      "vcf": 94.12
-    }
+    "total_participants": 19,
+    "total_participants_pct": 36.53
   },
   "components": {
     "SARS1": {
