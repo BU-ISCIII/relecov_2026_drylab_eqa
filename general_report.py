@@ -25,6 +25,7 @@ FIGURE_PATHS = {
 CBF_COLORS = {
     "match": "#0072B2",
     "discrepancy": "#E69F00",
+    "null": "#999999",
     "high_freq_only": "#D55E00",
     "low_freq_only": "#56B4E9",
     "high_and_low_freq": "#009E73",
@@ -476,44 +477,95 @@ def add_lab_result_diamond(
     return clipped_annotations
 
 
-def classification_hits_discrepancies_from_component(
-    comp_data: Dict[str, Any],
+def collect_classification_sample_outcomes(
+    general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
+    comp_code: str,
     mode: str,
-) -> tuple[int, int]:
-    """
-    mode:
-      - 'lineage_type'
-      - 'clade'
-    """
-    typing = comp_data.get("typing", {})
-    samples = typing.get("samples", [])
+) -> Dict[str, Any]:
+    comp_data = general_data.get("components", {}).get(comp_code, {})
+    sample_entries = comp_data.get("typing", {}).get("samples", [])
+    participating_labs = [lab for lab in labs if comp_code in lab.get("components", {})]
+    total_labs = len(participating_labs)
 
+    if mode == "lineage_type":
+        expected_key = "expected_lineage"
+        assignment_key = "lineage_assignment"
+        match_key = "lineage_match"
+    elif mode == "clade":
+        expected_key = "expected_clade"
+        assignment_key = "clade_assignment"
+        match_key = "clade_match"
+    else:
+        raise ValueError(f"Unknown classification mode: {mode}")
+
+    sample_outcomes = []
     total_hits = 0
     total_discrepancies = 0
+    total_nulls = 0
 
-    for sample in samples:
-        if mode == "lineage_type":
-            sample_hits = safe_int(sample.get("lineage_hits")) or 0
-            sample_total = safe_int(sample.get("lineage_total")) or 0
-        elif mode == "clade":
-            sample_hits = safe_int(sample.get("clade_hits")) or 0
-            sample_total = safe_int(sample.get("clade_total")) or 0
-        else:
-            raise ValueError(f"Unknown classification mode: {mode}")
-
-        if sample_total == 0:
+    for sample_entry in sample_entries:
+        sample_id = sample_entry.get("collecting_lab_sample_id")
+        if not sample_id:
             continue
 
-        sample_discrepancies = sample_total - sample_hits
+        expected_value = None
+        for lab in participating_labs:
+            sample = lab.get("components", {}).get(comp_code, {}).get("samples", {}).get(sample_id)
+            if not sample:
+                continue
+            candidate = sample.get("classification", {}).get(expected_key)
+            if is_meaningful(candidate):
+                expected_value = candidate
+                break
 
-        total_hits += sample_hits
-        total_discrepancies += sample_discrepancies
+        if not is_meaningful(expected_value):
+            continue
 
-    return total_hits, total_discrepancies
+        hits = 0
+        discrepancies = 0
+        nulls = 0
+
+        for lab in participating_labs:
+            sample = lab.get("components", {}).get(comp_code, {}).get("samples", {}).get(sample_id)
+            cls = sample.get("classification", {}) if sample else {}
+            assignment_value = cls.get(assignment_key)
+            match_value = cls.get(match_key)
+
+            if not is_meaningful(assignment_value):
+                nulls += 1
+            elif match_value is True:
+                hits += 1
+            else:
+                discrepancies += 1
+
+        total_hits += hits
+        total_discrepancies += discrepancies
+        total_nulls += nulls
+        sample_outcomes.append({
+            "collecting_lab_sample_id": sample_id,
+            "hits": hits,
+            "discrepancies": discrepancies,
+            "nulls": nulls,
+            "total": total_labs,
+            "hit_pct": (100.0 * hits / total_labs) if total_labs else 0.0,
+            "discrepancy_pct": (100.0 * discrepancies / total_labs) if total_labs else 0.0,
+            "null_pct": (100.0 * nulls / total_labs) if total_labs else 0.0,
+        })
+
+    return {
+        "samples": sample_outcomes,
+        "hits": total_hits,
+        "discrepancies": total_discrepancies,
+        "nulls": total_nulls,
+        "total_possible": total_labs * len(sample_outcomes),
+        "total_labs": total_labs,
+    }
 
 
 def make_stacked_classification_plot(
     general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
     figures_dir: str | Path,
     mode: str,
     output_filename: str,
@@ -522,15 +574,21 @@ def make_stacked_classification_plot(
     components = general_data.get("components", {})
 
     component_names = []
-    hit_counts = []
-    discrepancy_counts = []
+    hit_pcts = []
+    discrepancy_pcts = []
+    null_pcts = []
 
-    for comp_code, comp_data in components.items():
-        hits, discrepancies = classification_hits_discrepancies_from_component(comp_data, mode)
+    for comp_code in components.keys():
+        outcomes = collect_classification_sample_outcomes(general_data, labs, comp_code, mode)
+        hits = outcomes["hits"]
+        discrepancies = outcomes["discrepancies"]
+        nulls = outcomes["nulls"]
+        total_possible = outcomes["total_possible"]
 
         component_names.append(comp_code)
-        hit_counts.append(hits)
-        discrepancy_counts.append(discrepancies)
+        hit_pcts.append(100.0 * hits / total_possible if total_possible else 0.0)
+        discrepancy_pcts.append(100.0 * discrepancies / total_possible if total_possible else 0.0)
+        null_pcts.append(100.0 * nulls / total_possible if total_possible else 0.0)
 
     output_dir = ensure_network_figures_dir(figures_dir)
     output_path = output_dir / output_filename
@@ -538,12 +596,20 @@ def make_stacked_classification_plot(
     plt.figure(figsize=(10, 6))
     x_positions = list(range(len(component_names)))
 
-    plt.bar(x_positions, hit_counts, label="Match", color=CBF_COLORS["match"])
-    plt.bar(x_positions, discrepancy_counts, bottom=hit_counts, label="Discrepancy", color=CBF_COLORS["discrepancy"])
+    plt.bar(x_positions, hit_pcts, label="Match", color=CBF_COLORS["match"])
+    plt.bar(x_positions, discrepancy_pcts, bottom=hit_pcts, label="Discrepancy", color=CBF_COLORS["discrepancy"])
+    plt.bar(
+        x_positions,
+        null_pcts,
+        bottom=np.array(hit_pcts) + np.array(discrepancy_pcts),
+        label="Not provided",
+        color=CBF_COLORS["null"],
+    )
 
     plt.xticks(x_positions, component_names)
     plt.xlabel("Component")
-    plt.ylabel("Total number of assignments")
+    plt.ylabel("Assignments (%)")
+    plt.ylim(0, 100)
     plt.title(title)
     plt.legend()
     plt.tight_layout()
@@ -555,26 +621,39 @@ def make_stacked_classification_plot(
 
 def make_combined_classification_summary_plot(
     general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
     figures_dir: str | Path,
     output_filename: str = "classification_summary.png",
 ) -> str:
     components = general_data.get("components", {})
     component_names = list(components.keys())
 
-    lineage_hit_counts = []
-    lineage_discrepancy_counts = []
-    clade_hit_counts = []
-    clade_discrepancy_counts = []
+    lineage_hit_pcts = []
+    lineage_discrepancy_pcts = []
+    lineage_null_pcts = []
+    clade_hit_pcts = []
+    clade_discrepancy_pcts = []
+    clade_null_pcts = []
 
-    for comp_code, comp_data in components.items():
-        lineage_hits, lineage_discrepancies = classification_hits_discrepancies_from_component(comp_data, "lineage_type")
-        clade_hits, clade_discrepancies = classification_hits_discrepancies_from_component(comp_data, "clade")
+    for comp_code in components.keys():
+        lineage_outcomes = collect_classification_sample_outcomes(general_data, labs, comp_code, "lineage_type")
+        clade_outcomes = collect_classification_sample_outcomes(general_data, labs, comp_code, "clade")
+        lineage_hits = lineage_outcomes["hits"]
+        lineage_discrepancies = lineage_outcomes["discrepancies"]
+        lineage_nulls = lineage_outcomes["nulls"]
+        lineage_total_possible = lineage_outcomes["total_possible"]
+        clade_hits = clade_outcomes["hits"]
+        clade_discrepancies = clade_outcomes["discrepancies"]
+        clade_nulls = clade_outcomes["nulls"]
+        clade_total_possible = clade_outcomes["total_possible"]
 
         component_names.append(comp_code)
-        lineage_hit_counts.append(lineage_hits)
-        lineage_discrepancy_counts.append(lineage_discrepancies)
-        clade_hit_counts.append(clade_hits)
-        clade_discrepancy_counts.append(clade_discrepancies)
+        lineage_hit_pcts.append(100.0 * lineage_hits / lineage_total_possible if lineage_total_possible else 0.0)
+        lineage_discrepancy_pcts.append(100.0 * lineage_discrepancies / lineage_total_possible if lineage_total_possible else 0.0)
+        lineage_null_pcts.append(100.0 * lineage_nulls / lineage_total_possible if lineage_total_possible else 0.0)
+        clade_hit_pcts.append(100.0 * clade_hits / clade_total_possible if clade_total_possible else 0.0)
+        clade_discrepancy_pcts.append(100.0 * clade_discrepancies / clade_total_possible if clade_total_possible else 0.0)
+        clade_null_pcts.append(100.0 * clade_nulls / clade_total_possible if clade_total_possible else 0.0)
 
     # Remove duplicated names introduced while collecting counts.
     component_names = list(components.keys())
@@ -585,25 +664,97 @@ def make_combined_classification_summary_plot(
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
 
-    axes[0].bar(x_positions, lineage_hit_counts, color=CBF_COLORS["match"], label="Match")
-    axes[0].bar(x_positions, lineage_discrepancy_counts, bottom=lineage_hit_counts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
+    lineage_match_bars = axes[0].bar(x_positions, lineage_hit_pcts, color=CBF_COLORS["match"], label="Match")
+    lineage_discrepancy_bars = axes[0].bar(x_positions, lineage_discrepancy_pcts, bottom=lineage_hit_pcts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
+    lineage_null_bars = axes[0].bar(
+        x_positions,
+        lineage_null_pcts,
+        bottom=np.array(lineage_hit_pcts) + np.array(lineage_discrepancy_pcts),
+        color=CBF_COLORS["null"],
+        label="Not provided",
+    )
     axes[0].set_xticks(x_positions)
     axes[0].set_xticklabels(component_names)
     axes[0].set_xlabel("Component")
-    axes[0].set_ylabel("Total number of assignments")
+    axes[0].set_ylabel("Assignments (%)")
+    axes[0].set_ylim(0, 100)
     axes[0].set_title("A. Lineage/type assignments")
-    axes[0].legend()
 
-    axes[1].bar(x_positions, clade_hit_counts, color=CBF_COLORS["match"], label="Match")
-    axes[1].bar(x_positions, clade_discrepancy_counts, bottom=clade_hit_counts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
+    clade_match_bars = axes[1].bar(x_positions, clade_hit_pcts, color=CBF_COLORS["match"], label="Match")
+    clade_discrepancy_bars = axes[1].bar(x_positions, clade_discrepancy_pcts, bottom=clade_hit_pcts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
+    clade_null_bars = axes[1].bar(
+        x_positions,
+        clade_null_pcts,
+        bottom=np.array(clade_hit_pcts) + np.array(clade_discrepancy_pcts),
+        color=CBF_COLORS["null"],
+        label="Not provided",
+    )
     axes[1].set_xticks(x_positions)
     axes[1].set_xticklabels(component_names)
     axes[1].set_xlabel("Component")
+    axes[1].set_ylim(0, 100)
     axes[1].set_title("B. Clade assignments")
-    axes[1].legend()
+
+    for ax, match_bars, discrepancy_bars, null_bars, match_pcts, discrepancy_pcts, null_pcts in [
+        (axes[0], lineage_match_bars, lineage_discrepancy_bars, lineage_null_bars, lineage_hit_pcts, lineage_discrepancy_pcts, lineage_null_pcts),
+        (axes[1], clade_match_bars, clade_discrepancy_bars, clade_null_bars, clade_hit_pcts, clade_discrepancy_pcts, clade_null_pcts),
+    ]:
+        for bar, value in zip(match_bars, match_pcts):
+            if value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                value / 2,
+                f"{value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+        for bar, match_value, discrepancy_value in zip(discrepancy_bars, match_pcts, discrepancy_pcts):
+            if discrepancy_value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                match_value + discrepancy_value / 2,
+                f"{discrepancy_value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+        for bar, match_value, discrepancy_value, null_value in zip(null_bars, match_pcts, discrepancy_pcts, null_pcts):
+            if null_value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                match_value + discrepancy_value + null_value / 2,
+                f"{null_value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
 
     fig.suptitle("Distribution of classification outcomes across participating laboratories")
-    fig.tight_layout()
+    fig.legend(
+        handles=[
+            plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["match"]),
+            plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["discrepancy"]),
+            plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["null"]),
+        ],
+        labels=["Match", "Discrepancy", "Not provided"],
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.02),
+        ncol=3,
+        frameon=False,
+    )
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
@@ -612,6 +763,7 @@ def make_combined_classification_summary_plot(
 
 def make_component_typing_outcome_stacked_bar_by_sample(
     general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
     comp_code: str,
     figures_dir: str | Path,
     output_filename: str = "typing_outcome_stackedbar_by_sample.png",
@@ -619,93 +771,59 @@ def make_component_typing_outcome_stacked_bar_by_sample(
     output_dir = ensure_component_figures_dir(figures_dir, comp_code)
     output_path = output_dir / output_filename
 
-    comp_data = general_data.get("components", {}).get(comp_code, {})
-    samples = comp_data.get("typing", {}).get("samples", [])
-    if not samples:
+    lineage_outcomes = collect_classification_sample_outcomes(general_data, labs, comp_code, "lineage_type")
+    clade_outcomes = collect_classification_sample_outcomes(general_data, labs, comp_code, "clade")
+    if not lineage_outcomes["samples"] and not clade_outcomes["samples"]:
         return str(output_path)
-
-    evaluable_samples = [
-        sample for sample in samples
-        if sample.get("collecting_lab_sample_id")
-        and (
-            safe_number(sample.get("lineage_hit_pct")) is not None
-            or safe_number(sample.get("clade_hit_pct")) is not None
-        )
-    ]
-    if not evaluable_samples:
-        return str(output_path)
-
-    sample_names = [sample.get("collecting_lab_sample_id") for sample in evaluable_samples]
-
-    lineage_match_rates = []
-    lineage_discrepancy_rates = []
-    clade_match_rates = []
-    clade_discrepancy_rates = []
-
-    for sample in evaluable_samples:
-        lineage_hit_pct = safe_number(sample.get("lineage_hit_pct"))
-        clade_hit_pct = safe_number(sample.get("clade_hit_pct"))
-
-        lineage_match_rates.append(lineage_hit_pct if lineage_hit_pct is not None else np.nan)
-        lineage_discrepancy_rates.append(100.0 - lineage_hit_pct if lineage_hit_pct is not None else np.nan)
-        clade_match_rates.append(clade_hit_pct if clade_hit_pct is not None else np.nan)
-        clade_discrepancy_rates.append(100.0 - clade_hit_pct if clade_hit_pct is not None else np.nan)
-
-    x_positions = np.arange(len(sample_names))
     width = 0.62
 
-    fig, axes = plt.subplots(1, 2, figsize=(max(12, len(sample_names) * 1.5), 6.6), sharey=True)
+    max_samples = max(len(lineage_outcomes["samples"]), len(clade_outcomes["samples"]), 1)
+    fig, axes = plt.subplots(1, 2, figsize=(max(12, max_samples * 1.5), 6.6), sharey=True)
 
-    lineage_match_bars = axes[0].bar(
-        x_positions,
-        lineage_match_rates,
-        width=width,
-        color=CBF_COLORS["match"],
-        label="Match",
-    )
-    lineage_discrepancy_bars = axes[0].bar(
-        x_positions,
-        lineage_discrepancy_rates,
-        width=width,
-        bottom=lineage_match_rates,
-        color=CBF_COLORS["discrepancy"],
-        label="Discrepancy",
-    )
-    axes[0].set_xticks(x_positions)
-    axes[0].set_xticklabels(sample_names, rotation=45, ha="right")
-    axes[0].set_xlabel("Sample")
-    for ax in axes:
-        if ax.get_visible():
-            ax.set_ylabel("Assignments (%)")
-            break
-    axes[0].set_ylim(0, 100)
-    axes[0].set_title("A. Lineage/Subtype assignments")
+    panel_specs = [
+        ("A. Lineage/Subtype assignments", lineage_outcomes),
+        ("B. Clade assignments", clade_outcomes),
+    ]
 
-    clade_match_bars = axes[1].bar(
-        x_positions,
-        clade_match_rates,
-        width=width,
-        color=CBF_COLORS["match"],
-        label="Match",
-    )
-    clade_discrepancy_bars = axes[1].bar(
-        x_positions,
-        clade_discrepancy_rates,
-        width=width,
-        bottom=clade_match_rates,
-        color=CBF_COLORS["discrepancy"],
-        label="Discrepancy",
-    )
-    axes[1].set_xticks(x_positions)
-    axes[1].set_xticklabels(sample_names, rotation=45, ha="right")
-    axes[1].set_xlabel("Sample")
-    axes[1].set_ylim(0, 100)
-    axes[1].set_title("B. Clade assignments")
+    for ax, (title, outcomes) in zip(axes, panel_specs):
+        if not outcomes["samples"]:
+            ax.set_visible(False)
+            continue
+        sample_names = [sample["collecting_lab_sample_id"] for sample in outcomes["samples"]]
+        match_rates = [sample["hit_pct"] for sample in outcomes["samples"]]
+        discrepancy_rates = [sample["discrepancy_pct"] for sample in outcomes["samples"]]
+        null_rates = [sample["null_pct"] for sample in outcomes["samples"]]
+        x_positions = np.arange(len(sample_names))
 
-    for ax, match_bars, discrepancy_bars, match_rates, discrepancy_rates in [
-        (axes[0], lineage_match_bars, lineage_discrepancy_bars, lineage_match_rates, lineage_discrepancy_rates),
-        (axes[1], clade_match_bars, clade_discrepancy_bars, clade_match_rates, clade_discrepancy_rates),
-    ]:
+        match_bars = ax.bar(
+            x_positions,
+            match_rates,
+            width=width,
+            color=CBF_COLORS["match"],
+            label="Match",
+        )
+        discrepancy_bars = ax.bar(
+            x_positions,
+            discrepancy_rates,
+            width=width,
+            bottom=match_rates,
+            color=CBF_COLORS["discrepancy"],
+            label="Discrepancy",
+        )
+        null_bars = ax.bar(
+            x_positions,
+            null_rates,
+            width=width,
+            bottom=np.array(match_rates) + np.array(discrepancy_rates),
+            color=CBF_COLORS["null"],
+            label="Not provided",
+        )
+        ax.set_xticks(x_positions)
+        ax.set_xticklabels(sample_names, rotation=45, ha="right")
+        ax.set_xlabel("Sample")
+        ax.set_ylim(0, 100)
+        ax.set_title(title)
+
         for bar, value in zip(match_bars, match_rates):
             if value is None or np.isnan(value) or value <= 0:
                 continue
@@ -740,12 +858,35 @@ def make_component_typing_outcome_stacked_bar_by_sample(
                 fontweight="bold",
             )
 
+        for bar, match_value, discrepancy_value, null_value in zip(null_bars, match_rates, discrepancy_rates, null_rates):
+            if null_value is None or np.isnan(null_value) or null_value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                match_value + discrepancy_value + null_value / 2,
+                f"{null_value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
+    for ax in axes:
+        if ax.get_visible():
+            ax.set_ylabel("Assignments (%)")
+            break
+
     fig.legend(
-        handles=[lineage_match_bars[0], lineage_discrepancy_bars[0]],
-        labels=["Match", "Discrepancy"],
+        handles=[
+            plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["match"]),
+            plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["discrepancy"]),
+            plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["null"]),
+        ],
+        labels=["Match", "Discrepancy", "Not provided"],
         loc="lower center",
         bbox_to_anchor=(0.5, 0.02),
-        ncol=2,
+        ncol=3,
         frameon=False,
     )
     fig.suptitle(f"{comp_code} classification outcome distribution by sample")
@@ -2593,6 +2734,7 @@ def generate_network_figures(
 
     outputs["classification_summary"] = make_combined_classification_summary_plot(
         general_data=general_data,
+        labs=labs,
         figures_dir=figures_dir,
     )
 
@@ -2654,6 +2796,7 @@ def generate_component_figures(
             )
         make_component_typing_outcome_stacked_bar_by_sample(
             general_data=general_data,
+            labs=labs,
             comp_code=comp_code,
             figures_dir=figures_dir,
         )
@@ -2940,17 +3083,17 @@ def get_variant_reporting_mode_label(sample: Dict[str, Any]) -> Optional[str]:
 
 def collect_lab_classification_distribution_data(
     general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
     lab: Dict[str, Any],
     comp_code: str,
     mode: str,
 ) -> Dict[str, Any]:
-    comp_data = general_data.get("components", {}).get(comp_code, {})
-    network_samples = comp_data.get("typing", {}).get("samples", [])
+    network_samples = collect_classification_sample_outcomes(general_data, labs, comp_code, mode).get("samples", [])
     lab_samples = lab.get("components", {}).get(comp_code, {}).get("samples", {})
-
     sample_names: List[str] = []
     match_rates: List[float] = []
     discrepancy_rates: List[float] = []
+    null_rates: List[float] = []
     lab_values: List[float] = []
 
     for sample in network_samples:
@@ -2960,30 +3103,33 @@ def collect_lab_classification_distribution_data(
 
         lab_sample = lab_samples.get(sample_id, {})
         cls = lab_sample.get("classification", {})
-
         if mode == "lineage_type":
-            network_match_pct = safe_number(sample.get("lineage_hit_pct"))
+            lab_assignment = cls.get("lineage_assignment")
             lab_match = cls.get("lineage_match")
         else:
-            network_match_pct = safe_number(sample.get("clade_hit_pct"))
+            lab_assignment = cls.get("clade_assignment")
             lab_match = cls.get("clade_match")
 
-        if network_match_pct is None or lab_match is None:
-            continue
-
         sample_names.append(sample_id)
-        match_rates.append(network_match_pct)
-        discrepancy_rates.append(100.0 - network_match_pct)
+        match_pct = safe_number(sample.get("hit_pct")) or 0.0
+        discrepancy_pct = safe_number(sample.get("discrepancy_pct")) or 0.0
+        null_pct = safe_number(sample.get("null_pct")) or 0.0
+        match_rates.append(match_pct)
+        discrepancy_rates.append(discrepancy_pct)
+        null_rates.append(null_pct)
 
-        if lab_match is True:
-            lab_values.append(network_match_pct / 2.0)
+        if not is_meaningful(lab_assignment):
+            lab_values.append(match_pct + discrepancy_pct + null_pct / 2.0)
+        elif lab_match is True:
+            lab_values.append(match_pct / 2.0)
         else:
-            lab_values.append(network_match_pct + (100.0 - network_match_pct) / 2.0)
+            lab_values.append(match_pct + discrepancy_pct / 2.0)
 
     return {
         "sample_names": sample_names,
         "match_rates": match_rates,
         "discrepancy_rates": discrepancy_rates,
+        "null_rates": null_rates,
         "lab_values": lab_values,
         "lab_positions": [
             (idx - 0.22) if value is not None else idx
@@ -2995,6 +3141,7 @@ def collect_lab_classification_distribution_data(
 
 def make_lab_classification_dimension_concordance_plot(
     general_data: Dict[str, Any],
+    labs: List[Dict[str, Any]],
     lab: Dict[str, Any],
     comp_code: str,
     figures_dir: str | Path,
@@ -3007,11 +3154,11 @@ def make_lab_classification_dimension_concordance_plot(
     panel_specs = [
         (
             "A. Lineage/Subtype assignments",
-            collect_lab_classification_distribution_data(general_data, lab, comp_code, "lineage_type"),
+            collect_lab_classification_distribution_data(general_data, labs, lab, comp_code, "lineage_type"),
         ),
         (
             "B. Clade assignments",
-            collect_lab_classification_distribution_data(general_data, lab, comp_code, "clade"),
+            collect_lab_classification_distribution_data(general_data, labs, lab, comp_code, "clade"),
         ),
     ]
     visible_panels = [spec for spec in panel_specs if spec[1]["sample_names"] and spec[1]["has_lab_values"]]
@@ -3049,7 +3196,15 @@ def make_lab_classification_dimension_concordance_plot(
             color=CBF_COLORS["discrepancy"],
             label="Discrepancy",
         )
-        legend_handles = (match_bars[0], discrepancy_bars[0])
+        null_bars = ax.bar(
+            x_positions,
+            panel_data["null_rates"],
+            width=width,
+            bottom=np.array(panel_data["match_rates"]) + np.array(panel_data["discrepancy_rates"]),
+            color=CBF_COLORS["null"],
+            label="Not provided",
+        )
+        legend_handles = (match_bars[0], discrepancy_bars[0], null_bars[0])
 
         add_lab_result_diamond(
             ax=ax,
@@ -3096,14 +3251,33 @@ def make_lab_classification_dimension_concordance_plot(
                 fontweight="bold",
             )
 
+        for bar, match_value, discrepancy_value, null_value in zip(
+            null_bars,
+            panel_data["match_rates"],
+            panel_data["discrepancy_rates"],
+            panel_data["null_rates"],
+        ):
+            if null_value <= 0:
+                continue
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                match_value + discrepancy_value + null_value / 2,
+                f"{null_value:.1f}%",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
+            )
+
     axes[0].set_ylabel("Assignments (%)")
     if legend_handles is not None:
         fig.legend(
             handles=list(legend_handles),
-            labels=["Match", "Discrepancy"],
+            labels=["Match", "Discrepancy", "Not provided"],
             loc="lower center",
             bbox_to_anchor=(0.5, 0.02),
-            ncol=2,
+            ncol=3,
             frameon=False,
         )
     fig.tight_layout(rect=(0, 0.08, 1, 1))
@@ -3797,6 +3971,7 @@ def generate_individual_lab_figures(
             )
             make_lab_classification_dimension_concordance_plot(
                 general_data=general_data,
+                labs=labs,
                 lab=lab,
                 comp_code=comp_code,
                 figures_dir=figures_dir,
@@ -4673,10 +4848,12 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         per_sample_cls = []
 
         lineage_hits = 0
-        lineage_total = 0
+        lineage_discrepancies = 0
+        lineage_null = 0
         clade_hits = 0
-        clade_total = 0
-        # 1. Total matches per lab across all samples of the component
+        clade_discrepancies = 0
+        clade_null = 0
+
         for lab in participating_labs:
             lab_total_matches = 0
 
@@ -4687,31 +4864,41 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
                 cls = sample.get("classification", {})
                 nm = safe_int(cls.get("number_matches"))
-                nd = safe_int(cls.get("number_discrepancies"))
                 lm = cls.get("lineage_match")
                 cm = cls.get("clade_match")
+                expected_lineage = cls.get("expected_lineage")
+                lineage_assignment = cls.get("lineage_assignment")
+                expected_clade = cls.get("expected_clade")
+                clade_assignment = cls.get("clade_assignment")
 
                 if nm is not None:
                     lab_total_matches += nm
 
-                if lm is not None:
-                    lineage_total += 1
-                    if lm is True:
+                if is_meaningful(expected_lineage):
+                    if not is_meaningful(lineage_assignment):
+                        lineage_null += 1
+                    elif lm is True:
                         lineage_hits += 1
+                    else:
+                        lineage_discrepancies += 1
 
-                if cm is not None:
-                    clade_total += 1
-                    if cm is True:
+                if is_meaningful(expected_clade):
+                    if not is_meaningful(clade_assignment):
+                        clade_null += 1
+                    elif cm is True:
                         clade_hits += 1
+                    else:
+                        clade_discrepancies += 1
 
             classification_matches_per_lab.append(lab_total_matches)
 
-        # 2. Per-sample lineage/clade hit percentage
         for sample_id in comp_expected["samples"].keys():
             sample_lineage_hits = 0
-            sample_lineage_total = 0
+            sample_lineage_discrepancies = 0
+            sample_lineage_null = 0
             sample_clade_hits = 0
-            sample_clade_total = 0
+            sample_clade_discrepancies = 0
+            sample_clade_null = 0
 
             for lab in participating_labs:
                 sample = lab["components"][comp_code]["samples"].get(sample_id)
@@ -4721,43 +4908,62 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 cls = sample.get("classification", {})
                 lm = cls.get("lineage_match")
                 cm = cls.get("clade_match")
+                expected_lineage = cls.get("expected_lineage")
+                lineage_assignment = cls.get("lineage_assignment")
+                expected_clade = cls.get("expected_clade")
+                clade_assignment = cls.get("clade_assignment")
 
-                if lm is not None:
-                    sample_lineage_total += 1
-                    if lm is True:
+                if is_meaningful(expected_lineage):
+                    if not is_meaningful(lineage_assignment):
+                        sample_lineage_null += 1
+                    elif lm is True:
                         sample_lineage_hits += 1
+                    else:
+                        sample_lineage_discrepancies += 1
 
-                if cm is not None:
-                    sample_clade_total += 1
-                    if cm is True:
+                if is_meaningful(expected_clade):
+                    if not is_meaningful(clade_assignment):
+                        sample_clade_null += 1
+                    elif cm is True:
                         sample_clade_hits += 1
+                    else:
+                        sample_clade_discrepancies += 1
+
+            sample_lineage_total = sample_lineage_hits + sample_lineage_discrepancies + sample_lineage_null
+            sample_clade_total = sample_clade_hits + sample_clade_discrepancies + sample_clade_null
 
             per_sample_cls.append({
                 "collecting_lab_sample_id": sample_id,
                 "lineage_hits": sample_lineage_hits,
                 "lineage_total": sample_lineage_total,
-                "lineage_discrepancies": sample_lineage_total - sample_lineage_hits,
+                "lineage_discrepancies": sample_lineage_discrepancies,
+                "lineage_null": sample_lineage_null,
                 "lineage_hit_pct": pct(sample_lineage_hits, sample_lineage_total) if sample_lineage_total else None,
                 "clade_hits": sample_clade_hits,
                 "clade_total": sample_clade_total,
-                "clade_discrepancies": sample_clade_total - sample_clade_hits,
+                "clade_discrepancies": sample_clade_discrepancies,
+                "clade_null": sample_clade_null,
                 "clade_hit_pct": pct(sample_clade_hits, sample_clade_total) if sample_clade_total else None,
             })
 
+        lineage_total = lineage_hits + lineage_discrepancies + lineage_null
+        clade_total = clade_hits + clade_discrepancies + clade_null
         comp_obj["typing"] = {
             "total_classification_matches_median": median_or_none(classification_matches_per_lab),
             "total_classification_matches_min": min_or_none(classification_matches_per_lab),
             "total_classification_matches_max": max_or_none(classification_matches_per_lab),
             "lineage_hits": lineage_hits,
-            "lineage_discrepancies": lineage_total - lineage_hits,
+            "lineage_discrepancies": lineage_discrepancies,
+            "lineage_null": lineage_null,
             "lineage_total": lineage_total,
             "lineage_hit_pct": pct(lineage_hits, lineage_total),
-            "lineage_discrepancies_pct": pct(lineage_total - lineage_hits, lineage_total),
+            "lineage_discrepancies_pct": pct(lineage_discrepancies + lineage_null, lineage_total),
             "clade_hits": clade_hits,
-            "clade_discrepancies": clade_total - clade_hits,
+            "clade_discrepancies": clade_discrepancies,
+            "clade_null": clade_null,
             "clade_total": clade_total,
             "clade_hit_pct": pct(clade_hits, clade_total),
-            "clade_discrepancies_pct": pct(clade_total - clade_hits, clade_total),
+            "clade_discrepancies_pct": pct(clade_discrepancies + clade_null, clade_total),
             "samples": per_sample_cls,
             "fig_stacked_bar_by_sample": f"figures/{comp_code}/typing_outcome_stackedbar_by_sample.png",
         }

@@ -652,7 +652,7 @@ Across components, lineage/type concordance was consistently higher than clade c
 {{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.") }}
 
 
-**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the total number of classification outcomes across all samples and laboratories for each component. Bars are partitioned into **Hits** (correct assignments relative to the curated gold standard) and **Discrepancies** (incorrect assignments).
+**_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the percentage of all possible sample-level classifications across participating laboratories for each component. Bars are partitioned into **Match** (correct assignments relative to the curated gold standard), **Discrepancy** (incorrect assignments), and **Not provided** (classification not reported).
 
 ### 5.5. Metadata completeness and compliance
 
@@ -976,7 +976,7 @@ Table {{ table_counter.value }} summarises the sample-level lineage/subtype and 
 ) }}
 
 
-**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment matches and discrepancies across participating laboratories for each sample. Panel B shows the corresponding proportion for clade assignments. Stacked bars represent Match and Discrepancy outcomes relative to the curated gold standard classification.
+**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported.
 
 #### 6.{{ loop.index }}.5. Sample Quality Control Assessment
 
@@ -1629,7 +1629,7 @@ Figure {{ fig_counter.value }} presents the distribution of classification outco
   comp_code ~ ": lineage/type and clade classification outcomes across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
 ) }}
 
-**_Figure {{ fig_counter.value }}_. Lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Panel A shows the proportion of Match and Discrepancy outcomes for lineage/type assignments across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Stacked bars represent the percentage of laboratories with correct and incorrect classifications relative to the curated gold standard. The black diamond marks the result reported by **{{ labdata.lab.lab_cod }}**, positioned within the Match or Discrepancy segment for each evaluable sample.
+**_Figure {{ fig_counter.value }}_. Lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Panel A shows the proportion of Match, Discrepancy, and Not provided outcomes for lineage/type assignments across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Stacked bars represent the percentage of laboratories with correct classifications, incorrect classifications, or missing classifications relative to the curated gold standard. The black diamond marks the result reported by **{{ labdata.lab.lab_cod }}**, positioned within the Match, Discrepancy, or Not provided segment for each sample.
 {% endif %}
 
 ## 9.{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance
