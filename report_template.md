@@ -69,7 +69,9 @@
 
 ## Executive Summary
 
-The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment focused specifically on bioinformatic analytical performance across respiratory virus surveillance workflows. Nineteen laboratories participated, corresponding to {{ pct(general.total_participants_pct, 2) }} of invited laboratories, with high submission rates for expected analytical outputs: {{ pct(general.submission_rates_pct.fasta, 2) }} for consensus genome files and {{ pct(general.submission_rates_pct.vcf, 2) }} for VCF files.
+The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment focused specifically on bioinformatic analytical performance across respiratory virus surveillance workflows. ADD two or three lines summarizing samples sended and eqa scope.
+
+Nineteen laboratories participated, corresponding to {{ pct(general.total_participants_pct, 2) }} of invited laboratories, with high submission rates for expected analytical outputs: {{ pct(general.submission_rates_pct.fasta, 2) }} for consensus genome files and {{ pct(general.submission_rates_pct.vcf, 2) }} for VCF files.
 
 Across the network, consensus genome reconstruction performed best in the Illumina-based components, with a combined median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} in the Nanopore-based components. However, broad identity ranges in SARS2 and FLU2 indicate that outlier submissions remained present, particularly in contexts where masking, coverage thresholds, and consensus-generation choices differed across laboratories.
 
@@ -331,13 +333,13 @@ The proportional contribution of each discrepancy category was calculated relati
 
 For influenza virus datasets, direct position-by-position comparison of reported variants against the curated reference variant set was not feasible under the same framework applied to SARS-CoV-2.
 
-Unlike SARS-CoV-2, where laboratories predominantly use a shared and globally standardised reference genomes (either MN908947.3 or NC_045512.2), influenza virus analyses exhibited substantial heterogeneity in reference genome selection. Participating laboratories employed distinct segment-specific reference sequences. As a result:
+Unlike SARS-CoV-2, where laboratories predominantly use a shared and globally standardised reference genomes (either MN908947.3 or NC_045512.2), influenza virus analyses exhibited substantial heterogeneity in reference genome selection. As a result:
 
 - Variant coordinates were reported relative to different reference accessions.
 - Segment boundaries and numbering schemes varied.
 - Insertions and deletions were represented inconsistently across reference backbones.
 
-This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artefacts and interpretation bias.
+This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artifacts and interpretation bias.
 
 #### 4.3.1. SARS-CoV-2
 
@@ -379,7 +381,7 @@ For both viruses, the following reporting practice metrics were collected:
 - Number of laboratories reporting exclusively low-frequency variants.
 - Total number of distinct reference genomes employed for variant calling or mapping.
 
-For influenza virus, additional structural summary metrics were calculated because direct coordinate-harmonised comparison of all submitted variants was not methodologically robust across segment-specific reference backbones:
+For influenza virus, additional structural summary metrics were calculated because direct coordinate-harmonised comparison of all submitted variants was not methodologically robust across segment-specific references:
 
 - Number of variants with an allele frequency higher than 75%.
 - Number of variants with an allele frequency higher than 75% derived from VCF files.
@@ -482,6 +484,8 @@ $$
 QC evaluations were calculated only for samples analysed by the laboratory.
 
 The QC assessment evaluation was limited to concordance analysis. The exercise did not attempt to infer the internal QC criteria applied by laboratories, but rather assessed agreement with the predefined gold standard QC status to evaluate interpretative consistency across the network.
+
+INCLUDE WHAT WE EVALUATE AS GOOD QUALITY?
 
 ### 4.6. Pipeline Benchmarking and Comparative Performance
 
