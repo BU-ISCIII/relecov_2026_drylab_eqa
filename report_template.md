@@ -1026,7 +1026,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 ) }}
 
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B discrepancy counts, Panel C metadata completeness (%), and Panel D exact classification concordance (%). Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B discrepancy counts, Panel C metadata completeness (%), and Panel D exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1054,7 +1054,7 @@ Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metri
   "Distribution of percentage of host reads metrics by dehosting software version for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1082,7 +1082,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by pre-processing software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pre-processing software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pre-processing software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1110,7 +1110,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by mapping software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared mapping software configuration for {{ comp_code }}.** Boxplots summarise sample-level performance stratified by mapping software. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared mapping software configuration for {{ comp_code }}.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1138,7 +1138,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by assembly software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1166,7 +1166,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1203,9 +1203,9 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 ) }}
 
 {% if comp_code[:3] == "FLU" %}
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays the number of reported variants with AF >=75%, Panel C the number of variants with AF >=75% in the submitted VCF, Panel D the number of variants with effect, Panel E metadata-VCF discrepancies, and Panel F the total number of variants present in the submitted VCF files. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays the number of reported variants with AF >=75%, Panel C the number of variants with AF >=75% in the submitted VCF, Panel D the number of variants with effect, Panel E metadata-VCF discrepancies, and Panel F the total number of variants present in the submitted VCF files. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 {% else %}
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays discrepancies in reported variants with AF >=75% in the submitted VCF, Panel C discrepancies in reported variants with effect, Panel D successful hits, and Panel E total discrepancies. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared variant calling software configuration for {{ comp_code }}.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays discrepancies in reported variants with AF >=75% in the submitted VCF, Panel C discrepancies in reported variants with effect, Panel D successful hits, and Panel E total discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 {% endif %}
 
 {% endif %}
@@ -1213,7 +1213,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.clade_assignment %}
 ##### Clade Assignment Software
 
-Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component.
+Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and clade assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared clade assignment software configurations for {{ comp_code }}.**
@@ -1234,14 +1234,14 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by clade assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared clade assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by clade assignment software. Panel A displays the % of clade matches and Panel B the % of clade discrepancies. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared clade assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. Panel A displays the % of clade matches and Panel B the % of clade discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
 {% if comp_net.benchmarking.lineage_assignment %}
 ##### Lineage Assignment Software Name
 
-Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component.
+Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and lineage assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared lineage assignment software configurations for {{ comp_code }}.**
@@ -1262,14 +1262,14 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by lineage assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared lineage assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by lineage assignment software. Panel A displays the % of lineage matches and Panel B the % of lineage discrepancies. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared lineage assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. Panel A displays the % of lineage matches and Panel B the % of lineage discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
 {% if comp_net.benchmarking.type_assignment %}
 ##### Type Assignment Software Name
 
-Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component.
+Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and type assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared type assignment software configurations for {{ comp_code }}.**
@@ -1282,7 +1282,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_nu
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared xxx software configuration.
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared type assignment software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
@@ -1290,7 +1290,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by type assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared type assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by type assignment software. Panel A displays the % of type matches and Panel B the % of type discrepancies. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared type assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. Panel A displays the % of type matches and Panel B the % of type discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1298,7 +1298,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 ##### Subtype Assignment Software Name
 
-Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component.
+Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and subtype assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared subtype assignment software configurations for {{ comp_code }}.**
@@ -1319,7 +1319,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   "Distribution of performance metrics by subtype assignment software configuration for " ~ comp_code ~ "."
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared subtype assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by subtype assignment software. Panel A displays the % of subtype matches and Panel B the % of subtype discrepancies. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared subtype assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. Panel A displays the % of subtype matches and Panel B the % of subtype discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
