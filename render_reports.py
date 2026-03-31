@@ -247,7 +247,24 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
     return table_pattern.sub(replace_table, html_text)
 
 
-def markdown_to_html(markdown_text: str, title: str, css_text: str, base_dir: Path) -> str:
+def rewrite_figure_sources(markdown_text: str, figures_dir: Optional[Path]) -> str:
+    if figures_dir is None:
+        return markdown_text
+
+    figures_root = figures_dir.resolve()
+
+    def replace_src(match: re.Match[str]) -> str:
+        raw_path = match.group(1)
+        if not raw_path.startswith("figures/"):
+            return match.group(0)
+        resolved = figures_root.parent / raw_path
+        return f'src="{resolved.resolve().as_uri()}"'
+
+    return re.sub(r'src="([^"]+)"', replace_src, markdown_text)
+
+
+def markdown_to_html(markdown_text: str, title: str, css_text: str, base_dir: Path, figures_dir: Optional[Path] = None) -> str:
+    markdown_text = rewrite_figure_sources(markdown_text, figures_dir)
     html_body = md_lib.markdown(markdown_text, extensions=MARKDOWN_EXTENSIONS)
     html_body = postprocess_rendered_html(html_body)
     return f"""<!doctype html>
@@ -415,6 +432,14 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
             "without re-rendering the Jinja template."
         ),
     )
+    parser.add_argument(
+        "--figures-dir",
+        default=None,
+        help=(
+            "Optional path to the figures root directory. If provided, image paths beginning with "
+            "'figures/' are resolved against this directory when generating HTML/PDF."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -433,6 +458,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     input_markdown_dir = Path(args.input_markdown_dir).resolve() if args.input_markdown_dir else None
     output_dir = Path(args.output_dir).resolve()
     css_path = Path(args.css).resolve()
+    figures_dir = Path(args.figures_dir).resolve() if args.figures_dir else None
 
     render_from_existing_markdown = input_markdown_dir is not None
 
@@ -487,7 +513,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         for report, markdown_path in rendered_markdown_paths:
             html_path = html_root / report["subdir"] / f"{report['stem']}.html"
             pdf_path = pdf_root / report["subdir"] / f"{report['stem']}.pdf"
-            html_text = markdown_to_html(report["markdown_text"], report["title"], css_text, base_dir)
+            html_text = markdown_to_html(
+                report["markdown_text"],
+                report["title"],
+                css_text,
+                base_dir,
+                figures_dir=figures_dir,
+            )
             write_text(html_path, html_text)
             render_pdf_with_chrome(html_path, pdf_path, browser_backend)
             if not args.keep_html:
