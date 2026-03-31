@@ -1069,7 +1069,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_numb
 | Pre-processing software | Version | N labs | Most common configuration | Number of reads sequenced | Reads passing filters |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.preprocessing.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1097,7 +1097,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} 
 | Mapping software | Version | N labs | Most common configuration | Depth of coverage threshold | % Reads virus |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.mapping.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.depth_of_coverage_threshold if p.depth_of_coverage_threshold is not none else "N/A" }} | {{ p.per_reads_virus if p.per_reads_virus is not none else "N/A" }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.depth_of_coverage_threshold if p.depth_of_coverage_threshold is not none else "N/A" }} | {{ p.per_reads_virus if p.per_reads_virus is not none else "N/A" }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1125,7 +1125,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }}
 | Assembly software | Version | N labs | Most common configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.assembly.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1153,7 +1153,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total
 | Consensus software | Version | N labs | Most common configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.consensus_software.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1182,13 +1182,13 @@ Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_nu
 | Variant calling software | Version | N labs | Most common configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median metadata-VCF discrepancies | Median total variants in VCF |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.variant_calling.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
 {% endfor %}
 {% else %}
 | Variant calling software | Version | N labs | Most common configuration | Median high + low freq (%) | Median high freq only (%) | Median low freq only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.variant_calling.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
 {% endfor %}
 {% endif %}
 
@@ -1221,7 +1221,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_n
 | Clade assignment software | Version | N labs | Database version | % of clade match | % of clade discrepancy |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.clade_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.clade_hit_pct }} | {{ p.clade_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.clade_hit_pct }} | {{ p.clade_discordance_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1249,7 +1249,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total
 | Lineage Assignment software | Version | N labs | Database version | % of lineage match | % of lineage discrepancy |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.lineage_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.lineage_hit_pct }} | {{ p.lineage_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.lineage_hit_pct }} | {{ p.lineage_discordance_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1277,7 +1277,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_nu
 | Type Assignment software | Version | N labs | Database version | % of type match | % of type discrepancy |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.type_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.type_hit_pct }} | {{ p.type_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.type_hit_pct }} | {{ p.type_discordance_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1306,7 +1306,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total
 | Subtype Assignment software | Version | N labs | Database version | % of subtype match | % of subtype discrepancy |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.subtype_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version }} | {{ p.subtype_hit_pct }} | {{ p.subtype_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.subtype_hit_pct }} | {{ p.subtype_discordance_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
