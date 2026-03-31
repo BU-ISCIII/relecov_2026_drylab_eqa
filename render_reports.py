@@ -115,6 +115,13 @@ def safe_format_filter(value: Any, *args: Any, **kwargs: Any) -> str:
         return "N/A"
 
 
+def markdown_table_cell_filter(value: Any) -> str:
+    if value is None:
+        return "N/A"
+    text = str(value)
+    return text.replace("|", r"\|").replace("\n", "<br>")
+
+
 def resolve_template_path(candidate: Any, template_root: Path, figures_dir: Optional[Path]) -> Path:
     candidate_path = Path(str(candidate))
     if candidate_path.is_absolute():
@@ -131,6 +138,7 @@ def build_environment(template_path: Path, figures_dir: Optional[Path] = None) -
         keep_trailing_newline=True,
     )
     env.filters["format"] = safe_format_filter
+    env.filters["mdcell"] = markdown_table_cell_filter
     env.globals["path_exists"] = (
         lambda value: resolve_template_path(value, template_path.parent, figures_dir).exists() if value else False
     )
