@@ -430,7 +430,7 @@ Failure to identify virus presence in positive samples, or misclassification of 
 
 ### 4.5. Evaluation of Metadata Completeness and Compliance
 
-Metadata assessment focused on analytical transparency and interoperability rather than biological correctness.
+Metadata assessment focused on analytical transparency and interoperability rather than biological correctness. Before the start of the exercise, a metadata template with controlled-vocabulary dropdowns was distributed among the laboratories to review the available options and incorporation of missing software tools into the schema.
 
 For each submitted sample, metadata completeness was calculated as:
 
@@ -442,7 +442,7 @@ $$
 
 Laboratory-level and component-level completeness summaries were then derived from these sample-level values. Fields were evaluated for:
 
-- Completion: Each sample has a list of minimum **recomended** fields, based on the sample characteristics. For each component/sample/lab the total number of completed minimum **recomended** fields was evaluated. Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
+- Completion: Each sample has a list of minimum **recommended** fields, based on the sample characteristics. For each component/sample/lab the total number of completed minimum **recommended** fields was evaluated. Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
 - Compliance with controlled vocabularies. Metadata entries were considered non-compliant when:
   - Controlled vocabulary options were bypassed
   - Free-text substitutions replaced defined values
@@ -602,7 +602,7 @@ At network level:
 
 Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling or mapping (from a total of {{ general.general_results.influenza_variants.total_distinct_fragments }} distinct fragment references), across influenza components.
 
-Structural summary metrics derived from submitted influenza consensus sequences and VCF files are presented in Table {{ table_counter.value + 1 }}. These metrics capture the overall magnitude of reported variats in the metadata file and the discrepancy between reported variants with an allele frequency >= 75% in the metadata file and the VCF file, rather than direct nucleotide-level accuracy against a unified reference coordinate system.
+Structural summary metrics derived from submitted influenza consensus sequences and VCF files are presented in Table {{ table_counter.value + 1 }}. These metrics capture the overall magnitude of reported variants in the metadata file and the discrepancy between reported variants with an allele frequency >= 75% in the metadata file and the VCF file, rather than direct nucleotide-level accuracy against a unified reference coordinate system.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level structural summary of influenza variant reporting.**
@@ -676,7 +676,7 @@ Although core pipeline tools were generally reported, variability was observed i
 - {{ pct(general.metadata_completeness.variant_calling_params_pct) }} reported variant calling parameters, containing the potential allele frequency thresholds.
 - {{ pct(general.metadata_completeness.reference_genome_pct) }} reported the reference genome accession or identifier.
 
-Incomplete parameter reporting limited the ability to fully reconstruct or reproduce analytical workflows in {{ pct(general.metadata_completeness.incomplete_parameters_pct) }} of submissions.
+The incomplete reporting of parameters limited the ability to fully reconstruct or reproduce analytical workflows in {{ pct(general.metadata_completeness.incomplete_parameters_pct) }} of submissions.
 
 #### Controlled Vocabulary Compliance
 
@@ -691,7 +691,7 @@ The most common compliance issues included:
 - Incorrect or inconsistent completion of lineage, clade, influenza type, or subtype fields.
 - Missing mandatory fields requiring subsequent normalisation.
 
-A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred despite the fact that the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to allow laboratories to review the available options and request the incorporation of missing software tools into the schema, and despite explicit instructions on how mandatory fields without available data should be completed.
+A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred even though the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to give laboratories time to review the available options and identify any missing software tools for possible inclusion in the schema, together with guidance on how mandatory fields should be completed when data were not available.
 
 #### Sample Quality Control Assessment
 
@@ -790,10 +790,10 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-Considering discrepancy type composition aggregated by sample for {{ comp_code }}:
-
 {% set table_counter.value = table_counter.value + 1 %}
+
+Discrepancy type composition aggregated by sample for {{ comp_code }} is displayed in Table {{ table_counter.value }}:
+
 **Table {{ table_counter.value }}. Network-level consensus discrepancy types per sample for {{ comp_code }}.**
 
 | Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
@@ -813,12 +813,13 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 
 **Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
 
-Discrepancy type composition aggregated across all submitted consensus sequences for {{ comp_code }}:
-
 {% set table_counter.value = table_counter.value + 1 %}
+
+Discrepancy type composition aggregated across all submitted consensus sequences for {{ comp_code }}  is shown in Table {{ table_counter.value }}.
+
 **Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
 
-| Discrepancy type | Network median per sample | Min-max occurencies |
+| Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
 | Incorrect nucleotide | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.wrong_nt.max }} |
 | Ambiguity instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max }} |
@@ -847,7 +848,7 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency (AF) higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
@@ -876,10 +877,10 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
-
-Discrepancy type composition (aggregated across all submitted variant calls for {{ comp_code }}):
-
 {% set table_counter.value = table_counter.value + 1 %}
+
+Discrepancy type composition (aggregated across all submitted variant calls for {{ comp_code }}) is displayed in Table {{ table_counter.value }}.
+
 **Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
@@ -1046,7 +1047,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metric stratified by declared dehosting sfotaware version.
+Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metric stratified by declared dehosting software version.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
@@ -1122,7 +1123,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }}
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
 
-| Assembly software | Version | N labs | Most common configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
+| Assembly software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.assembly.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
@@ -1150,7 +1151,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared consensus software configurations for {{ comp_code }}.**
 
-| Consensus software | Version | N labs | Most common configuration | Consnsus genome length | Median genome identity | Median number of discrepancies per sample |
+| Consensus software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.consensus_software.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
@@ -1353,25 +1354,17 @@ QC interpretation showed additional between-component differences. Only 9 of the
 
 ### 7.4. Workflow Diversity and Reporting Constraints
 
-The metadata confirm that RELECOV laboratories currently use a diverse analytical landscape. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified across participating laboratories, together with {{ general.metadata_completeness.total_consensus_softwares }} distinct consensus tools or tool/version combinations, {{ general.metadata_completeness.total_variant_softwares }} distinct variant tools, {{ general.metadata_completeness.total_lineage_assignment_softwares }} SARS-CoV-2 lineage assignment tools, and {{ general.metadata_completeness.total_clade_assignment_softwares }} clade assignment tools.
+The metadata confirms that RELECOV laboratories currently use a diverse analytical landscape. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified across participating laboratories, together with distinct tools or tool/version combinations for consensus genome generation ({{ general.metadata_completeness.total_consensus_softwares }}), variant calling ({{ general.metadata_completeness.total_variant_softwares }}), SARS-CoV-2 lineage assignment ({{ general.metadata_completeness.total_lineage_assignment_softwares }}), influeza type/subtype assignment ({{ general.metadata_completeness.total_subtype_assignment_softwares }}) and clade assignment ({{ general.metadata_completeness.total_clade_assignment_softwares }}).
 
 This diversity is analytically valuable, but its interpretation is constrained by incomplete metadata reporting. Only {{ pct(general.metadata_completeness.software_version_pct) }} of software-version fields were completed, {{ pct(general.metadata_completeness.coverage_threshold_pct) }} of submitted samples specified a minimum coverage threshold, {{ pct(general.metadata_completeness.variant_calling_params_pct) }} reported variant calling parameters, and {{ pct(general.metadata_completeness.reference_genome_pct) }} reported a reference genome accession or identifier. For that reason, some plausible explanations for performance differences can only be discussed as contributing context rather than demonstrated causal effects.
 
 The main incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, consensus analysis, and classification-related metadata. This pattern suggests that laboratories were more consistent in declaring core tool identities than in documenting the exact thresholds and parameter sets that determine analytical behaviour.
 
-The submitted metadata also support the view that parameter heterogeneity contributed to consensus and variant calling variability. Across all submitted samples, laboratories reported at least 8 different conventions for minimum coverage thresholds, 13 distinct consensus parameter strings, 13 distinct mapping parameter strings, and 14 distinct variant calling parameter strings. These differences do not prove causality for any individual discrepancy, but they do show that laboratories were not applying a uniform set of masking, filtering, or coverage rules.
+The submitted metadata also supports the view that parameter heterogeneity contributed to consensus and variant calling variability. Across all submitted samples, laboratories reported at least 8 different conventions for minimum coverage thresholds, 13 distinct consensus parameter strings, 13 distinct mapping parameter strings, and 14 distinct variant calling parameter strings. These differences do not prove causality for any individual discrepancy, but they do show that laboratories were not applying a uniform set of masking, filtering, or coverage rules.
 
 ### 7.5. Implications for RELECOV 2.0
 
 Taken together, the results support a harmonisation strategy centred on minimum performance and reporting standards rather than on enforcement of a single analytical pipeline. The data do not support a universal workflow ranking that would apply equally across all viruses, platforms, and tasks. Instead, they show that performance depends on the interaction between dataset characteristics, reporting conventions, software choice, and parameterisation.
-
-For RELECOV 2.0, the clearest priorities emerging from this exercise are:
-
-- clearer minimum metadata requirements for reference genomes, software versions, coverage thresholds, and variant calling parameters
-- more explicit consensus masking and ambiguity-handling criteria
-- harmonised rules for variant reporting thresholds and metadata-versus-VCF consistency
-- regular maintenance of classification databases and version tracking
-- component-aware benchmarking rather than cross-context software ranking
 
 ## 8. Conclusions
 
@@ -1478,7 +1471,7 @@ Table {{ table_counter.value }} provides a detailed characterisation of discrepa
 
 **Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
-| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total sucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
+| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total nucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 | {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
