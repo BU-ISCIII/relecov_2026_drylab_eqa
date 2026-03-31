@@ -18,11 +18,7 @@
 {%- endif %}
 {%- endmacro %}
 {% macro software_label(name, version=None, db_version=None) -%}
-  {% if name %}
-    {{ name }}{% if version %} ({{ version }}){% endif %}{% if db_version %}; DB {{ db_version }}{% endif %}
-  {% else %}
-    NA
-  {% endif %}
+{%- if name -%}{{ name }}{%- if version -%} ({{ version }}){%- endif -%}{%- if db_version -%}; DB {{ db_version }}{%- endif -%}{%- else -%}NA{%- endif -%}
 {%- endmacro %}
 
 {% set fig_counter = namespace(value=0) %}
@@ -1482,6 +1478,8 @@ The metrics presented in Table {{ table_counter.value }} summarise overall seque
 ### Discrepancy type breakdown per sample
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
+
 **Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
 | Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total sucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
@@ -1489,8 +1487,6 @@ The metrics presented in Table {{ table_counter.value }} summarise overall seque
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 | {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
 {% endfor %}
-
-Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
 
 {% set consensus_distribution_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/consensus_distribution_panel.png" %}
 {% if path_exists(consensus_distribution_panel_path) %}
@@ -1704,10 +1700,10 @@ Only metrics explicitly provided by the laboratory are included in the comparati
 
 | Sample ID | Reported QC | Gold standard QC | Network % Match |
 |---|---|---|---:|
-{% for collecting_lab_sample_id, s in comp.samples.items() %}
-{% set ns = (general.components[comp_code].qc.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) %}
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+{% set ns = (general.components[comp_code].qc.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) -%}
 | {{ collecting_lab_sample_id }} | {{ s.qc_test if s.qc_test is not none else "NA" }} | {{ ns.gold_standard_qc if ns else "NA" }} | {{ pct(ns.match_rate_pct) if ns and ns.match_rate_pct is not none else "NA" }} |
-{% endfor %}
+{% endfor -%}
 
 Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.
 
@@ -1739,18 +1735,18 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
   "per_reads_host": "% Reads host"
 } %}
 {% set metadata_metrics_reported = namespace(count=0) %}
-{% for collecting_lab_sample_id, s in comp.samples.items() %}
-{% set m = s.metadata_metrics %}
-{% if m %}
-{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("sample_id","equalto",collecting_lab_sample_id) | list | first) %}
-{% set sample_metrics = namespace(count=0) %}
-{% for metric_key in metadata_metric_labels.keys() %}
-{% if m.get(metric_key) is not none %}
-{% set sample_metrics.count = sample_metrics.count + 1 %}
-{% endif %}
-{% endfor %}
-{% if sample_metrics.count > 0 %}
-{% set metadata_metrics_reported.count = metadata_metrics_reported.count + sample_metrics.count %}
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+{% set m = s.metadata_metrics -%}
+{% if m -%}
+{% set ns = (general.components[comp_code].metadata_metrics.samples | selectattr("sample_id","equalto",collecting_lab_sample_id) | list | first) -%}
+{% set sample_metrics = namespace(count=0) -%}
+{% for metric_key in metadata_metric_labels.keys() -%}
+{% if m.get(metric_key) is not none -%}
+{% set sample_metrics.count = sample_metrics.count + 1 -%}
+{% endif -%}
+{% endfor -%}
+{% if sample_metrics.count > 0 -%}
+{% set metadata_metrics_reported.count = metadata_metrics_reported.count + sample_metrics.count -%}
 
 {% set table_counter.value = table_counter.value + 1 %}
 
@@ -1760,18 +1756,17 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 
 | Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
 |---|---:|---:|---:|
-{% for metric_key, metric_label in metadata_metric_labels.items() %}
-{% if m.get(metric_key) is not none %}
-
+{% for metric_key, metric_label in metadata_metric_labels.items() -%}
+{% if m.get(metric_key) is not none -%}
 | {{ metric_label }} | {{ m[metric_key] }} | {{ ns[metric_key].median if ns and ns.get(metric_key) else "NA" }} | {{ ns[metric_key].min if ns and ns.get(metric_key) else "NA" }} - {{ ns[metric_key].max if ns and ns.get(metric_key) else "NA" }} |
-{% endif %}
-{% endfor %}
+{% endif -%}
+{% endfor -%}
 
 Table {{ table_counter.value }} contextualises laboratory-reported analytical parameters relative to the distribution of values observed across the RELECOV network for the same sample.
 
-{% endif %}
-{% endif %}
-{% endfor %}
+{% endif -%}
+{% endif -%}
+{% endfor -%}
 
 {% set metadata_metrics_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/metadata_metrics_panel.png" %}
 {% if metadata_metrics_reported.count > 0 and path_exists(metadata_metrics_panel_path) %}
