@@ -99,6 +99,7 @@ python3 render_reports.py \
   --template report_template.md \
   --general-json general.json \
   --labs-dir merged_json_results/ \
+  --figures-dir figures/ \
   --markdown-only
 ```
 
@@ -109,6 +110,7 @@ python3 render_reports.py \
   --template report_template.md \
   --general-json general.json \
   --labs-dir merged_json_results/ \
+  --figures-dir figures/ \
   --pdf-only
 ```
 
@@ -118,7 +120,33 @@ Example: PDF generation from already rendered markdown files
 python3 render_reports.py \
   --input-markdown-dir rendered_reports/markdown \
   --output-dir rendered_reports_from_existing_md \
+  --figures-dir figures/ \
   --pdf-only
+```
+
+Example: rendering in an external reports directory where figures live outside `rendered_reports`
+
+```bash
+python3 render_reports.py \
+  --template /path/to/report_template.md \
+  --general-json general.json \
+  --labs-dir /path/to/merged_results_per_lab/ \
+  --output-dir /path/to/reports_and_figures/rendered_reports/ \
+  --markdown-only \
+  --css /path/to/report_pdf.css \
+  --figures-dir /path/to/reports_and_figures/figures/
+```
+
+```bash
+python3 render_reports.py \
+  --template /path/to/report_template.md \
+  --general-json general.json \
+  --labs-dir /path/to/merged_results_per_lab/ \
+  --output-dir /path/to/reports_and_figures/rendered_reports/ \
+  --input-markdown-dir /path/to/reports_and_figures/rendered_reports/markdown/ \
+  --pdf-only \
+  --css /path/to/report_pdf.css \
+  --figures-dir /path/to/reports_and_figures/figures/
 ```
 
 Important arguments:
@@ -128,6 +156,7 @@ Important arguments:
 - `--labs-dir`: optional directory containing compatible `lab_*.json` files
 - `--output-dir`: optional output directory. Default: `rendered_reports`
 - `--css`: optional stylesheet path. Default: `report_pdf.css`
+- `--figures-dir`: optional path to the figures root directory. Use this when image paths in the markdown start with `figures/...` but the actual figures are stored outside the rendered report directory tree
 - `--markdown-only`: render only markdown files
 - `--pdf-only`: render only PDF files
 - `--keep-html`: keep the intermediate HTML files used to create the PDFs
@@ -151,5 +180,6 @@ If you want to generate the full reporting output from processed lab folders, th
 
 - `render_reports.py` expects individual report JSONs compatible with the template, that is, files with top-level `lab`, `metadata`, and `components` sections.
 - If `--input-markdown-dir` is used, `render_reports.py` can generate PDFs directly from existing markdown files without needing `--template` or `--general-json`.
+- If figures are stored outside the repository or outside the `rendered_reports` tree, pass `--figures-dir` both when rendering markdown and when generating PDFs. This is also needed so that `path_exists(...)` conditions inside the Jinja template can correctly detect external figure files.
 - PDF generation currently uses a Chrome/Chromium executable available in `PATH`.
 - The report template is `report_template.md` and the PDF stylesheet is `report_pdf.css`.

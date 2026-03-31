@@ -115,14 +115,25 @@ def safe_format_filter(value: Any, *args: Any, **kwargs: Any) -> str:
         return "N/A"
 
 
-def build_environment(template_path: Path) -> Environment:
+def resolve_template_path(candidate: Any, template_root: Path, figures_dir: Optional[Path]) -> Path:
+    candidate_path = Path(str(candidate))
+    if candidate_path.is_absolute():
+        return candidate_path
+    if str(candidate_path).startswith("figures/") and figures_dir is not None:
+        return figures_dir.resolve().parent / candidate_path
+    return template_root / candidate_path
+
+
+def build_environment(template_path: Path, figures_dir: Optional[Path] = None) -> Environment:
     env = Environment(
         loader=FileSystemLoader(str(template_path.parent)),
         autoescape=False,
         keep_trailing_newline=True,
     )
     env.filters["format"] = safe_format_filter
-    env.globals["path_exists"] = lambda value: template_path.parent.joinpath(str(value)).exists() if value else False
+    env.globals["path_exists"] = (
+        lambda value: resolve_template_path(value, template_path.parent, figures_dir).exists() if value else False
+    )
     return env
 
 
@@ -130,8 +141,9 @@ def render_template(
     template_path: Path,
     general_data: Dict[str, Any],
     labdata: Optional[Dict[str, Any]],
+    figures_dir: Optional[Path] = None,
 ) -> str:
-    env = build_environment(template_path)
+    env = build_environment(template_path, figures_dir=figures_dir)
     template = env.get_template(template_path.name)
     rendered = template.render(general=general_data, labdata=labdata)
     return postprocess_rendered_markdown(rendered)
@@ -244,7 +256,14 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
             return f'<div class="landscape-section">{caption_html}{table_with_class}</div>'
         return match.group(0)
 
-    return table_pattern.sub(replace_table, html_text)
+    html_text = table_pattern.sub(replace_table, html_text)
+    html_text = re.sub(
+        r'</div>\s*<div class="landscape-section">',
+        "",
+        html_text,
+        flags=re.DOTALL,
+    )
+    return html_text
 
 
 def rewrite_figure_sources(markdown_text: str, figures_dir: Optional[Path]) -> str:
@@ -341,6 +360,7 @@ def build_report_targets(
     general_data: Dict[str, Any],
     template_path: Path,
     labs_dir: Optional[Path],
+    figures_dir: Optional[Path] = None,
 ) -> List[Dict[str, Any]]:
     reports: List[Dict[str, Any]] = []
     reports.append(
@@ -348,7 +368,7 @@ def build_report_targets(
             "kind": "general",
             "identifier": "general",
             "title": "RELECOV 2026 Dry-Lab EQA General Report",
-            "markdown_text": render_template(template_path, general_data, labdata=None),
+            "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
             "subdir": Path(),
             "stem": "general_report",
         }
@@ -371,7 +391,7 @@ def build_report_targets(
                 "kind": "lab",
                 "identifier": lab_id,
                 "title": f"RELECOV 2026 Dry-Lab EQA Technical Report - {lab_id}",
-                "markdown_text": render_template(template_path, general_data, labdata=payload),
+                "markdown_text": render_template(template_path, general_data, labdata=payload, figures_dir=figures_dir),
                 "subdir": Path("labs"),
                 "stem": f"lab_{lab_id}",
             }
@@ -485,7 +505,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         base_dir = input_markdown_dir
     else:
         general_data = normalize_general_payload(load_json(general_json_path))
-        reports = build_report_targets(general_data, template_path, labs_dir)
+        reports = build_report_targets(general_data, template_path, labs_dir, figures_dir=figures_dir)
         base_dir = template_path.parent
 
     markdown_root = output_dir / "markdown"
