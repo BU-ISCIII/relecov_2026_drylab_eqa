@@ -254,12 +254,17 @@ def software_key(name, version=None):
     return (str(name).strip(), str(version).strip() if is_meaningful(version) else None)
 
 
-def software_signature(name: Any, version: Any = None) -> Optional[tuple]:
+def software_signature(name: Any, version: Any = None, database_version: Any = None) -> Optional[tuple]:
     if not is_meaningful(name):
         return None
     clean_name = str(name).strip()
-    clean_version = str(version).strip() if is_meaningful(version) else None
-    return (clean_name, clean_version)
+    if "custom" in clean_name.lower():
+        clean_version = None
+        clean_database_version = None
+    else:
+        clean_version = str(version).strip() if is_meaningful(version) else None
+        clean_database_version = str(database_version).strip() if is_meaningful(database_version) else None
+    return (clean_name, clean_version, clean_database_version)
 
 
 def most_common_or_none(values: Iterable[Any]) -> Any:
@@ -1000,9 +1005,10 @@ def make_component_qc_match_by_sample_plot(
     return str(output_path)
 
 
-def format_software_label(name: Any, version: Any) -> str:
+def format_software_label(name: Any, version: Any, database_version: Any = None) -> str:
     clean_name = str(name).strip() if is_meaningful(name) else "Unknown"
     clean_version = str(version).strip() if is_meaningful(version) else "Version N/A"
+    clean_database_version = str(database_version).strip() if is_meaningful(database_version) else None
     name_lower = clean_name.lower()
     version_lower = clean_version.lower()
 
@@ -1018,10 +1024,29 @@ def format_software_label(name: Any, version: Any) -> str:
         version_lower = clean_version.lower()
 
     if "custom" in name_lower:
-        return clean_name
-    if "dragen" in name_lower and "dragen" in version_lower:
-        return clean_name
-    return f"{clean_name}\n{clean_version}"
+        label = clean_name
+    elif "dragen" in name_lower and "dragen" in version_lower:
+        label = clean_name
+    else:
+        label = f"{clean_name}\n{clean_version}"
+
+    if "custom" not in name_lower and clean_database_version is not None:
+        formatted_database_version = clean_database_version.replace(",", ",\n")
+        label = f"{label}\nDB version: {formatted_database_version}"
+    return label
+
+
+def format_benchmark_group_label(
+    name: Any,
+    version: Any,
+    database_version: Any = None,
+    n_labs: Any = None,
+) -> str:
+    label = format_software_label(name, version, database_version)
+    n_labs_int = safe_int(n_labs)
+    if n_labs_int is not None:
+        label = f"{label}\n(n={n_labs_int})"
+    return label
 
 
 def extract_variant_reporting_mode_pct(sample: Dict[str, Any], mode_key: str) -> Optional[float]:
@@ -1061,7 +1086,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
 
     group_data = []
 
-    for (name, version), records in ordered_groups:
+    for (name, version, database_version), records in ordered_groups:
         identities = []
         discrepancies = []
         metadata_completeness = []
@@ -1117,8 +1142,10 @@ def make_component_bioinformatics_protocol_metric_boxplots(
         if not any([identities, discrepancies, metadata_completeness, exact_classification]):
             continue
 
+        group_n_labs = len({record["lab_id"] for record in records})
+
         group_data.append({
-            "label": format_software_label(name, version),
+            "label": format_benchmark_group_label(name, version, database_version, group_n_labs),
             "panels": [
                 identities,
                 discrepancies,
@@ -1127,7 +1154,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             ],
             "lineage_hit_pct": pct(lineage_hits, lineage_total),
             "clade_hit_pct": pct(clade_hits, clade_total),
-            "n_labs": len({record["lab_id"] for record in records}),
+            "n_labs": group_n_labs,
         })
 
     discrepancy_y_limit = 500.0 if comp_code == "FLU2" else None
@@ -1155,10 +1182,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
 
         panel_labels = [group["label"] for group in panel_groups]
         panel_data = [list(group["panels"][panel_idx]) for group in panel_groups]
-        panel_n_labs = [int(group.get("n_labs", 0)) for group in panel_groups]
-        panel_display_labels = [
-            f"{label}\n(n={n_labs})" for label, n_labs in zip(panel_labels, panel_n_labs)
-        ]
+        panel_display_labels = list(panel_labels)
         plotted_data = [list(values) for values in panel_data]
         outlier_annotations = []
 
@@ -1264,18 +1288,28 @@ def collect_benchmark_group_records(
     comp_code: str,
     name_field: str,
     version_field: Optional[str] = None,
+    db_version_field: Optional[str] = None,
 ) -> List[tuple[str, List[Dict[str, Any]]]]:
-    groups = collect_software_groups(labs, comp_code, name_field, version_field)
+    groups = collect_software_groups(labs, comp_code, name_field, version_field, db_version_field)
     ordered_groups = sorted(
         groups.items(),
         key=lambda item: (
             str(item[0][0]).lower() if item[0][0] is not None else "",
             str(item[0][1]).lower() if item[0][1] is not None else "",
+            str(item[0][2]).lower() if len(item[0]) > 2 and item[0][2] is not None else "",
         ),
     )
     return [
-        (format_software_label(name, version), records)
-        for (name, version), records in ordered_groups
+        (
+            format_benchmark_group_label(
+                name,
+                version,
+                db_version,
+                len({record["lab_id"] for record in records}),
+            ),
+            records,
+        )
+        for (name, version, db_version), records in ordered_groups
     ]
 
 
@@ -1365,6 +1399,7 @@ def make_component_benchmark_metric_boxplots(
         "clade_assignment": {
             "name_field": "clade_assignment_software_name",
             "version_field": "clade_assignment_software_version",
+            "db_version_field": "clade_assignment_software_database_version",
             "output_filename": "clade_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by clade assignment software",
             "panels": [
@@ -1375,6 +1410,7 @@ def make_component_benchmark_metric_boxplots(
         "lineage_assignment": {
             "name_field": "lineage_assignment_software_name",
             "version_field": "lineage_assignment_software_version",
+            "db_version_field": "lineage_assignment_database_version",
             "output_filename": "lineage_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by lineage assignment software",
             "panels": [
@@ -1385,6 +1421,7 @@ def make_component_benchmark_metric_boxplots(
         "type_assignment": {
             "name_field": "type_assignment_software_name",
             "version_field": None,
+            "db_version_field": "type_assignment_software_database_version",
             "output_filename": "type_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by type assignment software",
             "panels": [
@@ -1395,6 +1432,7 @@ def make_component_benchmark_metric_boxplots(
         "subtype_assignment": {
             "name_field": "subtype_assignment_software_name",
             "version_field": "subtype_assignment_software_version",
+            "db_version_field": "subtype_assignment_software_database_version",
             "output_filename": "subtype_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by subtype assignment software",
             "panels": [
@@ -1415,6 +1453,7 @@ def make_component_benchmark_metric_boxplots(
         comp_code,
         config["name_field"],
         config["version_field"],
+        config.get("db_version_field"),
     )
     if not groups:
         return str(output_path)
@@ -1452,11 +1491,17 @@ def make_component_benchmark_metric_boxplots(
         return str(output_path)
 
     n_panels = len(metric_panels)
-    ncols = 1 if n_panels == 1 else 2
+    stacked_vertical_benchmark = benchmark_key in {"lineage_assignment", "type_assignment", "clade_assignment"} and n_panels == 2
+    ncols = 1 if n_panels == 1 or stacked_vertical_benchmark else 2
     nrows = int(np.ceil(n_panels / ncols))
     max_groups_in_panel = max(len(panel_groups) for _, _, _, panel_groups in metric_panels)
-    fig_width = max(14, max_groups_in_panel * 2.1)
-    fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, 4.8 * nrows))
+    if stacked_vertical_benchmark:
+        fig_width = max(18, max_groups_in_panel * 2.3)
+        fig_height = 5.2 * nrows
+    else:
+        fig_width = max(14, max_groups_in_panel * 2.1)
+        fig_height = 4.8 * nrows
+    fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, fig_height))
     axes = np.atleast_1d(axes).flatten()
 
     for ax, (title, ylabel, panel_idx, panel_groups) in zip(axes, metric_panels):
@@ -1523,7 +1568,12 @@ def make_component_benchmark_metric_boxplots(
         )
         ax.set_title(title)
         ax.set_ylabel(ylabel)
-        ax.tick_params(axis="x", rotation=0, labelsize=8)
+        ax.tick_params(
+            axis="x",
+            rotation=0,
+            labelsize=8,
+            pad=10 if stacked_vertical_benchmark else 4,
+        )
         if ylabel.endswith("(%)"):
             style_percent_boxplot_axis(ax)
         if "Reads" in ylabel:
@@ -1536,6 +1586,8 @@ def make_component_benchmark_metric_boxplots(
     fig.tight_layout()
     if benchmark_key == "variant_calling" and ncols > 1:
         fig.subplots_adjust(wspace=0.38, hspace=0.35, top=0.92)
+    if stacked_vertical_benchmark:
+        fig.subplots_adjust(hspace=0.45, top=0.92, bottom=0.1)
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
@@ -4025,6 +4077,7 @@ def collect_software_groups(
     comp_code: str,
     name_field: str,
     version_field: Optional[str] = None,
+    db_version_field: Optional[str] = None,
 ) -> Dict[tuple, List[Dict[str, Any]]]:
     groups = defaultdict(list)
 
@@ -4039,6 +4092,7 @@ def collect_software_groups(
             key = software_signature(
                 sb.get(name_field),
                 sb.get(version_field) if version_field else None,
+                sb.get(db_version_field) if db_version_field else None,
             )
             if key is None:
                 continue
@@ -4058,18 +4112,20 @@ def build_software_entries(
 ) -> List[Dict[str, Any]]:
     entries = []
 
-    for (name, version), records in groups.items():
+    for (name, version, database_version), records in groups.items():
         entry = {
             "name": name,
             "n_labs": len({r["lab_id"] for r in records}),
         }
         if version is not None:
             entry["version"] = version
+        if database_version is not None:
+            entry["database_version"] = database_version
 
         entry.update(metrics_builder(records))
         entries.append(entry)
 
-    return sorted(entries, key=lambda x: (x.get("name") or "", x.get("version") or ""))
+    return sorted(entries, key=lambda x: (x.get("name") or "", x.get("version") or "", x.get("database_version") or ""))
 
 
 def collect_metadata_completeness_by_component(labs: List[Dict[str, Any]]) -> Dict[str, List[float]]:
@@ -5448,6 +5504,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             comp_code,
             "clade_assignment_software_name",
             "clade_assignment_software_version",
+            "clade_assignment_software_database_version",
         )
 
         def build_clade_metrics(records):
@@ -5493,6 +5550,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 comp_code,
                 "lineage_assignment_software_name",
                 "lineage_assignment_software_version",
+                "lineage_assignment_database_version",
             )
 
             def build_lineage_metrics(records):
@@ -5538,6 +5596,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 comp_code,
                 "type_assignment_software_name",
                 None,
+                "type_assignment_software_database_version",
             )
 
             def build_type_metrics(records):
@@ -5583,6 +5642,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 comp_code,
                 "subtype_assignment_software_name",
                 "subtype_assignment_software_version",
+                "subtype_assignment_software_database_version",
             )
 
             def build_subtype_metrics(records):
