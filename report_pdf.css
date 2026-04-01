@@ -209,6 +209,20 @@ figure {
   page-break-inside: avoid;
 }
 
+figure.landscape-benchmark-figure {
+  break-before: page;
+  break-after: avoid;
+  page: landscape;
+  page-break-before: always;
+  page-break-after: avoid;
+}
+
+figure.landscape-benchmark-figure + p {
+  break-before: avoid;
+  page: landscape;
+  page-break-before: avoid;
+}
+
 img {
   break-after: avoid;
   break-inside: avoid;

@@ -1484,8 +1484,7 @@ def make_component_benchmark_metric_boxplots(
             "output_filename": "clade_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by clade assignment software",
             "panels": [
-                ("A. Clade concordance", "Clade concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("clade_match") is True else (0.0 if s.get("classification", {}).get("clade_match") is False else None)),
-                ("B. Clade discrepancy", "Clade discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("clade_match") is True else (100.0 if s.get("classification", {}).get("clade_match") is False else None)),
+                ("Clade concordance", "Clade concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("clade_match") is True else (0.0 if s.get("classification", {}).get("clade_match") is False else None)),
             ],
         },
         "lineage_assignment": {
