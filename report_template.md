@@ -20,6 +20,20 @@
 {% macro software_label(name, version=None, db_version=None) -%}
 {%- if name -%}{{ name }}{{ " (" ~ version ~ ")" if version else "" }}{{ "; DB " ~ db_version if db_version else "" }}{%- else -%}NA{%- endif -%}
 {%- endmacro %}
+{% macro discrepancy_label(key) -%}
+{%- set labels = {
+  "wrong_nt": "Wrong nucleotide",
+  "ambiguity2nt": "Ambiguity instead of nucleotide",
+  "nt2ambiguity": "Nucleotide instead of ambiguity",
+  "ns2nt": "Stretch of Ns instead of nucleotide stretch",
+  "nt2ns": "Nucleotide stretch instead of stretch of Ns",
+  "insertions": "Insertion relative to gold standard",
+  "deletions": "Deletion relative to gold standard",
+  "missing": "Missing variant",
+  "denovo": "De novo variant"
+} -%}
+{{ labels.get(key, key if key is not none else "NA") }}
+{%- endmacro %}
 
 {% set fig_counter = namespace(value=0) %}
 {% set table_counter = namespace(value=0) %}
@@ -829,7 +843,7 @@ Discrepancy type composition aggregated across all submitted consensus sequences
 | Insertion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.insertions.median }} | {{ comp_net.consensus.discrepancy_breakdown.insertions.min }}–{{ comp_net.consensus.discrepancy_breakdown.insertions.max }} |
 | Deletion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.deletions.median }} | {{ comp_net.consensus.discrepancy_breakdown.deletions.min }}–{{ comp_net.consensus.discrepancy_breakdown.deletions.max }} |
 
-The dominant discrepancy pattern observed in {{ comp_code }} was {{ comp_net.consensus.dominant_discrepancy_pattern }}.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.consensus.dominant_discrepancy_pattern) }}.
 
 Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
 
@@ -891,7 +905,7 @@ Discrepancy type composition (aggregated across all submitted variant calls for 
 | Missing expected variants | {{ comp_net.variant.discrepancy_breakdown.missing.median }} | {{ comp_net.variant.discrepancy_breakdown.missing.min }}–{{ comp_net.variant.discrepancy_breakdown.missing.max }} |
 | De novo variants | {{ comp_net.variant.discrepancy_breakdown.denovo.median }} | {{ comp_net.variant.discrepancy_breakdown.denovo.min }}–{{ comp_net.variant.discrepancy_breakdown.denovo.max }} |
 
-The dominant discrepancy pattern observed in {{ comp_code }} was {{ comp_net.variant.dominant_discrepancy_pattern }}.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}.
 
 Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
 
@@ -1034,7 +1048,7 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.dehosting %}
 ##### De-hosting software
 
-Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting softwares were reported for the {{ comp_code }} component.
+Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting software was reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Performance summary of declared de-hosting software for {{ comp_code }}.**
