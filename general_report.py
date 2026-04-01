@@ -1200,7 +1200,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                 plotted_data[idx] = plotted_values
                 outlier_annotations.append((idx + 1, outliers_above_limit[0]))
 
-        use_broken_identity_axis = panel_idx == 0 and comp_code in {"SARS1", "FLU1"}
+        use_broken_identity_axis = panel_idx == 0 and comp_code in {"SARS1", "FLU1", "FLU2"}
 
         if use_broken_identity_axis:
             original_spec = ax.get_subplotspec()
@@ -1591,6 +1591,7 @@ def make_component_benchmark_metric_boxplots(
         panel_y_limit = custom_panel_y_limits.get((benchmark_key, comp_code, panel_idx))
         plotted_panel_data = [list(values) for values in panel_data]
         panel_outlier_annotations = []
+        use_broken_identity_axis = benchmark_key == "assembly" and panel_idx == 1
 
         if panel_y_limit is not None:
             limit_mode, limit_min, limit_max = panel_y_limit
@@ -1617,6 +1618,81 @@ def make_component_benchmark_metric_boxplots(
 
                     plotted_panel_data[idx] = plotted_values
                     panel_outlier_annotations.append((idx + 1, outliers_above_limit[0]))
+
+        if use_broken_identity_axis:
+            original_spec = ax.get_subplotspec()
+            ax.remove()
+            inner_gs = original_spec.subgridspec(2, 1, height_ratios=[5.2, 0.8], hspace=0.09)
+            ax_upper = fig.add_subplot(inner_gs[0])
+            ax_lower = fig.add_subplot(inner_gs[1], sharex=ax_upper)
+
+            for subax in (ax_upper, ax_lower):
+                bp = subax.boxplot(
+                    plotted_panel_data,
+                    labels=panel_labels,
+                    showfliers=True,
+                    patch_artist=True,
+                )
+                style_boxplot(bp, [comp_code] * len(panel_labels), ax=subax)
+                add_component_boxplot_points(
+                    subax,
+                    bp,
+                    plotted_panel_data,
+                    list(range(1, len(panel_labels) + 1)),
+                    [comp_code] * len(panel_labels),
+                )
+                subax.set_xlim(0.5, len(panel_labels) + 0.5)
+
+            ax_lower.set_ylim(0, 5)
+            ax_upper.set_ylim(90, 102)
+            ax_lower.set_yticks([0, 5])
+            ax_upper.set_yticks([90, 95, 100])
+            ax_upper.spines["bottom"].set_visible(False)
+            ax_lower.spines["top"].set_visible(False)
+            ax_upper.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+            ax_lower.tick_params(axis="x", rotation=0, labelsize=8, pad=4)
+            ax_upper.set_title(title)
+            ax_upper.set_ylabel("")
+            ax_lower.set_ylabel("")
+
+            fig.tight_layout()
+
+            upper_pos = ax_upper.get_position()
+            lower_pos = ax_lower.get_position()
+            y_label_center = (upper_pos.y1 + lower_pos.y0) / 2.0 + 0.04
+            fig.text(
+                upper_pos.x0 - 0.03,
+                y_label_center,
+                ylabel,
+                rotation=90,
+                va="center",
+                ha="center",
+            )
+
+            slash_x = (-0.02, 0.02)
+            slash_y_offset = 0.1
+            slash_gap = 0.8
+            upper_transform = mtransforms.blended_transform_factory(ax_upper.transAxes, ax_upper.transData)
+
+            ax_upper.plot(
+                slash_x,
+                [89.5 - slash_y_offset + slash_gap / 2.0, 90 + slash_y_offset + slash_gap / 2.0],
+                transform=upper_transform,
+                color="#444444",
+                linewidth=1.5,
+                solid_capstyle="butt",
+                clip_on=False,
+            )
+            ax_upper.plot(
+                slash_x,
+                [89.5 - slash_y_offset - slash_gap / 2.0, 90 + slash_y_offset - slash_gap / 2.0],
+                transform=upper_transform,
+                color="#444444",
+                linewidth=1.5,
+                solid_capstyle="butt",
+                clip_on=False,
+            )
+            continue
 
         if benchmark_key == "variant_calling" and panel_idx == 0:
             mode_keys = ["high_and_low_freq", "low_freq_only", "high_freq_only"]
