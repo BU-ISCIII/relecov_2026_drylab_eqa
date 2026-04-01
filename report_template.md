@@ -650,6 +650,8 @@ Across components, lineage/type concordance was consistently higher than clade c
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
+Figure {{ fig_counter.value }} summarises the distribution of lineage/type and clade classification outcomes across participating laboratories and components.
+
 {{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.") }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the percentage of all possible sample-level classifications across participating laboratories for each component. Bars are partitioned into **Match** (correct assignments relative to the curated gold standard), **Discrepancy** (incorrect assignments), and **Not provided** (classification not reported).
@@ -765,10 +767,10 @@ Component-level analyses enable identification of platform-specific patterns, da
 
 #### 6.{{ loop.index }}.1. Participation and Submissions
 
-A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ comp_code }} component.
+A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ comp_code }} component:
 
-- {{ comp_net.total_fasta }} submitted consensus genome sequences (.fasta), where applicable.
-- {{ comp_net.total_vcf }} submitted variant call files (.vcf), where applicable.
+- A total of {{ comp_net.total_fasta }} consensus genome sequences (.fasta) were submitted.
+- A total of {{ comp_net.total_vcf }} variant call files (.vcf) were submitted.
 - The metadata template completeness for {{ comp_code }} submissions had a median of {{ pct(comp_net.metadata_completeness_median) }}.
 
 #### 6.{{ loop.index }}.2. Consensus Genome Reconstruction Performance
@@ -1012,8 +1014,10 @@ comp_net.qc.fig_qc_match_by_sample,
 ##### Bioinformatics protocol
 
 Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component.
-
 {% set table_counter.value = table_counter.value + 1 %}
+
+Table {{ table_counter.value }} summarises the performance of declared bioinformatics protocols for {{ comp_code }} across consensus, metadata completeness, and classification-related indicators.
+
 **Table {{ table_counter.value }}. Performance summary of declared bioinformatics protocols for {{ comp_code }}.**
 
 | Bioinformatics protocol | Version | N labs | Median genome identity (%) | Median discrepancies | Median metadata completeness (%) | Clade concordance (%) | Lineage/type concordance (%) |
@@ -1040,8 +1044,10 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 ##### De-hosting software
 
 Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting software was reported for the {{ comp_code }} component.
-
 {% set table_counter.value = table_counter.value + 1 %}
+
+Table {{ table_counter.value }} summarises the percentage of host reads observed across laboratories using each declared de-hosting software configuration for {{ comp_code }}.
+
 **Table {{ table_counter.value }}. Performance summary of declared de-hosting software for {{ comp_code }}.**
 
 | De-hosting software | Version | N labs | % Host reads |
@@ -1070,6 +1076,8 @@ Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metri
 Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the performance of declared pre-processing software configurations for {{ comp_code }} across sequencing depth and read filtering metrics.
+
 **Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.** The configuration column represents the most frequently reported parameter string among laboratories declaring that software and version.
 
 | Pre-processing software | Version | N labs | Most common configuration | Number of reads sequenced | Reads passing filters |
@@ -1098,6 +1106,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} distinct mapping software configurations were reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the declared mapping software configurations for {{ comp_code }}, together with the associated coverage threshold and percentage of viral reads when reported.
+
 **Table {{ table_counter.value }}. Performance summary of declared mapping software configurations for {{ comp_code }}.**
 
 | Mapping software | Version | N labs | Most common configuration | Depth of coverage threshold | % Reads virus |
@@ -1156,6 +1166,8 @@ Table {{ table_counter.value }} summarises the performance of declared assembly 
 Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the performance of declared consensus software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
+
 **Table {{ table_counter.value }}. Performance summary of declared consensus software configurations for {{ comp_code }}.**
 
 | Consensus software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
@@ -1184,6 +1196,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_number }} distinct variant calling software configurations were reported for the {{ comp_code }} component.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the performance of declared variant calling software configurations for {{ comp_code }}, including reporting mode distributions and the corresponding variant detection metrics.
+
 **Table {{ table_counter.value }}. Performance summary of declared variant calling software configurations for {{ comp_code }}.**
 
 {% if comp_code[:3] == "FLU" %}
@@ -1224,6 +1238,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and clade assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the concordance profile of declared clade assignment software configurations for {{ comp_code }}.
+
 **Table {{ table_counter.value }}. Performance summary of declared clade assignment software configurations for {{ comp_code }}.**
 
 | Clade assignment software | Version | N labs | Database version | % of clade match | % of clade discrepancy |
@@ -1252,6 +1268,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and lineage assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the concordance profile of declared lineage assignment software configurations for {{ comp_code }}.
+
 **Table {{ table_counter.value }}. Performance summary of declared lineage assignment software configurations for {{ comp_code }}.**
 
 | Lineage Assignment software | Version | N labs | Database version | % of lineage match | % of lineage discrepancy |
@@ -1280,6 +1298,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and type assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the concordance profile of declared type assignment software configurations for {{ comp_code }}.
+
 **Table {{ table_counter.value }}. Performance summary of declared type assignment software configurations for {{ comp_code }}.**
 
 | Type Assignment software | Version | N labs | Database version | % of type match | % of type discrepancy |
@@ -1309,6 +1329,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and subtype assignment database version when available.
 
 {% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} summarises the concordance profile of declared subtype assignment software configurations for {{ comp_code }}.
+
 **Table {{ table_counter.value }}. Performance summary of declared subtype assignment software configurations for {{ comp_code }}.**
 
 | Subtype Assignment software | Version | N labs | Database version | % of subtype match | % of subtype discrepancy |
