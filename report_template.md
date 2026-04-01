@@ -101,7 +101,7 @@ To this end, an **external quality assessment (EQA) exercise in dry lab format**
 
 A central component of this initiative was to evaluate the range of analytical pipelines used across the RELECOV Network, identify their relative performance, and determine which approaches were best suited to support a genomic surveillance standard within the network. This evaluation contributes directly to **Objective 2.1** of RELECOV 2.0, which focuses on _improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform_. Furthermore, the EQA provides the practical evidence base required for **Task T6.1**, which aims to  _identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians_, in order to define the workflow that should be integrated into the RELECOV analytical platform.
 
-The exercise was also aligned with **Milestone M6.3**, which pertains to _define sequencing and analysis protocols for each of the sequencing platforms_. In addition, the exercise informs the development of the RELECOV platform by providing operational insights critical to **Task T6.5**, which addresses _the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network_. This exercise (TODO re-escribir estos parrafos bien) also helps with **Task T6.4** for the _sequence metadata annotation with ontologies, schema generation, parsing and validation_.
+The exercise was also aligned with **Milestone M6.3**, which pertains to _define sequencing and analysis protocols for each of the sequencing platforms_. In addition, the exercise provided operational insights relevant to **Task T6.5**, which addresses _the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network_. It also contributed to **Task T6.4**, related to _sequence metadata annotation with ontologies, schema generation, parsing and validation_, by highlighting practical issues affecting metadata completeness, controlled-vocabulary use, and the consistency of reported analytical parameters.
 
 The overall objective of the exercise was to **assess the bioinformatic performance of the participating laboratories, identify areas for improvement, and promote the adoption of consistent and comparable analytical practices across the network**. The outcomes presented in this report strengthen RELECOV’s preparedness and response capacity in routine surveillance and public health emergencies, support the quality and robustness of genomic analyses performed throughout the network, and contribute directly to the fulfilment of key project objectives, milestones and deliverables.
 
@@ -550,7 +550,6 @@ Dominant discrepancy patterns differed by component:
 - In SARS2, the most frequent discrepancy category was defined nucleotides in the submitted consensus where stretches of Ns were present in the gold standard.
 - FLU1 and FLU2 were both dominated by deletions relative to the gold standard.
 
-These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria. (TODO IF YOU SEPARATED DISCUSSION THIS WOULD BE DISCUSSION)
 
 Across components, many discrepancy categories had medians of zero, indicating that errors tended to be concentrated in a smaller number of laboratories or samples rather than being uniformly distributed across the network.
 
@@ -1337,6 +1336,9 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 ## 7. Discussion
 
 The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions.
+
+Lista de IDEAS:
+These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria.
 
 ### 7.1. Consensus Genome Reconstruction
 
