@@ -590,7 +590,7 @@ Variant evaluation included structural reporting characteristics and methodologi
 - {{ general.general_results.sars_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
 - {{ general.general_results.sars_variants.high_freq_only_pct }} reported only high-frequency variants.
 
-Additionally, a total of {{ general.general_results.sars_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components.
+Additionally, a total of {{ general.general_results.sars_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components ({{ general.general_results.sars_variants.distinct_references | join(", ") }}).
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
