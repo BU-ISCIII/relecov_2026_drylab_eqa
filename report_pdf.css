@@ -113,7 +113,7 @@ blockquote {
 table {
   border-collapse: collapse;
   font-size: 8.5pt;
-  page-break-inside: avoid;
+  page-break-inside: auto;
   table-layout: fixed;
   width: 100%;
 }
@@ -122,14 +122,20 @@ thead {
   display: table-header-group;
 }
 
+tbody {
+  display: table-row-group;
+}
+
 tbody tr:nth-child(even) {
   background: #fbfcfe;
 }
 
 th, td {
   border: 1px solid var(--line);
+  break-inside: avoid;
   overflow-wrap: anywhere;
   padding: 0.36rem 0.44rem;
+  page-break-inside: avoid;
   text-align: left;
   vertical-align: top;
   word-break: break-word;
@@ -140,6 +146,23 @@ th {
   color: var(--brand);
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-weight: 700;
+}
+
+.table-block {
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.table-block > p:first-child {
+  break-after: avoid;
+  margin-bottom: 0.3rem;
+  page-break-after: avoid;
+}
+
+.table-block > table {
+  break-before: avoid;
+  margin-top: 0;
+  page-break-before: avoid;
 }
 
 .landscape-section {

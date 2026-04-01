@@ -261,12 +261,14 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
         if column_count > 6:
             table_with_class = table_html.replace("<table>", '<table class="wide-table">', 1)
             caption_html = match.group("header") or ""
-            return f'<div class="landscape-section">{caption_html}{table_with_class}</div>'
-        return match.group(0)
+            return f'<div class="table-block landscape-section">{caption_html}{table_with_class}</div>'
+        if match.group("header"):
+            return f'<div class="table-block">{match.group("header")}{table_html}</div>'
+        return table_html
 
     html_text = table_pattern.sub(replace_table, html_text)
     html_text = re.sub(
-        r'</div>\s*<div class="landscape-section">',
+        r'</div>\s*<div class="table-block landscape-section">',
         "",
         html_text,
         flags=re.DOTALL,
