@@ -1397,6 +1397,9 @@ def make_component_benchmark_metric_boxplots(
     figures_dir: str | Path,
     benchmark_key: str,
 ) -> Optional[str]:
+    custom_panel_y_limits = {
+        ("assembly", "SARS1", 0): ("low", 29400.0, 30000.0),
+    }
     variant_calling_panels = (
         [
             ("A. Allele frequency patterns", "Number of different allele frequency patterns", lambda s: extract_variant_reporting_mode_pct(s, "high_and_low_freq")),
@@ -1585,6 +1588,35 @@ def make_component_benchmark_metric_boxplots(
     for ax, (title, ylabel, panel_idx, panel_groups) in zip(axes, metric_panels):
         panel_labels = [group["label"] for group in panel_groups]
         panel_data = [group["panels"][panel_idx] for group in panel_groups]
+        panel_y_limit = custom_panel_y_limits.get((benchmark_key, comp_code, panel_idx))
+        plotted_panel_data = [list(values) for values in panel_data]
+        panel_outlier_annotations = []
+
+        if panel_y_limit is not None:
+            limit_mode, limit_min, limit_max = panel_y_limit
+            for idx, values in enumerate(panel_data):
+                if limit_mode == "low":
+                    outliers_below_limit = sorted([value for value in values if value < limit_min])
+                    if not outliers_below_limit:
+                        continue
+
+                    plotted_values = [value for value in values if value >= limit_min]
+                    if not plotted_values:
+                        continue
+
+                    plotted_panel_data[idx] = plotted_values
+                    panel_outlier_annotations.append((idx + 1, outliers_below_limit[0]))
+                else:
+                    outliers_above_limit = sorted([value for value in values if value > limit_max], reverse=True)
+                    if not outliers_above_limit:
+                        continue
+
+                    plotted_values = [value for value in values if value <= limit_max]
+                    if not plotted_values:
+                        continue
+
+                    plotted_panel_data[idx] = plotted_values
+                    panel_outlier_annotations.append((idx + 1, outliers_above_limit[0]))
 
         if benchmark_key == "variant_calling" and panel_idx == 0:
             mode_keys = ["high_and_low_freq", "low_freq_only", "high_freq_only"]
@@ -1631,7 +1663,7 @@ def make_component_benchmark_metric_boxplots(
             continue
 
         bp = ax.boxplot(
-            panel_data,
+            plotted_panel_data,
             labels=panel_labels,
             showfliers=True,
             patch_artist=True,
@@ -1640,7 +1672,7 @@ def make_component_benchmark_metric_boxplots(
         add_component_boxplot_points(
             ax,
             bp,
-            panel_data,
+            plotted_panel_data,
             list(range(1, len(panel_labels) + 1)),
             [comp_code] * len(panel_labels),
         )
@@ -1654,6 +1686,17 @@ def make_component_benchmark_metric_boxplots(
         )
         if ylabel.endswith("(%)"):
             style_percent_boxplot_axis(ax)
+        elif panel_y_limit is not None:
+            limit_mode, limit_min, limit_max = panel_y_limit
+            ax.set_ylim(limit_min, limit_max)
+            outlier_color = COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"])
+            annotate_outlier_caps(
+                ax,
+                panel_outlier_annotations,
+                limit_min if limit_mode == "low" else limit_max,
+                outlier_color,
+                direction=limit_mode,
+            )
         if "Reads" in ylabel:
             ax.ticklabel_format(axis="y", style="plain", useOffset=False)
 
@@ -2388,13 +2431,24 @@ def add_boxplot_points(
 def annotate_outlier_caps(
     ax: Any,
     annotations: List[tuple[float, float]],
-    y_upper: float,
+    y_anchor: float,
     color: str,
+    direction: str = "high",
 ) -> None:
+    y_min, y_max = ax.get_ylim()
+    y_range = y_max - y_min
     for x_pos, display_value in annotations:
+        if direction == "low":
+            y_star = y_min + y_range * 0.08
+            y_text = y_min + y_range * 0.16
+            va = "bottom"
+        else:
+            y_star = y_max - y_range * 0.05
+            y_text = y_max - y_range * 0.11
+            va = "top"
         ax.text(
             x_pos,
-            y_upper * 0.95,
+            y_star,
             "*",
             ha="center",
             va="center",
@@ -2404,10 +2458,10 @@ def annotate_outlier_caps(
         )
         ax.text(
             x_pos,
-            y_upper * 0.91,
+            y_text,
             f"Outlier:\n{display_value:g}",
             ha="center",
-            va="top",
+            va=va,
             fontsize=9,
             color=color,
             fontweight="bold",
