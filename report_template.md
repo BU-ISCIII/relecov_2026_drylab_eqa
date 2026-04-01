@@ -1694,7 +1694,7 @@ Only metrics explicitly provided by the laboratory are included in the comparati
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 {% set ns = (general.components[comp_code].qc.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) -%}
 | {{ collecting_lab_sample_id }} | {{ s.qc_test if s.qc_test is not none else "NA" }} | {{ ns.gold_standard_qc if ns else "NA" }} | {{ pct(ns.match_rate_pct) if ns and ns.match_rate_pct is not none else "NA" }} |
-{% endfor -%}
+{% endfor %}
 
 Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.
 
@@ -1748,16 +1748,14 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 | Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
 |---|---:|---:|---:|
 {% for metric_key, metric_label in metadata_metric_labels.items() -%}
-{% if m.get(metric_key) is not none -%}
-| {{ metric_label }} | {{ m[metric_key] }} | {{ ns[metric_key].median if ns and ns.get(metric_key) else "NA" }} | {{ ns[metric_key].min if ns and ns.get(metric_key) else "NA" }} - {{ ns[metric_key].max if ns and ns.get(metric_key) else "NA" }} |
-{% endif -%}
-{% endfor -%}
+| {{ metric_label }} | {{ m[metric_key] if m.get(metric_key) is not none else "NA" }} | {{ ns[metric_key].median if ns and ns.get(metric_key) else "NA" }} | {{ ns[metric_key].min if ns and ns.get(metric_key) else "NA" }} - {{ ns[metric_key].max if ns and ns.get(metric_key) else "NA" }} |
+{% endfor %}
 
 Table {{ table_counter.value }} contextualises laboratory-reported analytical parameters relative to the distribution of values observed across the RELECOV network for the same sample.
 
-{% endif -%}
-{% endif -%}
-{% endfor -%}
+{% endif %}
+{% endif %}
+{% endfor %}
 
 {% set metadata_metrics_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/metadata_metrics_panel.png" %}
 {% if metadata_metrics_reported.count > 0 and path_exists(metadata_metrics_panel_path) %}
