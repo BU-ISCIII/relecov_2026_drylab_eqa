@@ -3907,42 +3907,42 @@ def make_lab_variant_metadata_vs_vcf_distribution_plot(
         panel_specs = [
             (
                 "A. Reported variants (AF >=75%)",
-                "Reported variants (AF >=75%)",
+                "Number of reported variants",
                 lambda s: s.get("variants", {}).get("number_of_variants_in_consensus"),
                 None,
                 False,
             ),
             (
-                "B. Variants in VCF (AF >=75%)",
-                "Variants in VCF (AF >=75%)",
-                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus_vcf"),
-                None,
-                False,
-            ),
-            (
-                "C. Variants with effect",
-                "Variants with effect",
+                "B. Reported variants with effect",
+                "Number of reported variants",
                 lambda s: s.get("variants", {}).get("number_of_variants_with_effect"),
                 None,
                 False,
             ),
             (
-                "D. Variants with effect in VCF",
-                "Variants with effect in VCF",
+                "C. Variants in VCF (AF >=75%)",
+                "Number of variants",
+                lambda s: s.get("variants", {}).get("number_of_variants_in_consensus_vcf"),
+                None,
+                False,
+            ),
+            (
+                "D. Variants with effect VCF",
+                "Number of variants",
                 lambda s: s.get("variants", {}).get("number_of_variants_with_effect_vcf"),
                 None,
                 False,
             ),
             (
-                "E. Metadata-VCF discrepancies",
-                "Metadata-VCF discrepancies",
+                "E. Metadata-VCF discrepancies (AF >=75%)",
+                "Number of metadata-VCF discrepancies",
                 lambda s: s.get("variants", {}).get("discrepancies_in_reported_variants"),
                 None,
                 False,
             ),
             (
-                "F. Effect discrepancies",
-                "Effect discrepancies",
+                "F. Metadata-VCF discrepancies variants with effect",
+                "Number of metadata-VCF discrepancies",
                 lambda s: s.get("variants", {}).get("discrepancies_in_reported_variants_effect"),
                 None,
                 False,
@@ -4521,6 +4521,17 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if not participating_labs:
             continue
 
+        workflow_total_discrepancies_per_lab = [
+            safe_number(lab["components"][comp_code].get("total_number_discrepancies_consensus"))
+            for lab in participating_labs
+            if safe_number(lab["components"][comp_code].get("total_number_discrepancies_consensus")) is not None
+        ]
+        workflow_median_identity_per_lab = [
+            safe_number(lab["components"][comp_code].get("median_genome_identity_pct"))
+            for lab in participating_labs
+            if safe_number(lab["components"][comp_code].get("median_genome_identity_pct")) is not None
+        ]
+
         comp_obj = {
             "name": f'{comp_expected.get("virus")}, {comp_expected.get("sequencing_instrument_platform")}',
             "total_labs": len(participating_labs),
@@ -4537,6 +4548,12 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "metadata_completeness_max_pct": max_or_none(
                 [lab["components"][comp_code].get("metadata", {}).get("completeness_pct") for lab in participating_labs]
             ),
+            "workflow_total_discrepancies_median": median_or_none(workflow_total_discrepancies_per_lab),
+            "workflow_total_discrepancies_min": min_or_none(workflow_total_discrepancies_per_lab),
+            "workflow_total_discrepancies_max": max_or_none(workflow_total_discrepancies_per_lab),
+            "workflow_median_identity_pct_median": median_or_none(workflow_median_identity_per_lab),
+            "workflow_median_identity_pct_min": min_or_none(workflow_median_identity_per_lab),
+            "workflow_median_identity_pct_max": max_or_none(workflow_median_identity_per_lab),
         }
 
         consensus_vals = []
