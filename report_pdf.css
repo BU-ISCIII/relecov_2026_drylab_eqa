@@ -45,11 +45,17 @@ h1 {
   padding-bottom: 0.18em;
 }
 
-h2 {
+h2:not(#table-of-contents) {
   border-bottom: 1px solid var(--line);
   break-before: page;
   font-size: 15pt;
   page-break-before: always;
+  padding-bottom: 0.15em;
+}
+
+h2#table-of-contents {
+  border-bottom: 1px solid var(--line);
+  font-size: 15pt;
   padding-bottom: 0.15em;
 }
 
@@ -192,26 +198,35 @@ th {
 
 figure {
   background: white;
+  break-inside: avoid;
   border: 1px solid #dbe3ea;
   border-radius: 6px;
   margin-left: 0;
   margin-right: 0;
+  page-break-after: avoid;
+  page-break-before: avoid;
   padding: 0.7rem 0.8rem 0.45rem;
   page-break-inside: avoid;
 }
 
 img {
+  break-after: avoid;
+  break-inside: avoid;
   display: block;
   height: auto;
   margin: 0 auto;
   max-width: 100%;
+  page-break-after: avoid;
+  page-break-inside: avoid;
 }
 
 figcaption {
+  break-before: avoid;
   color: var(--muted);
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 8.8pt;
   margin-top: 0.45rem;
+  page-break-before: avoid;
 }
 
 .equation {
