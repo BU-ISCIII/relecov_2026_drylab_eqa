@@ -824,7 +824,7 @@ def make_component_typing_outcome_stacked_bar_by_sample(
             label="Not provided",
         )
         ax.set_xticks(x_positions)
-        ax.set_xticklabels(sample_names, rotation=45, ha="right")
+        ax.set_xticklabels(sample_names, rotation=0, ha="center")
         ax.set_xlabel("Sample")
         ax.set_ylim(0, 100)
         ax.set_title(title)
@@ -957,7 +957,7 @@ def make_component_qc_match_by_sample_plot(
         label="Discrepancy",
     )
 
-    plt.xticks(x_positions, sample_names, rotation=45, ha="right")
+    plt.xticks(x_positions, sample_names, rotation=0, ha="center")
     plt.xlabel("Sample")
     plt.ylabel("QC evaluations (%)")
     plt.ylim(0, 100)
@@ -1725,7 +1725,7 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
     plt.xlabel("Sample")
     plt.ylabel("Consensus discrepancies")
     plt.title(f"{comp_code} consensus discrepancies by sample")
-    plt.xticks(rotation=45, ha="right")
+    plt.xticks(rotation=0, ha="center")
 
     plt.ylim(0, y_upper)
 
@@ -1823,7 +1823,7 @@ def make_component_consensus_discrepancies_stacked_by_sample(
         )
         bottoms = [bottom + value for bottom, value in zip(bottoms, values)]
 
-    plt.xticks(x_positions, sample_names, rotation=45, ha="right")
+    plt.xticks(x_positions, sample_names, rotation=0, ha="center")
     plt.xlabel("Sample")
     plt.ylabel("Total consensus discrepancies")
     plt.title(f"{comp_code} consensus discrepancy types by sample")
@@ -2028,7 +2028,7 @@ def make_component_variant_discrepancies_stacked_by_sample(
         frameon=False,
     )
 
-    plt.xticks(x_positions, sample_names, rotation=45, ha="right")
+    plt.xticks(x_positions, sample_names, rotation=0, ha="center")
     plt.xlabel("Sample")
     plt.ylabel("Total variant discrepancies")
     plt.title(f"{comp_code} variant discrepancy types by sample")
