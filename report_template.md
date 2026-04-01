@@ -1119,8 +1119,10 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 ##### Assembly software
 
 Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
-
 {% set table_counter.value = table_counter.value + 1 %}
+
+Table {{ table_counter.value }} summarises the performance of declared assembly software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
+
 **Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
 
 | Assembly software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
@@ -1464,19 +1466,6 @@ Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}**
 
 The metrics presented in Table {{ table_counter.value }} summarise overall sequence similarity and discrepancy burden relative to the curated gold standard reference for {{ labdata.lab.lab_cod }} compared to the Network's median.
 
-### Discrepancy type breakdown per sample
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
-
-**Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
-
-| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total nucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
-|---|---:|---:|---:|---:|---:|---:|---:|
-{% for collecting_lab_sample_id, s in comp.samples.items() -%}
-| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
-{% endfor %}
-
 {% set consensus_distribution_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/consensus_distribution_panel.png" %}
 {% if path_exists(consensus_distribution_panel_path) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1490,6 +1479,19 @@ Figure {{ fig_counter.value }} illustrates the distribution of consensus discrep
 
 **Figure {{ fig_counter.value }}. Consensus reconstruction performance across participating laboratories ({{ comp_code }}).** Panel A shows the distribution of total consensus discrepancies per sample relative to the curated gold standard across the RELECOV network. Panel B shows the corresponding distribution of genome identity values per sample. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 {% endif %}
+
+### Discrepancy type breakdown per sample
+
+{% set table_counter.value = table_counter.value + 1 %}
+Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
+
+**Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
+
+| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total nucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for collecting_lab_sample_id, s in comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
+{% endfor %}
 
 {% set consensus_breakdown_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/consensus_discrepancy_breakdown_by_sample.png" %}
 {% if path_exists(consensus_breakdown_path) %}
