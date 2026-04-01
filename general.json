@@ -40,7 +40,12 @@
       "high_and_low_freq_pct": 66.67,
       "low_freq_only_pct": 0.0,
       "high_freq_only_pct": 33.33,
-      "total_distinct_references": 3
+      "total_distinct_references": 3,
+      "distinct_references": [
+        "MN908947.3",
+        "NC_045512.2",
+        "XBB REFERENCE GENOME"
+      ]
     },
     "influenza_variants": {
       "high_and_low_freq_pct": 50.68,
@@ -117,6 +122,12 @@
       "metadata_completeness_median": 55.8111,
       "metadata_completeness_min_pct": 23.5521,
       "metadata_completeness_max_pct": 100.0,
+      "workflow_total_discrepancies_median": 112.0,
+      "workflow_total_discrepancies_min": 74.0,
+      "workflow_total_discrepancies_max": 161.0,
+      "workflow_median_identity_pct_median": 99.6905,
+      "workflow_median_identity_pct_min": 99.5547,
+      "workflow_median_identity_pct_max": 99.7388,
       "consensus": {
         "median_identity": 99.5914,
         "median_discrepancies": 4.5,
@@ -2267,6 +2278,12 @@
       "metadata_completeness_median": 56.4516,
       "metadata_completeness_min_pct": 16.3793,
       "metadata_completeness_max_pct": 93.0876,
+      "workflow_total_discrepancies_median": 46.5,
+      "workflow_total_discrepancies_min": 11.0,
+      "workflow_total_discrepancies_max": 136.0,
+      "workflow_median_identity_pct_median": 99.6436,
+      "workflow_median_identity_pct_min": 99.4591,
+      "workflow_median_identity_pct_max": 99.9966,
       "consensus": {
         "median_identity": 99.7923,
         "median_discrepancies": 8.0,
@@ -4301,6 +4318,12 @@
       "metadata_completeness_median": 53.6638,
       "metadata_completeness_min_pct": 25.0,
       "metadata_completeness_max_pct": 88.2591,
+      "workflow_total_discrepancies_median": 74.0,
+      "workflow_total_discrepancies_min": 31.0,
+      "workflow_total_discrepancies_max": 544.0,
+      "workflow_median_identity_pct_median": 96.11,
+      "workflow_median_identity_pct_min": 92.912,
+      "workflow_median_identity_pct_max": 98.2127,
       "consensus": {
         "median_identity": 96.0697,
         "median_discrepancies": 21.0,
@@ -5972,6 +5995,12 @@
       "metadata_completeness_median": 55.4515,
       "metadata_completeness_min_pct": 7.1429,
       "metadata_completeness_max_pct": 87.1429,
+      "workflow_total_discrepancies_median": 155.5,
+      "workflow_total_discrepancies_min": 34.0,
+      "workflow_total_discrepancies_max": 3647.0,
+      "workflow_median_identity_pct_median": 95.8026,
+      "workflow_median_identity_pct_min": 0.0683,
+      "workflow_median_identity_pct_max": 96.54,
       "consensus": {
         "median_identity": 95.7331,
         "median_discrepancies": 20.0,
