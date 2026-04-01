@@ -9,10 +9,10 @@
 {% macro pct(x, decimals=1) -%}
   {{ "%.{}f".format(decimals)|format(x) }}%
 {%- endmacro %}
-{% macro render_figure(path, caption=None, figure_class=None) -%}
+{% macro render_figure(path, caption=None, figure_class=None, has_panels=False) -%}
 {% if path -%}
 <figure{% if figure_class %} class="{{ figure_class }}"{% endif %}>
-<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="max-width: 90%;"/>
+<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="max-width: {{ '100%' if has_panels else '80%' }};"/>
 {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
 </figure>
 {%- endif %}
@@ -652,7 +652,7 @@ Across components, lineage/type concordance was consistently higher than clade c
 
 Figure {{ fig_counter.value }} summarises the distribution of lineage/type and clade classification outcomes across participating laboratories and components.
 
-{{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.") }}
+{{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.", has_panels=True) }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the percentage of all possible sample-level classifications across participating laboratories for each component. Bars are partitioned into **Match** (correct assignments relative to the curated gold standard), **Discrepancy** (incorrect assignments), and **Not provided** (classification not reported).
 
@@ -794,7 +794,8 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 {% set fig_counter.value = fig_counter.value + 1 %}
 {{ render_figure(
   comp_net.consensus.fig_discrepancies_boxplot_by_sample,
-  "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
+  "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard.",
+  has_panels=False
 ) }}
 
 
@@ -1035,7 +1036,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.bioinformatics_protocol.fig_metric_boxplots,
   "Distribution of performance metrics by pipeline configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.bioinformatics_protocol.n_plot_groups | default(comp_net.benchmarking.bioinformatics_protocol.total_number)) >= 6 and (comp_net.benchmarking.bioinformatics_protocol.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.bioinformatics_protocol.n_plot_groups | default(comp_net.benchmarking.bioinformatics_protocol.total_number)) >= 6 and (comp_net.benchmarking.bioinformatics_protocol.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B discrepancy counts, Panel C metadata completeness (%), and Panel D exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a broken y-axis to preserve visual resolution at high genome identity values while still displaying low-identity observations. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1097,7 +1099,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.preprocessing.fig_metric_boxplots,
   "Distribution of performance metrics by pre-processing software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.preprocessing.n_plot_groups | default(comp_net.benchmarking.preprocessing.total_number)) >= 6 and (comp_net.benchmarking.preprocessing.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.preprocessing.n_plot_groups | default(comp_net.benchmarking.preprocessing.total_number)) >= 6 and (comp_net.benchmarking.preprocessing.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pre-processing software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1149,7 +1152,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.assembly.fig_metric_boxplots,
   "Distribution of performance metrics by assembly software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.assembly.n_plot_groups | default(comp_net.benchmarking.assembly.total_number)) >= 6 and (comp_net.benchmarking.assembly.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.assembly.n_plot_groups | default(comp_net.benchmarking.assembly.total_number)) >= 6 and (comp_net.benchmarking.assembly.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a broken y-axis, with a short lower segment (`0-5%`) and an expanded upper segment (`90-100%`), to preserve visual resolution at high genome identity values while still displaying low-identity observations.
@@ -1190,7 +1194,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.consensus_software.fig_metric_boxplots,
   "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.consensus_software.n_plot_groups | default(comp_net.benchmarking.consensus_software.total_number)) >= 6 and (comp_net.benchmarking.consensus_software.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.consensus_software.n_plot_groups | default(comp_net.benchmarking.consensus_software.total_number)) >= 6 and (comp_net.benchmarking.consensus_software.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a broken y-axis, with a short lower segment (`0-5%`) and an expanded upper segment (`90-100%`), to preserve visual resolution at high genome identity values while still displaying low-identity observations.
@@ -1229,7 +1234,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.variant_calling.fig_metric_boxplots,
   "Distribution of performance metrics by variant calling software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.variant_calling.n_plot_groups | default(comp_net.benchmarking.variant_calling.total_number)) >= 6 and (comp_net.benchmarking.variant_calling.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.variant_calling.n_plot_groups | default(comp_net.benchmarking.variant_calling.total_number)) >= 6 and (comp_net.benchmarking.variant_calling.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 {% if comp_code[:3] == "FLU" %}
@@ -1295,7 +1301,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.lineage_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by lineage assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.lineage_assignment.n_plot_groups | default(comp_net.benchmarking.lineage_assignment.total_number)) >= 6 and (comp_net.benchmarking.lineage_assignment.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.lineage_assignment.n_plot_groups | default(comp_net.benchmarking.lineage_assignment.total_number)) >= 6 and (comp_net.benchmarking.lineage_assignment.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared lineage assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. Panel A displays the % of lineage matches and Panel B the % of lineage discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1326,7 +1333,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.type_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by type assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.type_assignment.n_plot_groups | default(comp_net.benchmarking.type_assignment.total_number)) >= 6 and (comp_net.benchmarking.type_assignment.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.type_assignment.n_plot_groups | default(comp_net.benchmarking.type_assignment.total_number)) >= 6 and (comp_net.benchmarking.type_assignment.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared type assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. Panel A displays the % of type matches and Panel B the % of type discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1358,7 +1366,8 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {{ render_figure(
   comp_net.benchmarking.subtype_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by subtype assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.subtype_assignment.n_plot_groups | default(comp_net.benchmarking.subtype_assignment.total_number)) >= 6 and (comp_net.benchmarking.subtype_assignment.panel_count | default(99)) <= 4) else None
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.subtype_assignment.n_plot_groups | default(comp_net.benchmarking.subtype_assignment.total_number)) >= 6 and (comp_net.benchmarking.subtype_assignment.panel_count | default(99)) <= 4) else None,
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared subtype assignment software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. Panel A displays the % of subtype matches and Panel B the % of subtype discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1621,7 +1630,8 @@ Figure {{ fig_counter.value }} illustrates the distribution of influenza-specifi
 
 {{ render_figure(
   variant_metrics_path,
-  comp_code ~ ": distribution of variant reporting metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
+  comp_code ~ ": distribution of variant reporting metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
+  has_panels=True
 ) }}
 
 {% if comp_code in ["SARS1", "SARS2"] %}
@@ -1655,7 +1665,8 @@ Figure {{ fig_counter.value }} presents the distribution of classification outco
 
 {{ render_figure(
   classification_concordance_path,
-  comp_code ~ ": lineage/type and clade classification outcomes across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
+  comp_code ~ ": lineage/type and clade classification outcomes across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
+  has_panels=True
 ) }}
 
 **_Figure {{ fig_counter.value }}_. Lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Panel A shows the proportion of Match, Discrepancy, and Not provided outcomes for lineage/type assignments across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Stacked bars represent the percentage of laboratories with correct classifications, incorrect classifications, or missing classifications relative to the curated gold standard. The black diamond marks the result reported by **{{ labdata.lab.lab_cod }}**, positioned within the Match, Discrepancy, or Not provided segment for each sample.
@@ -1713,7 +1724,8 @@ Figure {{ fig_counter.value }} illustrates the position of the workflow declared
 
 {{ render_figure(
   workflow_positioning_path,
-  comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond."
+  comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond.",
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.** Multi-panel boxplots summarise the laboratory-level distribution across the network for Panel A total consensus discrepancies, Panel B median genome identity, Panel C total classification matches, and Panel D metadata completeness. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
@@ -1807,7 +1819,8 @@ Figure {{ fig_counter.value }} illustrates the distribution of metadata-derived 
 
 {{ render_figure(
   metadata_metrics_panel_path,
-  comp_code ~ ": distribution of metadata-derived analytical metrics across the network per sample; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
+  comp_code ~ ": distribution of metadata-derived analytical metrics across the network per sample; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
+  has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of metadata-derived analytical metrics across participating laboratories ({{ comp_code }}).**
