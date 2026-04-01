@@ -1033,7 +1033,7 @@ def format_software_label(name: Any, version: Any, database_version: Any = None)
 
     if "custom" not in name_lower and clean_database_version is not None:
         formatted_database_version = clean_database_version.replace(",", ",\n")
-        label = f"{label}\nDB version: {formatted_database_version}"
+        label = f"{label}\nDB version:\n{formatted_database_version}"
     return label
 
 
@@ -1252,7 +1252,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                 ha="center",
             )
 
-            slash_x = (-0.02, 0.02)
+            slash_x = (-0.01, 0.01)
             slash_y_offset = 0.1
             slash_gap = 0.8
             upper_transform = mtransforms.blended_transform_factory(ax_upper.transAxes, ax_upper.transData)
@@ -1579,7 +1579,7 @@ def make_component_benchmark_metric_boxplots(
         fig_width = max(18, max_groups_in_panel * 2.3)
         fig_height = 5.2 * nrows
     else:
-        fig_width = max(14, max_groups_in_panel * 2.1)
+        fig_width = max(14, max_groups_in_panel * 1.5)
         fig_height = 4.8 * nrows
     fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, fig_height))
     axes = np.atleast_1d(axes).flatten()
@@ -1675,7 +1675,7 @@ def make_component_benchmark_metric_boxplots(
                 ha="center",
             )
 
-            slash_x = (-0.02, 0.02)
+            slash_x = (-0.01, 0.01)
             slash_y_offset = 0.1
             slash_gap = 0.8
             upper_transform = mtransforms.blended_transform_factory(ax_upper.transAxes, ax_upper.transData)
@@ -2095,9 +2095,12 @@ def make_component_consensus_discrepancy_type_boxplot(
     if not data:
         return str(output_path)
 
-    plt.figure(figsize=(max(9, len(labels) * 1.35), 6))
+    positions = [1 + idx * 1.3 for idx in range(len(labels))]
+
+    plt.figure(figsize=(max(10, len(labels) * 1.65), 6))
     bp = plt.boxplot(
         data,
+        positions=positions,
         labels=labels,
         showfliers=True,
         patch_artist=True,
@@ -2126,11 +2129,12 @@ def make_component_consensus_discrepancy_type_boxplot(
         plt.gca(),
         bp,
         data,
-        list(range(1, len(labels) + 1)),
+        positions,
         [CONSENSUS_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]) for key in used_keys],
     )
 
-    plt.xticks(rotation=20, ha="center")
+    plt.xlim(min(positions) - 0.7, max(positions) + 0.7)
+    plt.xticks(rotation=0, ha="center")
     plt.xlabel("Discrepancy type")
     plt.ylabel("Number of discrepancies per sample")
     plt.title(f"{comp_code} consensus discrepancy types")
@@ -4418,6 +4422,14 @@ def build_software_entries(
     return sorted(entries, key=lambda x: (x.get("name") or "", x.get("version") or "", x.get("database_version") or ""))
 
 
+def count_plot_groups(entries: List[Dict[str, Any]], metric_keys: List[str]) -> int:
+    count = 0
+    for entry in entries:
+        if any(entry.get(key) is not None for key in metric_keys):
+            count += 1
+    return count
+
+
 def collect_metadata_completeness_by_component(labs: List[Dict[str, Any]]) -> Dict[str, List[float]]:
     """
     Collect sample-level metadata completeness percentages grouped by component.
@@ -5469,6 +5481,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["bioinformatics_protocol"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["median_identity_pct", "median_discrepancies", "median_metadata_completeness_pct", "clade_hit_pct", "lineage_hit_pct"]),
+                "panel_count": 4,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/bioinformatics_protocol_metric_boxplots_by_pipeline.png",
             }
@@ -5498,6 +5512,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["dehosting"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["per_reads_host"]),
+                "panel_count": 1,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/dehosting_metric_boxplots_by_pipeline.png",
             }
@@ -5541,6 +5557,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["preprocessing"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["number_of_reads_sequenced", "pass_reads"]),
+                "panel_count": 2,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/preprocessing_metric_boxplots_by_pipeline.png",
             }
@@ -5587,6 +5605,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["mapping"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["per_reads_virus"]),
+                "panel_count": 1,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/mapping_metric_boxplots_by_pipeline.png",
             }
@@ -5638,6 +5658,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["assembly"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["consensus_genome_length", "median_identity_pct", "median_discrepancies"]),
+                "panel_count": 3,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/assembly_metric_boxplots_by_pipeline.png",
             }
@@ -5689,6 +5711,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["consensus_software"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["consensus_genome_length", "median_identity_pct", "median_discrepancies"]),
+                "panel_count": 3,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/consensus_metric_boxplots_by_pipeline.png",
             }
@@ -5799,6 +5823,24 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["variant_calling"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(
+                    entries,
+                    [
+                        "high_and_low_freq_pct",
+                        "high_freq_only_pct",
+                        "low_freq_only_pct",
+                        "number_of_variants_in_consensus",
+                        "number_of_variants_in_consensus_vcf",
+                        "number_of_variants_with_effect",
+                        "discrepancies_in_reported_variants",
+                        "number_of_variants_with_effect_vcf",
+                        "discrepancies_in_reported_variants_effect",
+                        "successful_hits",
+                        "total_discrepancies",
+                        "number_of_variants_in_vcf",
+                    ],
+                ),
+                "panel_count": 6 if comp_expected.get("virus") != "SARS-CoV-2" else 5,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/variant_calling_metric_boxplots_by_pipeline.png",
             }
@@ -5844,6 +5886,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if entries:
             benchmarking["clade_assignment"] = {
                 "total_number": len(entries),
+                "n_plot_groups": count_plot_groups(entries, ["clade_hit_pct"]),
+                "panel_count": 1,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/clade_assignment_metric_boxplots_by_pipeline.png",
             }
@@ -5890,6 +5934,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             if entries:
                 benchmarking["lineage_assignment"] = {
                     "total_number": len(entries),
+                    "n_plot_groups": count_plot_groups(entries, ["lineage_hit_pct"]),
+                    "panel_count": 2,
                     "softwares": entries,
                     "fig_metric_boxplots": f"figures/{comp_code}/lineage_assignment_metric_boxplots_by_pipeline.png",
                 }
@@ -5936,6 +5982,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             if entries:
                 benchmarking["type_assignment"] = {
                     "total_number": len(entries),
+                    "n_plot_groups": count_plot_groups(entries, ["type_hit_pct"]),
+                    "panel_count": 2,
                     "softwares": entries,
                     "fig_metric_boxplots": f"figures/{comp_code}/type_assignment_metric_boxplots_by_pipeline.png",
                 }
@@ -5982,6 +6030,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             if entries:
                 benchmarking["subtype_assignment"] = {
                     "total_number": len(entries),
+                    "n_plot_groups": count_plot_groups(entries, ["subtype_hit_pct"]),
+                    "panel_count": 2,
                     "softwares": entries,
                     "fig_metric_boxplots": f"figures/{comp_code}/subtype_assignment_metric_boxplots_by_pipeline.png",
                 }

@@ -1685,6 +1685,8 @@
       "benchmarking": {
         "bioinformatics_protocol": {
           "total_number": 5,
+          "n_plot_groups": 5,
+          "panel_count": 4,
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
@@ -1740,6 +1742,8 @@
         },
         "dehosting": {
           "total_number": 4,
+          "n_plot_groups": 2,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "BWA-Mem",
@@ -1770,6 +1774,8 @@
         },
         "preprocessing": {
           "total_number": 6,
+          "n_plot_groups": 5,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "Fastp",
@@ -1824,6 +1830,8 @@
         },
         "mapping": {
           "total_number": 6,
+          "n_plot_groups": 2,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "bowtie2",
@@ -1878,6 +1886,8 @@
         },
         "assembly": {
           "total_number": 3,
+          "n_plot_groups": 3,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Megahit",
@@ -1911,6 +1921,8 @@
         },
         "consensus_software": {
           "total_number": 8,
+          "n_plot_groups": 8,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "DRAGEN consensus",
@@ -1988,6 +2000,8 @@
         },
         "variant_calling": {
           "total_number": 8,
+          "n_plot_groups": 8,
+          "panel_count": 5,
           "softwares": [
             {
               "name": "DRAGEN VariantCaller",
@@ -2130,6 +2144,8 @@
         },
         "clade_assignment": {
           "total_number": 10,
+          "n_plot_groups": 10,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Nextclade",
@@ -2216,6 +2232,8 @@
         },
         "lineage_assignment": {
           "total_number": 6,
+          "n_plot_groups": 6,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "Pangolin",
@@ -3841,6 +3859,8 @@
       "benchmarking": {
         "bioinformatics_protocol": {
           "total_number": 5,
+          "n_plot_groups": 5,
+          "panel_count": 4,
           "softwares": [
             {
               "name": "Artic pipeline",
@@ -3896,6 +3916,8 @@
         },
         "dehosting": {
           "total_number": 1,
+          "n_plot_groups": 1,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Kraken2",
@@ -3908,6 +3930,8 @@
         },
         "preprocessing": {
           "total_number": 3,
+          "n_plot_groups": 1,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "Fastp",
@@ -3938,6 +3962,8 @@
         },
         "mapping": {
           "total_number": 3,
+          "n_plot_groups": 2,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "minimap2",
@@ -3968,6 +3994,8 @@
         },
         "consensus_software": {
           "total_number": 6,
+          "n_plot_groups": 6,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Medaka consensus",
@@ -4028,6 +4056,8 @@
         },
         "variant_calling": {
           "total_number": 8,
+          "n_plot_groups": 8,
+          "panel_count": 5,
           "softwares": [
             {
               "name": "Clair3",
@@ -4170,6 +4200,8 @@
         },
         "clade_assignment": {
           "total_number": 8,
+          "n_plot_groups": 7,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Nextclade",
@@ -4240,6 +4272,8 @@
         },
         "lineage_assignment": {
           "total_number": 8,
+          "n_plot_groups": 7,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "INSaFLU",
@@ -5405,6 +5439,8 @@
       "benchmarking": {
         "bioinformatics_protocol": {
           "total_number": 6,
+          "n_plot_groups": 6,
+          "panel_count": 4,
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
@@ -5469,6 +5505,8 @@
         },
         "dehosting": {
           "total_number": 5,
+          "n_plot_groups": 3,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Kraken2",
@@ -5505,6 +5543,8 @@
         },
         "preprocessing": {
           "total_number": 6,
+          "n_plot_groups": 4,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "Custom preprocessing script",
@@ -5557,6 +5597,8 @@
         },
         "mapping": {
           "total_number": 6,
+          "n_plot_groups": 2,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "BLAT",
@@ -5611,6 +5653,8 @@
         },
         "assembly": {
           "total_number": 4,
+          "n_plot_groups": 4,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "LABEL",
@@ -5652,6 +5696,8 @@
         },
         "consensus_software": {
           "total_number": 7,
+          "n_plot_groups": 7,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "IRMA consensus",
@@ -5719,6 +5765,8 @@
         },
         "variant_calling": {
           "total_number": 5,
+          "n_plot_groups": 5,
+          "panel_count": 6,
           "softwares": [
             {
               "name": "Custom variant calling script",
@@ -5793,6 +5841,8 @@
         },
         "clade_assignment": {
           "total_number": 9,
+          "n_plot_groups": 9,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Nextclade",
@@ -5871,6 +5921,8 @@
         },
         "type_assignment": {
           "total_number": 6,
+          "n_plot_groups": 6,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "Custom typing script",
@@ -5919,6 +5971,8 @@
         },
         "subtype_assignment": {
           "total_number": 8,
+          "n_plot_groups": 8,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "Custom subtyping script",
@@ -7082,6 +7136,8 @@
       "benchmarking": {
         "bioinformatics_protocol": {
           "total_number": 5,
+          "n_plot_groups": 5,
+          "panel_count": 4,
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
@@ -7137,6 +7193,8 @@
         },
         "dehosting": {
           "total_number": 3,
+          "n_plot_groups": 2,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Kraken2",
@@ -7161,6 +7219,8 @@
         },
         "preprocessing": {
           "total_number": 4,
+          "n_plot_groups": 3,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "FiltLong",
@@ -7198,6 +7258,8 @@
         },
         "mapping": {
           "total_number": 4,
+          "n_plot_groups": 3,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "BLAT",
@@ -7235,6 +7297,8 @@
         },
         "assembly": {
           "total_number": 3,
+          "n_plot_groups": 3,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Flye",
@@ -7268,6 +7332,8 @@
         },
         "consensus_software": {
           "total_number": 5,
+          "n_plot_groups": 5,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "IRMA consensus",
@@ -7318,6 +7384,8 @@
         },
         "variant_calling": {
           "total_number": 5,
+          "n_plot_groups": 5,
+          "panel_count": 6,
           "softwares": [
             {
               "name": "Custom variant calling script",
@@ -7391,6 +7459,8 @@
         },
         "clade_assignment": {
           "total_number": 6,
+          "n_plot_groups": 6,
+          "panel_count": 1,
           "softwares": [
             {
               "name": "Nextclade",
@@ -7445,6 +7515,8 @@
         },
         "type_assignment": {
           "total_number": 7,
+          "n_plot_groups": 7,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "ABRicate",
@@ -7500,6 +7572,8 @@
         },
         "subtype_assignment": {
           "total_number": 8,
+          "n_plot_groups": 8,
+          "panel_count": 2,
           "softwares": [
             {
               "name": "ABRicate",
