@@ -2077,48 +2077,124 @@ def make_component_variant_discrepancy_type_boxplot(
     if not data:
         return str(output_path)
 
-    plt.figure(figsize=(max(9, len(labels) * 1.35), 6))
-    bp = plt.boxplot(
-        data,
-        labels=labels,
-        showfliers=True,
-        patch_artist=True,
-    )
+    broken_axis_ranges = {
+        "SARS1": ((0, 80), (450, None)),
+        "SARS2": ((0, 40), (75, None)),
+    }
+    broken_axis_spec = broken_axis_ranges.get(comp_code)
 
-    for patch, key in zip(bp["boxes"], used_keys):
-        patch.set_facecolor(VARIANT_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]))
-        patch.set_edgecolor("#333333")
-        patch.set_alpha(0.75)
+    def style_variant_bp(ax, bp_obj):
+        for patch, key in zip(bp_obj["boxes"], used_keys):
+            patch.set_facecolor(VARIANT_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]))
+            patch.set_edgecolor("#333333")
+            patch.set_alpha(0.75)
 
-    for median_line in bp["medians"]:
-        median_line.set_color(CBF_COLORS["median"])
-        median_line.set_linewidth(2)
+        for median_line in bp_obj["medians"]:
+            median_line.set_color(CBF_COLORS["median"])
+            median_line.set_linewidth(2)
 
-    for whisker in bp["whiskers"]:
-        whisker.set_color("#444444")
-    for cap in bp["caps"]:
-        cap.set_color("#444444")
-    for flier in bp["fliers"]:
-        flier.set_marker("o")
-        flier.set_markerfacecolor("white")
-        flier.set_markeredgecolor("#444444")
-        flier.set_markersize(5)
-    style_boxplot_axes(plt.gca())
-    add_colored_boxplot_points(
-        plt.gca(),
-        bp,
-        data,
-        list(range(1, len(labels) + 1)),
-        [VARIANT_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]) for key in used_keys],
-    )
+        for whisker in bp_obj["whiskers"]:
+            whisker.set_color("#444444")
+        for cap in bp_obj["caps"]:
+            cap.set_color("#444444")
+        for flier in bp_obj["fliers"]:
+            flier.set_marker("o")
+            flier.set_markerfacecolor("white")
+            flier.set_markeredgecolor("#444444")
+            flier.set_markersize(5)
+        style_boxplot_axes(ax)
+        add_colored_boxplot_points(
+            ax,
+            bp_obj,
+            data,
+            list(range(1, len(labels) + 1)),
+            [VARIANT_DISCREPANCY_TYPE_COLORS.get(key, CBF_COLORS["box_default"]) for key in used_keys],
+        )
 
-    plt.xticks(rotation=20, ha="center")
-    plt.xlabel("Discrepancy type")
-    plt.ylabel("Number of discrepancies")
-    plt.title(f"{comp_code} variant discrepancy types")
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
+    if broken_axis_spec is not None:
+        (lower_min, lower_max), (upper_min, upper_max) = broken_axis_spec
+        max_value = max(max(values) for values in data if values)
+        if upper_max is None:
+            upper_max = max_value * 1.08 if max_value > 0 else upper_min + 1
+
+        fig, (ax_upper, ax_lower) = plt.subplots(
+            2,
+            1,
+            sharex=True,
+            figsize=(max(9, len(labels) * 1.35), 6.8),
+            gridspec_kw={"height_ratios": [1.2, 3.5], "hspace": 0.05},
+        )
+
+        for ax in (ax_upper, ax_lower):
+            bp = ax.boxplot(
+                data,
+                labels=labels,
+                showfliers=True,
+                patch_artist=True,
+            )
+            style_variant_bp(ax, bp)
+            ax.set_xlim(0.5, len(labels) + 0.5)
+
+        ax_lower.set_ylim(lower_min, lower_max)
+        ax_upper.set_ylim(upper_min, upper_max)
+        ax_upper.spines["bottom"].set_visible(False)
+        ax_lower.spines["top"].set_visible(False)
+        ax_upper.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
+        ax_lower.tick_params(axis="x", rotation=20, labelsize=10)
+        for tick in ax_lower.get_xticklabels():
+            tick.set_ha("center")
+        ax_lower.set_xlabel("Discrepancy type")
+        ax_lower.set_ylabel("Number of discrepancies")
+        ax_upper.set_title(f"{comp_code} variant discrepancy types")
+
+        upper_pos = ax_upper.get_position()
+        lower_pos = ax_lower.get_position()
+        x_center = upper_pos.x0
+        y_center = (upper_pos.y0 + lower_pos.y1) / 2.0
+        dx = 0.012
+        dy = 0.01
+        gap = 0.012
+
+        fig.add_artist(plt.Line2D(
+            [x_center - dx, x_center + dx],
+            [y_center - dy + gap / 2.0, y_center + dy + gap / 2.0],
+            transform=fig.transFigure,
+            color="#444444",
+            linewidth=1.2,
+            solid_capstyle="butt",
+            clip_on=False,
+        ))
+        fig.add_artist(plt.Line2D(
+            [x_center - dx, x_center + dx],
+            [y_center - dy - gap / 2.0, y_center + dy - gap / 2.0],
+            transform=fig.transFigure,
+            color="#444444",
+            linewidth=1.2,
+            solid_capstyle="butt",
+            clip_on=False,
+        ))
+
+        fig.tight_layout()
+        fig.savefig(output_path, dpi=300, bbox_inches="tight")
+        plt.close(fig)
+    else:
+        plt.figure(figsize=(max(9, len(labels) * 1.35), 6))
+        bp = plt.boxplot(
+            data,
+            labels=labels,
+            showfliers=True,
+            patch_artist=True,
+        )
+
+        style_variant_bp(plt.gca(), bp)
+
+        plt.xticks(rotation=20, ha="center")
+        plt.xlabel("Discrepancy type")
+        plt.ylabel("Number of discrepancies")
+        plt.title(f"{comp_code} variant discrepancy types")
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
+        plt.close()
 
     return str(output_path)
 
