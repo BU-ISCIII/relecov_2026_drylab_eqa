@@ -614,7 +614,7 @@ At network level:
 - {{ general.general_results.influenza_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
 - {{ general.general_results.influenza_variants.high_freq_only_pct }} reported only high-frequency variants.
 
-Additionally, a total of {{ general.general_results.influenza_variants.total_distinct_references }} distinct reference genomes were employed for variant calling or mapping (from a total of {{ general.general_results.influenza_variants.total_distinct_fragments }} distinct fragment references), across influenza components.
+Additionally, an estimated total of {{ "%.0f"|format(general.general_results.influenza_variants.total_distinct_references) }} distinct reference genomes were employed for variant calling or mapping across influenza components. This value was rounded to the nearest whole genome by dividing the total number of distinct fragment references ({{ general.general_results.influenza_variants.total_distinct_fragments }}) by 8 influenza genome segments.
 
 Structural summary metrics derived from submitted influenza consensus sequences and VCF files are presented in Table {{ table_counter.value + 1 }}. These metrics capture the overall magnitude of reported variants in the metadata file and the discrepancy between reported variants with an allele frequency >= 75% in the metadata file and the VCF file, rather than direct nucleotide-level accuracy against a unified reference coordinate system.
 
