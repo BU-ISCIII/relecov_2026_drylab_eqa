@@ -18,7 +18,7 @@
 {%- endif %}
 {%- endmacro %}
 {% macro software_label(name, version=None, db_version=None) -%}
-{%- if name -%}{{ name }}{%- if version -%} ({{ version }}){%- endif -%}{%- if db_version -%}; DB {{ db_version }}{%- endif -%}{%- else -%}NA{%- endif -%}
+{%- if name -%}{{ name }}{{ " (" ~ version ~ ")" if version else "" }}{{ "; DB " ~ db_version if db_version else "" }}{%- else -%}NA{%- endif -%}
 {%- endmacro %}
 
 {% set fig_counter = namespace(value=0) %}
@@ -1583,7 +1583,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of influenza-specifi
 ) }}
 
 {% if comp_code in ["SARS1", "SARS2"] %}
-**Figure {{ fig_counter.value }}. Metadata-reported and VCF-derived variant metrics across participating laboratories ({{ comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B VCF-derived variants with AF >=75%, Panel C reported variants with effect, Panel D VCF-derived variants with effect, Panel E metadata-VCF discrepancies, and Panel F effect discrepancies across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+**Figure {{ fig_counter.value }}. Metadata-reported and VCF-derived variant metrics across participating laboratories ({{ comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B reported variants with effect, Panel C variants in VCF with AF >=75%, Panel D variants with effect in VCF, Panel E metadata-VCF discrepancies for AF >=75% variants, and Panel F metadata-VCF discrepancies for variants with effect across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 {% else %}
 **Figure {{ fig_counter.value }}. Influenza-specific variant reporting metrics across participating laboratories ({{ comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B VCF-derived variants with AF >=75%, Panel C reported variants with effect, Panel D metadata-VCF discrepancies, and Panel E total variants present in the submitted VCF files across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 {% endif %}
