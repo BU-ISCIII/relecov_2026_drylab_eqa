@@ -1591,7 +1591,14 @@ def make_component_benchmark_metric_boxplots(
         panel_y_limit = custom_panel_y_limits.get((benchmark_key, comp_code, panel_idx))
         plotted_panel_data = [list(values) for values in panel_data]
         panel_outlier_annotations = []
-        use_broken_identity_axis = benchmark_key == "assembly" and panel_idx == 1
+        use_broken_identity_axis = (
+            (benchmark_key == "assembly" and panel_idx == 1)
+            or (
+                benchmark_key == "consensus_software"
+                and panel_idx == 1
+                and comp_code in {"SARS1", "FLU1"}
+            )
+        )
 
         if panel_y_limit is not None:
             limit_mode, limit_min, limit_max = panel_y_limit
