@@ -47,7 +47,9 @@ h1 {
 
 h2 {
   border-bottom: 1px solid var(--line);
+  break-before: page;
   font-size: 15pt;
+  page-break-before: always;
   padding-bottom: 0.15em;
 }
 
