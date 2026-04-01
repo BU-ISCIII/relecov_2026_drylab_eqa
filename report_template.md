@@ -93,7 +93,7 @@ Metadata completeness and reporting remain major priorities for harmonisation. T
 
 Overall, the EQA shows that RELECOV laboratories already have substantial bioinformatic capacity, but also that inter-laboratory comparability is limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities centred on minimum performance standards, stronger metadata requirements, clearer reporting rules for consensus and variants, and component-aware benchmarking rather than a single cross-context pipeline ranking.
 
-## 1. Introduction (TODO)
+## 1. Introduction
 
 The RELECOV Network aims to strengthen genomic surveillance of respiratory viruses by developing and harmonising analytical capacities across the participating laboratories. In this context, it was essential to **assess the consistency, reproducibility and maturity of the bioinformatics workflows implemented within the network**.
 
@@ -120,8 +120,8 @@ Datasets were distributed as raw sequencing reads (.fastq files), and laboratori
 Laboratories were requested to submit:
 
 - For each analysed sample:
-  - One consensus genome sequence in .fasta format, containing exclusively the target viral genome reconstructed from the provided reads.
-  - One or more variant call files in .vcf format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
+    - One consensus genome sequence in .fasta format, containing exclusively the target viral genome reconstructed from the provided reads.
+    - One or more variant call files in .vcf format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
 - A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, Lineage, Subtype or clade assignment tools, and file paths to submitted outputs.
 
 The primary objective of the exercise was to assess the consistency, reproducibility, and comparability of bioinformatic workflows currently implemented across the network. The evaluation focused on core analytical tasks that are essential for routine genomic surveillance and public health response, including:
@@ -458,8 +458,8 @@ Laboratory-level and component-level completeness summaries were then derived fr
 
 - Completion: Each sample has a list of minimum **recommended** fields, based on the sample characteristics. For each component/sample/lab the total number of completed minimum **recommended** fields was evaluated. Both mandatory and optional analytical fields were included in the completeness assessment, while fields not applicable to a laboratory’s selected components were excluded from scoring.
 - Compliance with controlled vocabularies. Metadata entries were considered non-compliant when:
-  - Controlled vocabulary options were bypassed
-  - Free-text substitutions replaced defined values
+    - Controlled vocabulary options were bypassed
+    - Free-text substitutions replaced defined values
 - Valid file path reporting
 
 This evaluation allowed quantification of metadata standardisation and reproducibility readiness across the network.
@@ -558,7 +558,6 @@ Across components, many discrepancy categories had medians of zero, indicating t
 
 Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
 
-
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.") }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
@@ -581,7 +580,6 @@ The distribution of variant detection performance across components is presented
 
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary.") }}
 
-
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
@@ -600,7 +598,6 @@ Figure {{ fig_counter.value }} summarizes the distribution of variant reporting 
 general.figures.sars_variant_reporting_summary,
 "SARS-CoV-2 variant reporting practices across the network."
 ) }}
-
 
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
@@ -637,7 +634,6 @@ general.figures.influenza_variant_reporting_summary,
 "Influenza variant reporting practices across the network."
 ) }}
 
-
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
 Together, Figure {{ fig_counter.value }} and Table {{ table_counter.value }} show marked heterogeneity in influenza variant reporting within the network. This is reflected by mixed reporting modes across laboratories, the use of multiple reference genomes, and wide ranges in structural summary metrics, including {{ general.general_results.influenza_variants.min_variants_in_vcf }} to {{ general.general_results.influenza_variants.max_variants_in_vcf }} total variants in submitted VCF files and {{ general.general_results.influenza_variants.min_discrepancies_in_reported_variants }} to {{ general.general_results.influenza_variants.max_discrepancies_in_reported_variants }} discrepancies between metadata-reported and VCF-derived high-frequency variants.
@@ -657,7 +653,6 @@ Across components, lineage/type concordance was consistently higher than clade c
 
 {{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.") }}
 
-
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the percentage of all possible sample-level classifications across participating laboratories for each component. Bars are partitioned into **Match** (correct assignments relative to the curated gold standard), **Discrepancy** (incorrect assignments), and **Not provided** (classification not reported).
 
 ### 5.5. Metadata completeness and compliance
@@ -674,7 +669,6 @@ The leading incompleteness drivers were variant calling, pre-processing, and map
 
 {{ render_figure(general.figures.metadata_completeness_distribution,
   "Distribution of metadata completeness across participating laboratories.") }}
-
 
 **_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -724,7 +718,6 @@ As shown in Figure {{ fig_counter.value }}, QC concordance differed across compo
 general.figures.qc_match_rate_by_component,
 "QC concordance by component (Match vs Discrepancy relative to the gold standard)."
 ) }}
-
 
 **_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Stacked bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
 
@@ -1134,16 +1127,6 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
 {% set table_counter.value = table_counter.value + 1 %}
 
-Table {{ table_counter.value }} summarises the performance of declared assembly software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
-
-**Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
-
-| Assembly software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
-|---|---:|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.assembly.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
-{% endfor %}
-
 {% set fig_counter.value = fig_counter.value + 1 %}
 
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared assembly software configuration.
@@ -1155,6 +1138,16 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a broken y-axis, with a short lower segment (`0-5%`) and an expanded upper segment (`90-100%`), to preserve visual resolution at high genome identity values while still displaying low-identity observations.
+
+Table {{ table_counter.value }} summarises the performance of declared assembly software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
+
+**Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
+
+| Assembly software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
+|---|---:|---:|---:|---:|---:|---:|
+{% for p in comp_net.benchmarking.assembly.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
+{% endfor %}
 
 {% endif %}
 
