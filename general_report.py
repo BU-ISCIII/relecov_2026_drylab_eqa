@@ -2140,7 +2140,7 @@ def make_component_variant_discrepancy_type_boxplot(
         ax_upper.spines["bottom"].set_visible(False)
         ax_lower.spines["top"].set_visible(False)
         ax_upper.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
-        ax_lower.tick_params(axis="x", rotation=20, labelsize=10)
+        ax_lower.tick_params(axis="x", rotation=0, labelsize=10)
         for tick in ax_lower.get_xticklabels():
             tick.set_ha("center")
         ax_lower.set_xlabel("Discrepancy type")
@@ -2188,7 +2188,7 @@ def make_component_variant_discrepancy_type_boxplot(
 
         style_variant_bp(plt.gca(), bp)
 
-        plt.xticks(rotation=20, ha="center")
+        plt.xticks(rotation=0, ha="center")
         plt.xlabel("Discrepancy type")
         plt.ylabel("Number of discrepancies")
         plt.title(f"{comp_code} variant discrepancy types")
