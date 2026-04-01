@@ -1494,8 +1494,7 @@ def make_component_benchmark_metric_boxplots(
             "output_filename": "lineage_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by lineage assignment software",
             "panels": [
-                ("A. Lineage concordance", "Lineage concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
-                ("B. Lineage discrepancy", "Lineage discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("lineage_match") is True else (100.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+                ("Lineage concordance", "Lineage concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
             ],
         },
         "type_assignment": {
@@ -1505,8 +1504,7 @@ def make_component_benchmark_metric_boxplots(
             "output_filename": "type_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by type assignment software",
             "panels": [
-                ("A. Type concordance", "Type concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
-                ("B. Type discrepancy", "Type discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("lineage_match") is True else (100.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+                ("Type concordance", "Type concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
             ],
         },
         "subtype_assignment": {
@@ -1516,8 +1514,7 @@ def make_component_benchmark_metric_boxplots(
             "output_filename": "subtype_assignment_metric_boxplots_by_pipeline.png",
             "title": "performance metrics by subtype assignment software",
             "panels": [
-                ("A. Subtype concordance", "Subtype concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
-                ("B. Subtype discrepancy", "Subtype discrepancy (%)", lambda s: 0.0 if s.get("classification", {}).get("lineage_match") is True else (100.0 if s.get("classification", {}).get("lineage_match") is False else None)),
+                ("Subtype concordance", "Subtype concordance (%)", lambda s: 100.0 if s.get("classification", {}).get("lineage_match") is True else (0.0 if s.get("classification", {}).get("lineage_match") is False else None)),
             ],
         },
     }
