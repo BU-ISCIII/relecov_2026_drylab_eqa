@@ -1510,7 +1510,7 @@ def make_component_benchmark_metric_boxplots(
 
         if benchmark_key == "variant_calling" and panel_idx == 0:
             mode_keys = ["high_and_low_freq", "low_freq_only", "high_freq_only"]
-            mode_labels = ["High + low freq", "Low freq only", "High freq only"]
+            mode_labels = ["High and low frequency", "Low frequency only", "High frequency only"]
             mode_colors = [
                 CBF_COLORS["high_and_low_freq"],
                 CBF_COLORS["low_freq_only"],
@@ -2587,9 +2587,9 @@ def make_sars_variant_reporting_summary_plot(
 
     sars_variants = general_data.get("general_results", {}).get("sars_variants", {})
     categories = [
-        ("High + low freq", safe_number(sars_variants.get("high_and_low_freq_pct"))),
-        ("Low freq only", safe_number(sars_variants.get("low_freq_only_pct"))),
-        ("High freq only", safe_number(sars_variants.get("high_freq_only_pct"))),
+        ("High and low frequency", safe_number(sars_variants.get("high_and_low_freq_pct"))),
+        ("Low frequency only", safe_number(sars_variants.get("low_freq_only_pct"))),
+        ("High frequency only", safe_number(sars_variants.get("high_freq_only_pct"))),
     ]
 
     labels = [label for label, value in categories if value is not None]
@@ -2641,9 +2641,9 @@ def make_influenza_variant_reporting_summary_plot(
 
     influenza_variants = general_data.get("general_results", {}).get("influenza_variants", {})
     categories = [
-        ("High + low freq", safe_number(influenza_variants.get("high_and_low_freq_pct"))),
-        ("Low freq only", safe_number(influenza_variants.get("low_freq_only_pct"))),
-        ("High freq only", safe_number(influenza_variants.get("high_freq_only_pct"))),
+        ("High and low frequency", safe_number(influenza_variants.get("high_and_low_freq_pct"))),
+        ("Low frequency only", safe_number(influenza_variants.get("low_freq_only_pct"))),
+        ("High frequency only", safe_number(influenza_variants.get("high_freq_only_pct"))),
     ]
 
     labels = [label for label, value in categories if value is not None]
@@ -3125,11 +3125,11 @@ def make_lab_consensus_discrepancy_breakdown_plot(
 def get_variant_reporting_mode_label(sample: Dict[str, Any]) -> Optional[str]:
     variants = sample.get("variants", {})
     if variants.get("high_and_low_freq") is True:
-        return "High + low freq"
+        return "High and low frequency"
     if variants.get("high_freq_only") is True:
-        return "High freq only"
+        return "High frequency only"
     if variants.get("low_freq_only") is True:
-        return "Low freq only"
+        return "Low frequency only"
     return None
 
 
@@ -5727,6 +5727,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "low_freq_only_pct": pct(sars_variant_reporting_modes["low_freq_only"], sum(sars_variant_reporting_modes.values())),
                 "high_freq_only_pct": pct(sars_variant_reporting_modes["high_freq_only"], sum(sars_variant_reporting_modes.values())),
                 "total_distinct_references": len(distinct_sars_references),
+                "distinct_references": sorted(distinct_sars_references),
             },
             "influenza_variants": {
                 "high_and_low_freq_pct": pct(influenza_variant_reporting_modes["high_and_low_freq"], sum(influenza_variant_reporting_modes.values())),
