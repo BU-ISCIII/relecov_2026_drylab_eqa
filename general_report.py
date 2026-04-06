@@ -1833,6 +1833,20 @@ def collect_consensus_discrepancies_by_component(labs: List[Dict[str, Any]]) -> 
     return discrepancies_by_component
 
 
+def collect_consensus_identity_by_component(labs: List[Dict[str, Any]]) -> Dict[str, List[float]]:
+    identity_by_component: Dict[str, List[float]] = defaultdict(list)
+
+    for lab in labs:
+        for comp_code, comp in lab.get("components", {}).items():
+            for sample in comp.get("samples", {}).values():
+                genome_identity_pct = safe_number(sample.get("consensus", {}).get("genome_identity_pct"))
+                if genome_identity_pct is None:
+                    continue
+                identity_by_component[comp_code].append(genome_identity_pct)
+
+    return identity_by_component
+
+
 def collect_consensus_discrepancies_by_sample(
     labs: List[Dict[str, Any]],
     comp_code: str,
@@ -2691,46 +2705,54 @@ def make_consensus_summary_plot(
     labs: List[Dict[str, Any]],
     figures_dir: str | Path,
     output_filename: str = "consensus_summary.png",
-    title: str = "Consensus genome discrepancies relative to the gold standard",
+    title: str = "Consensus genome reconstruction performance across components",
 ) -> str:
     output_dir = ensure_network_figures_dir(figures_dir)
     output_path = output_dir / output_filename
 
     discrepancies_by_component = collect_consensus_discrepancies_by_component(labs)
+    identity_by_component = collect_consensus_identity_by_component(labs)
     component_order = ["SARS1", "SARS2", "FLU1", "FLU2"]
-    component_names = [comp for comp in component_order if discrepancies_by_component.get(comp)]
-    data = [list(discrepancies_by_component[comp]) for comp in component_names]
+    component_names = [
+        comp
+        for comp in component_order
+        if discrepancies_by_component.get(comp) and identity_by_component.get(comp)
+    ]
+    discrepancy_data = [list(discrepancies_by_component[comp]) for comp in component_names]
+    identity_data = [list(identity_by_component[comp]) for comp in component_names]
 
-    if not data:
+    if not discrepancy_data or not identity_data:
         return str(output_path)
 
     fixed_y_upper = 500.0
-    plotted_data = [list(vals) for vals in data]
+    plotted_discrepancy_data = [list(vals) for vals in discrepancy_data]
     outlier_annotations = []
 
-    for idx, values in enumerate(data):
+    for idx, values in enumerate(discrepancy_data):
         outliers_above_limit = sorted([value for value in values if value > fixed_y_upper], reverse=True)
         if not outliers_above_limit:
             continue
 
-        plotted_data[idx] = [value for value in values if value <= fixed_y_upper]
+        plotted_discrepancy_data[idx] = [value for value in values if value <= fixed_y_upper]
         outlier_annotations.append((idx + 1, outliers_above_limit))
 
-    plt.figure(figsize=(10, 6))
-    bp = plt.boxplot(plotted_data, labels=component_names, showfliers=True, patch_artist=True)
-    style_boxplot(bp, component_names, ax=plt.gca())
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharex=False)
+
+    bp = axes[0].boxplot(plotted_discrepancy_data, labels=component_names, showfliers=True, patch_artist=True)
+    style_boxplot(bp, component_names, ax=axes[0])
     add_component_boxplot_points(
-        plt.gca(),
+        axes[0],
         bp,
-        plotted_data,
+        plotted_discrepancy_data,
         list(range(1, len(component_names) + 1)),
         component_names,
     )
-    plt.xlabel("Component")
-    plt.ylabel("Consensus discrepancies")
-    plt.title(title)
-    plt.ylim(0, fixed_y_upper)
-    plt.xlim(0.5, len(component_names) + 0.5)
+    axes[0].set_xlabel("Component")
+    axes[0].set_ylabel("Consensus discrepancies")
+    axes[0].set_title("A. Consensus discrepancies")
+    axes[0].set_ylim(0, fixed_y_upper)
+    axes[0].set_xlim(0.5, len(component_names) + 0.5)
+    axes[0].tick_params(axis="x", rotation=0)
 
     for x_pos, outliers in outlier_annotations:
         display_value = outliers[0]
@@ -2738,7 +2760,7 @@ def make_consensus_summary_plot(
         y_text = fixed_y_upper * 0.91
         component_label = component_names[x_pos - 1]
         outlier_color = COMPONENT_BOX_COLORS.get(component_label, CBF_COLORS["outlier"])
-        plt.text(
+        axes[0].text(
             x_pos,
             y_marker,
             "*",
@@ -2748,7 +2770,7 @@ def make_consensus_summary_plot(
             color=outlier_color,
             fontweight="bold",
         )
-        plt.text(
+        axes[0].text(
             x_pos,
             y_text,
             f"Outlier: {display_value:g}",
@@ -2759,9 +2781,25 @@ def make_consensus_summary_plot(
             fontweight="bold",
         )
 
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
+    bp = axes[1].boxplot(identity_data, labels=component_names, showfliers=True, patch_artist=True)
+    style_boxplot(bp, component_names, ax=axes[1])
+    add_component_boxplot_points(
+        axes[1],
+        bp,
+        identity_data,
+        list(range(1, len(component_names) + 1)),
+        component_names,
+    )
+    axes[1].set_xlabel("Component")
+    axes[1].set_ylabel("Genome identity (%)")
+    axes[1].set_title("B. Genome identity")
+    style_percent_boxplot_axis(axes[1])
+    axes[1].tick_params(axis="x", rotation=0)
+
+    fig.suptitle(title)
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
     return str(output_path)
 
@@ -4509,6 +4547,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
     consensus_illumina_identity: List[float] = []
     consensus_nanopore_identity: List[float] = []
+    consensus_sars_identity: List[float] = []
+    consensus_influenza_identity: List[float] = []
 
     sars_variant_discrepancies_illumina: List[float] = []
     sars_variant_discrepancies_nanopore: List[float] = []
@@ -4736,6 +4776,11 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                         consensus_illumina_identity.append(gi)
                     else:
                         consensus_nanopore_identity.append(gi)
+
+                    if comp_expected.get("virus") == "SARS-CoV-2":
+                        consensus_sars_identity.append(gi)
+                    else:
+                        consensus_influenza_identity.append(gi)
 
                 cls = sample.get("classification", {})
 
@@ -6056,6 +6101,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "consensus": {
                 "median_identity_illumina_pct": median_or_none(consensus_illumina_identity),
                 "median_identity_nanopore_pct": median_or_none(consensus_nanopore_identity),
+                "median_identity_sars_pct": median_or_none(consensus_sars_identity),
+                "median_identity_influenza_pct": median_or_none(consensus_influenza_identity),
             },
             "sars_variants": {
                 "median_discrepancy_illumina": median_or_none(sars_variant_discrepancies_illumina),

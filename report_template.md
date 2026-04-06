@@ -71,7 +71,8 @@
     - [7.2. Variant Detection and Reporting](#72-variant-detection-and-reporting)
     - [7.3. Classification and QC Interpretation](#73-classification-and-qc-interpretation)
     - [7.4. Workflow Diversity and Reporting Constraints](#74-workflow-diversity-and-reporting-constraints)
-    - [7.5. Implications for RELECOV 2.0](#75-implications-for-relecov-20)
+    - [7.5. Metadata Reporting and Schema Compliance](#75-metadata-reporting-and-schema-compliance)
+    - [7.6. Implications for RELECOV 2.0](#76-implications-for-relecov-20)
 - [8. Conclusions](#8-conclusions)
 {% if labdata %}
 - [9. Individual Laboratory Technical Report](#9-individual-laboratory-technical-report)
@@ -433,12 +434,11 @@ For SARS-CoV-2 and Influenza viruses, concordance was assessed as:
 
 If a laboratory did not report a lineage/subtype or clade assignment, that missing classification was also counted as a **Discrepancy** for evaluation purposes. Although these metadata fields were not mandatory in the submission template, participating RELECOV laboratories are expected to be able to determine both classification dimensions for analysed samples.
 
-Potential contributors discussed during result interpretation included:
+Potential contributors discussed during result interpretation included (TODO):
 
 - Use of outdated lineage databases
 - Differences in software versioning
-- Incomplete consensus sequences
-- Excess ambiguous positions
+- Relationship between discrepancies and lineage/type assignment
 
 Failure to identify virus presence in positive samples, or misclassification of negative samples, was recorded separately.
 
@@ -480,7 +480,6 @@ For each laboratory, component, and the overall network, the following metrics w
 
 - Total number of QC evaluations performed
 - Number of Matches
-- Number of Discrepancies
 - QC concordance rate, where:
 
 $$
@@ -529,7 +528,7 @@ A total of 52 laboratories within the RELECOV network were invited to participat
 - FLU1 (Influenza virus, Illumina): {{ general.participation_per_component.FLU1 }} laboratories.
 - FLU2 (Influenza virus, Oxford Nanopore Technologies): {{ general.participation_per_component.FLU2 }} laboratories.
 
-The median number of components analysed per participating laboratory was {{ general.median_components_analysed_per_lab }}.
+The median number of components analysed per participating laboratory was {{ "%.0f"|format(general.median_components_analysed_per_lab) }}.
 
 ### 5.1. Submission Completeness
 
@@ -542,7 +541,7 @@ Component-level submission totals are presented in Section 6 and reflect both th
 
 ### 5.2. Consensus Genome Reconstruction Performance
 
-Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Across the two Illumina-based components, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the two Nanopore-based components. Nanopore-based datasets also showed broader overall identity ranges, where low-identity outliers were present.
+Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Across the two Illumina-based components, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the two Nanopore-based components. When grouped by virus, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_sars_pct, 2) }} across the SARS-CoV-2 components and {{ pct(general.general_results.consensus.median_identity_influenza_pct, 2) }} across the influenza components. Notably, the influenza median was also slightly lower than the combined Nanopore-based median, indicating that virus-specific analytical complexity likely contributed in addition to platform-related differences. Nanopore-based datasets also showed broader overall identity ranges, where low-identity outliers were present.
 
 Dominant discrepancy patterns differed by component:
 
@@ -557,10 +556,10 @@ Across components, many discrepancy categories had medians of zero, indicating t
 
 Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
 
-{% set figure_style = "max-width: 80%;" %}
-{{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary." ) }}
+{% set figure_style = "max-width: 100%;" %}
+{{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.", has_panels=True ) }}
 
-**_Figure {{ fig_counter.value }}_. Distribution of consensus genome discrepancies relative to the gold standard across components**. Boxplots represent the number of nucleotide discrepancies per component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
+**_Figure {{ fig_counter.value }}_. Consensus genome reconstruction performance across components**. Panel **A** shows the distribution of nucleotide discrepancies relative to the gold standard across components, and panel **B** shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 ### 5.3. Variant Detection Accuracy
 
@@ -568,14 +567,13 @@ Variant detection accuracy was evaluated following the methodological framework 
 
 #### 5.3.1. SARS-CoV-2
 
-For SARS-CoV-2 components (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ general.general_results.sars_variants.median_discrepancy_illumina }} for Illumina component and a median number of {{ general.general_results.sars_variants.median_discrepancy_nanopore }} for Nanopore component, discrepancies relative to the reference variant set.
+For SARS-CoV-2 components (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ "%.0f"|format(general.general_results.sars_variants.median_discrepancy_illumina) }} for Illumina component and a median number of {{ "%.0f"|format(general.general_results.sars_variants.median_discrepancy_nanopore) }} for Nanopore component, discrepancies relative to the reference variant set.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
 The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Contextual factors documented in the metadata that may contribute to these differences included:
 
 - Allele frequency thresholds used for incorporation into vcf files
-- Reference genome selection
 - Variant normalization practices (variant caller software and params)
 
 
@@ -585,9 +583,9 @@ The distribution of variant detection performance across components is presented
 
 Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
 
-- {{ general.general_results.sars_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants.
-- {{ general.general_results.sars_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
-- {{ general.general_results.sars_variants.high_freq_only_pct }} reported only high-frequency variants.
+- {{ general.general_results.sars_variants.high_and_low_freq_pct }}% of laboratories reported both high- and low-frequency variants.
+- {{ general.general_results.sars_variants.low_freq_only_pct }}% reported exclusively low-frequency variants.
+- {{ general.general_results.sars_variants.high_freq_only_pct }}% reported only high-frequency variants.
 
 Additionally, a total of {{ general.general_results.sars_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components ({{ general.general_results.sars_variants.distinct_references | join(", ") }}).
 
@@ -609,9 +607,9 @@ For influenza virus components (FLU1 and FLU2), variant evaluation focused on st
 
 At network level:
 
-- {{ general.general_results.influenza_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants.
-- {{ general.general_results.influenza_variants.low_freq_only_pct }} reported exclusively low-frequency variants.
-- {{ general.general_results.influenza_variants.high_freq_only_pct }} reported only high-frequency variants.
+- {{ general.general_results.influenza_variants.high_and_low_freq_pct }}% of laboratories reported both high- and low-frequency variants.
+- {{ general.general_results.influenza_variants.low_freq_only_pct }}% reported exclusively low-frequency variants.
+- {{ general.general_results.influenza_variants.high_freq_only_pct }}% reported only high-frequency variants.
 
 Additionally, an estimated total of {{ "%.0f"|format(general.general_results.influenza_variants.total_distinct_references) }} distinct reference genomes were employed for variant calling or mapping across influenza components. This value was rounded to the nearest whole genome by dividing the total number of distinct fragment references ({{ general.general_results.influenza_variants.total_distinct_fragments }}) by 8 influenza genome segments.
 
@@ -622,10 +620,10 @@ Structural summary metrics derived from submitted influenza consensus sequences 
 
 | Metric | Network median | Min-max |
 |---|---:|---:|
-| Variants with AF>=75% | {{ general.general_results.influenza_variants.median_variants_in_consensus }} | {{ general.general_results.influenza_variants.min_variants_in_consensus }}–{{ general.general_results.influenza_variants.max_variants_in_consensus }} |
-| Variants with AF>=75% in VCF | {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_consensus_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_consensus_vcf }} |
-| Discrepancies in reported variants | {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }} | {{ general.general_results.influenza_variants.min_discrepancies_in_reported_variants }}–{{ general.general_results.influenza_variants.max_discrepancies_in_reported_variants }} |
-| Total variants in VCF | {{ general.general_results.influenza_variants.median_variants_in_vcf }} | {{ general.general_results.influenza_variants.min_variants_in_vcf }}–{{ general.general_results.influenza_variants.max_variants_in_vcf }} |
+| Variants with AF>=75% | {{ "%.0f"|format(general.general_results.influenza_variants.median_variants_in_consensus) }} | {{ "%.0f"|format(general.general_results.influenza_variants.min_variants_in_consensus) }}–{{ "%.0f"|format(general.general_results.influenza_variants.max_variants_in_consensus) }} |
+| Variants with AF>=75% in VCF | {{ "%.0f"|format(general.general_results.influenza_variants.median_variants_in_consensus_vcf) }} | {{ "%.0f"|format(general.general_results.influenza_variants.min_variants_in_consensus_vcf) }}–{{ "%.0f"|format(general.general_results.influenza_variants.max_variants_in_consensus_vcf) }} |
+| Discrepancies in reported variants | {{ "%.0f"|format(general.general_results.influenza_variants.median_discrepancies_in_reported_variants) }} | {{ "%.0f"|format(general.general_results.influenza_variants.min_discrepancies_in_reported_variants) }}–{{ "%.0f"|format(general.general_results.influenza_variants.max_discrepancies_in_reported_variants) }} |
+| Total variants in VCF | {{ "%.0f"|format(general.general_results.influenza_variants.median_variants_in_vcf) }} | {{ "%.0f"|format(general.general_results.influenza_variants.min_variants_in_vcf) }}–{{ "%.0f"|format(general.general_results.influenza_variants.max_variants_in_vcf) }} |
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
@@ -639,8 +637,7 @@ general.figures.influenza_variant_reporting_summary,
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
-Together, Figure {{ fig_counter.value }} and Table {{ table_counter.value }} show marked heterogeneity in influenza variant reporting within the network. This is reflected by mixed reporting modes across laboratories, the use of multiple reference genomes, and wide ranges in structural summary metrics, including {{ general.general_results.influenza_variants.min_variants_in_vcf }} to {{ general.general_results.influenza_variants.max_variants_in_vcf }} total variants in submitted VCF files and {{ general.general_results.influenza_variants.min_discrepancies_in_reported_variants }} to {{ general.general_results.influenza_variants.max_discrepancies_in_reported_variants }} discrepancies between metadata-reported and VCF-derived high-frequency variants.
-
+Together, Figure {{ fig_counter.value }} and Table {{ table_counter.value }} show marked heterogeneity in influenza variant reporting within the network.
 ### 5.4. Lineage, Subtype and Clade Assignment
 
 Lineage, Subtype and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
@@ -669,17 +666,14 @@ The evaluation of metadata focused on analytical transparency, reproducibility, 
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Component-level median completeness values were similar overall, but the observed ranges remained broad in all components, as shown in Figure {{ fig_counter.value }}.
+Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Component-level median completeness values were similar overall, but the observed ranges remained broad in all components, as shown in Figure {{ fig_counter.value }}. The leading incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, and consensus analysis fields.
 
-The leading incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, and consensus analysis fields.
 
 {% set figure_style = "max-width: 80%;" %}
 {{ render_figure(general.figures.metadata_completeness_distribution,
   "Distribution of metadata completeness across participating laboratories.") }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-All (100%) laboratories required either clarification through e-mail contact or metadata correction during validation, as reflected by the high proportion of submissions with incomplete parameters or controlled-vocabulary corrections.
 
 #### Reporting of Analytical Parameters
 
@@ -695,7 +689,7 @@ The incomplete reporting of parameters limited the ability to fully reconstruct 
 
 #### Controlled Vocabulary Compliance
 
-Compliance with controlled vocabulary requirements was assessed to determine the degree of metadata standardisation achieved across participating laboratories. Only fields expected to contain predefined categorical values were considered in this analysis; free-text fields such as software versions, file names, and parameter descriptions were excluded.
+All (100%) laboratories required either clarification through e-mail contact or metadata correction during validation, as reflected by the high proportion of submissions with incomplete parameters or controlled-vocabulary corrections. Compliance with controlled vocabulary requirements was assessed to determine the degree of metadata standardisation achieved across participating laboratories. Only fields expected to contain predefined categorical values were considered in this analysis; free-text fields such as software versions, file names, and parameter descriptions were excluded.
 
 - 26.32% of submissions (5 laboratories) were fully compliant with controlled vocabulary requirements.
 - 73.68% (14 laboratories) required at least one manual correction due to the use of a non-standard value in a controlled field.
@@ -705,8 +699,6 @@ The most common compliance issues included:
 - Use of free-text entries instead of predefined software names in dropdown-based metadata fields, which prevented direct validation against the harmonised template.
 - Incorrect or inconsistent completion of lineage, clade, influenza type, or subtype fields.
 - Missing mandatory fields requiring subsequent normalisation.
-
-A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred even though the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to give laboratories time to review the available options and identify any missing software tools for possible inclusion in the schema, together with guidance on how mandatory fields should be completed when data were not available.
 
 #### Sample Quality Control Assessment
 
@@ -1403,16 +1395,17 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions.
 
-Lista de IDEAS:
-These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria.
-
 ### 7.1. Consensus Genome Reconstruction
 
-Consensus reconstruction results were strongest in the Illumina-based components overall, with a combined median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the Nanopore-based components. At component level, SARS1 and SARS2 showed median identities of {{ pct(general.components.SARS1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.SARS2.consensus.median_identity_pct, 2) }}, whereas FLU1 and FLU2 showed lower medians of {{ pct(general.components.FLU1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.FLU2.consensus.median_identity_pct, 2) }}.
+Consensus reconstruction results were strongest in the Illumina-based components overall, with a combined median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the Nanopore-based components. When grouped by virus, the combined median genome identity was also higher for SARS-CoV-2 components ({{ pct(general.general_results.consensus.median_identity_sars_pct, 2) }}) than for influenza components ({{ pct(general.general_results.consensus.median_identity_influenza_pct, 2) }}). (TODO, revisar) The fact that the influenza median remained slightly below the combined Nanopore-based median suggests that lower identity in influenza cannot be attributed to sequencing platform alone and was also influenced by virus-specific analytical complexity. At component level, SARS1 and SARS2 showed median identities of {{ pct(general.components.SARS1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.SARS2.consensus.median_identity_pct, 2) }}, whereas FLU1 and FLU2 showed lower medians of {{ pct(general.components.FLU1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.FLU2.consensus.median_identity_pct, 2) }}.
+
+- DESARROLLAR Gripe tiene menos consistencia y hay que establecer unas best practice.
 
 At the same time, the ranges observed across laboratories show that high medians did not eliminate outlier behaviour. In particular, the minimum identity values in SARS2 and FLU2 dropped to {{ pct(general.components.SARS2.consensus.identity_pct_min, 2) }} and {{ pct(general.components.FLU2.consensus.identity_pct_min, 2) }}, indicating that a subset of submissions diverged markedly from the curated gold standard.
 
 The dominant discrepancy categories also differed by component. SARS1 was dominated by stretches of Ns in submitted consensuses where defined nucleotides were present in the gold standard (`ns2nt`), whereas SARS2 was dominated by defined nucleotides where stretches of Ns were present in the gold standard (`nt2ns`). These patterns are consistent with differences in masking behaviour and minimum coverage policies relative to the gold standard reconstruction criteria. In influenza, both FLU1 and FLU2 were dominated by deletions relative to the gold standard, suggesting that consensus generation parameters remain important contributors to inter-laboratory divergence.
+
+DESARROLLAR These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria.
 
 ### 7.2. Variant Detection and Reporting
 
@@ -1421,6 +1414,8 @@ For SARS-CoV-2, variant detection performance did not follow a simple platform r
 The submitted metadata documented substantial diversity in variant reporting behaviour. Across SARS-CoV-2 submissions, {{ general.general_results.sars_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants, whereas {{ general.general_results.sars_variants.high_freq_only_pct }} reported high-frequency variants only. Influenza reporting was more heterogeneous: {{ general.general_results.influenza_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants, {{ general.general_results.influenza_variants.low_freq_only_pct }} reported low-frequency variants only, and {{ general.general_results.influenza_variants.high_freq_only_pct }} reported high-frequency variants only.
 
 Influenza results especially highlight the consequences of heterogeneous structural reporting. The network-level median number of variants with AF >=75% reported in metadata was {{ general.general_results.influenza_variants.median_variants_in_consensus }}, whereas the corresponding median derived from submitted VCF files was {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }}. The median discrepancy between these two representations was {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }}, and the total number of variants present in submitted VCF files ranged from {{ general.general_results.influenza_variants.min_variants_in_vcf }} to {{ general.general_results.influenza_variants.max_variants_in_vcf }}. Together, these values indicate that influenza variant outputs were not directly comparable under a single harmonised coordinate framework and that reporting conventions differed markedly across laboratories.
+
+DESARROLLAR The marked heterogeneity in influenza variant reporting within the network is reflected by mixed reporting modes across laboratories, the use of multiple reference genomes, and wide ranges in structural summary metrics, including {{ "%.0f"|format(general.general_results.influenza_variants.min_variants_in_vcf) }} to {{ "%.0f"|format(general.general_results.influenza_variants.max_variants_in_vcf) }} total variants in submitted VCF files and {{ "%.0f"|format(general.general_results.influenza_variants.min_discrepancies_in_reported_variants) }} to {{ "%.0f"|format(general.general_results.influenza_variants.max_discrepancies_in_reported_variants) }} discrepancies between metadata-reported and VCF-derived high-frequency variants.
 
 ### 7.3. Classification and QC Interpretation
 
@@ -1437,8 +1432,15 @@ This diversity is analytically valuable, but its interpretation is constrained b
 The main incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, consensus analysis, and classification-related metadata. This pattern suggests that laboratories were more consistent in declaring core tool identities than in documenting the exact thresholds and parameter sets that determine analytical behaviour.
 
 The submitted metadata also supports the view that parameter heterogeneity contributed to consensus and variant calling variability. Across all submitted samples, laboratories reported at least 8 different conventions for minimum coverage thresholds, 13 distinct consensus parameter strings, 13 distinct mapping parameter strings, and 14 distinct variant calling parameter strings. These differences do not prove causality for any individual discrepancy, but they do show that laboratories were not applying a uniform set of masking, filtering, or coverage rules.
+### 7.5. Metadata Reporting and Schema Compliance
 
-### 7.5. Implications for RELECOV 2.0
+Metadata quality affected not only interpretability but also interoperability. The exercise showed that laboratories were generally able to declare the core structure of their workflows, yet the level of detail required for reproducibility was often incomplete. This was especially evident for software-version fields, minimum coverage thresholds, variant calling parameters, and reference genome identifiers, all of which are necessary to reconstruct how a consensus or variant set was generated and to determine whether observed differences reflect analytical choice or true performance variation.
+
+The validation process also showed that schema compliance remains an operational issue in its own right. As reported in the metadata results section, only 26.32% of submissions (5 laboratories) were fully compliant with controlled-vocabulary requirements, whereas 73.68% (14 laboratories) required at least one manual correction because non-standard values had been used in controlled fields. The most frequent problems involved free-text software names in dropdown-based fields, inconsistent completion of lineage, clade, type, or subtype assignments, and missing mandatory entries. These issues do not necessarily imply poor analytical practice, but they do reduce the value of the metadata for automated validation, cross-laboratory comparison, and downstream integration into the RELECOV platform.
+
+DESARROLLAR A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred even though the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to give laboratories time to review the available options and identify any missing software tools for possible inclusion in the schema, together with guidance on how mandatory fields should be completed when data were not available.
+
+### 7.6. Implications for RELECOV 2.0
 
 Taken together, the results support a harmonisation strategy centred on minimum performance and reporting standards rather than on enforcement of a single analytical pipeline. The data do not support a universal workflow ranking that would apply equally across all viruses, platforms, and tasks. Instead, they show that performance depends on the interaction between dataset characteristics, reporting conventions, software choice, and parameterisation.
 
