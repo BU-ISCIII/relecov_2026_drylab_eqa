@@ -2738,6 +2738,59 @@ def make_component_influenza_variant_reporting_summary(
     return str(output_path)
 
 
+def make_component_variant_reporting_mode_plot(
+    general_data: Dict[str, Any],
+    comp_code: str,
+    figures_dir: str | Path,
+    output_filename: str = "variant_reporting_practice_by_component.png",
+) -> str:
+    output_dir = ensure_component_figures_dir(figures_dir, comp_code)
+    output_path = output_dir / output_filename
+
+    comp_variant = general_data.get("components", {}).get(comp_code, {}).get("variant", {})
+    categories = [
+        ("High and low frequency", safe_number(comp_variant.get("high_and_low_freq_pct"))),
+        ("Low frequency only", safe_number(comp_variant.get("low_freq_only_pct"))),
+        ("High frequency only", safe_number(comp_variant.get("high_freq_only_pct"))),
+    ]
+
+    labels = [label for label, value in categories if value is not None]
+    values = [value for _, value in categories if value is not None]
+    if not values:
+        return str(output_path)
+
+    plt.figure(figsize=(8, 6))
+    bars = plt.bar(
+        labels,
+        values,
+        color=[
+            CBF_COLORS["high_and_low_freq"],
+            CBF_COLORS["low_freq_only"],
+            CBF_COLORS["high_freq_only"],
+        ][: len(values)],
+    )
+    plt.xlabel("Reporting mode")
+    plt.ylabel("Submitted sample outputs (%)")
+    plt.title(f"{comp_code} variant reporting practices")
+    plt.ylim(0, 100)
+
+    for bar, value in zip(bars, values):
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            value + 1.5,
+            f"{value:.2f}%",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    return str(output_path)
+
+
 def make_consensus_summary_plot(
     labs: List[Dict[str, Any]],
     figures_dir: str | Path,
@@ -3218,6 +3271,11 @@ def generate_component_figures(
             figures_dir=figures_dir,
         )
         if comp_code.startswith("SARS"):
+            make_component_variant_reporting_mode_plot(
+                general_data=general_data,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
             make_component_variant_discrepancies_stacked_by_sample(
                 general_data=general_data,
                 labs=labs,
@@ -3230,6 +3288,11 @@ def generate_component_figures(
                 figures_dir=figures_dir,
             )
         if comp_code.startswith("FLU"):
+            make_component_variant_reporting_mode_plot(
+                general_data=general_data,
+                comp_code=comp_code,
+                figures_dir=figures_dir,
+            )
             make_component_influenza_variant_reporting_summary(
                 general_data=general_data,
                 labs=labs,
@@ -4665,6 +4728,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
     qc_matches = 0
     qc_discrepancies = 0
+    qc_nulls = 0
     qc_total = 0
 
     software_names_count = 0
@@ -4861,6 +4925,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     elif qc_val is False:
                         qc_discrepancies += 1
                         qc_total += 1
+                elif expected_qc is not None and reported_qc is None:
+                    qc_nulls += 1
 
                 gi = safe_number(sample.get("consensus", {}).get("genome_identity_pct"))
                 if gi is not None:
@@ -5106,6 +5172,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             discrepancy_reported_effect_all = []
             variant_breakdown_all = defaultdict(list)
             variant_samples = []
+            variant_reporting_modes_component = Counter()
 
             for sample_id, expected_sample in comp_expected["samples"].items():
                 tds = []
@@ -5175,6 +5242,13 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     discrepancies_in_reported_variants_effect_vals.append(dirve)
                     if dirve is not None:
                         discrepancy_reported_effect_all.append(dirve)
+
+                    if var.get("high_and_low_freq"):
+                        variant_reporting_modes_component["high_and_low_freq"] += 1
+                    elif var.get("high_freq_only"):
+                        variant_reporting_modes_component["high_freq_only"] += 1
+                    elif var.get("low_freq_only"):
+                        variant_reporting_modes_component["low_freq_only"] += 1
 
                     for key in ["wrong_nt", "insertions", "deletions", "missing", "denovo"]:
                         v = safe_number(var.get(key))
@@ -5269,6 +5343,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "discrepancy_breakdown": variant_breakdown_summary,
                 "dominant_discrepancy_pattern": dominant_metric_key(variant_breakdown_summary),
                 "most_frequent_discrepancy_pattern": dominant_metric_key(variant_breakdown_summary),
+                "high_and_low_freq_pct": pct(variant_reporting_modes_component["high_and_low_freq"], sum(variant_reporting_modes_component.values())),
+                "low_freq_only_pct": pct(variant_reporting_modes_component["low_freq_only"], sum(variant_reporting_modes_component.values())),
+                "high_freq_only_pct": pct(variant_reporting_modes_component["high_freq_only"], sum(variant_reporting_modes_component.values())),
+                "fig_reporting_mode_by_component": f"figures/{comp_code}/variant_reporting_practice_by_component.png",
                 "fig_discrepancies_boxplot_by_sample": f"figures/{comp_code}/variant_discrepancies_boxplot_by_sample.png",
                 "fig_discrepancies_stacked_by_sample": f"figures/{comp_code}/variant_discrepancies_stacked_by_sample.png",
                 "fig_discrepancy_type_boxplot": f"figures/{comp_code}/variant_discrepancy_type_boxplot.png",
@@ -5279,6 +5357,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             discrepancy_reported_all = []
             variant_in_vcf_all = []
             variant_samples = []
+            variant_reporting_modes_component = Counter()
 
             for sample_id, expected_sample in comp_expected["samples"].items():
                 sample_variants_in_consensus = []
@@ -5315,6 +5394,13 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     if niv is not None:
                         variant_in_vcf_all.append(niv)
 
+                    if var.get("high_and_low_freq"):
+                        variant_reporting_modes_component["high_and_low_freq"] += 1
+                    elif var.get("high_freq_only"):
+                        variant_reporting_modes_component["high_freq_only"] += 1
+                    elif var.get("low_freq_only"):
+                        variant_reporting_modes_component["low_freq_only"] += 1
+
                 variants_in_consensus_summary = summarize_numeric_values(sample_variants_in_consensus, total_count=len(participating_labs))
                 variants_in_consensus_vcf_summary = summarize_numeric_values(sample_variants_in_consensus_vcf, total_count=len(participating_labs))
                 reported_variant_discrepancies_summary = summarize_numeric_values(sample_discrepancies_in_reported_variants, total_count=len(participating_labs))
@@ -5350,6 +5436,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "max_variants_in_vcf": variants_in_vcf_summary["max"],
                 "variants_in_vcf_summary": variants_in_vcf_summary,
                 "samples": variant_samples,
+                "high_and_low_freq_pct": pct(variant_reporting_modes_component["high_and_low_freq"], sum(variant_reporting_modes_component.values())),
+                "low_freq_only_pct": pct(variant_reporting_modes_component["low_freq_only"], sum(variant_reporting_modes_component.values())),
+                "high_freq_only_pct": pct(variant_reporting_modes_component["high_freq_only"], sum(variant_reporting_modes_component.values())),
+                "fig_reporting_mode_by_component": f"figures/{comp_code}/variant_reporting_practice_by_component.png",
                 "fig_reporting_summary_by_sample": f"figures/{comp_code}/influenza_variant_reporting_summary_by_sample.png",
             }
 
@@ -5505,6 +5595,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "collecting_lab_sample_id": sample_id,
                 "gold_standard_qc": expected_qc,
                 "match_rate_pct": pct(sample_qc_matches, sample_qc_matches + sample_qc_disc + sample_qc_null),
+                "reported_match_rate_pct": pct(sample_qc_matches, sample_qc_total),
                 "discrepancy_pct": pct(sample_qc_disc, sample_qc_matches + sample_qc_disc + sample_qc_null),
                 "null_pct": pct(sample_qc_null, sample_qc_matches + sample_qc_disc + sample_qc_null),
                 "matches": sample_qc_matches,
@@ -5514,7 +5605,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             })
 
         comp_obj["qc"] = {
-            "match_rate_pct": pct(qc_matches_comp, qc_total_comp),
+            "match_rate_pct": pct(qc_matches_comp, qc_matches_comp + qc_disc_comp + qc_null_comp),
+            "reported_match_rate_pct": pct(qc_matches_comp, qc_total_comp),
             "matches": qc_matches_comp,
             "discrepancies": qc_disc_comp,
             "nulls": qc_null_comp,
@@ -5870,6 +5962,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
         def build_variant_metrics(records):
             params = []
+            models = []
             high_and_low_freq = []
             high_freq_only = []
             low_freq_only = []
@@ -5886,6 +5979,11 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 vp = sb.get("variant_calling_params")
                 if is_meaningful(vp):
                     params.append(vp)
+
+                if comp_code == "SARS2":
+                    model = sb.get("model")
+                    if is_meaningful(model):
+                        models.append(model)
 
                 hal = extract_variant_reporting_mode_pct(sample, "high_and_low_freq")
                 hfo = extract_variant_reporting_mode_pct(sample, "high_freq_only")
@@ -5921,6 +6019,8 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 "number_of_variants_with_effect": median_or_none(n_effect),
                 "discrepancies_in_reported_variants": median_or_none(discrepancies_reported),
             }
+            if comp_code == "SARS2":
+                out["model"] = most_common_or_none(models)
 
             if comp_expected.get("virus") == "SARS-CoV-2":
                 n_effect_vcf = []
@@ -6267,9 +6367,11 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "primary_incompleteness_drivers": [name for name, _ in global_driver_counter.most_common(10)],
         },
         "qc": {
-            "match_rate_pct": pct(qc_matches, qc_total),
+            "match_rate_pct": pct(qc_matches, qc_matches + qc_discrepancies + qc_nulls),
+            "reported_match_rate_pct": pct(qc_matches, qc_total),
             "matches": qc_matches,
             "discrepancies": qc_discrepancies,
+            "nulls": qc_nulls,
             "total_evaluations": qc_total,
         },
         "components": components_out,

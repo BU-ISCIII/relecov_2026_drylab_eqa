@@ -253,11 +253,11 @@ _**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECO
 | FLU2   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample1 | A/H1N1 | D.3.1.1   | 6B.1A.5a.2a.1      | High-quality baseline sample (human)    | Ok            |
 | FLU3   | ESIB 2024 | Illumina | No enrichment       | —                                               | Paired-end  | INFL2.04          | —      | —         | -                  | No influenza (Rhinovirus only)          | Bad           |
 | FLU4   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample3 | A/H3N2 | K         | 3C.2a1b.2a.2a.3a.1 | Contamination with SARS-CoV-2           | Ok            |
-| FLU5   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample4 | A/H3N2 | J.2.2     | 3C.2a1b.2a.2a.3a.1 | NA segment dropout                      | Bad           |
+| FLU5   | In-silico | Illumina | Amplicon            | Zhou 2009 single-reaction genomic amplification | Paired-end  | In-silico Sample4 | A/H3N2 (A/H3 or A/H3Nx) | J.2.2     | 3C.2a1b.2a.2a.3a.1 | NA segment dropout                      | Bad           |
 | FLU6   | ESIB 2024 | Nanopore | No enrichment       | —                                               | Single-end  | INFL1.02          | A/H5N6 | 2.3.4.4h  | -                  | High-quality baseline sample (zoonotic) | Ok            |
 | FLU7   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample2 | A/H1N1 | C.1.9.3   | 6B.1A.5a.2a        | Contamination with Rhinovirus           | Ok            |
 | FLU8   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample3 | A/H3N2 | K         | 3C.2a1b.2a.2a.3a.1 | High-quality baseline sample (human)    | Ok            |
-| FLU9   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample1 | A/H1N1 | D.3.1.1   | 6B.1A.5a.2a.1      | HA segment dropout                      | Bad           |
+| FLU9   | In-silico | Nanopore | Amplicon            | Zhou 2009 single-reaction genomic amplification | Single-end  | In-silico Sample1 | A/H1N1 (A/N1 or A/HxN1) | D.3.1.1   | 6B.1A.5a.2a.1      | HA segment dropout                      | Bad           |
 | FLU10  | ESIB 2024 | Nanopore | Amplicon            | CommonUni12/13 (Van den Hoecke 2015)            | Single-end  | INFL1.08          | A/H5N1 | 2.3.4.4b  | -                  | High-quality baseline sample (zoonotic) | Ok            |
 
 ## 4. Methodology of Evaluation
@@ -707,11 +707,11 @@ Sample quality control (QC) classifications reported by laboratories (Pass/Fail)
 - Match: laboratory QC classification equals the gold standard QC status
 - Discrepancy: laboratory QC classification differs from the gold standard QC status
 
-Overall, the network achieved {{ pct(general.qc.match_rate_pct) }} QC concordance, corresponding to {{ general.qc.matches }} Matches and {{ general.qc.discrepancies }} Discrepancies across {{ general.qc.total_evaluations }} evaluated sample-level QC decisions.
+Overall, the network achieved {{ pct(general.qc.reported_match_rate_pct) }} QC concordance, corresponding to {{ general.qc.matches }} Matches and {{ general.qc.discrepancies }} Discrepancies across {{ general.qc.total_evaluations }} evaluated sample-level QC decisions.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-As shown in Figure {{ fig_counter.value }}, QC concordance differed across components, ranging from {{ pct(general.components.SARS1.qc.match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.match_rate_pct) }} in FLU2.
+As shown in Figure {{ fig_counter.value }}, QC concordance differed across components, ranging from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2.
 
 
 {% set figure_style = "max-width: 80%;" %}
@@ -730,7 +730,7 @@ The submitted metadata documented heterogeneity in:
 
 - Choice of consensus reconstruction software
 - Variant calling strategies
-- Lineage and clade assignment tools
+- Lineage and clade assignment tool's version and database versions.
 - Reference genome selection
 - Coverage and allele frequency thresholds
 
@@ -740,14 +740,16 @@ The metadata submissions allowed characterisation of the analytical landscape cu
 
 A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified across participating laboratories, defined as unique combinations of software tools and versions declared in the metadata template.
 
-Substantial diversity was observed in the selection of core analytical tools:
+Substantial diversity was observed in the selection of core analytical tools, based on distinct declared software identities in the submitted metadata (software name plus version where applicable):
 
-- Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct tools or versions )
-- Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct tools or versions )
-- SARS-CoV-2 lineage assignment software ( {{ general.metadata_completeness.total_lineage_assignment_softwares }} distinct tools or versions )
-- Clade assignment software ( {{ general.metadata_completeness.total_clade_assignment_softwares }} distinct tools or versions )
-- Influenza type assignment software ( {{ general.metadata_completeness.total_type_assignment_softwares }} distinct tools or versions )
-- Influenza subtype assignment software ( {{ general.metadata_completeness.total_subtype_assignment_softwares }} distinct tools or versions )
+- Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct declared software identities )
+- Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct declared software identities )
+- SARS-CoV-2 lineage assignment software ( {{ general.metadata_completeness.total_lineage_assignment_softwares }} distinct declared software identities )
+- Clade assignment software ( {{ general.metadata_completeness.total_clade_assignment_softwares }} distinct declared software identities )
+- Influenza type assignment software ( {{ general.metadata_completeness.total_type_assignment_softwares }} distinct declared software identities )
+- Influenza subtype assignment software ( {{ general.metadata_completeness.total_subtype_assignment_softwares }} distinct declared software identities )
+
+For lineage, clade, type, and subtype benchmarking in Section 6, these declared software identities are further stratified by database version when that information was reported, so the benchmarking categories may be more granular than the metadata diversity counts summarised here.
 
 Comparative performance analyses stratified by component are presented in Section 6, where software-level differences are evaluated within homogeneous analytical contexts (SARS-CoV-2 Illumina, SARS-CoV-2 Nanopore, Influenza Illumina, Influenza Nanopore).
 
@@ -832,13 +834,13 @@ Discrepancy type composition aggregated across all submitted consensus sequences
 
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
-| Incorrect nucleotide | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.wrong_nt.max }} |
-| Ambiguity instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max }} |
-| Nucleotide instead of ambiguity | {{ comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max }} |
-| Stretch of Ns instead of nucleotide | {{ comp_net.consensus.discrepancy_breakdown.ns2nt.median }} | {{ comp_net.consensus.discrepancy_breakdown.ns2nt.min }}–{{ comp_net.consensus.discrepancy_breakdown.ns2nt.max }} |
-| Nucleotide stretch instead of stretch of Ns| {{ comp_net.consensus.discrepancy_breakdown.nt2ns.median }} | {{ comp_net.consensus.discrepancy_breakdown.nt2ns.min }}–{{ comp_net.consensus.discrepancy_breakdown.nt2ns.max }} |
-| Insertion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.insertions.median }} | {{ comp_net.consensus.discrepancy_breakdown.insertions.min }}–{{ comp_net.consensus.discrepancy_breakdown.insertions.max }} |
-| Deletion relative to gold standard | {{ comp_net.consensus.discrepancy_breakdown.deletions.median }} | {{ comp_net.consensus.discrepancy_breakdown.deletions.min }}–{{ comp_net.consensus.discrepancy_breakdown.deletions.max }} |
+| Incorrect nucleotide | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.wrong_nt.max) }} |
+| Ambiguity instead of nucleotide | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max) }} |
+| Nucleotide instead of ambiguity | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max) }} |
+| Stretch of Ns instead of nucleotide | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ns2nt.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ns2nt.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ns2nt.max) }} |
+| Nucleotide stretch instead of stretch of Ns| {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ns.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ns.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ns.max) }} |
+| Insertion relative to gold standard | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.insertions.max) }} |
+| Deletion relative to gold standard | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.deletions.max) }} |
 
 The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.consensus.dominant_discrepancy_pattern) }}.
 
@@ -861,18 +863,28 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
 Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency (AF) higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
+{% set fig_counter.value = fig_counter.value + 1 %}
+Figure {{ fig_counter.value }} summarises the distribution of declared variant reporting modes across submitted sample outputs in {{ comp_code }}.
+
+{% set figure_style = "max-width: 80%;" %}
+{{ render_figure(
+  comp_net.variant.fig_reporting_mode_by_component,
+  "Variant reporting practices for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Successful hits | Variants >75% AF in metadata | Variants >75% AF in VCF | Variants with effect in metadata | Variants with effect in VCF | Discrepancies metadata vs VCF | Effect discrepancies metadata vs VCF |
+| Sample ID | Successful hits | Variants >=75% AF in metadata | Variants >=75% AF in VCF | Variants with effect in metadata | Variants with effect in VCF | Discrepancies metadata vs VCF | Effect discrepancies metadata vs VCF |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.variants_with_effect.median if s.variants_with_effect and s.variants_with_effect.median is not none else "NA" }} | {{ s.variants_with_effect_vcf.median if s.variants_with_effect_vcf and s.variants_with_effect_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants_effect.median if s.discrepancies_in_reported_variants_effect and s.discrepancies_in_reported_variants_effect.median is not none else "NA" }} |
 {% endfor %}
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant calling profile per sample for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant calling profile per sample for {{ comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Sample ID | Successful hits | Median discrepancies | Discrepancies min-max | Wrong nucleotide | Insertions | Deletions | Missing | De novo |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -898,11 +910,11 @@ Discrepancy type composition (aggregated across all submitted variant calls for 
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
 |---|---:|---:|
-| Incorrect nucleotide | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.median }} | {{ comp_net.variant.discrepancy_breakdown.wrong_nt.min }}–{{ comp_net.variant.discrepancy_breakdown.wrong_nt.max }} |
-| Insertion relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.insertions.median }} | {{ comp_net.variant.discrepancy_breakdown.insertions.min }}–{{ comp_net.variant.discrepancy_breakdown.insertions.max }} |
-| Deletions relative to gold standard | {{ comp_net.variant.discrepancy_breakdown.deletions.median }} | {{ comp_net.variant.discrepancy_breakdown.deletions.min }}–{{ comp_net.variant.discrepancy_breakdown.deletions.max }} |
-| Missing expected variants | {{ comp_net.variant.discrepancy_breakdown.missing.median }} | {{ comp_net.variant.discrepancy_breakdown.missing.min }}–{{ comp_net.variant.discrepancy_breakdown.missing.max }} |
-| De novo variants | {{ comp_net.variant.discrepancy_breakdown.denovo.median }} | {{ comp_net.variant.discrepancy_breakdown.denovo.min }}–{{ comp_net.variant.discrepancy_breakdown.denovo.max }} |
+| Incorrect nucleotide | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.wrong_nt.max) }} |
+| Insertion relative to gold standard | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.insertions.max) }} |
+| Deletions relative to gold standard | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.deletions.max) }} |
+| Missing expected variants | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.missing.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.missing.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.missing.max) }} |
+| De novo variants | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.denovo.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.denovo.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.denovo.max) }} |
 
 The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}.
 
@@ -925,7 +937,7 @@ For the {{ comp_code }} component, variant evaluation focused on the agreement b
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level influenza variant reporting metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Variants >75% AF in metadata | Variants >75% AF in consensus VCF | Discrepancies between metadata and VCF | Total variants in VCF |
+| Sample ID | Median variants >=75% AF in metadata | Median variants >=75% AF in consensus VCF | Median discrepancies between metadata and VCF | Median total variants in VCF |
 |---|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.variants_in_vcf.median if s.variants_in_vcf and s.variants_in_vcf.median is not none else "NA" }} |
@@ -938,8 +950,8 @@ Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, 
 
 | Metric | Network median | Network min-max |
 |---|---:|---:|
-| Variants >75% AF in metadata | {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus if comp_net.variant.min_variants_in_consensus is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus if comp_net.variant.max_variants_in_consensus is not none else "NA" }} |
-| Variants >75% AF in consensus VCF | {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus_vcf if comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus_vcf if comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
+| Variants >=75% AF in metadata | {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus if comp_net.variant.min_variants_in_consensus is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus if comp_net.variant.max_variants_in_consensus is not none else "NA" }} |
+| Variants >=75% AF in consensus VCF | {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus_vcf if comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus_vcf if comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
 | Discrepancies between metadata and VCF | {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }} | {{ comp_net.variant.min_discrepancies_in_reported_variants if comp_net.variant.min_discrepancies_in_reported_variants is not none else "NA" }}–{{ comp_net.variant.max_discrepancies_in_reported_variants if comp_net.variant.max_discrepancies_in_reported_variants is not none else "NA" }} |
 | Total variants in VCF | {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_vcf if comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_vcf if comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
 
@@ -994,7 +1006,7 @@ Laboratory-reported sample QC evaluations (Pass/Fail) for the {{ comp_code }} co
 - Match: reported QC status equals the gold standard
 - Discrepancy: reported QC status differs from the gold standard
 
-Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pct) }}, corresponding to {{ comp_net.qc.matches }} Matches and {{ comp_net.qc.discrepancies }} Discrepancies across {{ comp_net.qc.total_evaluations }} evaluated QC decisions.
+Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.reported_match_rate_pct) }}, corresponding to {{ comp_net.qc.matches }} Matches and {{ comp_net.qc.discrepancies }} Discrepancies across {{ comp_net.qc.total_evaluations }} evaluated QC decisions.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **_Table {{ table_counter.value }}_. Sample-level QC concordance for {{ comp_code }}.**
@@ -1002,7 +1014,7 @@ Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pc
 | Sample ID | Gold standard QC | % Match | # Matches | # Discrepancies | Total evaluations |
 |---|---:|---:|---:|---:|---:|
 {% for s in comp_net.qc.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
+| {{ s.collecting_lab_sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.reported_match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1062,7 +1074,7 @@ Table {{ table_counter.value }} summarises the percentage of host reads observed
 
 **Table {{ table_counter.value }}. Performance summary of declared de-hosting software for {{ comp_code }}.**
 
-| De-hosting software | Version | N labs | % Host reads |
+| De-hosting software | Version | N labs | Median % host reads |
 |---|---:|---:|---:|
 {% for p in comp_net.benchmarking.dehosting.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.per_reads_host }} |
@@ -1094,7 +1106,7 @@ Table {{ table_counter.value }} summarises the performance of declared pre-proce
 
 **Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.** The configuration column represents the most frequently reported parameter string among laboratories declaring that software and version.
 
-| Pre-processing software | Version | N labs | Most common configuration | Number of reads sequenced | Reads passing filters |
+| Pre-processing software | Version | N labs | Most common configuration | Median number of reads sequenced | Median reads passing filters |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.preprocessing.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
@@ -1127,7 +1139,7 @@ Table {{ table_counter.value }} summarises the declared mapping software configu
 
 **Table {{ table_counter.value }}. Performance summary of declared mapping software configurations for {{ comp_code }}.**
 
-| Mapping software | Version | N labs | Most common configuration | Depth of coverage threshold | % Reads virus |
+| Mapping software | Version | N labs | Most common configuration | Most common depth of coverage threshold | Median % reads virus |
 |---|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.mapping.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.depth_of_coverage_threshold if p.depth_of_coverage_threshold is not none else "N/A" }} | {{ p.per_reads_virus if p.per_reads_virus is not none else "N/A" }} |
@@ -1174,7 +1186,7 @@ Table {{ table_counter.value }} summarises the performance of declared assembly 
 
 **Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
 
-| Assembly software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
+| Assembly software | Version | N labs | Most common configuration | Median consensus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.assembly.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
@@ -1192,7 +1204,7 @@ Table {{ table_counter.value }} summarises the performance of declared consensus
 
 **Table {{ table_counter.value }}. Performance summary of declared consensus software configurations for {{ comp_code }}.**
 
-| Consensus software | Version | N labs | Most common configuration | Consensus genome length | Median genome identity | Median number of discrepancies per sample |
+| Consensus software | Version | N labs | Most common configuration | Median consensus genome length | Median genome identity | Median number of discrepancies per sample |
 |---|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.consensus_software.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
@@ -1232,10 +1244,10 @@ Table {{ table_counter.value }} summarises the performance of declared variant c
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
 {% endfor %}
 {% else %}
-| Variant calling software | Version | N labs | Most common configuration | Median high and low frequency (%) | Median high frequency only (%) | Median low frequency only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
+| Variant calling software | Version | N labs | {{ "Model used" if comp_code == "SARS2" else "Most common configuration" }} | Median high and low frequency (%) | Median high frequency only (%) | Median low frequency only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.variant_calling.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ (p.model if comp_code == "SARS2" else p.params)|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
 {% endfor %}
 {% endif %}
 
@@ -1270,10 +1282,10 @@ Table {{ table_counter.value }} summarises the concordance profile of declared c
 
 **Table {{ table_counter.value }}. Performance summary of declared clade assignment software configurations for {{ comp_code }}.**
 
-| Clade assignment software | Version | N labs | Database version | % of clade match | % of clade discrepancy |
-|---|---:|---:|---:|---:|---:|
+| Clade assignment software | Version | N labs | Database version | % of clade match |
+|---|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.clade_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.clade_hit_pct }} | {{ p.clade_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.clade_hit_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1302,10 +1314,10 @@ Table {{ table_counter.value }} summarises the concordance profile of declared l
 
 **Table {{ table_counter.value }}. Performance summary of declared lineage assignment software configurations for {{ comp_code }}.**
 
-| Lineage Assignment software | Version | N labs | Database version | % of lineage match | % of lineage discrepancy |
-|---|---:|---:|---:|---:|---:|
+| Lineage Assignment software | Version | N labs | Database version | % of lineage match |
+|---|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.lineage_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.lineage_hit_pct }} | {{ p.lineage_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.lineage_hit_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1407,6 +1419,14 @@ The dominant discrepancy categories also differed by component. SARS1 was domina
 
 DESARROLLAR These SARS-CoV-2 discrepancy patterns are consistent with differences in masking behaviour and/or minimum coverage thresholds relative to the gold standard reconstruction criteria.
 
+DESARROLLAR para SARS1, la muestra SARS4 es la que más discrepancias tiene en el consenso y la que menos identidad. Es una muestra con "Very low read depth" y que tiene, siendo las discrepancias todas relacionadas con el masking de zonas de baja covertura. Esto refleja una discrepancia entre los valores mínimos de cobertura del ECDC en sus Gold Standard respecto de los de la red de RELECOV. SARS1 tiene de media muy pocas discrepancias y una identidad de genoma muy alta, lo que refleja las altas capacidades de la red para generar genomas de SARS-CoV-2 secuenciados con Illumina.
+
+DESARROLLAR para SARS2 la muestra con mayor número de discrepancias es SARS8 que está clasificada como mala calidad porque tiene >10 mixed sites, siendo el mayor número de discrepancias debidas a Nucleotidestretch instead ofstretch of Ns, lo que denota distintos criterios a la hora de enmarscarar zonas de baja covertura respecto de los criterios del ECDC.
+
+DESARROLLAR para FLU1 las muestras con una mediana mayor de discrepancias son las muestras in silico FLU4 y FLU5, con una contaminación por SARS-CoV-2 y un drop en el segmento NA respectivamente. Las discrepancias más frecuentes son delecciones con respecto al gold standard, principalmente en las muestras in-silico, lo que puede deberse a los thresholds en la llamada de indels.
+
+DESARROLLAR para FLU2
+
 ### 7.2. Variant Detection and Reporting
 
 For SARS-CoV-2, variant detection performance did not follow a simple platform ranking. The median number of discrepancies relative to the curated variant set was {{ general.general_results.sars_variants.median_discrepancy_illumina }} in the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} in the Nanopore component. This indicates that platform effects were present, but that they interacted with sample composition, reporting choices, and software configuration rather than determining performance on their own.
@@ -1417,11 +1437,28 @@ Influenza results especially highlight the consequences of heterogeneous structu
 
 DESARROLLAR The marked heterogeneity in influenza variant reporting within the network is reflected by mixed reporting modes across laboratories, the use of multiple reference genomes, and wide ranges in structural summary metrics, including {{ "%.0f"|format(general.general_results.influenza_variants.min_variants_in_vcf) }} to {{ "%.0f"|format(general.general_results.influenza_variants.max_variants_in_vcf) }} total variants in submitted VCF files and {{ "%.0f"|format(general.general_results.influenza_variants.min_discrepancies_in_reported_variants) }} to {{ "%.0f"|format(general.general_results.influenza_variants.max_discrepancies_in_reported_variants) }} discrepancies between metadata-reported and VCF-derived high-frequency variants.
 
+DESARROLLAR para SARS1 hay muy pocas discrepancias en las variantes reportadas en el metadato respecto de los .vcf, aunque el numero de discrepancias en las variantes con efecto es alto, lo que puede significat distintos criterios en lo que se consideran variantes cone efecto. SARS3 es la muestra con la mediana discrepancias más alta y SARS4 con el máximo de discrepancias más alto. SARS4 se puede justificar con los valores de cobertura. El tipo de discrepancia más frecuente son las variantes de novo. El .vcf gold standard solo contiene variantes con una AF >= 25% y una cobertura mínima de 10X, por lo que distintos thresholds en la llamada a variantes pueden producir discrepancias. Además aquellos laboratorios reportando solo highfreq variants tendrán mayor numero de variantes missing.
+
+DESARROLLAR para SARS2 hay muy pocas discrepancias en las variantes, siendo las discrepancias más frecuentes las de missing y de novo, lo que puede deberse a que en el vcf de referencia solo están presentes las variantes con una frecuencia alélica de más del 75%. Las muestras con mayor número de discrepancias en la llamada a variantes son SARS9 y SARS10 que son dos muestras reportadas como de mala calidad seggún los estándares del ECDC porque tienen una contaminación con influenza y muy poca profundidad respectivamente.
+
+DESARROLLAR para FLU1 solo 2 laboratorios reportaron el número de variantes en los metadatos. De esos dos, 1 han reportado como numero de variantes con una frecuencia alélica de más del 75% el número total de variantes en el .vcf, que incluía únicamente variantes en baja frecuencia. Esto denota desconocimiento en los resultados generados por los softwares y aumenta las discrepancias entre los metadatos y el .vcf. Algunos laboratorios han reportado un número altísimo en el vcf de variantes, ya que han incluído variantes con frecuencias alélicas muy bajas y presentes en muy pocas lecturas, lo que indica distintos criterios a la hora de llamar a variantes y una falta de homogeneidad entre laboratorios.
+
+DESARROLLAR para FLU2
+
 ### 7.3. Classification and QC Interpretation
 
 Classification performance was acceptable overall but clearly stronger for lineage/type assignment than for clade assignment. SARS-CoV-2 lineage concordance reached {{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}, compared with {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} for SARS-CoV-2 clade assignment. Influenza type/subtype concordance reached {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}, compared with {{ pct(general.general_results.classification.influenza_clade_concordance_pct) }} for influenza clade assignment. In the SARS-CoV-2 submissions, this difference is consistent with metadata-level reporting problems in the clade field itself: among the clade assignments reviewed in the submitted JSON files, some were left empty and others contained values that matched the lineage assignment or had lineage-like syntax rather than a clade designation. This suggests that part of the excess clade discordance reflects field completion and nomenclature issues in addition to true analytical misclassification.
 
-QC interpretation showed additional between-component differences. Only 9 of the 19 participating laboratories reported at least one sample-level QC assessment in their submitted metadata. Among evaluable QC decisions, network-wide concordance was {{ pct(general.qc.match_rate_pct) }}, and component-level concordance ranged from {{ pct(general.components.SARS1.qc.match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.match_rate_pct) }} in FLU2. This indicates that QC interpretation was not equally stable across all datasets, while also showing that many laboratories either did not apply or did not report a formal sample-level QC decision in the metadata template.
+QC interpretation showed additional between-component differences. Only 9 of the 19 participating laboratories reported at least one sample-level QC assessment in their submitted metadata. Among evaluable QC decisions, network-wide concordance was {{ pct(general.qc.reported_match_rate_pct) }}, and component-level concordance ranged from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2. This indicates that QC interpretation was not equally stable across all datasets, while also showing that many laboratories either did not apply or did not report a formal sample-level QC decision in the metadata template.
+
+DESARROLLAR para SARS1 Las muestras SARS4 y SARS5 son las que presentan discrepancias respecto del Gold Standard del ECDC, donde las clasificacan como calidad Fail. En los estándares del ECDC consideran que una muestra con >10 mixed sites tiene mala calidad (SARS5) y en el caso de SARS4 consideran que su covertura no es lo suficientemente buena. Estos criterios difieren de los criterios de la red. Clade assignment results were largely consistent across software and database versions when correctly reported, with most laboratories achieving 100% concordance regardless of the configuration used. Optimal results were observed both with databases contemporaneous to the dataset (2024) and with the most recent versions available in 2026, indicating that, in this dataset, clade assignment is robust to version differences when properly implemented. However, substantial discrepancies arose primarily from reporting issues rather than true software performance. In the SARS dataset, four laboratories incorrectly reported lineage in place of clade assignment, and one laboratory failed to report clade information entirely. These issues artificially inflated discrepancy rates, including in configurations that are otherwise expected to perform correctly. All other laboratories reported clade assignments appropriately, independently of the software version or database used.
+
+DESARROLLAR para SARS2 la muestra SARS8 es la que muestra mayor número de discrepancias en la asignación de Linaje, siendo una muestra que presenta >10 mixed sites y donde solo uno de los laboratorios ha conseguido reportar el linaje exacto (XBB.1.9.1), mientras que 5 laboratorios han reportado el mismo linaje (XBB.1.9). Esto puede deberse a diferencias en los criterios de enmascarado de zonas de baja covertura con respecto del gold standard que produce cambios en la asignación de linaje. Esta muestra también presenta discrepancias en la asignación del control de calidad por diferencias en los estándares de QC con repecto de los del ECDC. Hay 1 laboratorios que ha rellenado el linaje en el clado y que no ha rellenado linaje.
+
+DESARROLLAR para FLU1 un porcentaje relativamente alto de laboratorios no ha reportado clado para FLU1, pero los que lo han reportado lo han acertado. FLU1 es la muestra con el mayor numero de discrepancias en la asignación de subtipo, tratándose de una A/H5N1 que fue reportada como A/H5N6 por un laboratorio que usó "BLASTN vs Influenza NCBI Virus" para la asignación. En cuanto al QC, la mayoría de laboratorios no reportaron esta información y solo hubo discrepancias en 1 tercio de los casos cuando había discrepancias.
+
+DESARROLLAR para FLU2
+
 
 ### 7.4. Workflow Diversity and Reporting Constraints
 
@@ -1432,6 +1469,16 @@ This diversity is analytically valuable, but its interpretation is constrained b
 The main incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, consensus analysis, and classification-related metadata. This pattern suggests that laboratories were more consistent in declaring core tool identities than in documenting the exact thresholds and parameter sets that determine analytical behaviour.
 
 The submitted metadata also supports the view that parameter heterogeneity contributed to consensus and variant calling variability. Across all submitted samples, laboratories reported at least 8 different conventions for minimum coverage thresholds, 13 distinct consensus parameter strings, 13 distinct mapping parameter strings, and 14 distinct variant calling parameter strings. These differences do not prove causality for any individual discrepancy, but they do show that laboratories were not applying a uniform set of masking, filtering, or coverage rules.
+
+DESARROLLAR para SARS1 Although INSaFLU (v2.2.2) shows the highest median genome identity (99.73%), low median discrepancies (2.0), and perfect clade and lineage/type concordance (100%), these results are based on a single laboratory only (N=1), which substantially limits the robustness of the comparison. In contrast, nf-core/viralrecon (v3.0.0), although slightly less optimal in raw sequence accuracy metrics, was used by six laboratories, providing a much stronger basis for assessing reproducibility and real-world robustness. Its high median genome identity (99.69%), complete lineage/type concordance (100%), good clade concordance (83.3%), and the highest metadata completeness (91.4%) support the conclusion that it is the most robust protocol overall for consensus genome generation for SARS1 component.
+
+DESARROLLAR para SARS2 consensus genome performance was generally high across all protocols, with median genome identity values above 99.4% in all cases. The highest accuracy was observed for INSaFLU (v2.2.2) and nf-core/viralrecon (v3.0.0), both reaching 99.88%, although INSaFLU was used by a single laboratory (N=1), limiting robustness. In contrast, nf-core/viralrecon, supported by four laboratories (N=4), combined high genome identity with the lowest median discrepancies (2.5) and the highest metadata completeness (91.5%), indicating strong reproducibility and overall robustness. All protocols achieved 100% clade concordance except for INSaFLU (web version) and nf-core/viralrecon, which showed reduced concordance (66.7% and 75.0%, respectively), suggesting some variability in clade assignment despite high consensus sequence quality. Lineage concordance was more variable across protocols, with generally lower values, particularly for custom pipelines (33.3%), highlighting inconsistencies in lineage reporting rather than consensus generation itself.
+
+DESARROLLAR para FLU1 
+
+DESARROLLAR para FLU2
+
+
 ### 7.5. Metadata Reporting and Schema Compliance
 
 Metadata quality affected not only interpretability but also interoperability. The exercise showed that laboratories were generally able to declare the core structure of their workflows, yet the level of detail required for reproducibility was often incomplete. This was especially evident for software-version fields, minimum coverage thresholds, variant calling parameters, and reference genome identifiers, all of which are necessary to reconstruct how a consensus or variant set was generated and to determine whether observed differences reflect analytical choice or true performance variation.
@@ -1439,6 +1486,8 @@ Metadata quality affected not only interpretability but also interoperability. T
 The validation process also showed that schema compliance remains an operational issue in its own right. As reported in the metadata results section, only 26.32% of submissions (5 laboratories) were fully compliant with controlled-vocabulary requirements, whereas 73.68% (14 laboratories) required at least one manual correction because non-standard values had been used in controlled fields. The most frequent problems involved free-text software names in dropdown-based fields, inconsistent completion of lineage, clade, type, or subtype assignments, and missing mandatory entries. These issues do not necessarily imply poor analytical practice, but they do reduce the value of the metadata for automated validation, cross-laboratory comparison, and downstream integration into the RELECOV platform.
 
 DESARROLLAR A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred even though the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to give laboratories time to review the available options and identify any missing software tools for possible inclusion in the schema, together with guidance on how mandatory fields should be completed when data were not available.
+
+DESARROLLAR Los laboratorios que en el apartado de Clade/Lineage Database version han reportado la versión del software, denota que no saben rellenar la información de la BBDD ya que el versionado de la BBDD es distinto que el del software en Nextclade y Pangolin.
 
 ### 7.6. Implications for RELECOV 2.0
 
@@ -1778,7 +1827,7 @@ Only metrics explicitly provided by the laboratory are included in the comparati
 |---|---|---|---:|
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 {% set ns = (general.components[comp_code].qc.samples | selectattr("collecting_lab_sample_id","equalto",collecting_lab_sample_id) | list | first) -%}
-| {{ collecting_lab_sample_id }} | {{ s.qc_test if s.qc_test is not none else "NA" }} | {{ ns.gold_standard_qc if ns else "NA" }} | {{ pct(ns.match_rate_pct) if ns and ns.match_rate_pct is not none else "NA" }} |
+| {{ collecting_lab_sample_id }} | {{ s.qc_test if s.qc_test is not none else "NA" }} | {{ ns.gold_standard_qc if ns else "NA" }} | {{ pct(ns.reported_match_rate_pct) if ns and ns.reported_match_rate_pct is not none else "NA" }} |
 {% endfor %}
 
 Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.

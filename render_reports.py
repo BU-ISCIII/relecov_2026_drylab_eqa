@@ -45,9 +45,29 @@ class SampleIndexList(list):
             return default
 
 
+class DisplayFloat(float):
+    def __str__(self) -> str:
+        value = float(self)
+        if value.is_integer():
+            return str(int(value))
+        return str(value)
+
+    __repr__ = __str__
+
+
+def coerce_display_numbers(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {k: coerce_display_numbers(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [coerce_display_numbers(v) for v in value]
+    if isinstance(value, float):
+        return DisplayFloat(value)
+    return value
+
+
 def load_json(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        return coerce_display_numbers(json.load(handle))
 
 
 def is_lab_report_json(payload: Dict[str, Any]) -> bool:
