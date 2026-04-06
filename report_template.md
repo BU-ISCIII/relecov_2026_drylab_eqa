@@ -675,8 +675,7 @@ The leading incompleteness drivers were variant calling, pre-processing, and map
 
 {% set figure_style = "max-width: 80%;" %}
 {{ render_figure(general.figures.metadata_completeness_distribution,
-  "Distribution of metadata completeness across participating laboratories.",
-  style="max-width: 80%;") }}
+  "Distribution of metadata completeness across participating laboratories.") }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of metadata completeness across participating laboratories**. Boxplots represent the distribution of sample-level metadata completeness percentages across the different components. Completeness was calculated for each submitted sample as the proportion of filled metadata fields relative to the total number of maximum expected metadata fields. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
