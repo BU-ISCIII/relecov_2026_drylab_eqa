@@ -920,7 +920,12 @@ def make_component_qc_match_by_sample_plot(
     evaluable_samples = [
         sample for sample in samples
         if (sample.get("collecting_lab_sample_id") or sample.get("sample_id"))
-        and safe_number(sample.get("match_rate_pct")) is not None
+        and (
+            safe_number(sample.get("match_rate_pct")) is not None
+            or (safe_int(sample.get("nulls")) or 0) > 0
+            or (safe_int(sample.get("matches")) or 0) > 0
+            or (safe_int(sample.get("discrepancies")) or 0) > 0
+        )
     ]
     if not evaluable_samples:
         return str(output_path)
@@ -932,11 +937,16 @@ def make_component_qc_match_by_sample_plot(
 
     match_rates = []
     discrepancy_rates = []
+    null_rates = []
 
     for sample in evaluable_samples:
-        match_rate = safe_number(sample.get("match_rate_pct"))
-        match_rates.append(match_rate if match_rate is not None else np.nan)
-        discrepancy_rates.append(100.0 - match_rate if match_rate is not None else np.nan)
+        matches = safe_int(sample.get("matches")) or 0
+        discrepancies = safe_int(sample.get("discrepancies")) or 0
+        nulls = safe_int(sample.get("nulls")) or 0
+        total = matches + discrepancies + nulls
+        match_rates.append(100.0 * matches / total if total else np.nan)
+        discrepancy_rates.append(100.0 * discrepancies / total if total else np.nan)
+        null_rates.append(100.0 * nulls / total if total else np.nan)
 
     x_positions = np.arange(len(sample_names))
     width = 0.62
@@ -957,13 +967,21 @@ def make_component_qc_match_by_sample_plot(
         color=CBF_COLORS["discrepancy"],
         label="Discrepancy",
     )
+    null_bars = plt.bar(
+        x_positions,
+        null_rates,
+        width=width,
+        bottom=np.array(match_rates) + np.array(discrepancy_rates),
+        color=CBF_COLORS["null"],
+        label="Not provided",
+    )
 
     plt.xticks(x_positions, sample_names, rotation=0, ha="center")
     plt.xlabel("Sample")
     plt.ylabel("QC evaluations (%)")
     plt.ylim(0, 100)
     plt.title(f"{comp_code} QC concordance by sample")
-    plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.28), ncol=2)
+    plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.28), ncol=3)
 
     for bar, value in zip(match_bars, match_rates):
         if value is None or np.isnan(value) or value <= 0:
@@ -979,19 +997,36 @@ def make_component_qc_match_by_sample_plot(
             fontweight="bold",
         )
 
-    for bar, match_value, discrepancy_value in zip(discrepancy_bars, match_rates, discrepancy_rates):
-        if (
-            match_value is None
-            or discrepancy_value is None
-            or np.isnan(match_value)
-            or np.isnan(discrepancy_value)
-            or discrepancy_value <= 0
-        ):
+    for bar, match_value, discrepancy_value in zip(
+        discrepancy_bars,
+        match_rates,
+        discrepancy_rates,
+    ):
+        if discrepancy_value is None or np.isnan(discrepancy_value) or discrepancy_value <= 0:
             continue
         plt.text(
             bar.get_x() + bar.get_width() / 2,
             match_value + discrepancy_value / 2,
             f"{discrepancy_value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    for bar, match_value, discrepancy_value, null_value in zip(
+        null_bars,
+        match_rates,
+        discrepancy_rates,
+        null_rates,
+    ):
+        if null_value is None or np.isnan(null_value) or null_value <= 0:
+            continue
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            match_value + discrepancy_value + null_value / 2,
+            f"{null_value:.1f}%",
             ha="center",
             va="center",
             fontsize=8,
@@ -1794,21 +1829,23 @@ def make_component_benchmark_metric_boxplots(
     return str(output_path)
 
 
-def qc_hits_discrepancies_from_component(comp_data: Dict[str, Any]) -> tuple[int, int]:
+def qc_outcomes_from_component(comp_data: Dict[str, Any]) -> tuple[int, int, int]:
     """
-    Calculate total QC matches and discrepancies across all samples of one component.
+    Calculate total QC matches, discrepancies, and not-provided values across all samples of one component.
     """
     qc = comp_data.get("qc", {})
     samples = qc.get("samples", [])
 
     total_matches = 0
     total_discrepancies = 0
+    total_nulls = 0
 
     for sample in samples:
         total_matches += safe_int(sample.get("matches")) or 0
         total_discrepancies += safe_int(sample.get("discrepancies")) or 0
+        total_nulls += safe_int(sample.get("nulls")) or 0
 
-    return total_matches, total_discrepancies
+    return total_matches, total_discrepancies, total_nulls
 
 
 def collect_consensus_discrepancies_by_component(labs: List[Dict[str, Any]]) -> Dict[str, List[float]]:
@@ -3024,16 +3061,19 @@ def make_qc_match_rate_by_component_plot(
     component_names = []
     match_rates = []
     discrepancy_rates = []
+    null_rates = []
 
     for comp_code, comp_data in components.items():
-        matches, discrepancies = qc_hits_discrepancies_from_component(comp_data)
-        total = matches + discrepancies
+        matches, discrepancies, nulls = qc_outcomes_from_component(comp_data)
+        total = matches + discrepancies + nulls
         match_rate = 100.0 * matches / total if total else 0.0
         discrepancy_rate = 100.0 * discrepancies / total if total else 0.0
+        null_rate = 100.0 * nulls / total if total else 0.0
 
         component_names.append(comp_code)
         match_rates.append(match_rate)
         discrepancy_rates.append(discrepancy_rate)
+        null_rates.append(null_rate)
 
     output_dir = ensure_network_figures_dir(figures_dir)
     output_path = output_dir / output_filename
@@ -3043,13 +3083,20 @@ def make_qc_match_rate_by_component_plot(
 
     match_bars = plt.bar(x_positions, match_rates, label="Match", color=CBF_COLORS["match"])
     discrepancy_bars = plt.bar(x_positions, discrepancy_rates, bottom=match_rates, label="Discrepancy", color=CBF_COLORS["discrepancy"])
+    null_bars = plt.bar(
+        x_positions,
+        null_rates,
+        bottom=np.array(match_rates) + np.array(discrepancy_rates),
+        label="Not provided",
+        color=CBF_COLORS["null"],
+    )
 
     plt.xticks(x_positions, component_names)
     plt.xlabel("Component")
     plt.ylabel("QC evaluations (%)")
     plt.title(title)
     plt.ylim(0, 100)
-    plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.22), ncol=2)
+    plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.22), ncol=3)
 
     for bar, value in zip(match_bars, match_rates):
         if value <= 0:
@@ -3072,6 +3119,20 @@ def make_qc_match_rate_by_component_plot(
             bar.get_x() + bar.get_width() / 2,
             match_value + discrepancy_value / 2,
             f"{discrepancy_value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
+    for bar, match_value, discrepancy_value, null_value in zip(null_bars, match_rates, discrepancy_rates, null_rates):
+        if null_value <= 0:
+            continue
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            match_value + discrepancy_value + null_value / 2,
+            f"{null_value:.1f}%",
             ha="center",
             va="center",
             fontsize=8,
@@ -3826,6 +3887,7 @@ def collect_lab_qc_match_distribution_data(
     sample_names: List[str] = []
     match_rates: List[float] = []
     discrepancy_rates: List[float] = []
+    null_rates: List[float] = []
     lab_values: List[float] = []
     lab_positions: List[float] = []
 
@@ -3834,27 +3896,30 @@ def collect_lab_qc_match_distribution_data(
         if not sample_id:
             continue
 
-        network_match_pct = safe_number(sample.get("match_rate_pct"))
+        network_match_pct = safe_number(sample.get("match_rate_pct")) or 0.0
+        network_discrepancy_pct = safe_number(sample.get("discrepancy_pct")) or 0.0
+        network_null_pct = safe_number(sample.get("null_pct")) or 0.0
         lab_sample = lab_samples.get(sample_id, {})
         lab_match = lab_sample.get("qc_match")
 
-        if network_match_pct is None or lab_match is None:
-            continue
-
         sample_names.append(sample_id)
         match_rates.append(network_match_pct)
-        discrepancy_rates.append(100.0 - network_match_pct)
+        discrepancy_rates.append(network_discrepancy_pct)
+        null_rates.append(network_null_pct)
 
         if lab_match is True:
             lab_values.append(network_match_pct / 2.0)
+        elif lab_match is False:
+            lab_values.append(network_match_pct + network_discrepancy_pct / 2.0)
         else:
-            lab_values.append(network_match_pct + (100.0 - network_match_pct) / 2.0)
+            lab_values.append(network_match_pct + network_discrepancy_pct + network_null_pct / 2.0)
         lab_positions.append(len(sample_names) - 1 - 0.22)
 
     return {
         "sample_names": sample_names,
         "match_rates": match_rates,
         "discrepancy_rates": discrepancy_rates,
+        "null_rates": null_rates,
         "lab_values": lab_values,
         "lab_positions": lab_positions,
         "has_lab_values": any(value is not None for value in lab_values),
@@ -3900,6 +3965,14 @@ def make_lab_qc_match_rate_plot(
         bottom=panel_data["match_rates"],
         color=CBF_COLORS["discrepancy"],
         label="Discrepancy",
+    )
+    null_bars = ax.bar(
+        x_positions,
+        panel_data["null_rates"],
+        width=width,
+        bottom=np.array(panel_data["match_rates"]) + np.array(panel_data["discrepancy_rates"]),
+        color=CBF_COLORS["null"],
+        label="Not provided",
     )
     add_lab_result_diamond(
         ax=ax,
@@ -3947,10 +4020,29 @@ def make_lab_qc_match_rate_plot(
             fontweight="bold",
         )
 
+    for bar, match_value, discrepancy_value, null_value in zip(
+        null_bars,
+        panel_data["match_rates"],
+        panel_data["discrepancy_rates"],
+        panel_data["null_rates"],
+    ):
+        if null_value <= 0:
+            continue
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            match_value + discrepancy_value + null_value / 2,
+            f"{null_value:.1f}%",
+            ha="center",
+            va="center",
+            fontsize=8,
+            color="white",
+            fontweight="bold",
+        )
+
     ax.legend(
         loc="lower center",
         bbox_to_anchor=(0.5, -0.3),
-        ncol=2,
+        ncol=3,
         frameon=False,
     )
     fig.tight_layout(rect=(0, 0.14, 1, 1))
@@ -5385,10 +5477,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "fig_stacked_bar_by_sample": f"figures/{comp_code}/typing_outcome_stackedbar_by_sample.png",
         }
 
-        qc_matches_comp = qc_disc_comp = qc_total_comp = 0
+        qc_matches_comp = qc_disc_comp = qc_null_comp = qc_total_comp = 0
         qc_samples = []
         for sample_id, expected_sample in comp_expected["samples"].items():
-            sample_qc_matches = sample_qc_disc = sample_qc_total = 0
+            sample_qc_matches = sample_qc_disc = sample_qc_null = sample_qc_total = 0
             expected_qc = expected_sample.get("expected_qc")
             for lab in participating_labs:
                 sample = lab["components"][comp_code]["samples"].get(sample_id)
@@ -5405,13 +5497,19 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                     qc_disc_comp += 1
                     sample_qc_total += 1
                     qc_total_comp += 1
+                else:
+                    sample_qc_null += 1
+                    qc_null_comp += 1
             qc_samples.append({
                 "sample_id": sample_id,
                 "collecting_lab_sample_id": sample_id,
                 "gold_standard_qc": expected_qc,
-                "match_rate_pct": pct(sample_qc_matches, sample_qc_total),
+                "match_rate_pct": pct(sample_qc_matches, sample_qc_matches + sample_qc_disc + sample_qc_null),
+                "discrepancy_pct": pct(sample_qc_disc, sample_qc_matches + sample_qc_disc + sample_qc_null),
+                "null_pct": pct(sample_qc_null, sample_qc_matches + sample_qc_disc + sample_qc_null),
                 "matches": sample_qc_matches,
                 "discrepancies": sample_qc_disc,
+                "nulls": sample_qc_null,
                 "total_evaluations": sample_qc_total,
             })
 
@@ -5419,6 +5517,7 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "match_rate_pct": pct(qc_matches_comp, qc_total_comp),
             "matches": qc_matches_comp,
             "discrepancies": qc_disc_comp,
+            "nulls": qc_null_comp,
             "total_evaluations": qc_total_comp,
             "samples": qc_samples,
             "fig_qc_match_by_sample": f"figures/{comp_code}/qc_match_by_sample.png",

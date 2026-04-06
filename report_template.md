@@ -717,10 +717,10 @@ As shown in Figure {{ fig_counter.value }}, QC concordance differed across compo
 {% set figure_style = "max-width: 80%;" %}
 {{ render_figure(
 general.figures.qc_match_rate_by_component,
-"QC concordance by component (Match vs Discrepancy relative to the gold standard)."
+"QC concordance by component (Match, Discrepancy, and Not provided relative to the gold standard)."
 ) }}
 
-**_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Stacked bars represent the proportion of QC evaluations classified as Match or Discrepancy for each component across participating laboratories.
+**_Figure {{ fig_counter.value }}_. QC concordance by component relative to the gold standard.** Stacked bars represent the proportion of sample-level QC outcomes classified as Match, Discrepancy, or Not provided for each component across participating laboratories. Not provided values correspond to missing QC assessments and are shown separately from true discrepancies.
 
 ### 5.6. Pipeline Benchmarking and Comparative Performance
 
@@ -1006,16 +1006,16 @@ Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.match_rate_pc
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample relative to the gold standard definition, and Figure {{ fig_counter.value }} presents the corresponding sample-level distribution of Match and Discrepancy outcomes within {{ comp_code }}.
+Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample relative to the gold standard definition, and Figure {{ fig_counter.value }} presents the corresponding sample-level distribution of Match, Discrepancy, and Not provided outcomes within {{ comp_code }}.
 
 {% set figure_style = "max-width: 80%;" %}
 {{ render_figure(
 comp_net.qc.fig_qc_match_by_sample,
-"Sample-level QC concordance for " ~ comp_code ~ " (Match vs Discrepancy relative to the gold standard)."
+"Sample-level QC concordance for " ~ comp_code ~ " (Match, Discrepancy, and Not provided relative to the gold standard)."
 ) }}
 
 
-**_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match vs Discrepancy outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status.
+**_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement.
 
 #### 6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance
 
@@ -1796,7 +1796,7 @@ Figure {{ fig_counter.value }} contextualises the laboratory’s QC decision per
   comp_code ~ ": sample-level QC concordance across the network, with " ~ labdata.lab.lab_cod ~ " highlighted."
 ) }}
 
-**_Figure {{ fig_counter.value }}_. Sample-level QC concordance across the network for {{ comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Stacked bars represent the network-wide proportions of Match and Discrepancy outcomes relative to the gold standard for each sample. The black diamond indicates whether **{{ labdata.lab.lab_cod }}** reported a Match or a Discrepancy for the corresponding evaluable sample.
+**_Figure {{ fig_counter.value }}_. Sample-level QC concordance across the network for {{ comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Stacked bars represent the network-wide proportions of Match, Discrepancy, and Not provided outcomes relative to the gold standard for each sample. The black diamond indicates whether **{{ labdata.lab.lab_cod }}** reported a Match, a Discrepancy, or did not provide a QC assessment for the corresponding sample. Not provided values are shown separately and are not counted as discrepancies.
 {% else %}
 
 No comparative QC concordance figure is shown for {{ comp_code }} because **{{ labdata.lab.lab_cod }}** did not report any sample-level QC assessment for this component.
