@@ -219,6 +219,11 @@ figure {
   page-break-inside: avoid;
 }
 
+p:has(+ figure) {
+  break-after: auto;
+  page-break-after: auto;
+}
+
 figure.landscape-benchmark-figure {
   break-before: page;
   break-after: avoid;

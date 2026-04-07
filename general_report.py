@@ -700,7 +700,7 @@ def make_combined_classification_summary_plot(
     output_dir = ensure_network_figures_dir(figures_dir)
     output_path = output_dir / output_filename
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 10), sharey=True)
 
     lineage_match_bars = axes[0].bar(x_positions, lineage_hit_pcts, color=CBF_COLORS["match"], label="Match")
     lineage_discrepancy_bars = axes[0].bar(x_positions, lineage_discrepancy_pcts, bottom=lineage_hit_pcts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
@@ -712,11 +712,12 @@ def make_combined_classification_summary_plot(
         label="Not provided",
     )
     axes[0].set_xticks(x_positions)
-    axes[0].set_xticklabels(component_names)
-    axes[0].set_xlabel("Component")
-    axes[0].set_ylabel("Assignments (%)")
+    axes[0].set_xticklabels(component_names, fontsize=11)
+    axes[0].set_xlabel("Component", fontsize=12)
+    axes[0].set_ylabel("Assignments (%)", fontsize=12)
     axes[0].set_ylim(0, 100)
-    axes[0].set_title("A. Lineage/type assignments")
+    axes[0].set_title("A. Lineage/type assignments", fontsize=13)
+    axes[0].tick_params(axis="y", labelsize=11)
 
     clade_match_bars = axes[1].bar(x_positions, clade_hit_pcts, color=CBF_COLORS["match"], label="Match")
     clade_discrepancy_bars = axes[1].bar(x_positions, clade_discrepancy_pcts, bottom=clade_hit_pcts, color=CBF_COLORS["discrepancy"], label="Discrepancy")
@@ -728,10 +729,11 @@ def make_combined_classification_summary_plot(
         label="Not provided",
     )
     axes[1].set_xticks(x_positions)
-    axes[1].set_xticklabels(component_names)
-    axes[1].set_xlabel("Component")
+    axes[1].set_xticklabels(component_names, fontsize=11)
+    axes[1].set_xlabel("Component", fontsize=12)
     axes[1].set_ylim(0, 100)
-    axes[1].set_title("B. Clade assignments")
+    axes[1].set_title("B. Clade assignments", fontsize=13)
+    axes[1].tick_params(axis="y", labelsize=11)
 
     for ax, match_bars, discrepancy_bars, null_bars, match_pcts, discrepancy_pcts, null_pcts in [
         (axes[0], lineage_match_bars, lineage_discrepancy_bars, lineage_null_bars, lineage_hit_pcts, lineage_discrepancy_pcts, lineage_null_pcts),
@@ -746,7 +748,7 @@ def make_combined_classification_summary_plot(
                 f"{value:.1f}%",
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=10,
                 color="white",
                 fontweight="bold",
             )
@@ -760,7 +762,7 @@ def make_combined_classification_summary_plot(
                 f"{discrepancy_value:.1f}%",
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=10,
                 color="white",
                 fontweight="bold",
             )
@@ -774,12 +776,12 @@ def make_combined_classification_summary_plot(
                 f"{null_value:.1f}%",
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=10,
                 color="white",
                 fontweight="bold",
             )
 
-    fig.suptitle("Distribution of classification outcomes across participating laboratories")
+    fig.suptitle("Distribution of classification outcomes across participating laboratories", fontsize=15)
     fig.legend(
         handles=[
             plt.Rectangle((0, 0), 1, 1, color=CBF_COLORS["match"]),
@@ -791,6 +793,7 @@ def make_combined_classification_summary_plot(
         bbox_to_anchor=(0.5, 0.02),
         ncol=3,
         frameon=False,
+        fontsize=11,
     )
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
@@ -831,6 +834,9 @@ def make_component_typing_outcome_stacked_bar_by_sample(
         match_rates = [sample["hit_pct"] for sample in outcomes["samples"]]
         discrepancy_rates = [sample["discrepancy_pct"] for sample in outcomes["samples"]]
         null_rates = [sample["null_pct"] for sample in outcomes["samples"]]
+        match_counts = [sample["hits"] for sample in outcomes["samples"]]
+        discrepancy_counts = [sample["discrepancies"] for sample in outcomes["samples"]]
+        null_counts = [sample["nulls"] for sample in outcomes["samples"]]
         x_positions = np.arange(len(sample_names))
 
         match_bars = ax.bar(
@@ -862,21 +868,26 @@ def make_component_typing_outcome_stacked_bar_by_sample(
         ax.set_ylim(0, 100)
         ax.set_title(title)
 
-        for bar, value in zip(match_bars, match_rates):
+        for bar, value, count in zip(match_bars, match_rates, match_counts):
             if value is None or np.isnan(value) or value <= 0:
                 continue
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
                 value / 2,
-                f"{value:.1f}%",
+                f"{value:.1f}%\n(n={count})",
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=7.5,
                 color="white",
                 fontweight="bold",
             )
 
-        for bar, match_value, discrepancy_value in zip(discrepancy_bars, match_rates, discrepancy_rates):
+        for bar, match_value, discrepancy_value, count in zip(
+            discrepancy_bars,
+            match_rates,
+            discrepancy_rates,
+            discrepancy_counts,
+        ):
             if (
                 match_value is None
                 or discrepancy_value is None
@@ -888,24 +899,30 @@ def make_component_typing_outcome_stacked_bar_by_sample(
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
                 match_value + discrepancy_value / 2,
-                f"{discrepancy_value:.1f}%",
+                f"{discrepancy_value:.1f}%\n(n={count})",
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=7.5,
                 color="white",
                 fontweight="bold",
             )
 
-        for bar, match_value, discrepancy_value, null_value in zip(null_bars, match_rates, discrepancy_rates, null_rates):
+        for bar, match_value, discrepancy_value, null_value, count in zip(
+            null_bars,
+            match_rates,
+            discrepancy_rates,
+            null_rates,
+            null_counts,
+        ):
             if null_value is None or np.isnan(null_value) or null_value <= 0:
                 continue
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
                 match_value + discrepancy_value + null_value / 2,
-                f"{null_value:.1f}%",
+                f"{null_value:.1f}%\n(n={count})",
                 ha="center",
                 va="center",
-                fontsize=8,
+                fontsize=7.5,
                 color="white",
                 fontweight="bold",
             )
@@ -970,6 +987,9 @@ def make_component_qc_match_by_sample_plot(
     match_rates = []
     discrepancy_rates = []
     null_rates = []
+    match_counts = []
+    discrepancy_counts = []
+    null_counts = []
 
     for sample in evaluable_samples:
         matches = safe_int(sample.get("matches")) or 0
@@ -979,6 +999,9 @@ def make_component_qc_match_by_sample_plot(
         match_rates.append(100.0 * matches / total if total else np.nan)
         discrepancy_rates.append(100.0 * discrepancies / total if total else np.nan)
         null_rates.append(100.0 * nulls / total if total else np.nan)
+        match_counts.append(matches)
+        discrepancy_counts.append(discrepancies)
+        null_counts.append(nulls)
 
     x_positions = np.arange(len(sample_names))
     width = 0.62
@@ -1015,53 +1038,55 @@ def make_component_qc_match_by_sample_plot(
     plt.title(f"{comp_code} QC concordance by sample")
     plt.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.28), ncol=3)
 
-    for bar, value in zip(match_bars, match_rates):
+    for bar, value, count in zip(match_bars, match_rates, match_counts):
         if value is None or np.isnan(value) or value <= 0:
             continue
         plt.text(
             bar.get_x() + bar.get_width() / 2,
             value / 2,
-            f"{value:.1f}%",
+            f"{value:.1f}%\n(n={count})",
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=7.5,
             color="white",
             fontweight="bold",
         )
 
-    for bar, match_value, discrepancy_value in zip(
+    for bar, match_value, discrepancy_value, count in zip(
         discrepancy_bars,
         match_rates,
         discrepancy_rates,
+        discrepancy_counts,
     ):
         if discrepancy_value is None or np.isnan(discrepancy_value) or discrepancy_value <= 0:
             continue
         plt.text(
             bar.get_x() + bar.get_width() / 2,
             match_value + discrepancy_value / 2,
-            f"{discrepancy_value:.1f}%",
+            f"{discrepancy_value:.1f}%\n(n={count})",
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=7.5,
             color="white",
             fontweight="bold",
         )
 
-    for bar, match_value, discrepancy_value, null_value in zip(
+    for bar, match_value, discrepancy_value, null_value, count in zip(
         null_bars,
         match_rates,
         discrepancy_rates,
         null_rates,
+        null_counts,
     ):
         if null_value is None or np.isnan(null_value) or null_value <= 0:
             continue
         plt.text(
             bar.get_x() + bar.get_width() / 2,
             match_value + discrepancy_value + null_value / 2,
-            f"{null_value:.1f}%",
+            f"{null_value:.1f}%\n(n={count})",
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=7.5,
             color="white",
             fontweight="bold",
         )
@@ -1134,6 +1159,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
 ) -> str:
     output_dir = ensure_component_figures_dir(figures_dir, comp_code)
     output_path = output_dir / output_filename
+    discrepancy_output_path = output_dir / "bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png"
 
     groups = collect_software_groups(
         labs,
@@ -1226,7 +1252,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
         })
 
     discrepancy_y_limit = 500.0 if comp_code == "FLU2" else None
-    metric_panels = [
+    full_metric_panels = [
         ("A. Genome identity", "Genome identity (%)", 0, None),
         ("B. Discrepancies", "Consensus discrepancies", 1, discrepancy_y_limit),
         ("C. Metadata completeness", "Metadata completeness (%)", 2, None),
@@ -1236,17 +1262,21 @@ def make_component_bioinformatics_protocol_metric_boxplots(
     if not group_data:
         return str(output_path)
 
-    fig, axes = plt.subplots(2, 2, figsize=(max(12, len(group_data) * 1.6), 10))
-    axes = axes.flatten()
-
-    for ax, (title, ylabel, panel_idx, y_limit) in zip(axes, metric_panels):
+    def draw_bioinfo_panel(
+        ax: Any,
+        title: str,
+        ylabel: str,
+        panel_idx: int,
+        y_limit: Optional[float],
+        add_secondary_accuracy_axis: bool = False,
+    ) -> bool:
         panel_groups = [
             group for group in group_data
             if group["panels"][panel_idx]
         ]
         if not panel_groups:
             ax.set_visible(False)
-            continue
+            return False
 
         panel_labels = [group["label"] for group in panel_groups]
         panel_data = [list(group["panels"][panel_idx]) for group in panel_groups]
@@ -1296,7 +1326,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             ax.set_title(title)
             ax.set_ylabel(ylabel)
             add_truncated_y_axis_mark(ax)
-            continue
+            return True
 
         bp = ax.boxplot(
             plotted_data,
@@ -1329,7 +1359,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                 COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
             )
 
-        if panel_idx == 1:
+        if add_secondary_accuracy_axis:
             secondary_ax = ax.twinx()
             lineage_color = CBF_COLORS["match"]
             clade_color = CBF_COLORS["box_flu2"]
@@ -1367,17 +1397,47 @@ def make_component_bioinformatics_protocol_metric_boxplots(
             secondary_ax.tick_params(axis="y", colors="#444444")
             secondary_ax.legend(
                 loc="upper center",
-                bbox_to_anchor=(0.5, -0.34),
+                bbox_to_anchor=(0.5, -0.22),
                 borderaxespad=0.0,
                 frameon=False,
                 fontsize=8,
                 ncol=2,
             )
+        return True
+
+    main_metric_panels = [
+        ("A. Genome identity", "Genome identity (%)", 0, None),
+        ("B. Metadata completeness", "Metadata completeness (%)", 2, None),
+        ("C. Exact classification concordance", "Exact classification concordance (%)", 3, None),
+    ]
+
+    fig, axes = plt.subplots(2, 2, figsize=(max(14, len(group_data) * 1.8), 9))
+    axes = np.atleast_1d(axes).flatten()
+
+    for ax, (title, ylabel, panel_idx, y_limit) in zip(axes, main_metric_panels):
+        draw_bioinfo_panel(ax, title, ylabel, panel_idx, y_limit)
+
+    for ax in axes[len(main_metric_panels):]:
+        ax.set_visible(False)
 
     fig.suptitle(f"{comp_code} performance metrics by bioinformatics protocol")
-    fig.tight_layout(rect=(0, 0.14, 1, 1))
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
+
+    discrepancy_fig, discrepancy_ax = plt.subplots(figsize=(max(8, len(group_data) * 1.8), 7.8))
+    draw_bioinfo_panel(
+        discrepancy_ax,
+        "",
+        "Consensus discrepancies",
+        1,
+        discrepancy_y_limit,
+        add_secondary_accuracy_axis=True,
+    )
+    discrepancy_fig.suptitle(f"{comp_code} consensus discrepancies by bioinformatics protocol")
+    discrepancy_fig.tight_layout(rect=(0, 0.12, 1, 1))
+    discrepancy_fig.savefig(discrepancy_output_path, dpi=300, bbox_inches="tight")
+    plt.close(discrepancy_fig)
 
     return str(output_path)
 
@@ -3903,6 +3963,9 @@ def collect_lab_qc_match_distribution_data(
     match_rates: List[float] = []
     discrepancy_rates: List[float] = []
     null_rates: List[float] = []
+    match_counts: List[int] = []
+    discrepancy_counts: List[int] = []
+    null_counts: List[int] = []
     lab_values: List[float] = []
     lab_positions: List[float] = []
 
@@ -3914,6 +3977,9 @@ def collect_lab_qc_match_distribution_data(
         network_match_pct = safe_number(sample.get("match_rate_pct")) or 0.0
         network_discrepancy_pct = safe_number(sample.get("discrepancy_pct")) or 0.0
         network_null_pct = safe_number(sample.get("null_pct")) or 0.0
+        network_match_count = safe_int(sample.get("matches")) or 0
+        network_discrepancy_count = safe_int(sample.get("discrepancies")) or 0
+        network_null_count = safe_int(sample.get("nulls")) or 0
         lab_sample = lab_samples.get(sample_id, {})
         lab_match = lab_sample.get("qc_match")
 
@@ -3921,6 +3987,9 @@ def collect_lab_qc_match_distribution_data(
         match_rates.append(network_match_pct)
         discrepancy_rates.append(network_discrepancy_pct)
         null_rates.append(network_null_pct)
+        match_counts.append(network_match_count)
+        discrepancy_counts.append(network_discrepancy_count)
+        null_counts.append(network_null_count)
 
         if lab_match is True:
             lab_values.append(network_match_pct / 2.0)
@@ -3935,6 +4004,9 @@ def collect_lab_qc_match_distribution_data(
         "match_rates": match_rates,
         "discrepancy_rates": discrepancy_rates,
         "null_rates": null_rates,
+        "match_counts": match_counts,
+        "discrepancy_counts": discrepancy_counts,
+        "null_counts": null_counts,
         "lab_values": lab_values,
         "lab_positions": lab_positions,
         "has_lab_values": any(value is not None for value in lab_values),
@@ -4003,53 +4075,55 @@ def make_lab_qc_match_rate_plot(
     ax.set_ylim(0, 100)
     ax.set_title(f"{comp_code} QC concordance across participating laboratories")
 
-    for bar, value in zip(match_bars, panel_data["match_rates"]):
+    for bar, value, count in zip(match_bars, panel_data["match_rates"], panel_data["match_counts"]):
         if value <= 0:
             continue
         ax.text(
             bar.get_x() + bar.get_width() / 2,
             value / 2,
-            f"{value:.1f}%",
+            f"{value:.1f}%\n(n={count})",
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=7.5,
             color="white",
             fontweight="bold",
         )
 
-    for bar, match_value, discrepancy_value in zip(
+    for bar, match_value, discrepancy_value, count in zip(
         discrepancy_bars,
         panel_data["match_rates"],
         panel_data["discrepancy_rates"],
+        panel_data["discrepancy_counts"],
     ):
         if discrepancy_value <= 0:
             continue
         ax.text(
             bar.get_x() + bar.get_width() / 2,
             match_value + discrepancy_value / 2,
-            f"{discrepancy_value:.1f}%",
+            f"{discrepancy_value:.1f}%\n(n={count})",
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=7.5,
             color="white",
             fontweight="bold",
         )
 
-    for bar, match_value, discrepancy_value, null_value in zip(
+    for bar, match_value, discrepancy_value, null_value, count in zip(
         null_bars,
         panel_data["match_rates"],
         panel_data["discrepancy_rates"],
         panel_data["null_rates"],
+        panel_data["null_counts"],
     ):
         if null_value <= 0:
             continue
         ax.text(
             bar.get_x() + bar.get_width() / 2,
             match_value + discrepancy_value + null_value / 2,
-            f"{null_value:.1f}%",
+            f"{null_value:.1f}%\n(n={count})",
             ha="center",
             va="center",
-            fontsize=8,
+            fontsize=7.5,
             color="white",
             fontweight="bold",
         )
@@ -5131,6 +5205,85 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "fig_discrepancy_type_boxplot": f"figures/{comp_code}/consensus_discrepancy_type_boxplot.png",
         }
 
+        labs_reporting_variant_count = []
+        labs_not_reporting_variant_count = []
+        labs_reporting_total_variants_in_vcf = []
+        labs_not_reporting_total_variants_in_vcf = []
+        labs_reporting_successful_hits = []
+        labs_reporting_variants_in_consensus_vcf = []
+        labs_reporting_variants_with_effect = []
+        labs_reporting_variants_with_effect_vcf = []
+        for lab in participating_labs:
+            lab_id = get_lab_identifier(lab)
+            samples = lab["components"][comp_code].get("samples", {})
+            has_any_variant_count = any(
+                safe_number(sample.get("variants", {}).get("number_of_variants_in_consensus")) is not None
+                for sample in samples.values()
+            )
+            has_any_total_variants_in_vcf = any(
+                safe_number(sample.get("variants", {}).get("number_of_variants_in_vcf")) is not None
+                for sample in samples.values()
+            )
+            has_any_successful_hits = any(
+                safe_number(sample.get("variants", {}).get("successful_hits")) is not None
+                for sample in samples.values()
+            )
+            has_any_variants_in_consensus_vcf = any(
+                safe_number(sample.get("variants", {}).get("number_of_variants_in_consensus_vcf")) is not None
+                for sample in samples.values()
+            )
+            has_any_variants_with_effect = any(
+                safe_number(sample.get("variants", {}).get("number_of_variants_with_effect")) is not None
+                for sample in samples.values()
+            )
+            has_any_variants_with_effect_vcf = any(
+                safe_number(sample.get("variants", {}).get("number_of_variants_with_effect_vcf")) is not None
+                for sample in samples.values()
+            )
+            if has_any_variant_count:
+                labs_reporting_variant_count.append(lab_id)
+            else:
+                labs_not_reporting_variant_count.append(lab_id)
+            if has_any_total_variants_in_vcf:
+                labs_reporting_total_variants_in_vcf.append(lab_id)
+            else:
+                labs_not_reporting_total_variants_in_vcf.append(lab_id)
+            if has_any_successful_hits:
+                labs_reporting_successful_hits.append(lab_id)
+            if has_any_variants_in_consensus_vcf:
+                labs_reporting_variants_in_consensus_vcf.append(lab_id)
+            if has_any_variants_with_effect:
+                labs_reporting_variants_with_effect.append(lab_id)
+            if has_any_variants_with_effect_vcf:
+                labs_reporting_variants_with_effect_vcf.append(lab_id)
+
+        reported_n_labs = len(labs_reporting_variant_count)
+        not_reported_n_labs = len(labs_not_reporting_variant_count)
+        total_variant_reporting_labs = reported_n_labs + not_reported_n_labs
+        if total_variant_reporting_labs != len(participating_labs):
+            raise ValueError(
+                f"Variant metadata reporting counts do not match participating labs for {comp_code}: "
+                f"{reported_n_labs} + {not_reported_n_labs} != {len(participating_labs)}"
+            )
+        total_variants_in_vcf_reported_n_labs = len(labs_reporting_total_variants_in_vcf)
+        total_variants_in_vcf_not_reported_n_labs = len(labs_not_reporting_total_variants_in_vcf)
+        if total_variants_in_vcf_reported_n_labs + total_variants_in_vcf_not_reported_n_labs != len(participating_labs):
+            raise ValueError(
+                f"Total variants in VCF reporting counts do not match participating labs for {comp_code}: "
+                f"{total_variants_in_vcf_reported_n_labs} + {total_variants_in_vcf_not_reported_n_labs} != {len(participating_labs)}"
+            )
+        comp_obj["variant_metadata_reporting"] = {
+            "reported_n_labs": reported_n_labs,
+            "not_reported_n_labs": not_reported_n_labs,
+            "total_n_labs": total_variant_reporting_labs,
+            "successful_hits_reported_n_labs": len(labs_reporting_successful_hits),
+            "variants_in_consensus_vcf_reported_n_labs": len(labs_reporting_variants_in_consensus_vcf),
+            "variants_with_effect_reported_n_labs": len(labs_reporting_variants_with_effect),
+            "variants_with_effect_vcf_reported_n_labs": len(labs_reporting_variants_with_effect_vcf),
+            "total_variants_in_vcf_reported_n_labs": total_variants_in_vcf_reported_n_labs,
+            "total_variants_in_vcf_not_reported_n_labs": total_variants_in_vcf_not_reported_n_labs,
+        }
+
         if comp_expected.get("virus") == "SARS-CoV-2":
             variant_discs = []
             variant_successful_hits = []
@@ -5685,9 +5838,10 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             benchmarking["bioinformatics_protocol"] = {
                 "total_number": len(entries),
                 "n_plot_groups": count_plot_groups(entries, ["median_identity_pct", "median_discrepancies", "median_metadata_completeness_pct", "clade_hit_pct", "lineage_hit_pct"]),
-                "panel_count": 4,
+                "panel_count": 3,
                 "softwares": entries,
                 "fig_metric_boxplots": f"figures/{comp_code}/bioinformatics_protocol_metric_boxplots_by_pipeline.png",
+                "fig_discrepancy_boxplot": f"figures/{comp_code}/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png",
             }
 
         # -------------------------------------------------

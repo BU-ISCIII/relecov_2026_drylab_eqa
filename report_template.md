@@ -874,12 +874,12 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency (AF) higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency (AF) higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. At component level, {{ comp_net.variant_metadata_reporting.reported_n_labs }} laboratories reported the number of variants in the metadata, whereas {{ comp_net.variant_metadata_reporting.not_reported_n_labs }} did not report this field for any sample in {{ comp_code }}. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median successful hits | Median variants >=75% AF in metadata | Median variants >=75% AF in VCF | Median variants with effect in metadata | Median variants with effect in VCF | MEdian discrepancies metadata vs VCF | Median effect discrepancies metadata vs VCF |
+| Sample ID | Median successful hits (n={{ comp_net.variant_metadata_reporting.successful_hits_reported_n_labs }}) | Median variants >=75% AF in metadata (n={{ comp_net.variant_metadata_reporting.reported_n_labs }}) | Median variants >=75% AF in VCF (n={{ comp_net.variant_metadata_reporting.variants_in_consensus_vcf_reported_n_labs }}) | Median variants with effect in metadata (n={{ comp_net.variant_metadata_reporting.variants_with_effect_reported_n_labs }}) | Median variants with effect in VCF (n={{ comp_net.variant_metadata_reporting.variants_with_effect_vcf_reported_n_labs }}) | MEdian discrepancies metadata vs VCF | Median effect discrepancies metadata vs VCF |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.variants_with_effect.median if s.variants_with_effect and s.variants_with_effect.median is not none else "NA" }} | {{ s.variants_with_effect_vcf.median if s.variants_with_effect_vcf and s.variants_with_effect_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants_effect.median if s.discrepancies_in_reported_variants_effect and s.discrepancies_in_reported_variants_effect.median is not none else "NA" }} |
@@ -945,12 +945,23 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 {% else %}
 
-For the {{ comp_code }} component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} variants with allele frequency above 75% reported in the metadata template, compared with {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }}, while the median total number of variants present in the submitted VCF files was {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }}.
+For the {{ comp_code }} component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} variants with allele frequency above 75% reported in the metadata template, compared with {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }}, while the median total number of variants present in the submitted VCF files was {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }}. At component level, {{ comp_net.variant_metadata_reporting.reported_n_labs }} laboratories reported the number of variants in the metadata, whereas {{ comp_net.variant_metadata_reporting.not_reported_n_labs }} did not report this field for any sample in {{ comp_code }}.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+Figure {{ fig_counter.value }} summarises the distribution of declared variant reporting modes across submitted sample outputs in {{ comp_code }}.
+
+{% set figure_style = "max-width: 80%;" %}
+{{ render_figure(
+  comp_net.variant.fig_reporting_mode_by_component,
+  "Variant reporting practices for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level influenza variant reporting metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median variants >=75% AF in metadata | Median variants >=75% AF in VCF | Median discrepancies between metadata and VCF | Median total variants in VCF |
+| Sample ID | Median variants >=75% AF in metadata (n={{ comp_net.variant_metadata_reporting.reported_n_labs }}) | Median variants >=75% AF in VCF (n={{ comp_net.variant_metadata_reporting.variants_in_consensus_vcf_reported_n_labs }}) | Median discrepancies between metadata and VCF | Median total variants in VCF (n={{ comp_net.variant_metadata_reporting.total_variants_in_vcf_reported_n_labs }}) |
 |---|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.variants_in_vcf.median if s.variants_in_vcf and s.variants_in_vcf.median is not none else "NA" }} |
@@ -966,7 +977,7 @@ Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, 
 | Variants >=75% AF in metadata | {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus if comp_net.variant.min_variants_in_consensus is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus if comp_net.variant.max_variants_in_consensus is not none else "NA" }} |
 | Variants >=75% AF in VCF | {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus_vcf if comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus_vcf if comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
 | Discrepancies between metadata and VCF | {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }} | {{ comp_net.variant.min_discrepancies_in_reported_variants if comp_net.variant.min_discrepancies_in_reported_variants is not none else "NA" }}–{{ comp_net.variant.max_discrepancies_in_reported_variants if comp_net.variant.max_discrepancies_in_reported_variants is not none else "NA" }} |
-| Total variants in VCF | {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_vcf if comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_vcf if comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
+| Total variants in VCF (n={{ comp_net.variant_metadata_reporting.total_variants_in_vcf_reported_n_labs }}) | {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_vcf if comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_vcf if comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
 
 Figure {{ fig_counter.value + 1 }} summarises influenza variant reporting patterns across samples in {{ comp_code }}, showing the distribution of laboratory-level observations for agreement between metadata-reported and VCF-derived high-frequency variants and for the overall number of variants observed in the submitted VCF files.
 
@@ -1062,7 +1073,7 @@ Table {{ table_counter.value }} summarises the performance of declared bioinform
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared pipeline configuration.
+Figure {{ fig_counter.value + 1 }} summarises genome identity, metadata completeness, and exact classification concordance stratified by declared pipeline configuration. Figure {{ fig_counter.value + 2 }} presents the corresponding discrepancy profile and overlaid classification accuracy.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_style = "max-width: 100%;" %}
@@ -1073,7 +1084,16 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
   has_panels=True
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B discrepancy counts, Panel C metadata completeness (%), and Panel D exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{% set figure_style = "max-width: 80%;" %}
+{{ render_figure(
+  comp_net.benchmarking.bioinformatics_protocol.fig_discrepancy_boxplot,
+  "Distribution of consensus discrepancies by pipeline configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies by declared pipeline configuration for {{ comp_code }}.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
@@ -1358,10 +1378,10 @@ Table {{ table_counter.value }} summarises the concordance profile of declared t
 
 **Table {{ table_counter.value }}. Performance summary of declared type assignment software configurations for {{ comp_code }}.**
 
-| Type Assignment software | Version | N labs | Database version | % of type match | % of type discrepancy |
-|---|---:|---:|---:|---:|---:|
+| Type Assignment software | Version | N labs | Database version | % of type match |
+|---|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.type_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.type_hit_pct }} | {{ p.type_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.type_hit_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1391,10 +1411,10 @@ Table {{ table_counter.value }} summarises the concordance profile of declared s
 
 **Table {{ table_counter.value }}. Performance summary of declared subtype assignment software configurations for {{ comp_code }}.**
 
-| Subtype Assignment software | Version | N labs | Database version | % of subtype match | % of subtype discrepancy |
-|---|---:|---:|---:|---:|---:|
+| Subtype Assignment software | Version | N labs | Database version | % of subtype match |
+|---|---:|---:|---:|---:|
 {% for p in comp_net.benchmarking.subtype_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.subtype_hit_pct }} | {{ p.subtype_discordance_pct }} |
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.subtype_hit_pct }} |
 {% endfor %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -1473,6 +1493,7 @@ The validation process also showed that schema compliance remains an operational
 A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred even though the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to give laboratories time to review the available options and identify any missing software tools for possible inclusion in the schema, together with guidance on how mandatory fields should be completed when data were not available. In practice, this means that part of the harmonisation problem lies not only in analytical diversity itself, but in the difficulty of consistently mapping that diversity into a controlled metadata structure.
 
 Another recurrent issue concerned database-version reporting for lineage and clade assignment tools. In some submissions, the value entered in the database-version field appears to correspond to the software version rather than the actual database version, particularly for tools such as Nextclade and Pangolin where both identifiers are distinct and analytically relevant. This suggests that the semantics of these metadata fields were not always clear to participants and that future versions of the template should include stricter validation rules and more explicit examples distinguishing software version from database release.
+DESARROLLAR algunos laboratorios han usado versiones de software anticuadas, como en el caso de iVar, que es relativamente importante ya que se ha visto que cambia la llamada a variantes y la determinación de frecuencia alélica y profundidad de INDELs.
 
 ### 7.6. Implications for RELECOV 2.0
 
@@ -1858,7 +1879,7 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 
 ##### {{ collecting_lab_sample_id }}
 
-**Table {{ table_counter.value }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}, {{ collecting_lab_sample_id }}).**
+**Table {{ table_counter.value }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} (component {{ comp_code }}, sample {{ collecting_lab_sample_id }}).**
 
 | Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
 |---|---:|---:|---:|

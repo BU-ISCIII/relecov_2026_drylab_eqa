@@ -903,6 +903,17 @@
         "fig_discrepancies_stacked_by_sample": "figures/SARS1/consensus_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/SARS1/consensus_discrepancy_type_boxplot.png"
       },
+      "variant_metadata_reporting": {
+        "reported_n_labs": 5,
+        "not_reported_n_labs": 11,
+        "total_n_labs": 16,
+        "successful_hits_reported_n_labs": 15,
+        "variants_in_consensus_vcf_reported_n_labs": 16,
+        "variants_with_effect_reported_n_labs": 5,
+        "variants_with_effect_vcf_reported_n_labs": 14,
+        "total_variants_in_vcf_reported_n_labs": 1,
+        "total_variants_in_vcf_not_reported_n_labs": 15
+      },
       "variant": {
         "median_variants_in_consensus": 61.0,
         "min_variants_in_consensus": 30.0,
@@ -1956,7 +1967,7 @@
         "bioinformatics_protocol": {
           "total_number": 5,
           "n_plot_groups": 5,
-          "panel_count": 4,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
@@ -2008,7 +2019,8 @@
               "lineage_hit_pct": 100.0
             }
           ],
-          "fig_metric_boxplots": "figures/SARS1/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+          "fig_metric_boxplots": "figures/SARS1/bioinformatics_protocol_metric_boxplots_by_pipeline.png",
+          "fig_discrepancy_boxplot": "figures/SARS1/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png"
         },
         "dehosting": {
           "total_number": 4,
@@ -3225,6 +3237,17 @@
         "fig_discrepancies_stacked_by_sample": "figures/SARS2/consensus_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/SARS2/consensus_discrepancy_type_boxplot.png"
       },
+      "variant_metadata_reporting": {
+        "reported_n_labs": 3,
+        "not_reported_n_labs": 7,
+        "total_n_labs": 10,
+        "successful_hits_reported_n_labs": 9,
+        "variants_in_consensus_vcf_reported_n_labs": 8,
+        "variants_with_effect_reported_n_labs": 3,
+        "variants_with_effect_vcf_reported_n_labs": 8,
+        "total_variants_in_vcf_reported_n_labs": 0,
+        "total_variants_in_vcf_not_reported_n_labs": 10
+      },
       "variant": {
         "median_variants_in_consensus": 73.0,
         "min_variants_in_consensus": 10.0,
@@ -4278,7 +4301,7 @@
         "bioinformatics_protocol": {
           "total_number": 5,
           "n_plot_groups": 5,
-          "panel_count": 4,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Artic pipeline",
@@ -4330,7 +4353,8 @@
               "lineage_hit_pct": 58.33
             }
           ],
-          "fig_metric_boxplots": "figures/SARS2/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+          "fig_metric_boxplots": "figures/SARS2/bioinformatics_protocol_metric_boxplots_by_pipeline.png",
+          "fig_discrepancy_boxplot": "figures/SARS2/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png"
         },
         "dehosting": {
           "total_number": 1,
@@ -5437,6 +5461,17 @@
         "fig_discrepancies_stacked_by_sample": "figures/FLU1/consensus_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/FLU1/consensus_discrepancy_type_boxplot.png"
       },
+      "variant_metadata_reporting": {
+        "reported_n_labs": 2,
+        "not_reported_n_labs": 10,
+        "total_n_labs": 12,
+        "successful_hits_reported_n_labs": 0,
+        "variants_in_consensus_vcf_reported_n_labs": 11,
+        "variants_with_effect_reported_n_labs": 2,
+        "variants_with_effect_vcf_reported_n_labs": 0,
+        "total_variants_in_vcf_reported_n_labs": 11,
+        "total_variants_in_vcf_not_reported_n_labs": 1
+      },
       "variant": {
         "median_variants_in_consensus": 485.5,
         "min_variants_in_consensus": 449.0,
@@ -6014,7 +6049,7 @@
         "bioinformatics_protocol": {
           "total_number": 6,
           "n_plot_groups": 6,
-          "panel_count": 4,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
@@ -6075,7 +6110,8 @@
               "lineage_hit_pct": 100.0
             }
           ],
-          "fig_metric_boxplots": "figures/FLU1/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+          "fig_metric_boxplots": "figures/FLU1/bioinformatics_protocol_metric_boxplots_by_pipeline.png",
+          "fig_discrepancy_boxplot": "figures/FLU1/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png"
         },
         "dehosting": {
           "total_number": 5,
@@ -7282,6 +7318,17 @@
         "fig_discrepancies_stacked_by_sample": "figures/FLU2/consensus_discrepancies_stacked_by_sample.png",
         "fig_discrepancy_type_boxplot": "figures/FLU2/consensus_discrepancy_type_boxplot.png"
       },
+      "variant_metadata_reporting": {
+        "reported_n_labs": 3,
+        "not_reported_n_labs": 7,
+        "total_n_labs": 10,
+        "successful_hits_reported_n_labs": 0,
+        "variants_in_consensus_vcf_reported_n_labs": 6,
+        "variants_with_effect_reported_n_labs": 3,
+        "variants_with_effect_vcf_reported_n_labs": 0,
+        "total_variants_in_vcf_reported_n_labs": 8,
+        "total_variants_in_vcf_not_reported_n_labs": 2
+      },
       "variant": {
         "median_variants_in_consensus": 468.5,
         "min_variants_in_consensus": 377.0,
@@ -7859,7 +7906,7 @@
         "bioinformatics_protocol": {
           "total_number": 5,
           "n_plot_groups": 5,
-          "panel_count": 4,
+          "panel_count": 3,
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
@@ -7911,7 +7958,8 @@
               "lineage_hit_pct": 100.0
             }
           ],
-          "fig_metric_boxplots": "figures/FLU2/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
+          "fig_metric_boxplots": "figures/FLU2/bioinformatics_protocol_metric_boxplots_by_pipeline.png",
+          "fig_discrepancy_boxplot": "figures/FLU2/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png"
         },
         "dehosting": {
           "total_number": 3,
