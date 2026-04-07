@@ -716,7 +716,7 @@ Overall, the network achieved {{ pct(general.qc.reported_match_rate_pct) }} QC c
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-As shown in Figure {{ fig_counter.value }}, QC concordance differed across components, ranging from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2.
+As shown in Figure {{ fig_counter.value }}, QC concordance differed across components, ranging from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2, from reported QC information.
 
 
 {% set figure_style = "max-width: 80%;" %}
@@ -875,16 +875,6 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
 Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency (AF) higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
-{% set fig_counter.value = fig_counter.value + 1 %}
-Figure {{ fig_counter.value }} summarises the distribution of declared variant reporting modes across submitted sample outputs in {{ comp_code }}.
-
-{% set figure_style = "max-width: 80%;" %}
-{{ render_figure(
-  comp_net.variant.fig_reporting_mode_by_component,
-  "Variant reporting practices for " ~ comp_code ~ "."
-) }}
-
-**Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
@@ -903,6 +893,17 @@ Figure {{ fig_counter.value }} summarises the distribution of declared variant r
 {% for s in comp_net.variant.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.median_discrepancies if s.median_discrepancies is not none else "NA" }} | {{ s.min if s.min is not none else "NA" }} – {{ s.max if s.max is not none else "NA" }} | {{ s.wrong_nt if s.wrong_nt is not none else "NA" }} | {{ s.insertions if s.insertions is not none else "NA" }} | {{ s.deletions if s.deletions is not none else "NA" }} | {{ s.missing if s.missing is not none else "NA" }} | {{ s.denovo if s.denovo is not none else "NA" }} |
 {% endfor %}
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+Figure {{ fig_counter.value }} summarises the distribution of declared variant reporting modes across submitted sample outputs in {{ comp_code }}.
+
+{% set figure_style = "max-width: 80%;" %}
+{{ render_figure(
+  comp_net.variant.fig_reporting_mode_by_component,
+  "Variant reporting practices for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
 
@@ -1021,7 +1022,7 @@ Laboratory-reported sample QC evaluations (Pass/Fail) for the {{ comp_code }} co
 Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.reported_match_rate_pct) }}, corresponding to {{ comp_net.qc.matches }} Matches and {{ comp_net.qc.discrepancies }} Discrepancies across {{ comp_net.qc.total_evaluations }} evaluated QC decisions.
 
 {% set table_counter.value = table_counter.value + 1 %}
-**_Table {{ table_counter.value }}_. Sample-level QC concordance for {{ comp_code }}.**
+**_Table {{ table_counter.value }}_. Sample-level QC concordance for {{ comp_code }} for reported QC classification.**
 
 | Sample ID | Gold standard QC | % Match | # Matches | # Discrepancies | Total evaluations |
 |---|---:|---:|---:|---:|---:|
@@ -1129,7 +1130,7 @@ Table {{ table_counter.value }} summarises the performance of declared pre-proce
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared pre-processing software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.benchmarking.preprocessing.fig_metric_boxplots,
   "Distribution of performance metrics by pre-processing software configuration for " ~ comp_code ~ ".",
@@ -1162,7 +1163,7 @@ Table {{ table_counter.value }} summarises the declared mapping software configu
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared mapping software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.benchmarking.mapping.fig_metric_boxplots,
   "Distribution of performance metrics by mapping software configuration for " ~ comp_code ~ ".",
@@ -1184,7 +1185,7 @@ Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }}
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared assembly software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.benchmarking.assembly.fig_metric_boxplots,
   "Distribution of performance metrics by assembly software configuration for " ~ comp_code ~ ".",
@@ -1210,6 +1211,20 @@ Table {{ table_counter.value }} summarises the performance of declared assembly 
 ##### Consensus software
 
 Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared consensus software configuration.
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{% set figure_style = "max-width: 120%;" %}
+{{ render_figure(
+  comp_net.benchmarking.consensus_software.fig_metric_boxplots,
+  "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ ".",
+  "landscape-benchmark-figure" if ((comp_net.benchmarking.consensus_software.n_plot_groups | default(comp_net.benchmarking.consensus_software.total_number)) >= 6 and (comp_net.benchmarking.consensus_software.panel_count | default(99)) <= 2) else None,
+  has_panels=True
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 {% set table_counter.value = table_counter.value + 1 %}
 Table {{ table_counter.value }} summarises the performance of declared consensus software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
@@ -1221,21 +1236,6 @@ Table {{ table_counter.value }} summarises the performance of declared consensus
 {% for p in comp_net.benchmarking.consensus_software.softwares %}
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
 {% endfor %}
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared consensus software configuration.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
-{{ render_figure(
-  comp_net.benchmarking.consensus_software.fig_metric_boxplots,
-  "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.consensus_software.n_plot_groups | default(comp_net.benchmarking.consensus_software.total_number)) >= 6 and (comp_net.benchmarking.consensus_software.panel_count | default(99)) <= 2) else None,
-  has_panels=True
-) }}
-
-**Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 {% endif %}
 
@@ -1268,7 +1268,7 @@ Table {{ table_counter.value }} summarises the performance of declared variant c
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared variant calling software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.benchmarking.variant_calling.fig_metric_boxplots,
   "Distribution of performance metrics by variant calling software configuration for " ~ comp_code ~ ".",
@@ -1305,7 +1305,7 @@ Table {{ table_counter.value }} summarises the concordance profile of declared c
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared clade assignment software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.benchmarking.clade_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by clade assignment software configuration for " ~ comp_code ~ ".",
@@ -1337,7 +1337,7 @@ Table {{ table_counter.value }} summarises the concordance profile of declared l
 Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared lineage assignment software configuration.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.benchmarking.lineage_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by lineage assignment software configuration for " ~ comp_code ~ ".",
@@ -1485,9 +1485,9 @@ DESARROLLAR para SARS1 Although INSaFLU (v2.2.2) shows the highest median genome
 
 DESARROLLAR para SARS2 consensus genome performance was generally high across all protocols, with median genome identity values above 99.4% in all cases. The highest accuracy was observed for INSaFLU (v2.2.2) and nf-core/viralrecon (v3.0.0), both reaching 99.88%, although INSaFLU was used by a single laboratory (N=1), limiting robustness. In contrast, nf-core/viralrecon, supported by four laboratories (N=4), combined high genome identity with the lowest median discrepancies (2.5) and the highest metadata completeness (91.5%), indicating strong reproducibility and overall robustness. All protocols achieved 100% clade concordance except for INSaFLU (web version) and nf-core/viralrecon, which showed reduced concordance (66.7% and 75.0%, respectively), suggesting some variability in clade assignment despite high consensus sequence quality. Lineage concordance was more variable across protocols, with generally lower values, particularly for custom pipelines (33.3%), highlighting inconsistencies in lineage reporting rather than consensus generation itself. There is a weak inverse trend between the number of consensus discrepancies and classification accuracy. Pipelines with fewer discrepancies tend to show higher lineage and clade assignment accuracy. However, this relationship is not consistent across all methods and is limited by small sample sizes and aggregation effects.
 
-DESARROLLAR para FLU1 There is no clear relationship between the total number of consensus discrepancies and lineage assignment accuracy, which remains consistently high across pipelines. However, clade assignment appears more variable and may be more sensitive to sequence discrepancies, although this effect is not consistent across methods and likely depends on the distribution of errors rather than their total number.
+DESARROLLAR para FLU1 The highest genome identity was achieved by DRAGEN Targeted Microbial (98.21%), although this result is based on a single laboratory (N=1), limiting its robustness. In contrast, custom pipelines, supported by four laboratories (N=4), showed lower genome identity (96.18%) and moderate discrepancy levels (11.0), indicating more variable performance across implementations. IRMA demonstrated relatively consistent performance across versions, with genome identity values around 96% and discrepancies ranging from 11.0 to 18.5. Among these, IRMA v1.3.1 (N=2) achieved a good balance of lower discrepancies (13.5), higher metadata completeness (63.0%), and full clade concordance (100%), suggesting improved performance compared to earlier versions. However, variability across IRMA versions indicates that version choice can impact results. INSaFLU (v2.2.2) showed the weakest performance, with the lowest genome identity (92.91%) and a markedly higher number of discrepancies (162.0), together with reduced clade (75.0%) and lineage concordance (50.0%), suggesting substantial issues in consensus generation or downstream processing for this dataset. There is no clear relationship between the total number of consensus discrepancies and lineage assignment accuracy, which remains consistently high across pipelines. However, clade assignment appears more variable and may be more sensitive to sequence discrepancies, although this effect is not consistent across methods and likely depends on the distribution of errors rather than their total number.
 
-DESARROLLAR para FLU2 There is no direct relationship between the number of consensus discrepancies and lineage or clade assignment accuracy. Even pipelines with very high discrepancy counts can achieve near-perfect classification, indicating that lineage assignment is robust to substantial sequence-level errors and primarily depends on the correct identification of key phylogenetically informative sites.
+DESARROLLAR para FLU2 Custom pipelines (N=3) showed moderate identity and higher discrepancies (20.5), indicating variable performance across implementations. IRMA v1.3.1 (N=4) provided the most robust and balanced results, with relatively low discrepancies (6.5), high clade concordance (87.5%), and perfect lineage concordance (100%), supported by multiple laboratories. In contrast, IRMA v1.2.0 showed very poor performance in terms of discrepancies (268), despite high metadata completeness and lineage concordance, highlighting strong version-dependent effects. INSaFLU showed mixed results, with the web version performing better, though both are based on single laboratories. There is no direct relationship between the number of consensus discrepancies and lineage or clade assignment accuracy. Even pipelines with very high discrepancy counts can achieve near-perfect classification, indicating that lineage assignment is robust to substantial sequence-level errors and primarily depends on the correct identification of key phylogenetically informative sites.
 
 
 ### 7.5. Metadata Reporting and Schema Compliance
