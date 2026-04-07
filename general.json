@@ -107,6 +107,124 @@
       "Clade assignment fields",
       "SARS-CoV-2 QC metrics",
       "Bioinformatics protocol fields"
+    ],
+    "primary_incompleteness_driver_counts": [
+      {
+        "driver": "Variant calling fields",
+        "count": 18
+      },
+      {
+        "driver": "Pre-processing fields",
+        "count": 18
+      },
+      {
+        "driver": "Mapping fields",
+        "count": 17
+      },
+      {
+        "driver": "QC metrics fields",
+        "count": 17
+      },
+      {
+        "driver": "De-hosting fields",
+        "count": 16
+      },
+      {
+        "driver": "Consensus analysis fields",
+        "count": 15
+      },
+      {
+        "driver": "Lineage assignment fields",
+        "count": 14
+      },
+      {
+        "driver": "Clade assignment fields",
+        "count": 12
+      },
+      {
+        "driver": "SARS-CoV-2 QC metrics",
+        "count": 12
+      },
+      {
+        "driver": "Bioinformatics protocol fields",
+        "count": 10
+      },
+      {
+        "driver": "Subtype assignment fields",
+        "count": 7
+      },
+      {
+        "driver": "Type assignment fields",
+        "count": 6
+      },
+      {
+        "driver": "Assembly fields",
+        "count": 6
+      }
+    ],
+    "top_5_primary_incompleteness_driver_counts": [
+      {
+        "driver": "Variant calling fields",
+        "count": 18
+      },
+      {
+        "driver": "Pre-processing fields",
+        "count": 18
+      },
+      {
+        "driver": "Mapping fields",
+        "count": 17
+      },
+      {
+        "driver": "QC metrics fields",
+        "count": 17
+      },
+      {
+        "driver": "De-hosting fields",
+        "count": 16
+      }
+    ],
+    "top_10_primary_incompleteness_driver_counts": [
+      {
+        "driver": "Variant calling fields",
+        "count": 18
+      },
+      {
+        "driver": "Pre-processing fields",
+        "count": 18
+      },
+      {
+        "driver": "Mapping fields",
+        "count": 17
+      },
+      {
+        "driver": "QC metrics fields",
+        "count": 17
+      },
+      {
+        "driver": "De-hosting fields",
+        "count": 16
+      },
+      {
+        "driver": "Consensus analysis fields",
+        "count": 15
+      },
+      {
+        "driver": "Lineage assignment fields",
+        "count": 14
+      },
+      {
+        "driver": "Clade assignment fields",
+        "count": 12
+      },
+      {
+        "driver": "SARS-CoV-2 QC metrics",
+        "count": 12
+      },
+      {
+        "driver": "Bioinformatics protocol fields",
+        "count": 10
+      }
     ]
   },
   "qc": {
@@ -126,6 +244,128 @@
       "metadata_completeness_median": 55.8111,
       "metadata_completeness_min_pct": 23.5521,
       "metadata_completeness_max_pct": 100.0,
+      "primary_incompleteness_drivers": [
+        "Lineage assignment fields",
+        "SARS-CoV-2 QC metrics",
+        "Mapping fields",
+        "QC metrics fields",
+        "Variant calling fields",
+        "Pre-processing fields",
+        "Consensus analysis fields",
+        "De-hosting fields",
+        "Bioinformatics protocol fields",
+        "Clade assignment fields"
+      ],
+      "primary_incompleteness_driver_counts": [
+        {
+          "driver": "Lineage assignment fields",
+          "count": 14
+        },
+        {
+          "driver": "SARS-CoV-2 QC metrics",
+          "count": 14
+        },
+        {
+          "driver": "Mapping fields",
+          "count": 12
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 12
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 12
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 12
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 11
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 11
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 7
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 4
+        },
+        {
+          "driver": "Assembly fields",
+          "count": 3
+        }
+      ],
+      "top_5_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Lineage assignment fields",
+          "count": 14
+        },
+        {
+          "driver": "SARS-CoV-2 QC metrics",
+          "count": 14
+        },
+        {
+          "driver": "Mapping fields",
+          "count": 12
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 12
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 12
+        }
+      ],
+      "top_10_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Lineage assignment fields",
+          "count": 14
+        },
+        {
+          "driver": "SARS-CoV-2 QC metrics",
+          "count": 14
+        },
+        {
+          "driver": "Mapping fields",
+          "count": 12
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 12
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 12
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 12
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 11
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 11
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 7
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 4
+        }
+      ],
       "workflow_total_discrepancies_median": 112.0,
       "workflow_total_discrepancies_min": 74.0,
       "workflow_total_discrepancies_max": 161.0,
@@ -2326,6 +2566,128 @@
       "metadata_completeness_median": 56.4516,
       "metadata_completeness_min_pct": 16.3793,
       "metadata_completeness_max_pct": 93.0876,
+      "primary_incompleteness_drivers": [
+        "Pre-processing fields",
+        "Lineage assignment fields",
+        "SARS-CoV-2 QC metrics",
+        "De-hosting fields",
+        "Consensus analysis fields",
+        "QC metrics fields",
+        "Variant calling fields",
+        "Mapping fields",
+        "Bioinformatics protocol fields",
+        "Clade assignment fields"
+      ],
+      "primary_incompleteness_driver_counts": [
+        {
+          "driver": "Pre-processing fields",
+          "count": 10
+        },
+        {
+          "driver": "Lineage assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "SARS-CoV-2 QC metrics",
+          "count": 8
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 7
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 7
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 7
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 7
+        },
+        {
+          "driver": "Mapping fields",
+          "count": 6
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 3
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 2
+        },
+        {
+          "driver": "Assembly fields",
+          "count": 2
+        }
+      ],
+      "top_5_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Pre-processing fields",
+          "count": 10
+        },
+        {
+          "driver": "Lineage assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "SARS-CoV-2 QC metrics",
+          "count": 8
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 7
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 7
+        }
+      ],
+      "top_10_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Pre-processing fields",
+          "count": 10
+        },
+        {
+          "driver": "Lineage assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "SARS-CoV-2 QC metrics",
+          "count": 8
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 7
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 7
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 7
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 7
+        },
+        {
+          "driver": "Mapping fields",
+          "count": 6
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 3
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 2
+        }
+      ],
       "workflow_total_discrepancies_median": 46.5,
       "workflow_total_discrepancies_min": 11.0,
       "workflow_total_discrepancies_max": 136.0,
@@ -4416,6 +4778,128 @@
       "metadata_completeness_median": 53.6638,
       "metadata_completeness_min_pct": 25.0,
       "metadata_completeness_max_pct": 88.2591,
+      "primary_incompleteness_drivers": [
+        "Mapping fields",
+        "QC metrics fields",
+        "Variant calling fields",
+        "Pre-processing fields",
+        "Consensus analysis fields",
+        "De-hosting fields",
+        "Type assignment fields",
+        "Subtype assignment fields",
+        "Clade assignment fields",
+        "Assembly fields"
+      ],
+      "primary_incompleteness_driver_counts": [
+        {
+          "driver": "Mapping fields",
+          "count": 12
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 11
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 11
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 10
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 9
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 9
+        },
+        {
+          "driver": "Type assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "Subtype assignment fields",
+          "count": 7
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 7
+        },
+        {
+          "driver": "Assembly fields",
+          "count": 5
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 5
+        }
+      ],
+      "top_5_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Mapping fields",
+          "count": 12
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 11
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 11
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 10
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 9
+        }
+      ],
+      "top_10_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Mapping fields",
+          "count": 12
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 11
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 11
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 10
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 9
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 9
+        },
+        {
+          "driver": "Type assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "Subtype assignment fields",
+          "count": 7
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 7
+        },
+        {
+          "driver": "Assembly fields",
+          "count": 5
+        }
+      ],
       "workflow_total_discrepancies_median": 74.0,
       "workflow_total_discrepancies_min": 31.0,
       "workflow_total_discrepancies_max": 544.0,
@@ -6139,6 +6623,128 @@
       "metadata_completeness_median": 55.4515,
       "metadata_completeness_min_pct": 7.1429,
       "metadata_completeness_max_pct": 87.1429,
+      "primary_incompleteness_drivers": [
+        "Mapping fields",
+        "QC metrics fields",
+        "Variant calling fields",
+        "Pre-processing fields",
+        "Clade assignment fields",
+        "Consensus analysis fields",
+        "De-hosting fields",
+        "Type assignment fields",
+        "Subtype assignment fields",
+        "Bioinformatics protocol fields"
+      ],
+      "primary_incompleteness_driver_counts": [
+        {
+          "driver": "Mapping fields",
+          "count": 10
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 9
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 9
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 9
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 8
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 8
+        },
+        {
+          "driver": "Type assignment fields",
+          "count": 6
+        },
+        {
+          "driver": "Subtype assignment fields",
+          "count": 5
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 4
+        },
+        {
+          "driver": "Assembly fields",
+          "count": 4
+        }
+      ],
+      "top_5_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Mapping fields",
+          "count": 10
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 9
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 9
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 9
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 8
+        }
+      ],
+      "top_10_primary_incompleteness_driver_counts": [
+        {
+          "driver": "Mapping fields",
+          "count": 10
+        },
+        {
+          "driver": "QC metrics fields",
+          "count": 9
+        },
+        {
+          "driver": "Variant calling fields",
+          "count": 9
+        },
+        {
+          "driver": "Pre-processing fields",
+          "count": 9
+        },
+        {
+          "driver": "Clade assignment fields",
+          "count": 8
+        },
+        {
+          "driver": "Consensus analysis fields",
+          "count": 8
+        },
+        {
+          "driver": "De-hosting fields",
+          "count": 8
+        },
+        {
+          "driver": "Type assignment fields",
+          "count": 6
+        },
+        {
+          "driver": "Subtype assignment fields",
+          "count": 5
+        },
+        {
+          "driver": "Bioinformatics protocol fields",
+          "count": 4
+        }
+      ],
       "workflow_total_discrepancies_median": 155.5,
       "workflow_total_discrepancies_min": 34.0,
       "workflow_total_discrepancies_max": 3647.0,

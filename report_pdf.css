@@ -53,6 +53,16 @@ h2:not(#table-of-contents) {
   padding-bottom: 0.15em;
 }
 
+h2.no-page-break {
+  break-before: auto;
+  page-break-before: auto;
+}
+
+h3.no-page-break {
+  break-before: auto;
+  page-break-before: auto;
+}
+
 h2#table-of-contents {
   border-bottom: 1px solid var(--line);
   font-size: 15pt;

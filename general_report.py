@@ -5024,6 +5024,11 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
         if not participating_labs:
             continue
 
+        component_driver_counter: Counter = Counter()
+        for lab in participating_labs:
+            for drv in lab["components"][comp_code].get("metadata", {}).get("primary_incompleteness_drivers", []):
+                component_driver_counter[drv] += 1
+
         workflow_total_discrepancies_per_lab = [
             safe_number(lab["components"][comp_code].get("total_number_discrepancies_consensus"))
             for lab in participating_labs
@@ -5051,6 +5056,19 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
             "metadata_completeness_max_pct": max_or_none(
                 [lab["components"][comp_code].get("metadata", {}).get("completeness_pct") for lab in participating_labs]
             ),
+            "primary_incompleteness_drivers": [name for name, _ in component_driver_counter.most_common(10)],
+            "primary_incompleteness_driver_counts": [
+                {"driver": name, "count": count}
+                for name, count in component_driver_counter.most_common()
+            ],
+            "top_5_primary_incompleteness_driver_counts": [
+                {"driver": name, "count": count}
+                for name, count in component_driver_counter.most_common(5)
+            ],
+            "top_10_primary_incompleteness_driver_counts": [
+                {"driver": name, "count": count}
+                for name, count in component_driver_counter.most_common(10)
+            ],
             "workflow_total_discrepancies_median": median_or_none(workflow_total_discrepancies_per_lab),
             "workflow_total_discrepancies_min": min_or_none(workflow_total_discrepancies_per_lab),
             "workflow_total_discrepancies_max": max_or_none(workflow_total_discrepancies_per_lab),
@@ -6366,6 +6384,18 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
                 | subtype_assignment_softwares
             ),
             "primary_incompleteness_drivers": [name for name, _ in global_driver_counter.most_common(10)],
+            "primary_incompleteness_driver_counts": [
+                {"driver": name, "count": count}
+                for name, count in global_driver_counter.most_common()
+            ],
+            "top_5_primary_incompleteness_driver_counts": [
+                {"driver": name, "count": count}
+                for name, count in global_driver_counter.most_common(5)
+            ],
+            "top_10_primary_incompleteness_driver_counts": [
+                {"driver": name, "count": count}
+                for name, count in global_driver_counter.most_common(10)
+            ],
         },
         "qc": {
             "match_rate_pct": pct(qc_matches, qc_matches + qc_discrepancies + qc_nulls),
