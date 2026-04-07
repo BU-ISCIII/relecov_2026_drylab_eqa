@@ -2675,7 +2675,7 @@ def make_component_influenza_variant_reporting_summary(
         annotate_outlier_caps(axes[0], [(x_pos, display_value)], panel_a_upper, color)
 
     axes[0].set_xticks(base_positions)
-    axes[0].set_xticklabels(sample_names, rotation=45, ha="right")
+    axes[0].set_xticklabels(sample_names, rotation=0, ha="center")
     axes[0].set_xlim(0.5, len(sample_names) + 0.5)
     axes[0].set_ylabel("Number of variants")
     axes[0].set_title("A. High-frequency variant reporting")
@@ -2723,7 +2723,7 @@ def make_component_influenza_variant_reporting_summary(
         )
 
     axes[1].set_xticks(base_positions)
-    axes[1].set_xticklabels(sample_names, rotation=45, ha="right")
+    axes[1].set_xticklabels(sample_names, rotation=0, ha="center")
     axes[1].set_xlim(0.5, len(sample_names) + 0.5)
     axes[1].set_ylabel("Total variants in VCF")
     axes[1].set_title("B. Total variants in VCF")

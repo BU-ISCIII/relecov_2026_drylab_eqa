@@ -11,8 +11,13 @@
 {%- endmacro %}
 {% macro render_figure(path, caption=None, figure_class=None, has_panels=False) -%}
 {% if path -%}
+{% set _figure_style = figure_style if figure_style is defined and figure_style else ('max-width: 100%;' if has_panels else 'max-width: 80%;') %}
+{% set _auto_width = none %}
+{% if 'max-width:' in _figure_style and 'width:' not in _figure_style|replace('max-width', '') %}
+{% set _auto_width = _figure_style|replace('max-width:', '')|replace(';', '')|trim %}
+{% endif %}
 <figure{% if figure_class %} class="{{ figure_class }}"{% endif %}>
-<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="{{ figure_style if figure_style is defined and figure_style else ('max-width: 100%;' if has_panels else 'max-width: 80%;') }}"/>
+<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="{% if _auto_width %}width: {{ _auto_width }}; {% endif %}{{ _figure_style }}"/>
 {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
 </figure>
 {%- endif %}
@@ -434,11 +439,12 @@ For SARS-CoV-2 and Influenza viruses, concordance was assessed as:
 
 If a laboratory did not report a lineage/subtype or clade assignment, that missing classification was also counted as a **Discrepancy** for evaluation purposes. Although these metadata fields were not mandatory in the submission template, participating RELECOV laboratories are expected to be able to determine both classification dimensions for analysed samples.
 
-Potential contributors discussed during result interpretation included (TODO):
+Potential contributors considered during result interpretation included:
 
-- Use of outdated lineage databases
+- Differences in database versioning
 - Differences in software versioning
-- Relationship between discrepancies and lineage/type assignment
+- Reporting practices and field completion
+- The possible relationship between consensus discrepancies and lineage/type assignment performance
 
 Failure to identify virus presence in positive samples, or misclassification of negative samples, was recorded separately.
 
@@ -879,7 +885,7 @@ Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepan
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
 
-| Sample ID | Median successful hits (n={{ comp_net.variant_metadata_reporting.successful_hits_reported_n_labs }}) | Median variants >=75% AF in metadata (n={{ comp_net.variant_metadata_reporting.reported_n_labs }}) | Median variants >=75% AF in VCF (n={{ comp_net.variant_metadata_reporting.variants_in_consensus_vcf_reported_n_labs }}) | Median variants with effect in metadata (n={{ comp_net.variant_metadata_reporting.variants_with_effect_reported_n_labs }}) | Median variants with effect in VCF (n={{ comp_net.variant_metadata_reporting.variants_with_effect_vcf_reported_n_labs }}) | MEdian discrepancies metadata vs VCF | Median effect discrepancies metadata vs VCF |
+| Sample ID | Median successful hits (n={{ comp_net.variant_metadata_reporting.successful_hits_reported_n_labs }}) | Median variants >=75% AF in metadata (n={{ comp_net.variant_metadata_reporting.reported_n_labs }}) | Median variants >=75% AF in VCF (n={{ comp_net.variant_metadata_reporting.variants_in_consensus_vcf_reported_n_labs }}) | Median variants with effect in metadata (n={{ comp_net.variant_metadata_reporting.variants_with_effect_reported_n_labs }}) | Median variants with effect in VCF (n={{ comp_net.variant_metadata_reporting.variants_with_effect_vcf_reported_n_labs }}) | Median discrepancies metadata vs VCF | Median effect discrepancies metadata vs VCF |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in comp_net.variant.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.variants_with_effect.median if s.variants_with_effect and s.variants_with_effect.median is not none else "NA" }} | {{ s.variants_with_effect_vcf.median if s.variants_with_effect_vcf and s.variants_with_effect_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants_effect.median if s.discrepancies_in_reported_variants_effect and s.discrepancies_in_reported_variants_effect.median is not none else "NA" }} |
@@ -1014,7 +1020,7 @@ Across all participating laboratories:
 Table {{ table_counter.value }} summarises the sample-level lineage/subtype and clade concordance rates for {{ comp_code }}. Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 90%;" %}
+{% set figure_style = "max-width: 120%;" %}
 {{ render_figure(
   comp_net.typing.fig_stacked_bar_by_sample,
   "Classification outcome distribution per sample for " ~ comp_code ~ "."
@@ -1441,7 +1447,7 @@ The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment 
 
 ### 7.1. Consensus Genome Reconstruction
 
-Consensus reconstruction results were strongest in the Illumina-based components overall, with a combined median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the Nanopore-based components. When grouped by virus, the combined median genome identity was also higher for SARS-CoV-2 components ({{ pct(general.general_results.consensus.median_identity_sars_pct, 2) }}) than for influenza components ({{ pct(general.general_results.consensus.median_identity_influenza_pct, 2) }}). (TODO, revisar) The fact that the influenza median remained slightly below the combined Nanopore-based median suggests that lower identity in influenza cannot be attributed to sequencing platform alone and was also influenced by virus-specific analytical complexity. At component level, SARS1 and SARS2 showed median identities of {{ pct(general.components.SARS1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.SARS2.consensus.median_identity_pct, 2) }}, whereas FLU1 and FLU2 showed lower medians of {{ pct(general.components.FLU1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.FLU2.consensus.median_identity_pct, 2) }}. These results suggest that influenza consensus reconstruction remains less standardised across the network than SARS-CoV-2 reconstruction and would benefit from clearer best-practice guidance on coverage thresholds, masking behaviour, indel handling, and segment-level quality criteria.
+Consensus reconstruction results were strongest in the Illumina-based components overall, with a combined median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }} compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the Nanopore-based components. When grouped by virus, the combined median genome identity was also higher for SARS-CoV-2 components ({{ pct(general.general_results.consensus.median_identity_sars_pct, 2) }}) than for influenza components ({{ pct(general.general_results.consensus.median_identity_influenza_pct, 2) }}). The fact that the influenza median remained slightly below the combined Nanopore-based median suggests that lower identity in influenza cannot be attributed to sequencing platform alone and was also influenced by virus-specific analytical complexity. At component level, SARS1 and SARS2 showed median identities of {{ pct(general.components.SARS1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.SARS2.consensus.median_identity_pct, 2) }}, whereas FLU1 and FLU2 showed lower medians of {{ pct(general.components.FLU1.consensus.median_identity_pct, 2) }} and {{ pct(general.components.FLU2.consensus.median_identity_pct, 2) }}. These results suggest that influenza consensus reconstruction remains less standardised across the network than SARS-CoV-2 reconstruction and would benefit from clearer best-practice guidance on coverage thresholds, masking behaviour, indel handling, and segment-level quality criteria.
 
 At the same time, the ranges observed across laboratories show that high medians did not eliminate outlier behaviour. In particular, the minimum identity values in SARS2 and FLU2 dropped to {{ pct(general.components.SARS2.consensus.identity_pct_min, 2) }} and {{ pct(general.components.FLU2.consensus.identity_pct_min, 2) }}, indicating that a subset of submissions diverged markedly from the curated gold standard.
 
@@ -1455,7 +1461,7 @@ The submitted metadata documented substantial diversity in variant reporting beh
 
 Influenza results especially highlight the consequences of heterogeneous structural reporting. The network-level median number of variants with AF >=75% reported in metadata was {{ general.general_results.influenza_variants.median_variants_in_consensus }}, whereas the corresponding median derived from submitted VCF files was {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }}. The median discrepancy between these two representations was {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }}, and the total number of variants present in submitted VCF files ranged from {{ general.general_results.influenza_variants.min_variants_in_vcf }} to {{ general.general_results.influenza_variants.max_variants_in_vcf }}. Together, these values indicate that influenza variant outputs were not directly comparable under a single harmonised coordinate framework and that reporting conventions differed markedly across laboratories. That heterogeneity is also visible in the mixed reporting modes, the use of multiple reference genomes, and the wide structural ranges in both total VCF content and metadata-VCF discrepancies.
 
-In SARS-CoV-2, discrepancies between metadata-reported and VCF-derived values were generally limited, but the discrepancy profile still points to differences in filtering and interpretation rules. In SARS1, the most frequent discrepancy type was `de novo`, and samples such as SARS3 and especially SARS4 showed the highest discrepancy burdens, consistent with the fact that the curated reference VCF retains only variants above defined AF and coverage thresholds. This means that laboratories using different calling thresholds, or laboratories reporting only high-frequency variants, may inflate either `missing` or `de novo` categories even when the underlying VCF is internally coherent. In SARS2, overall discrepancy levels also remained low, but `missing` and `de novo` discrepancies were again the most frequent, and the highest-burden samples were the low-quality materials SARS9 and SARS10, which supports the interpretation that reporting concordance deteriorates primarily in analytically compromised datasets.
+In SARS-CoV-2, discrepancies between metadata-reported and VCF-derived values were generally limited, but the discrepancy profile still points to differences in filtering and interpretation rules. In SARS1, the most frequent discrepancy type was `de novo`, and samples such as SARS3 and especially SARS4 showed the highest discrepancy burdens, consistent with the fact that the curated reference VCF retains only variants above defined AF and coverage thresholds. Additional technical limitations also affected the calculation of VCF-derived variants with effect in this component: one submission was generated against an XBB reference genome rather than against the Wuhan-based reference framework used for the EQA gold standard, and another submission provided iVar TSV outputs instead of VCF files, which prevented standard annotation of VCF content for effect-based comparisons. This means that laboratories using different calling thresholds, or laboratories reporting only high-frequency variants, may inflate either `missing` or `de novo` categories even when the underlying VCF is internally coherent. In SARS2, overall discrepancy levels also remained low, but `missing` and `de novo` discrepancies were again the most frequent, and the highest-burden samples were the low-quality materials SARS9 and SARS10, which supports the interpretation that reporting concordance deteriorates primarily in analytically compromised datasets. Technical limitations also affected the availability of some VCF-derived summary metrics in this component: one laboratory did not submit VCF files, and in another case the VCFs had been generated with Medaka, which does not provide allele-frequency information. As a result, it was not possible in those submissions to derive AF >=75% variant counts or to calculate annotated variants with effect from the VCF content.
 
 For influenza, only a minority of laboratories reported metadata counts in a way that could be directly interpreted against the submitted VCFs, and some laboratories appear to have counted all VCF variants, including low-frequency calls, as if they belonged to the AF >=75% category. Others reported VCFs with very large total numbers of variants, indicating the inclusion of very low-frequency events supported by few reads. In practical terms, this means that the influenza discrepancies do not only reflect analytical differences in variant detection, but also differences in how laboratories interpreted software outputs and translated them into the metadata template. This reinforces the need for harmonised best practices defining which variants should be reported, under which AF thresholds, and how those thresholds should be represented in metadata.
 
@@ -1492,8 +1498,7 @@ The validation process also showed that schema compliance remains an operational
 
 A recurrent source of non-compliance was the use of free-text entries in fields for which predefined dropdown options were available, particularly for software names. This occurred even though the metadata template, including its controlled-vocabulary dropdowns, had been distributed two weeks before the start of the exercise to give laboratories time to review the available options and identify any missing software tools for possible inclusion in the schema, together with guidance on how mandatory fields should be completed when data were not available. In practice, this means that part of the harmonisation problem lies not only in analytical diversity itself, but in the difficulty of consistently mapping that diversity into a controlled metadata structure.
 
-Another recurrent issue concerned database-version reporting for lineage and clade assignment tools. In some submissions, the value entered in the database-version field appears to correspond to the software version rather than the actual database version, particularly for tools such as Nextclade and Pangolin where both identifiers are distinct and analytically relevant. This suggests that the semantics of these metadata fields were not always clear to participants and that future versions of the template should include stricter validation rules and more explicit examples distinguishing software version from database release.
-DESARROLLAR algunos laboratorios han usado versiones de software anticuadas, como en el caso de iVar, que es relativamente importante ya que se ha visto que cambia la llamada a variantes y la determinación de frecuencia alélica y profundidad de INDELs.
+Another recurrent issue concerned database-version reporting for lineage and clade assignment tools. In some submissions, the value entered in the database-version field appears to correspond to the software version rather than the actual database version, particularly for tools such as Nextclade and Pangolin where both identifiers are distinct and analytically relevant. This suggests that the semantics of these metadata fields were not always clear to participants and that future versions of the template should include stricter validation rules and more explicit examples distinguishing software version from database release. More broadly, some laboratories also relied on relatively outdated software versions, such as older releases of iVar. This is not a minor technical detail, because software versioning can affect variant calling behaviour, allele-frequency estimation, and indel-depth interpretation, and therefore can alter both the analytical outputs themselves and the comparability of results across the network.
 
 ### 7.6. Implications for RELECOV 2.0
 
@@ -1523,7 +1528,7 @@ The EQA therefore provides a robust technical basis for harmonised, performance-
 {% set lab_code = labdata.lab.lab_cod | default(labdata.lab.submitting_institution_id) %}
 ## 9. Individual Laboratory Technical Report
 
-<h2 class="no-page-break">Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})</h2>
+### Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})
 
 This section provides a detailed technical assessment of the analytical results submitted by **{{ labdata.lab.lab_cod }}** within the 2026 RELECOV Dry-Lab EQA. Performance metrics are benchmarked against curated gold standards and contextualised relative to aggregated network-wide performance distributions. Network medians and interquartile ranges are provided for comparative interpretation, without disclosure of other laboratories’ identities.
 
@@ -1531,7 +1536,7 @@ The purpose of this section is to support technical optimisation, parameter harm
 
 Only files, metadata fields, and derived analytical metrics actually provided by the laboratory are displayed in this individual report. If a file was not submitted, or a metadata field was not provided, the corresponding table entries, panels, or figures are omitted for that laboratory.
 
-<h3 class="no-page-break">9.1. Participation Overview</h3>
+### 9.1. Participation Overview
 
 The laboratory analysed **{{ labdata.components | length }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
 
@@ -1915,7 +1920,7 @@ No comparative metadata-derived analytical metrics figure is shown for {{ comp_c
 
 {% endfor %}
 
-## Acknowledgement
+### Acknowledgement
 
 We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 2026 RELECOV Dry-Lab EQA. The contribution of each laboratory is fundamental to maintaining analytical comparability, reproducibility, and interoperability across the network.
 
