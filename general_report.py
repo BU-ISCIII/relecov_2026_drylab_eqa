@@ -115,6 +115,19 @@ VARIANT_DISCREPANCY_TYPE_COLORS = {
 }
 
 
+def add_truncated_y_axis_mark(ax) -> None:
+    for y_center in (0.02, 0):
+        ax.plot(
+            [-0.018, 0.018],
+            [y_center - 0.018, y_center + 0.018],
+            transform=ax.transAxes,
+            color="#444444",
+            linewidth=1.3,
+            solid_capstyle="butt",
+            clip_on=False,
+        )
+
+
 def load_json(path: str | Path) -> Any:
     with open(path, "r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -312,6 +325,26 @@ def style_boxplot_axes(ax: Any) -> None:
 def style_percent_boxplot_axis(ax: Any) -> None:
     ax.set_ylim(0, 110)
     ax.set_yticks(np.arange(0, 101, 20))
+
+
+def style_truncated_percent_boxplot_axis(ax: Any, values: Iterable[Any]) -> None:
+    clean_values = []
+    for value in values:
+        numeric_value = safe_number(value)
+        if numeric_value is not None:
+            clean_values.append(float(numeric_value))
+
+    if not clean_values:
+        style_percent_boxplot_axis(ax)
+        return
+
+    min_value = min(clean_values)
+    max_value = max(clean_values)
+    value_span = max_value - min_value
+    lower_margin = max(0.5, value_span * 0.08)
+    upper_margin = max(0.5, value_span * 0.12)
+    ax.set_ylim(max(0, min_value - lower_margin), min(110, max_value + upper_margin))
+    add_truncated_y_axis_mark(ax)
 
 
 def annotate_group_n_labs(ax: Any, positions: List[float], counts: List[int], y_offset: float = -0.22) -> None:
@@ -1238,78 +1271,32 @@ def make_component_bioinformatics_protocol_metric_boxplots(
         use_broken_identity_axis = panel_idx == 0 and comp_code in {"SARS1", "FLU1", "FLU2"}
 
         if use_broken_identity_axis:
-            original_spec = ax.get_subplotspec()
-            ax.remove()
-            inner_gs = original_spec.subgridspec(2, 1, height_ratios=[5.2, 0.8], hspace=0.09)
-            ax_upper = fig.add_subplot(inner_gs[0])
-            ax_lower = fig.add_subplot(inner_gs[1], sharex=ax_upper)
-
-            for subax in (ax_upper, ax_lower):
-                bp = subax.boxplot(
-                    plotted_data,
-                    labels=panel_display_labels,
-                    showfliers=True,
-                    patch_artist=True,
-                )
-                style_boxplot(bp, [comp_code] * len(panel_labels), ax=subax)
-                add_component_boxplot_points(
-                    subax,
-                    bp,
-                    plotted_data,
-                    list(range(1, len(panel_labels) + 1)),
-                    [comp_code] * len(panel_labels),
-                )
-                subax.set_xlim(0.5, len(panel_labels) + 0.5)
-
-            ax_lower.set_ylim(0, 5)
-            ax_upper.set_ylim(90, 102)
-            ax_lower.set_yticks([0, 5])
-            ax_upper.set_yticks([90, 95, 100])
-            ax_upper.spines["bottom"].set_visible(False)
-            ax_lower.spines["top"].set_visible(False)
-            ax_upper.tick_params(axis="x", which="both", bottom=False, labelbottom=False)
-            ax_lower.tick_params(axis="x", rotation=0, labelsize=8)
-            ax_upper.set_title(title)
-            ax_upper.set_ylabel("")
-            ax_lower.set_ylabel("")
-
-            fig.tight_layout()
-
-            upper_pos = ax_upper.get_position()
-            lower_pos = ax_lower.get_position()
-            y_label_center = (upper_pos.y1 + lower_pos.y0) / 2.0 + 0.04
-            fig.text(
-                upper_pos.x0 - 0.03,
-                y_label_center,
-                ylabel,
-                rotation=90,
-                va="center",
-                ha="center",
+            bp = ax.boxplot(
+                plotted_data,
+                labels=panel_display_labels,
+                showfliers=True,
+                patch_artist=True,
             )
-
-            slash_x = (-0.01, 0.01)
-            slash_y_offset = 0.1
-            slash_gap = 0.8
-            upper_transform = mtransforms.blended_transform_factory(ax_upper.transAxes, ax_upper.transData)
-
-            ax_upper.plot(
-                slash_x,
-                [89.5 - slash_y_offset + slash_gap / 2.0, 90 + slash_y_offset + slash_gap / 2.0],
-                transform=upper_transform,
-                color="#444444",
-                linewidth=1.5,
-                solid_capstyle="butt",
-                clip_on=False,
+            style_boxplot(bp, [comp_code] * len(panel_labels), ax=ax)
+            add_component_boxplot_points(
+                ax,
+                bp,
+                plotted_data,
+                list(range(1, len(panel_labels) + 1)),
+                [comp_code] * len(panel_labels),
             )
-            ax_upper.plot(
-                slash_x,
-                [89.5 - slash_y_offset - slash_gap / 2.0, 90 + slash_y_offset - slash_gap / 2.0],
-                transform=upper_transform,
-                color="#444444",
-                linewidth=1.5,
-                solid_capstyle="butt",
-                clip_on=False,
-            )
+            ax.set_xlim(0.5, len(panel_labels) + 0.5)
+            all_identity_values = [value for values in plotted_data for value in values]
+            if all_identity_values:
+                min_value = min(all_identity_values)
+                max_value = max(all_identity_values)
+                lower_margin = max(0.5, (max_value - min_value) * 0.08)
+                upper_margin = max(0.5, (max_value - min_value) * 0.12)
+                ax.set_ylim(max(0, min_value - lower_margin), min(110, max_value + upper_margin))
+            ax.tick_params(axis="x", rotation=0, labelsize=8)
+            ax.set_title(title)
+            ax.set_ylabel(ylabel)
+            add_truncated_y_axis_mark(ax)
             continue
 
         bp = ax.boxplot(
@@ -3481,7 +3468,13 @@ def make_lab_consensus_distribution_panel_plot(
         ax.tick_params(axis="x", rotation=0, labelsize=9)
 
         if percent_axis:
-            style_percent_boxplot_axis(ax)
+            if comp_code in {"SARS1", "FLU1"}:
+                truncated_values = list(lab_values)
+                for sample_values in network_data:
+                    truncated_values.extend(sample_values)
+                style_truncated_percent_boxplot_axis(ax, truncated_values)
+            else:
+                style_percent_boxplot_axis(ax)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
             combined_annotations = list(panel_data["outlier_annotations"])
@@ -3923,7 +3916,15 @@ def make_lab_workflow_positioning_boxplot(
         ax.set_ylabel(ylabel)
         ax.set_title(title)
         if y_limits is not None:
-            if ylabel.endswith("(%)"):
+            if ylabel == "Genome identity (%)":
+                if comp_code in {"SARS1", "FLU1"}:
+                    style_truncated_percent_boxplot_axis(
+                        ax,
+                        metric_data["network_values"] + [metric_data["lab_value"]],
+                    )
+                else:
+                    style_percent_boxplot_axis(ax)
+            elif ylabel.endswith("(%)"):
                 style_percent_boxplot_axis(ax)
             else:
                 ax.set_ylim(*y_limits)

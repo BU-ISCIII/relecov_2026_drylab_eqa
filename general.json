@@ -70,7 +70,7 @@
     },
     "classification": {
       "sars_lineage_concordance_pct": 77.66,
-      "influenza_type_concordance_pct": 81.63,
+      "influenza_type_concordance_pct": 87.76,
       "sars_clade_concordance_pct": 75.53,
       "influenza_clade_concordance_pct": 67.35,
       "sars_cov_2_concordance_pct": 77.66,
@@ -5222,15 +5222,15 @@
         "fig_reporting_summary_by_sample": "figures/FLU1/influenza_variant_reporting_summary_by_sample.png"
       },
       "typing": {
-        "total_classification_matches_median": 7.0,
+        "total_classification_matches_median": 7.5,
         "total_classification_matches_min": 3.0,
         "total_classification_matches_max": 8.0,
-        "lineage_hits": 43,
-        "lineage_discrepancies": 4,
+        "lineage_hits": 46,
+        "lineage_discrepancies": 1,
         "lineage_null": 1,
         "lineage_total": 48,
-        "lineage_hit_pct": 89.58,
-        "lineage_discrepancies_pct": 10.42,
+        "lineage_hit_pct": 95.83,
+        "lineage_discrepancies_pct": 4.17,
         "clade_hits": 33,
         "clade_discrepancies": 0,
         "clade_null": 15,
@@ -5292,11 +5292,11 @@
           },
           {
             "collecting_lab_sample_id": "FLU5",
-            "lineage_hits": 9,
+            "lineage_hits": 12,
             "lineage_total": 12,
-            "lineage_discrepancies": 3,
+            "lineage_discrepancies": 0,
             "lineage_null": 0,
-            "lineage_hit_pct": 75.0,
+            "lineage_hit_pct": 100.0,
             "clade_hits": 9,
             "clade_total": 12,
             "clade_discrepancies": 0,
@@ -5539,7 +5539,7 @@
               "median_discrepancies": 11.0,
               "median_metadata_completeness_pct": 60.7143,
               "clade_hit_pct": 43.75,
-              "lineage_hit_pct": 93.75
+              "lineage_hit_pct": 100.0
             },
             {
               "name": "DRAGEN Targeted Microbial",
@@ -5559,7 +5559,7 @@
               "median_discrepancies": 162.0,
               "median_metadata_completeness_pct": 41.0714,
               "clade_hit_pct": 75.0,
-              "lineage_hit_pct": 50.0
+              "lineage_hit_pct": 75.0
             },
             {
               "name": "IRMA",
@@ -5588,7 +5588,7 @@
               "median_discrepancies": 13.5,
               "median_metadata_completeness_pct": 62.9717,
               "clade_hit_pct": 100.0,
-              "lineage_hit_pct": 87.5
+              "lineage_hit_pct": 100.0
             }
           ],
           "fig_metric_boxplots": "figures/FLU1/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
@@ -6018,15 +6018,15 @@
               "name": "Custom typing script",
               "n_labs": 4,
               "database_version": "v2",
-              "type_discordance_pct": 12.5,
-              "type_hit_pct": 87.5
+              "type_discordance_pct": 6.25,
+              "type_hit_pct": 93.75
             },
             {
               "name": "INSaFLU",
               "n_labs": 1,
               "database_version": "2.2.2",
-              "type_discordance_pct": 50.0,
-              "type_hit_pct": 50.0
+              "type_discordance_pct": 25.0,
+              "type_hit_pct": 75.0
             },
             {
               "name": "IRMA typing",
@@ -6053,8 +6053,8 @@
               "name": "IRMA typing",
               "n_labs": 1,
               "database_version": "influenza A & B, genome sets version 2",
-              "type_discordance_pct": 25.0,
-              "type_hit_pct": 75.0
+              "type_discordance_pct": 0.0,
+              "type_hit_pct": 100.0
             }
           ],
           "fig_metric_boxplots": "figures/FLU1/type_assignment_metric_boxplots_by_pipeline.png"
@@ -6068,23 +6068,23 @@
               "name": "Custom subtyping script",
               "n_labs": 3,
               "database_version": "v2",
-              "subtype_discordance_pct": 16.67,
-              "subtype_hit_pct": 83.33
+              "subtype_discordance_pct": 8.33,
+              "subtype_hit_pct": 91.67
             },
             {
               "name": "INSaFLU",
               "n_labs": 1,
               "version": "2.2.2",
               "database_version": "2.2.2",
-              "subtype_discordance_pct": 50.0,
-              "subtype_hit_pct": 50.0
+              "subtype_discordance_pct": 25.0,
+              "subtype_hit_pct": 75.0
             },
             {
               "name": "IRMA subtyping",
               "n_labs": 1,
               "database_version": "influenza A & B, genome sets version 2",
-              "subtype_discordance_pct": 25.0,
-              "subtype_hit_pct": 75.0
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
             },
             {
               "name": "IRMA subtyping",
@@ -6945,15 +6945,15 @@
         "fig_reporting_summary_by_sample": "figures/FLU2/influenza_variant_reporting_summary_by_sample.png"
       },
       "typing": {
-        "total_classification_matches_median": 7.5,
+        "total_classification_matches_median": 8.5,
         "total_classification_matches_min": 0.0,
         "total_classification_matches_max": 10.0,
-        "lineage_hits": 37,
-        "lineage_discrepancies": 7,
+        "lineage_hits": 40,
+        "lineage_discrepancies": 4,
         "lineage_null": 6,
         "lineage_total": 50,
-        "lineage_hit_pct": 74.0,
-        "lineage_discrepancies_pct": 26.0,
+        "lineage_hit_pct": 80.0,
+        "lineage_discrepancies_pct": 20.0,
         "clade_hits": 33,
         "clade_discrepancies": 1,
         "clade_null": 16,
@@ -7002,11 +7002,11 @@
           },
           {
             "collecting_lab_sample_id": "FLU9",
-            "lineage_hits": 5,
+            "lineage_hits": 8,
             "lineage_total": 10,
-            "lineage_discrepancies": 4,
+            "lineage_discrepancies": 1,
             "lineage_null": 1,
-            "lineage_hit_pct": 50.0,
+            "lineage_hit_pct": 80.0,
             "clade_hits": 2,
             "clade_total": 10,
             "clade_discrepancies": 1,
@@ -7272,7 +7272,7 @@
               "median_discrepancies": 40.0,
               "median_metadata_completeness_pct": 39.2857,
               "clade_hit_pct": 80.0,
-              "lineage_hit_pct": 60.0
+              "lineage_hit_pct": 80.0
             },
             {
               "name": "INSaFLU",
@@ -7282,7 +7282,7 @@
               "median_discrepancies": 4.0,
               "median_metadata_completeness_pct": 32.0755,
               "clade_hit_pct": 60.0,
-              "lineage_hit_pct": 60.0
+              "lineage_hit_pct": 80.0
             },
             {
               "name": "IRMA",
@@ -7302,7 +7302,7 @@
               "median_discrepancies": 6.5,
               "median_metadata_completeness_pct": 67.9245,
               "clade_hit_pct": 87.5,
-              "lineage_hit_pct": 93.75
+              "lineage_hit_pct": 100.0
             }
           ],
           "fig_metric_boxplots": "figures/FLU2/bioinformatics_protocol_metric_boxplots_by_pipeline.png"
@@ -7652,8 +7652,8 @@
               "name": "INSaFLU",
               "n_labs": 1,
               "database_version": "2.2.2",
-              "type_discordance_pct": 40.0,
-              "type_hit_pct": 60.0
+              "type_discordance_pct": 20.0,
+              "type_hit_pct": 80.0
             },
             {
               "name": "IRMA typing",
@@ -7680,8 +7680,8 @@
               "name": "IRMA typing",
               "n_labs": 1,
               "database_version": "influenza A & B, genome sets version 2",
-              "type_discordance_pct": 20.0,
-              "type_hit_pct": 80.0
+              "type_discordance_pct": 0.0,
+              "type_hit_pct": 100.0
             }
           ],
           "fig_metric_boxplots": "figures/FLU2/type_assignment_metric_boxplots_by_pipeline.png"
@@ -7711,15 +7711,15 @@
               "n_labs": 1,
               "version": "2.2.2",
               "database_version": "2.2.2",
-              "subtype_discordance_pct": 40.0,
-              "subtype_hit_pct": 60.0
+              "subtype_discordance_pct": 20.0,
+              "subtype_hit_pct": 80.0
             },
             {
               "name": "IRMA subtyping",
               "n_labs": 1,
               "database_version": "influenza A & B, genome sets version 2",
-              "subtype_discordance_pct": 20.0,
-              "subtype_hit_pct": 80.0
+              "subtype_discordance_pct": 0.0,
+              "subtype_hit_pct": 100.0
             },
             {
               "name": "IRMA subtyping",
