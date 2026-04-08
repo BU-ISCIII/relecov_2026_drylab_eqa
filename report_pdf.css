@@ -54,13 +54,17 @@ h2:not(#table-of-contents) {
 }
 
 h2.no-page-break {
+  break-after: avoid;
   break-before: auto;
   page-break-before: auto;
+  page-break-after: avoid;
 }
 
 h3.no-page-break {
+  break-after: avoid;
   break-before: auto;
   page-break-before: auto;
+  page-break-after: avoid;
 }
 
 h2#table-of-contents {
@@ -208,13 +212,14 @@ th {
 
 figure {
   background: white;
+  break-before: page;
   break-inside: avoid;
   border: 1px solid #dbe3ea;
   border-radius: 6px;
   margin-left: 0;
   margin-right: 0;
   page-break-after: avoid;
-  page-break-before: avoid;
+  page-break-before: always;
   padding: 0.7rem 0.8rem 0.45rem;
   page-break-inside: avoid;
 }

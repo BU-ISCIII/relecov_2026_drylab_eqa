@@ -1526,9 +1526,9 @@ The EQA therefore provides a robust technical basis for harmonised, performance-
 
 {% if labdata %}
 {% set lab_code = labdata.lab.lab_cod | default(labdata.lab.submitting_institution_id) %}
-## 9. Individual Laboratory Technical Report
+<h2 class="no-page-break">9. Individual Laboratory Technical Report</h2>
 
-### Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})
+<h3 class="no-page-break">Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})</h3>
 
 This section provides a detailed technical assessment of the analytical results submitted by **{{ labdata.lab.lab_cod }}** within the 2026 RELECOV Dry-Lab EQA. Performance metrics are benchmarked against curated gold standards and contextualised relative to aggregated network-wide performance distributions. Network medians and interquartile ranges are provided for comparative interpretation, without disclosure of other laboratories’ identities.
 
@@ -1536,7 +1536,7 @@ The purpose of this section is to support technical optimisation, parameter harm
 
 Only files, metadata fields, and derived analytical metrics actually provided by the laboratory are displayed in this individual report. If a file was not submitted, or a metadata field was not provided, the corresponding table entries, panels, or figures are omitted for that laboratory.
 
-### 9.1. Participation Overview
+<h3 class="no-page-break">9.1. Participation Overview</h3>
 
 The laboratory analysed **{{ labdata.components | length }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
 
