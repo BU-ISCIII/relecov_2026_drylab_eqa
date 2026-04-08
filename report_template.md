@@ -86,6 +86,7 @@
 {% if labdata %}
 - [9. Individual Laboratory Technical Report](#9-individual-laboratory-technical-report)
 {% endif %}
+- [Appendix](#appendix)
 
 ## Executive Summary
 
@@ -1930,3 +1931,7 @@ We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 20
 
 For any questions, technical clarifications, or follow-up discussions regarding this report, please contact the RELECOV WP.6 coordination team at [bioinformatica@isciii.es](mailto:bioinformatica@isciii.es).
 {% endif %}
+
+## Appendix
+
+This appendix is reserved for supplementary material that may support interpretation of the report but is not essential to the main narrative. Additional figures, extended tables, sensitivity analyses, or other secondary outputs can be included here when relevant.
