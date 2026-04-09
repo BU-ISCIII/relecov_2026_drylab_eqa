@@ -819,7 +819,7 @@ def make_component_typing_outcome_stacked_bar_by_sample(
     width = 0.62
 
     max_samples = max(len(lineage_outcomes["samples"]), len(clade_outcomes["samples"]), 1)
-    fig, axes = plt.subplots(1, 2, figsize=(max(12, max_samples * 1.5), 6.6), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(max(16, max_samples * 2.3), 7.4), sharey=True)
 
     panel_specs = [
         ("A. Lineage/Subtype assignments", lineage_outcomes),
@@ -864,9 +864,10 @@ def make_component_typing_outcome_stacked_bar_by_sample(
         )
         ax.set_xticks(x_positions)
         ax.set_xticklabels(sample_names, rotation=0, ha="center")
-        ax.set_xlabel("Sample")
+        ax.set_xlabel("Sample", fontsize=12)
         ax.set_ylim(0, 100)
-        ax.set_title(title)
+        ax.set_title(title, fontsize=13, pad=4)
+        ax.tick_params(axis="both", labelsize=11)
 
         for bar, value, count in zip(match_bars, match_rates, match_counts):
             if value is None or np.isnan(value) or value <= 0:
@@ -877,7 +878,7 @@ def make_component_typing_outcome_stacked_bar_by_sample(
                 f"{value:.1f}%\n(n={count})",
                 ha="center",
                 va="center",
-                fontsize=7.5,
+                fontsize=9.5,
                 color="white",
                 fontweight="bold",
             )
@@ -902,7 +903,7 @@ def make_component_typing_outcome_stacked_bar_by_sample(
                 f"{discrepancy_value:.1f}%\n(n={count})",
                 ha="center",
                 va="center",
-                fontsize=7.5,
+                fontsize=9.5,
                 color="white",
                 fontweight="bold",
             )
@@ -922,14 +923,14 @@ def make_component_typing_outcome_stacked_bar_by_sample(
                 f"{null_value:.1f}%\n(n={count})",
                 ha="center",
                 va="center",
-                fontsize=7.5,
+                fontsize=9.5,
                 color="white",
                 fontweight="bold",
             )
 
     for ax in axes:
         if ax.get_visible():
-            ax.set_ylabel("Assignments (%)")
+            ax.set_ylabel("Assignments (%)", fontsize=12)
             break
 
     fig.legend(
@@ -943,10 +944,10 @@ def make_component_typing_outcome_stacked_bar_by_sample(
         bbox_to_anchor=(0.5, 0.02),
         ncol=3,
         frameon=False,
+        fontsize=11.5,
     )
-    fig.suptitle(f"{comp_code} classification outcome distribution by sample")
-    fig.tight_layout(rect=(0, 0.08, 1, 1))
-    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    fig.subplots_adjust(left=0.055, right=0.992, top=0.925, bottom=0.12, wspace=0.035)
+    fig.savefig(output_path, dpi=300, bbox_inches="tight", pad_inches=0.03)
     plt.close(fig)
 
     return str(output_path)
@@ -983,6 +984,13 @@ def make_component_qc_match_by_sample_plot(
         sample.get("collecting_lab_sample_id") or sample.get("sample_id")
         for sample in evaluable_samples
     ]
+    x_tick_labels = []
+    for sample_name, sample in zip(sample_names, evaluable_samples):
+        expected_qc = sample.get("gold_standard_qc")
+        if is_meaningful(expected_qc):
+            x_tick_labels.append(f"{sample_name}\nExpected QC: {expected_qc}")
+        else:
+            x_tick_labels.append(str(sample_name))
 
     match_rates = []
     discrepancy_rates = []
@@ -1031,7 +1039,7 @@ def make_component_qc_match_by_sample_plot(
         label="Not provided",
     )
 
-    plt.xticks(x_positions, sample_names, rotation=0, ha="center")
+    plt.xticks(x_positions, x_tick_labels, rotation=0, ha="center")
     plt.xlabel("Sample")
     plt.ylabel("QC evaluations (%)")
     plt.ylim(0, 100)
@@ -1906,6 +1914,26 @@ def collect_consensus_discrepancies_by_sample(
     return discrepancies_by_sample
 
 
+def collect_consensus_identity_by_sample(
+    labs: List[Dict[str, Any]],
+    comp_code: str,
+) -> Dict[str, List[float]]:
+    identity_by_sample: Dict[str, List[float]] = defaultdict(list)
+
+    for lab in labs:
+        comp = lab.get("components", {}).get(comp_code)
+        if not comp:
+            continue
+
+        for sample_id, sample in comp.get("samples", {}).items():
+            genome_identity_pct = safe_number(sample.get("consensus", {}).get("genome_identity_pct"))
+            if genome_identity_pct is None:
+                continue
+            identity_by_sample[sample_id].append(genome_identity_pct)
+
+    return identity_by_sample
+
+
 def make_component_consensus_discrepancies_boxplot_by_sample(
     general_data: Dict[str, Any],
     labs: List[Dict[str, Any]],
@@ -1923,19 +1951,25 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
         if sample.get("collecting_lab_sample_id")
     ]
     discrepancies_by_sample = collect_consensus_discrepancies_by_sample(labs, comp_code)
+    identity_by_sample = collect_consensus_identity_by_sample(labs, comp_code)
 
-    sample_names = [sample_id for sample_id in sample_order if discrepancies_by_sample.get(sample_id)]
-    data = [discrepancies_by_sample[sample_id] for sample_id in sample_names]
+    sample_names = [
+        sample_id
+        for sample_id in sample_order
+        if discrepancies_by_sample.get(sample_id) or identity_by_sample.get(sample_id)
+    ]
+    discrepancy_data = [list(discrepancies_by_sample.get(sample_id, [])) for sample_id in sample_names]
+    identity_data = [list(identity_by_sample.get(sample_id, [])) for sample_id in sample_names]
 
-    if not data:
+    if not any(discrepancy_data) and not any(identity_data):
         return str(output_path)
 
     y_limit = COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code)
-    plotted_data = [list(values) for values in data]
+    plotted_discrepancy_data = [list(values) for values in discrepancy_data]
     outlier_annotations = []
 
     if y_limit is not None:
-        for idx, values in enumerate(data):
+        for idx, values in enumerate(discrepancy_data):
             outliers_above_limit = sorted([value for value in values if value > y_limit], reverse=True)
             if not outliers_above_limit:
                 continue
@@ -1950,63 +1984,97 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
                 filtered_values.append(value)
 
             if removed and filtered_values:
-                plotted_data[idx] = filtered_values
+                plotted_discrepancy_data[idx] = filtered_values
                 outlier_annotations.append((idx + 1, excluded_outlier))
 
-    plotted_max = max(max(values) for values in plotted_data if values)
-    y_upper = y_limit if y_limit is not None else (plotted_max * 1.15 if plotted_max > 0 else 1.0)
+    valid_plotted_discrepancies = [values for values in plotted_discrepancy_data if values]
+    y_upper = 1.0
+    if valid_plotted_discrepancies:
+        plotted_max = max(max(values) for values in valid_plotted_discrepancies)
+        y_upper = y_limit if y_limit is not None else (plotted_max * 1.15 if plotted_max > 0 else 1.0)
 
-    plt.figure(figsize=(max(8, len(sample_names) * 1.15), 6))
-    bp = plt.boxplot(
-        plotted_data,
-        labels=sample_names,
-        showfliers=True,
-        patch_artist=True,
-    )
-    style_boxplot(bp, [comp_code] * len(sample_names), ax=plt.gca())
-    add_component_boxplot_points(
-        plt.gca(),
-        bp,
-        plotted_data,
-        list(range(1, len(sample_names) + 1)),
-        [comp_code] * len(sample_names),
-    )
-    plt.xlabel("Sample")
-    plt.ylabel("Consensus discrepancies")
-    plt.title(f"{comp_code} consensus discrepancies by sample")
-    plt.xticks(rotation=0, ha="center")
+    fig, axes = plt.subplots(1, 2, figsize=(max(10, len(sample_names) * 1.55), 6))
 
-    plt.ylim(0, y_upper)
+    if valid_plotted_discrepancies:
+        bp_discrepancies = axes[0].boxplot(
+            plotted_discrepancy_data,
+            labels=sample_names,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot(bp_discrepancies, [comp_code] * len(sample_names), ax=axes[0])
+        add_component_boxplot_points(
+            axes[0],
+            bp_discrepancies,
+            plotted_discrepancy_data,
+            list(range(1, len(sample_names) + 1)),
+            [comp_code] * len(sample_names),
+        )
+        axes[0].set_ylabel("Consensus discrepancies")
+        axes[0].set_title("A. Consensus discrepancies")
+        axes[0].set_xticklabels(sample_names, rotation=0, ha="center")
+        axes[0].set_ylim(0, y_upper)
 
-    if outlier_annotations:
-        outlier_color = COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"])
-        for x_pos, display_value in outlier_annotations:
-            y_marker = y_upper * 0.95
-            y_text = y_upper * 0.91
-            plt.text(
-                x_pos,
-                y_marker,
-                "*",
-                ha="center",
-                va="center",
-                fontsize=18,
-                color=outlier_color,
-                fontweight="bold",
-            )
-            plt.text(
-                x_pos,
-                y_text,
-                f"Outlier: {display_value:g}",
-                ha="center",
-                va="top",
-                fontsize=9,
-                color=outlier_color,
-                fontweight="bold",
-            )
+        if outlier_annotations:
+            outlier_color = COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"])
+            for x_pos, display_value in outlier_annotations:
+                y_marker = y_upper * 0.95
+                y_text = y_upper * 0.91
+                axes[0].text(
+                    x_pos,
+                    y_marker,
+                    "*",
+                    ha="center",
+                    va="center",
+                    fontsize=18,
+                    color=outlier_color,
+                    fontweight="bold",
+                )
+                axes[0].text(
+                    x_pos,
+                    y_text,
+                    f"Outlier: {display_value:g}",
+                    ha="center",
+                    va="top",
+                    fontsize=9,
+                    color=outlier_color,
+                    fontweight="bold",
+                )
+    else:
+        axes[0].set_visible(False)
 
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
+    valid_identity_data = [values for values in identity_data if values]
+    if valid_identity_data:
+        bp_identity = axes[1].boxplot(
+            identity_data,
+            labels=sample_names,
+            showfliers=True,
+            patch_artist=True,
+        )
+        style_boxplot(bp_identity, [comp_code] * len(sample_names), ax=axes[1])
+        add_component_boxplot_points(
+            axes[1],
+            bp_identity,
+            identity_data,
+            list(range(1, len(sample_names) + 1)),
+            [comp_code] * len(sample_names),
+        )
+        axes[1].set_ylabel("Genome identity (%)")
+        axes[1].set_title("B. Genome identity")
+        axes[1].set_xticklabels(sample_names, rotation=0, ha="center")
+        flattened_identity_values = [value for values in identity_data for value in values]
+        style_truncated_percent_boxplot_axis(axes[1], flattened_identity_values)
+    else:
+        axes[1].set_visible(False)
+
+    for ax in axes:
+        if ax.get_visible():
+            ax.set_xlabel("Sample")
+
+    fig.suptitle(f"{comp_code} consensus reconstruction performance by sample")
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
     return str(output_path)
 

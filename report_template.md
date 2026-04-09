@@ -11,14 +11,19 @@
 {%- endmacro %}
 {% macro render_figure(path, caption=None, figure_class=None, has_panels=False) -%}
 {% if path -%}
-{% set _figure_style = figure_style if figure_style is defined and figure_style else ('max-width: 100%;' if has_panels else 'max-width: 80%;') %}
-{% set _auto_width = none %}
+{% set _figure_style = figure_cfg.style if figure_cfg is defined and figure_cfg.style else ('max-width: 100%;' if has_panels else 'max-width: 80%;') %}
+{% set _auto_width = '100%' if has_panels else '80%' %}
+{% set _disable_max_width = false %}
 {% if 'max-width:' in _figure_style and 'width:' not in _figure_style|replace('max-width', '') %}
 {% set _auto_width = _figure_style|replace('max-width:', '')|replace(';', '')|trim %}
+{% if '%' in _auto_width and (_auto_width|replace('%', '')|float) > 100 %}
+{% set _disable_max_width = true %}
+{% endif %}
+{% elif 'width:' in _figure_style %}
+{% set _auto_width = _figure_style|replace('width:', '')|replace(';', '')|trim %}
 {% endif %}
 <figure{% if figure_class %} class="{{ figure_class }}"{% endif %}>
-<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="{% if _auto_width %}width: {{ _auto_width }}; {% endif %}{{ _figure_style }}"/>
-{% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+<img src="{{ path }}" alt="{{ caption|default('Figure') }}" style="width: {{ _auto_width }}; {% if _disable_max_width %}max-width: none;{% else %}{{ _figure_style }}{% endif %}"/>
 </figure>
 {%- endif %}
 {%- endmacro %}
@@ -42,6 +47,28 @@
 
 {% set fig_counter = namespace(value=0) %}
 {% set table_counter = namespace(value=0) %}
+{% set appendix_fig_counter = namespace(value=0) %}
+{% set appendix_table_counter = namespace(value=0) %}
+{% set figure_cfg = namespace(style=None) %}
+{% set consensus_appendix_entries = namespace(value=[]) %}
+{% set variant_sars_appendix_entries = namespace(value=[]) %}
+{% set variant_flu_appendix_entries = namespace(value=[]) %}
+{% set classification_appendix_entries = namespace(value=[]) %}
+{% set qc_appendix_entries = namespace(value=[]) %}
+{% set benchmark_appendix_entries = namespace(value=[]) %}
+{% set lab_consensus_appendix_entries = namespace(value=[]) %}
+{% set lab_variant_figure_appendix_entries = namespace(value=[]) %}
+{% set lab_classification_figure_appendix_entries = namespace(value=[]) %}
+{% set lab_workflow_figure_appendix_entries = namespace(value=[]) %}
+{% set lab_qc_figure_appendix_entries = namespace(value=[]) %}
+{% set lab_metadata_metrics_appendix_entries = namespace(value=[]) %}
+{% set metadata_metric_labels = {
+  "per_genome_greater_10x": "% Genome > 10x",
+  "depth_of_coverage_value": "Depth of coverage mean value",
+  "per_Ns": "% Ns",
+  "per_reads_virus": "% Reads virus",
+  "per_reads_host": "% Reads host"
+} %}
 
 # RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network
 
@@ -175,8 +202,6 @@ Only samples generated using the same ARTIC primer scheme (v4.1) were selected t
 
 {% set table_counter.value = table_counter.value + 1 %}
 
-Table {{ table_counter.value }} summarises the correspondence between RELECOV EQA samples and their original source datasets, including ECDC ESIB references.
-
 _**Table {{ table_counter.value }}**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
 The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
@@ -238,8 +263,6 @@ This approach allowed precise control over:
 
 {% set table_counter.value = table_counter.value + 1 %}
 
-Table {{ table_counter.value }} describes the design characteristics of in-silico samples, including virus composition and intended benchmarking challenges.
-
 _**Table {{ table_counter.value }}**. Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking._
 
 | Sample | Influenza reads | Host reads | Additional Viral reads  | Total reads | Analytical Challenge                |
@@ -252,8 +275,6 @@ _**Table {{ table_counter.value }}**. Viral, host and contaminant composition de
 | FLU9   | 19989           | 500        | 0                       | 20489       | HA segment dropout                  |
 
 {% set table_counter.value = table_counter.value + 1 %}
-
-Table {{ table_counter.value }} summarises the influenza datasets included in the EQA, detailing enrichment strategy, primer scheme, sequencing technology, and key analytical challenges.
 
 _**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
 
@@ -541,9 +562,11 @@ A total of 52 laboratories within the RELECOV network were invited to participat
 
 The median number of components analysed per participating laboratory was {{ "%.0f"|format(general.median_components_analysed_per_lab) }}.
 
+The results presented below are interpreted according to the evaluation framework described in [Section 4](#4-methodology-of-evaluation).
+
 ### 5.1. Submission Completeness
 
-Assessment of submission completeness was conducted in accordance with the criteria outlined in [Section 4.1](#41-submission-completeness). Across all components:
+Across all components:
 
 - {{ pct(general.submission_rates_pct.fasta) }} of laboratories submitted consensus genome files (.fasta), where applicable.
 - {{ pct(general.submission_rates_pct.vcf) }} submitted variant call files (.vcf), where applicable.
@@ -552,7 +575,7 @@ Component-level submission totals are presented in Section 6 and reflect both th
 
 ### 5.2. Consensus Genome Reconstruction Performance
 
-Consensus genome reconstruction performance was measured using the evaluation criteria detailed in [Section 4.2](#42-evaluation-of-consensus-genome-reconstruction-performance). Across the two Illumina-based components, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the two Nanopore-based components. When grouped by virus, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_sars_pct, 2) }} across the SARS-CoV-2 components and {{ pct(general.general_results.consensus.median_identity_influenza_pct, 2) }} across the influenza components. Notably, the influenza median was also slightly lower than the combined Nanopore-based median, indicating that virus-specific analytical complexity likely contributed in addition to platform-related differences. Nanopore-based datasets also showed broader overall identity ranges, where low-identity outliers were present.
+Across the two Illumina-based components, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} across the two Nanopore-based components. When grouped by virus, the combined median genome identity was {{ pct(general.general_results.consensus.median_identity_sars_pct, 2) }} across the SARS-CoV-2 components and {{ pct(general.general_results.consensus.median_identity_influenza_pct, 2) }} across the influenza components. Notably, the influenza median was also slightly lower than the combined Nanopore-based median, indicating that virus-specific analytical complexity likely contributed in addition to platform-related differences. Nanopore-based datasets also showed broader overall identity ranges, where low-identity outliers were present.
 
 Dominant discrepancy patterns differed by component:
 
@@ -565,30 +588,25 @@ Across components, many discrepancy categories had medians of zero, indicating t
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} summarises consensus genome reconstruction performance across all components.
-
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_cfg.style = "max-width: 98%;" %}
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.", has_panels=True ) }}
 
 **_Figure {{ fig_counter.value }}_. Consensus genome reconstruction performance across components**. Panel **A** shows the distribution of nucleotide discrepancies relative to the gold standard across components, and panel **B** shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 ### 5.3. Variant Detection Accuracy
 
-Variant detection accuracy was evaluated following the methodological framework described in [Section 4.3](#43-evaluation-of-variant-detectio-accuracy).
-
 #### 5.3.1. SARS-CoV-2
 
 For SARS-CoV-2 components (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of discrepancies of {{ "%.0f"|format(general.general_results.sars_variants.median_discrepancy_illumina) }} for Illumina component and a median number of {{ "%.0f"|format(general.general_results.sars_variants.median_discrepancy_nanopore) }} for Nanopore component, discrepancies relative to the reference variant set.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-
-The distribution of variant detection performance across components is presented in Figure {{ fig_counter.value }}. Contextual factors documented in the metadata that may contribute to these differences included:
+Variant detection performance differed across components (Figure {{ fig_counter.value }}). Contextual factors documented in the metadata that may contribute to these differences included:
 
 - Allele frequency thresholds used for incorporation into vcf files
 - Variant normalization practices (variant caller software and params)
 
 
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 70%;" %}
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary." ) }}
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
@@ -602,9 +620,7 @@ Additionally, a total of {{ general.general_results.sars_variants.total_distinct
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} summarizes the distribution of variant reporting practices across participating laboratories for SARS-CoV-2 components.
-
-{% set figure_style = "max-width: 70%;" %}
+{% set figure_cfg.style = "max-width: 70%;" %}
 {{ render_figure(
 general.figures.sars_variant_reporting_summary,
 "SARS-CoV-2 variant reporting practices across the network."
@@ -638,9 +654,7 @@ Structural summary metrics derived from submitted influenza consensus sequences 
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} summarizes the distribution of variant reporting practices across participating laboratories for influenza components.
-
-{% set figure_style = "max-width: 70%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
 general.figures.influenza_variant_reporting_summary,
 "Influenza variant reporting practices across the network."
@@ -648,10 +662,11 @@ general.figures.influenza_variant_reporting_summary,
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
-Together, Figure {{ fig_counter.value }} and Table {{ table_counter.value }} show marked heterogeneity in influenza variant reporting within the network.
+Together, these results show marked heterogeneity in influenza variant reporting within the network (Table {{ table_counter.value }}, Figure {{ fig_counter.value }}).
+
 ### 5.4. Lineage, Subtype and Clade Assignment
 
-Lineage, Subtype and clade assignments were evaluated for concordance with gold standard classifications according to [Section 4.4](#44-evaluation-of-lineage-type-and-clade-assignment). Overall concordance rates were:
+Overall concordance rates were:
 
 - SARS-CoV-2 lineage assignment: **{{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}** concordance.
 - Influenza type/subtype identification: **{{ pct(general.general_results.classification.influenza_type_concordance_pct) }}** concordance.
@@ -662,30 +677,31 @@ Across components, lineage/type concordance was consistently higher than clade c
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} summarises the distribution of lineage/type and clade classification outcomes across participating laboratories and components.
-
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_cfg.style = "max-width: 98%;" %}
 {{ render_figure(general.figures.classification_summary, "Distribution of classification outcomes across participating laboratories.", has_panels=True ) }}
 
 **_Figure {{ fig_counter.value }}_. Distribution of classification outcomes across participating laboratories.** Panel **A** shows **lineage/type assignments**, and panel **B** shows **clade assignments**. Stacked bars represent the percentage of all possible sample-level classifications across participating laboratories for each component. Bars are partitioned into **Match** (correct assignments relative to the curated gold standard), **Discrepancy** (incorrect assignments), and **Not provided** (classification not reported).
 
 ### 5.5. Metadata completeness and compliance
 
-The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network. Completeness and compliance were assessed according to the criteria defined in [Section 4.5](#45-evaluation-of-metadata-completeness-and-compliance), including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
+The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
 
 #### Overall Completeness
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Component-level median completeness values were similar overall, but the observed ranges remained broad in all components, as shown in Figure {{ fig_counter.value }}. The leading incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, and consensus analysis fields.
+Across all participating laboratories, the metadata template was completed at a median completeness rate of {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Component-level median completeness values were similar overall, but the observed ranges remained broad in all components (Figure {{ fig_counter.value }}). The leading incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, and consensus analysis fields.
 
 Most frequent incompleteness drivers across the network:
+<ul class="compact-list">
 {% for item in general.metadata_completeness.top_5_primary_incompleteness_driver_counts %}
-- {{ item.driver }} (missing in {{ item.count }} laboratories)
+<li>{{ item.driver }} (missing in {{ item.count }} laboratories)</li>
 {% endfor %}
+</ul>
 
 
-{% set figure_style = "max-width: 80%;" %}
+
+{% set figure_cfg.style = "max-width: 80%;" %}
 {{ render_figure(general.figures.metadata_completeness_distribution,
   "Distribution of metadata completeness across participating laboratories.") }}
 
@@ -726,11 +742,10 @@ Sample quality control (QC) classifications reported by laboratories (Pass/Fail)
 Overall, the network achieved {{ pct(general.qc.reported_match_rate_pct) }} QC concordance, corresponding to {{ general.qc.matches }} Matches and {{ general.qc.discrepancies }} Discrepancies across {{ general.qc.total_evaluations }} evaluated sample-level QC decisions.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
+QC concordance differed across components, ranging from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2, based on reported QC information (Figure {{ fig_counter.value }}).
 
-As shown in Figure {{ fig_counter.value }}, QC concordance differed across components, ranging from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2, from reported QC information.
 
-
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 80%;" %}
 {{ render_figure(
 general.figures.qc_match_rate_by_component,
 "QC concordance by component (Match, Discrepancy, and Not provided relative to the gold standard)."
@@ -740,7 +755,7 @@ general.figures.qc_match_rate_by_component,
 
 ### 5.6. Pipeline Benchmarking and Comparative Performance
 
-The benchmarking framework as defined in [Section 4.6](#46-pipeline-benchmarking-and-comparative-performance) was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
+The benchmarking analysis was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
 
 The submitted metadata documented heterogeneity in:
 
@@ -779,6 +794,8 @@ This section presents the analytical results disaggregated by component, allowin
 
 Component-level analyses enable identification of platform-specific patterns, dataset-dependent challenges, and variability associated with particular sample characteristics. This approach facilitates a more granular interpretation of performance differences observed at the network level and supports targeted harmonisation recommendations.
 
+All component-level results below are reported using the same evaluation framework described in [Section 4](#4-methodology-of-evaluation).
+
 {% for comp_code, comp_net in general.components.items() %}
 
 ### 6.{{ loop.index }}. {{ comp_code }} ({{ comp_net.name }})
@@ -793,30 +810,25 @@ A total of {{ comp_net.total_labs }} laboratories submitted results for the {{ c
 {% if comp_net.top_5_primary_incompleteness_driver_counts %}
 
 Most frequent incompleteness drivers in {{ comp_code }}:
+<ul class="compact-list">
 {% for item in comp_net.top_5_primary_incompleteness_driver_counts %}
-- {{ item.driver }} (missing in {{ item.count }} laboratories)
+<li>{{ item.driver }} (missing in {{ item.count }} laboratories)</li>
 {% endfor %}
+</ul>
 {% endif %}
 
 #### 6.{{ loop.index }}.2. Consensus Genome Reconstruction Performance
 
 Consensus sequences were evaluated against the corresponding curated gold standard references for each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.consensus.median_identity, 2) }}, with a median of {{ comp_net.consensus.median_discrepancies }} nucleotide discrepancies per sample (range: {{ comp_net.consensus.min_discrepancies }}–{{ comp_net.consensus.max_discrepancies }}).
-
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level consensus reconstruction metrics per sample for {{ comp_code }}.**
-
-| Sample ID | Median genome identity (%) | Median discrepancies | Discrepancies min-max |
-|---|---:|---:|---:|
-{% for s in comp_net.consensus.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min }} – {{ s.max }} |
-{% endfor %}
+Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.consensus.median_identity, 2) }}, with a median of {{ comp_net.consensus.median_discrepancies }} nucleotide discrepancies per sample (range: {{ comp_net.consensus.min_discrepancies }}–{{ comp_net.consensus.max_discrepancies }}) (Figure {{ fig_counter.value + 1 }}).
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_consensus_metrics_table_num = appendix_table_counter.value %}
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 90%;" %}
 {{ render_figure(
   comp_net.consensus.fig_discrepancies_boxplot_by_sample,
   "Consensus discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard.",
@@ -824,60 +836,35 @@ Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discr
 ) }}
 
 
-**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Boxplots represent the number of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-{% set table_counter.value = table_counter.value + 1 %}
-
-Discrepancy type composition aggregated by sample for {{ comp_code }} is displayed in Table {{ table_counter.value }}:
-
-**Table {{ table_counter.value }}. Network-level consensus discrepancy types per sample for {{ comp_code }}.**
-
-| Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
-|---|---:|---:|---:|---:|---:|---:|---:|
-{% for s in comp_net.consensus.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambiguity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }}
-{% endfor %}
+**Figure {{ fig_counter.value }}. Consensus reconstruction performance by sample for {{ comp_code }}.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values.
 
 Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 80%;" %}
 {{ render_figure(
   comp_net.consensus.fig_discrepancies_stacked_by_sample,
   "Consensus discrepancy types per sample for " ~ comp_code ~ " relative to the curated gold standard."
 ) }}
 
 
-**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
+**Figure {{ fig_counter.value }}. Consensus discrepancy type composition per sample for {{ comp_code }}.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_consensus_sample_table_num = appendix_table_counter.value %}
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_consensus_type_table_num = appendix_table_counter.value %}
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set appendix_consensus_type_fig_num = appendix_fig_counter.value %}
+{% set _ = consensus_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "metrics_table_num": appendix_consensus_metrics_table_num,
+  "sample_table_num": appendix_consensus_sample_table_num,
+  "type_table_num": appendix_consensus_type_table_num,
+  "type_fig_num": appendix_consensus_type_fig_num
+}) %}
 
-{% set table_counter.value = table_counter.value + 1 %}
-
-Discrepancy type composition aggregated across all submitted consensus sequences for {{ comp_code }}  is shown in Table {{ table_counter.value }}.
-
-**Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.**
-
-| Discrepancy type | Network median per sample | Min-max occurrencies |
-|---|---:|---:|
-| Incorrect nucleotide | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.wrong_nt.max) }} |
-| Ambiguity instead of nucleotide | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max) }} |
-| Nucleotide instead of ambiguity | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max) }} |
-| Stretch of Ns instead of nucleotide | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ns2nt.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ns2nt.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.ns2nt.max) }} |
-| Nucleotide stretch instead of stretch of Ns| {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ns.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ns.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.nt2ns.max) }} |
-| Insertion relative to gold standard | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.insertions.max) }} |
-| Deletion relative to gold standard | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(comp_net.consensus.discrepancy_breakdown.deletions.max) }} |
-
-The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.consensus.dominant_discrepancy_pattern) }}.
-
-Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 90%;" %}
-{{ render_figure(
-  comp_net.consensus.fig_discrepancy_type_boxplot,
-  "Composition of consensus discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
-) }}
-
-
-**Figure {{ fig_counter.value }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.consensus.dominant_discrepancy_pattern) }} (Figure {{ fig_counter.value }}). Sample-level consensus reconstruction summary metrics are provided in Appendix Table {{ appendix_consensus_metrics_table_num }}. A full sample-level breakdown of discrepancy categories is provided in Appendix Table {{ appendix_consensus_sample_table_num }}, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table {{ appendix_consensus_type_table_num }} and Appendix Figure {{ appendix_consensus_type_fig_num }}, respectively.
 
 #### 6.{{ loop.index }}.3. Variant Detection Accuracy
 
@@ -885,7 +872,16 @@ Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepan
 
 Variant call files (.vcf) submitted for the {{ comp_code }} component were compared against the curated reference variant set corresponding to each sample in the {{ comp_code }} component.
 
-Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}). The component also showed a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample, with median number of variants with an allele frequency (AF) higher than 75% of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files. At component level, {{ comp_net.variant_metadata_reporting.reported_n_labs }} laboratories reported the number of variants in the metadata, whereas {{ comp_net.variant_metadata_reporting.not_reported_n_labs }} did not report this field for any sample in {{ comp_code }}. Tables {{ table_counter.value + 1 }} and {{ table_counter.value + 2 }} summarise the descriptive reporting metrics and the qualitative discrepancy profile observed across samples in {{ comp_code }}. Table {{ table_counter.value +1 }} summarises the descriptive reporting metrics for {{ comp_code }}, including successful hits, the number of high-frequency variants reported in the metadata and VCF files, and the concordance between both representations for all variants and effect-annotated variants. Table {{ table_counter.value + 2 }} summarises, for each sample in {{ comp_code }}, the number of successful reference-variant hits together with the qualitative discrepancy profile, including wrong nucleotide calls, insertions, deletions, missing expected variants, and de novo variants.
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepancies }} variant discrepancies per sample (range: {{ comp_net.variant.min_discrepancies }}–{{ comp_net.variant.max_discrepancies }}), together with a median of {{ comp_net.variant.median_successful_hits if comp_net.variant.median_successful_hits is not none else "NA" }} successful hits per sample (Table {{ table_counter.value + 1 }}, Figure {{ fig_counter.value + 1 }}).
+
+{% set fig_counter.value = fig_counter.value + 1 %}
+{% set figure_cfg.style = "max-width: 80%;" %}
+{{ render_figure(
+  comp_net.variant.fig_discrepancies_stacked_by_sample,
+  "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
@@ -896,19 +892,26 @@ Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepan
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.variants_with_effect.median if s.variants_with_effect and s.variants_with_effect.median is not none else "NA" }} | {{ s.variants_with_effect_vcf.median if s.variants_with_effect_vcf and s.variants_with_effect_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants_effect.median if s.discrepancies_in_reported_variants_effect and s.discrepancies_in_reported_variants_effect.median is not none else "NA" }} |
 {% endfor %}
 
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant calling profile per sample for {{ comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_variant_profile_table_num = appendix_table_counter.value %}
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_variant_type_table_num = appendix_table_counter.value %}
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set appendix_variant_type_fig_num = appendix_fig_counter.value %}
+{% set _ = variant_sars_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "profile_table_num": appendix_variant_profile_table_num,
+  "type_table_num": appendix_variant_type_table_num,
+  "type_fig_num": appendix_variant_type_fig_num
+}) %}
 
-| Sample ID | Median successful hits | Median discrepancies | Discrepancies min-max | Median wrong nucleotide | Median insertions | Median deletions | Median missing | Median _de novo_ |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-{% for s in comp_net.variant.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.median_discrepancies if s.median_discrepancies is not none else "NA" }} | {{ s.min if s.min is not none else "NA" }} – {{ s.max if s.max is not none else "NA" }} | {{ s.wrong_nt if s.wrong_nt is not none else "NA" }} | {{ s.insertions if s.insertions is not none else "NA" }} | {{ s.deletions if s.deletions is not none else "NA" }} | {{ s.missing if s.missing is not none else "NA" }} | {{ s.denovo if s.denovo is not none else "NA" }} |
-{% endfor %}
+At component level, {{ comp_net.variant_metadata_reporting.reported_n_labs }} laboratories reported the number of variants in the metadata, whereas {{ comp_net.variant_metadata_reporting.not_reported_n_labs }} did not report this field for any sample in {{ comp_code }}. The median number of variants with an allele frequency (AF) >=75% was {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} in the metadata and {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} in the submitted VCF files (Table {{ table_counter.value }}, Figure {{ fig_counter.value + 1 }}).
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 Figure {{ fig_counter.value }} summarises the distribution of declared variant reporting modes across submitted sample outputs in {{ comp_code }}.
 
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 70%;" %}
 {{ render_figure(
   comp_net.variant.fig_reporting_mode_by_component,
   "Variant reporting practices for " ~ comp_code ~ "."
@@ -916,58 +919,24 @@ Figure {{ fig_counter.value }} summarises the distribution of declared variant r
 
 **Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
-Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancies per sample across participating laboratories for {{ comp_code }}.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
-{{ render_figure(
-  comp_net.variant.fig_discrepancies_stacked_by_sample,
-  "Variant discrepancies per sample for " ~ comp_code ~ " relative to the curated gold standard."
-) }}
-
-**Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
-{% set table_counter.value = table_counter.value + 1 %}
-
-Discrepancy type composition (aggregated across all submitted variant calls for {{ comp_code }}) is displayed in Table {{ table_counter.value }}.
-
-**Table {{ table_counter.value }}. Network-level discrepancy composition by type for {{ comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
-
-| Discrepancy type | Network median per sample | Network min-max per sample |
-|---|---:|---:|
-| Incorrect nucleotide | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.wrong_nt.max) }} |
-| Insertion relative to gold standard | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.insertions.max) }} |
-| Deletions relative to gold standard | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.deletions.max) }} |
-| Missing expected variants | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.missing.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.missing.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.missing.max) }} |
-| De novo variants | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.denovo.median) }} | {{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.denovo.min) }}–{{ "%.0f"|format(comp_net.variant.discrepancy_breakdown.denovo.max) }} |
-
-The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}.
-
-Figure {{ fig_counter.value + 1 }} summarises the contribution of each discrepancy category observed in {{ comp_code }} relative to the curated gold standard.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
-{{ render_figure(
-  comp_net.variant.fig_discrepancy_type_boxplot,
-  "Composition of variant discrepancy types for " ~ comp_code ~ " relative to the curated gold standard."
-) }}
-
-
-**Figure {{ fig_counter.value }}. Composition of variant discrepancy types relative to the curated gold standard for {{ comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). Where required, a broken y-axis is used to preserve visual resolution in the lower discrepancy range while still displaying higher values above an empty interval. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}. These patterns should be interpreted in the context of threshold choices, reference-genome selection, and declared pipeline configurations, all of which can shift the balance between successful hits, missing expected variants, and de novo calls even when laboratories analyse the same raw data. The full sample-level variant calling profile is provided in Appendix Table {{ appendix_variant_profile_table_num }}, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table {{ appendix_variant_type_table_num }} and Appendix Figure {{ appendix_variant_type_fig_num }}, respectively.
 
 {% else %}
 
-For the {{ comp_code }} component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} variants with allele frequency above 75% reported in the metadata template, compared with {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }}, while the median total number of variants present in the submitted VCF files was {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }}. At component level, {{ comp_net.variant_metadata_reporting.reported_n_labs }} laboratories reported the number of variants in the metadata, whereas {{ comp_net.variant_metadata_reporting.not_reported_n_labs }} did not report this field for any sample in {{ comp_code }}.
+For the {{ comp_code }} component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. At component level, {{ comp_net.variant_metadata_reporting.reported_n_labs }} laboratories reported the number of variants in the metadata, whereas {{ comp_net.variant_metadata_reporting.not_reported_n_labs }} did not report this field for any sample in {{ comp_code }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 Figure {{ fig_counter.value }} summarises the distribution of declared variant reporting modes across submitted sample outputs in {{ comp_code }}.
 
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 80%;" %}
 {{ render_figure(
   comp_net.variant.fig_reporting_mode_by_component,
   "Variant reporting practices for " ~ comp_code ~ "."
 ) }}
 
 **Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
+
+Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} variants with allele frequency above 75% reported in the metadata template, compared with {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }}, while the median total number of variants present in the submitted VCF files was {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} (Table {{ table_counter.value + 1 }}, Figure {{ fig_counter.value + 1 }}).
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Network-level influenza variant reporting metrics per sample for {{ comp_code }}.**
@@ -978,22 +947,18 @@ Figure {{ fig_counter.value }} summarises the distribution of declared variant r
 | {{ s.collecting_lab_sample_id }} | {{ s.variants_in_consensus.median if s.variants_in_consensus and s.variants_in_consensus.median is not none else "NA" }} | {{ s.variants_in_consensus_vcf.median if s.variants_in_consensus_vcf and s.variants_in_consensus_vcf.median is not none else "NA" }} | {{ s.discrepancies_in_reported_variants.median if s.discrepancies_in_reported_variants and s.discrepancies_in_reported_variants.median is not none else "NA" }} | {{ s.variants_in_vcf.median if s.variants_in_vcf and s.variants_in_vcf.median is not none else "NA" }} |
 {% endfor %}
 
-Table {{ table_counter.value }} summarises, for each sample in {{ comp_code }}, the median number of high-frequency variants reported in the metadata template, the corresponding number represented in the submitted VCF, the discrepancies between both representations, and the total number of variants observed in the submitted VCF files.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_flu_aggregated_table_num = appendix_table_counter.value %}
+{% set _ = variant_flu_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "aggregated_table_num": appendix_flu_aggregated_table_num
+}) %}
 
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Aggregated influenza variant reporting metrics for {{ comp_code }}.**
-
-| Metric | Network median | Network min-max |
-|---|---:|---:|
-| Variants >=75% AF in metadata | {{ comp_net.variant.median_variants_in_consensus if comp_net.variant.median_variants_in_consensus is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus if comp_net.variant.min_variants_in_consensus is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus if comp_net.variant.max_variants_in_consensus is not none else "NA" }} |
-| Variants >=75% AF in VCF | {{ comp_net.variant.median_variants_in_consensus_vcf if comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_consensus_vcf if comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_consensus_vcf if comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
-| Discrepancies between metadata and VCF | {{ comp_net.variant.median_discrepancies_in_reported_variants if comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }} | {{ comp_net.variant.min_discrepancies_in_reported_variants if comp_net.variant.min_discrepancies_in_reported_variants is not none else "NA" }}–{{ comp_net.variant.max_discrepancies_in_reported_variants if comp_net.variant.max_discrepancies_in_reported_variants is not none else "NA" }} |
-| Total variants in VCF (n={{ comp_net.variant_metadata_reporting.total_variants_in_vcf_reported_n_labs }}) | {{ comp_net.variant.median_variants_in_vcf if comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ comp_net.variant.min_variants_in_vcf if comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ comp_net.variant.max_variants_in_vcf if comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
-
-Figure {{ fig_counter.value + 1 }} summarises influenza variant reporting patterns across samples in {{ comp_code }}, showing the distribution of laboratory-level observations for agreement between metadata-reported and VCF-derived high-frequency variants and for the overall number of variants observed in the submitted VCF files.
+These patterns indicate that influenza discrepancies reflect not only analytical differences in variant detection, but also differences in reporting conventions, allele-frequency thresholds, and reference selection. The aggregated structural summary for {{ comp_code }} is provided in Appendix Table {{ appendix_flu_aggregated_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 90%;" %}
 {{ render_figure(
   comp_net.variant.fig_reporting_summary_by_sample,
   "Influenza variant reporting summary by sample for " ~ comp_code ~ "."
@@ -1008,71 +973,68 @@ Figure {{ fig_counter.value + 1 }} summarises influenza variant reporting patter
 
 Lineage, subtype and clade assignments submitted for the {{ comp_code }} component were evaluated for concordance with the curated gold standard classifications.
 
-Across all participating laboratories:
+Across all participating laboratories, lineage/subtype concordance reached {{ pct(comp_net.typing.lineage_hit_pct) }}, whereas clade concordance reached {{ pct(comp_net.typing.clade_hit_pct) }}. The sample-level outcome distribution also shows that part of the observed discordance was associated with missing classifications or inconsistent completion of classification fields rather than with uniform analytical failure across all submissions.
 
-- Lineage/Subtype matches (lineage/type was correct): {{ pct(comp_net.typing.lineage_hit_pct) }}.
-- Clade matches (clade was correct): {{ pct(comp_net.typing.clade_hit_pct) }}
-
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level classification outcomes per sample for {{ comp_code }}.**
-
-| Sample ID | Lineage/Subtype matches (%) | Clade matches (%)|
-|---|---:|---:|
-{% for s in comp_net.typing.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.lineage_hit_pct) }} | {{ "%.2f"|format(s.clade_hit_pct) }} |
-{% endfor %}
-
-Table {{ table_counter.value }} summarises the sample-level lineage/subtype and clade concordance rates for {{ comp_code }}. Figure {{ fig_counter.value + 1 }} presents the distribution of classification outcomes per sample across participating laboratories.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_classification_table_num = appendix_table_counter.value %}
+{% set _ = classification_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "table_num": appendix_classification_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 98%;" %}
 {{ render_figure(
   comp_net.typing.fig_stacked_bar_by_sample,
   "Classification outcome distribution per sample for " ~ comp_code ~ "."
 ) }}
 
 
-**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported.
+**Figure {{ fig_counter.value }}. Classification outcome distribution per sample for {{ comp_code }}.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported. Detailed sample-level concordance percentages are provided in Appendix Table {{ appendix_classification_table_num }}.
 
 #### 6.{{ loop.index }}.5. Sample Quality Control Assessment
 
-Laboratory-reported sample QC evaluations (Pass/Fail) for the {{ comp_code }} component were compared against the predefined gold standard QC status for each sample. Concordance was assessed as a binary outcome:
+Sample-level QC in {{ comp_code }} was evaluated as concordance between the laboratory-reported Pass/Fail classification and the predefined gold standard status. QC concordance was heterogeneous across samples, and some laboratories did not report a formal QC assessment. Network-wide concordance for reported QC decisions was {{ pct(comp_net.qc.reported_match_rate_pct) }}.
 
-- Match: reported QC status equals the gold standard
-- Discrepancy: reported QC status differs from the gold standard
-
-Overall, QC concordance for {{ comp_code }} was {{ pct(comp_net.qc.reported_match_rate_pct) }}, corresponding to {{ comp_net.qc.matches }} Matches and {{ comp_net.qc.discrepancies }} Discrepancies across {{ comp_net.qc.total_evaluations }} evaluated QC decisions.
-
-{% set table_counter.value = table_counter.value + 1 %}
-**_Table {{ table_counter.value }}_. Sample-level QC concordance for {{ comp_code }} for reported QC classification.**
-
-| Sample ID | Gold standard QC | % Match | # Matches | # Discrepancies | Total evaluations |
-|---|---:|---:|---:|---:|---:|
-{% for s in comp_net.qc.samples %}
-| {{ s.collecting_lab_sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.reported_match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
-{% endfor %}
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_qc_table_num = appendix_table_counter.value %}
+{% set _ = qc_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "table_num": appendix_qc_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the proportion of laboratories correctly classifying QC status for each sample relative to the gold standard definition, and Figure {{ fig_counter.value }} presents the corresponding sample-level distribution of Match, Discrepancy, and Not provided outcomes within {{ comp_code }}.
 
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 90%;" %}
 {{ render_figure(
 comp_net.qc.fig_qc_match_by_sample,
 "Sample-level QC concordance for " ~ comp_code ~ " (Match, Discrepancy, and Not provided relative to the gold standard)."
 ) }}
 
 
-**_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement.
+**_Figure {{ fig_counter.value }}_. Sample-level QC concordance for {{ comp_code }} relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement. Detailed sample-level percentages and counts are provided in Appendix Table {{ appendix_qc_table_num }}.
 
 #### 6.{{ loop.index }}.6. Pipeline Benchmarking and Comparative Performance
+
+This section presents an exploratory comparative analysis of declared workflow configurations within {{ comp_code }}. Because laboratories differed in reference selection, software versions, parameterisation, reporting detail, and internal decision criteria, the results below should be interpreted as descriptive comparisons of observed performance patterns rather than as a controlled ranking of pipelines.
 
 {% if comp_net.benchmarking.bioinformatics_protocol %}
 ##### Bioinformatics protocol
 
-Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component.
-{% set table_counter.value = table_counter.value + 1 %}
+Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component. These summaries compare declared workflow configurations as they were used in practice across participating laboratories.
 
-Table {{ table_counter.value }} summarises the performance of declared bioinformatics protocols for {{ comp_code }} across consensus, metadata completeness, and classification-related indicators.
+{% set fig_counter.value = fig_counter.value + 1 %}
+{% set figure_cfg.style = "max-width: 80%;" %}
+{{ render_figure(
+  comp_net.benchmarking.bioinformatics_protocol.fig_discrepancy_boxplot,
+  "Distribution of consensus discrepancies by pipeline configuration for " ~ comp_code ~ "."
+) }}
+
+**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies by declared pipeline configuration for {{ comp_code }}.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+
+{% set table_counter.value = table_counter.value + 1 %}
 
 **Table {{ table_counter.value }}. Performance summary of declared bioinformatics protocols for {{ comp_code }}.**
 
@@ -1082,90 +1044,74 @@ Table {{ table_counter.value }} summarises the performance of declared bioinform
 | {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ "%.2f"|format(p.median_identity_pct) }} | {{ p.median_discrepancies }} | {{ "%.1f"|format(p.median_metadata_completeness_pct) }} | {{ "%.1f"|format(p.clade_hit_pct) }} | {{ "%.1f"|format(p.lineage_hit_pct) }} |
 {% endfor %}
 
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-Figure {{ fig_counter.value + 1 }} summarises genome identity, metadata completeness, and exact classification concordance stratified by declared pipeline configuration. Figure {{ fig_counter.value + 2 }} presents the corresponding discrepancy profile and overlaid classification accuracy.
+The observed differences across configurations should be read in the context of heterogeneous laboratory practices, including differences in reference choice, parameterisation, and thresholding. The table and figures therefore help identify recurrent performance patterns within {{ comp_code }}, but they do not support a strong cross-laboratory ranking of bioinformatics protocols.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.bioinformatics_protocol.fig_metric_boxplots,
   "Distribution of performance metrics by pipeline configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.bioinformatics_protocol.n_plot_groups | default(comp_net.benchmarking.bioinformatics_protocol.total_number)) >= 6 and (comp_net.benchmarking.bioinformatics_protocol.panel_count | default(99)) <= 2) else None,
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.bioinformatics_protocol.n_plot_groups | default(comp_net.benchmarking.bioinformatics_protocol.total_number)) >= 6 and (comp_net.benchmarking.bioinformatics_protocol.panel_count | default(99)) <= 2) else "benchmark-figure",
   has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared pipeline configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
-
-{% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
-{{ render_figure(
-  comp_net.benchmarking.bioinformatics_protocol.fig_discrepancy_boxplot,
-  "Distribution of consensus discrepancies by pipeline configuration for " ~ comp_code ~ "."
-) }}
-
-**Figure {{ fig_counter.value }}. Distribution of consensus discrepancies by declared pipeline configuration for {{ comp_code }}.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
 {% if comp_net.benchmarking.dehosting %}
 ##### De-hosting software
 
-Based on metadata submissions, {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting software was reported for the {{ comp_code }} component.
-{% set table_counter.value = table_counter.value + 1 %}
-
-Table {{ table_counter.value }} summarises the percentage of host reads observed across laboratories using each declared de-hosting software configuration for {{ comp_code }}.
-
-**Table {{ table_counter.value }}. Performance summary of declared de-hosting software for {{ comp_code }}.**
-
-| De-hosting software | Version | N labs | Median % host reads |
-|---|---:|---:|---:|
-{% for p in comp_net.benchmarking.dehosting.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.per_reads_host }} |
-{% endfor %}
+{{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting software declarations were reported for the {{ comp_code }} component.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_dehosting_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "dehosting",
+  "table_num": appendix_dehosting_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the percentage of host reads metric stratified by declared dehosting software version.
+The distribution below reflects only configurations with evaluable percentage of host reads values in the reported metadata, so the number of boxplots may be lower than the total number of declared de-hosting configurations. The full list of declared configurations and associated summary values is provided in Appendix Table {{ appendix_dehosting_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.dehosting.fig_metric_boxplots,
   "Distribution of percentage of host reads metrics by dehosting software version for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.dehosting.n_plot_groups | default(comp_net.benchmarking.dehosting.total_number)) >= 6 and (comp_net.benchmarking.dehosting.panel_count | default(99)) <= 2) else None
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.dehosting.n_plot_groups | default(comp_net.benchmarking.dehosting.total_number)) >= 6 and (comp_net.benchmarking.dehosting.panel_count | default(99)) <= 2) else "benchmark-figure"
 ) }}
 
-**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure {{ fig_counter.value }}. Distribution of percentage of host reads by declared dehosting software version for {{ comp_code }}.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 {% endif %}
 
 {% if comp_net.benchmarking.preprocessing %}
 ##### Preprocessing software
 
-Based on metadata submissions, {{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
+{{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
 
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the performance of declared pre-processing software configurations for {{ comp_code }} across sequencing depth and read filtering metrics.
-
-**Table {{ table_counter.value }}. Performance summary of declared pre-processing software configurations for {{ comp_code }}.** The configuration column represents the most frequently reported parameter string among laboratories declaring that software and version.
-
-| Pre-processing software | Version | N labs | Most common configuration | Median number of reads sequenced | Median reads passing filters |
-|---|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.preprocessing.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
-{% endfor %}
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_preprocessing_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "preprocessing",
+  "table_num": appendix_preprocessing_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared pre-processing software configuration.
+Only pre-processing configurations with evaluable observations for the displayed metrics contribute to the figure, so some declared categories may not appear in the plot. The complete list of declared configurations and their summary values is provided in Appendix Table {{ appendix_preprocessing_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.preprocessing.fig_metric_boxplots,
   "Distribution of performance metrics by pre-processing software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.preprocessing.n_plot_groups | default(comp_net.benchmarking.preprocessing.total_number)) >= 6 and (comp_net.benchmarking.preprocessing.panel_count | default(99)) <= 2) else None,
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.preprocessing.n_plot_groups | default(comp_net.benchmarking.preprocessing.total_number)) >= 6 and (comp_net.benchmarking.preprocessing.panel_count | default(99)) <= 2) else "benchmark-figure",
   has_panels=True
 ) }}
 
@@ -1176,29 +1122,27 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.mapping %}
 ##### Mapping software
 
-Based on metadata submissions, {{ comp_net.benchmarking.mapping.total_number }} distinct mapping software configurations were reported for the {{ comp_code }} component.
+{{ comp_net.benchmarking.mapping.total_number }} distinct mapping software configurations were reported for the {{ comp_code }} component.
 
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the declared mapping software configurations for {{ comp_code }}, together with the associated coverage threshold and percentage of viral reads when reported.
-
-**Table {{ table_counter.value }}. Performance summary of declared mapping software configurations for {{ comp_code }}.**
-
-| Mapping software | Version | N labs | Most common configuration | Most common depth of coverage threshold | Median % reads virus |
-|---|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.mapping.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.depth_of_coverage_threshold if p.depth_of_coverage_threshold is not none else "N/A" }} | {{ p.per_reads_virus if p.per_reads_virus is not none else "N/A" }} |
-{% endfor %}
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_mapping_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "mapping",
+  "table_num": appendix_mapping_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared mapping software configuration.
+The mapping boxplots include only configurations for which the relevant performance metrics were available, which means that fewer categories may be plotted than were originally declared. Full configuration-level summaries are reported in Appendix Table {{ appendix_mapping_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.mapping.fig_metric_boxplots,
   "Distribution of performance metrics by mapping software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.mapping.n_plot_groups | default(comp_net.benchmarking.mapping.total_number)) >= 6 and (comp_net.benchmarking.mapping.panel_count | default(99)) <= 2) else None
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.mapping.n_plot_groups | default(comp_net.benchmarking.mapping.total_number)) >= 6 and (comp_net.benchmarking.mapping.panel_count | default(99)) <= 2) else "benchmark-figure"
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared mapping software configuration for {{ comp_code }}.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1208,102 +1152,85 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.assembly %}
 ##### Assembly software
 
-Based on metadata submissions, {{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
-{% set table_counter.value = table_counter.value + 1 %}
+{{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_assembly_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "assembly",
+  "table_num": appendix_assembly_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared assembly software configuration.
+The assembly figures are restricted to configurations with evaluable values for the displayed metrics. As a result, some declared assembly categories may be absent from the plots; the full set of declared configurations and summary values is provided in Appendix Table {{ appendix_assembly_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.assembly.fig_metric_boxplots,
   "Distribution of performance metrics by assembly software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.assembly.n_plot_groups | default(comp_net.benchmarking.assembly.total_number)) >= 6 and (comp_net.benchmarking.assembly.panel_count | default(99)) <= 2) else None,
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.assembly.n_plot_groups | default(comp_net.benchmarking.assembly.total_number)) >= 6 and (comp_net.benchmarking.assembly.panel_count | default(99)) <= 2) else "benchmark-figure",
   has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared assembly software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
-
-Table {{ table_counter.value }} summarises the performance of declared assembly software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
-
-**Table {{ table_counter.value }}. Performance summary of declared assembly software configurations for {{ comp_code }}.**
-
-| Assembly software | Version | N labs | Most common configuration | Median consensus genome length | Median genome identity | Median number of discrepancies per sample |
-|---|---:|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.assembly.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
-{% endfor %}
 
 {% endif %}
 
 {% if comp_net.benchmarking.consensus_software %}
 ##### Consensus software
 
-Based on metadata submissions, {{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
+{{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_consensus_software_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "consensus_software",
+  "table_num": appendix_consensus_software_table_num
+}) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared consensus software configuration.
+Only consensus software configurations with sufficient evaluable data are visualised in the figure below, so the plotted set may be smaller than the total set of declarations. All declared configurations and their associated summary values can be reviewed in Appendix Table {{ appendix_consensus_software_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.consensus_software.fig_metric_boxplots,
   "Distribution of performance metrics by consensus software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.consensus_software.n_plot_groups | default(comp_net.benchmarking.consensus_software.total_number)) >= 6 and (comp_net.benchmarking.consensus_software.panel_count | default(99)) <= 2) else None,
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.consensus_software.n_plot_groups | default(comp_net.benchmarking.consensus_software.total_number)) >= 6 and (comp_net.benchmarking.consensus_software.panel_count | default(99)) <= 2) else "benchmark-figure",
   has_panels=True
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of performance metrics by declared consensus software configuration for {{ comp_code }}.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the performance of declared consensus software configurations for {{ comp_code }}, including the most frequently reported parameter string for each software/version combination and the corresponding median consensus reconstruction metrics.
-
-**Table {{ table_counter.value }}. Performance summary of declared consensus software configurations for {{ comp_code }}.**
-
-| Consensus software | Version | N labs | Most common configuration | Median consensus genome length | Median genome identity | Median number of discrepancies per sample |
-|---|---:|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.consensus_software.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} |  {{ p.median_discrepancies }} |
-{% endfor %}
 
 {% endif %}
 
 {% if comp_net.benchmarking.variant_calling %}
 ##### Variant calling software
 
-Based on metadata submissions, {{ comp_net.benchmarking.variant_calling.total_number }} distinct variant calling software configurations were reported for the {{ comp_code }} component.
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the performance of declared variant calling software configurations for {{ comp_code }}, including reporting mode distributions and the corresponding variant detection metrics.
-
-**Table {{ table_counter.value }}. Performance summary of declared variant calling software configurations for {{ comp_code }}.**
-
-{% if comp_code[:3] == "FLU" %}
-| Variant calling software | Version | N labs | Most common configuration | Median high and low frequency (%) | Median high frequency only (%) | Median low frequency only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median metadata-VCF discrepancies | Median total variants in VCF |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.variant_calling.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
-{% endfor %}
-{% else %}
-| Variant calling software | Version | N labs | {{ "Model used" if comp_code == "SARS2" else "Most common configuration" }} | Median high and low frequency (%) | Median high frequency only (%) | Median low frequency only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.variant_calling.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ (p.model if comp_code == "SARS2" else p.params)|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
-{% endfor %}
-{% endif %}
+{{ comp_net.benchmarking.variant_calling.total_number }} distinct variant calling software configurations were reported for the {{ comp_code }} component.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_variant_calling_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "variant_calling",
+  "table_num": appendix_variant_calling_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared variant calling software configuration.
+The plotted variant calling categories correspond only to configurations with evaluable observations for the displayed metrics. Consequently, the figure may show fewer configurations than were declared overall; the complete summaries are listed in Appendix Table {{ appendix_variant_calling_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.variant_calling.fig_metric_boxplots,
   "Distribution of performance metrics by variant calling software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.variant_calling.n_plot_groups | default(comp_net.benchmarking.variant_calling.total_number)) >= 6 and (comp_net.benchmarking.variant_calling.panel_count | default(99)) <= 2) else None,
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.variant_calling.n_plot_groups | default(comp_net.benchmarking.variant_calling.total_number)) >= 6 and (comp_net.benchmarking.variant_calling.panel_count | default(99)) <= 2) else "benchmark-figure",
   has_panels=True
 ) }}
 
@@ -1318,29 +1245,26 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.clade_assignment %}
 ##### Clade Assignment Software
 
-Based on metadata submissions, {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and clade assignment database version when available.
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the concordance profile of declared clade assignment software configurations for {{ comp_code }}.
-
-**Table {{ table_counter.value }}. Performance summary of declared clade assignment software configurations for {{ comp_code }}.**
-
-| Clade assignment software | Version | N labs | Database version | % of clade match |
-|---|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.clade_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.clade_hit_pct }} |
-{% endfor %}
+{{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and clade assignment database version when available.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_clade_assignment_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "clade_assignment",
+  "table_num": appendix_clade_assignment_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared clade assignment software configuration.
+Because clade concordance could not be evaluated for every declared configuration, the boxplot includes only categories with usable observations. The full list of declared configurations and their summary values is available in Appendix Table {{ appendix_clade_assignment_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.clade_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by clade assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.clade_assignment.n_plot_groups | default(comp_net.benchmarking.clade_assignment.total_number)) >= 6 and (comp_net.benchmarking.clade_assignment.panel_count | default(99)) <= 2) else None
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.clade_assignment.n_plot_groups | default(comp_net.benchmarking.clade_assignment.total_number)) >= 6 and (comp_net.benchmarking.clade_assignment.panel_count | default(99)) <= 2) else "benchmark-figure"
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of clade concordance by declared clade assignment software configuration for {{ comp_code }}.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1350,29 +1274,26 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.lineage_assignment %}
 ##### Lineage Assignment Software Name
 
-Based on metadata submissions, {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and lineage assignment database version when available.
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the concordance profile of declared lineage assignment software configurations for {{ comp_code }}.
-
-**Table {{ table_counter.value }}. Performance summary of declared lineage assignment software configurations for {{ comp_code }}.**
-
-| Lineage Assignment software | Version | N labs | Database version | % of lineage match |
-|---|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.lineage_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.lineage_hit_pct }} |
-{% endfor %}
+{{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and lineage assignment database version when available.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_lineage_assignment_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "lineage_assignment",
+  "table_num": appendix_lineage_assignment_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared lineage assignment software configuration.
+Lineage assignment configurations are shown only when concordance values were evaluable for the submitted observations, so the plotted categories may represent only a subset of the declarations. The complete configuration-level summary is provided in Appendix Table {{ appendix_lineage_assignment_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 120%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.lineage_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by lineage assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.lineage_assignment.n_plot_groups | default(comp_net.benchmarking.lineage_assignment.total_number)) >= 6 and (comp_net.benchmarking.lineage_assignment.panel_count | default(99)) <= 2) else None
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.lineage_assignment.n_plot_groups | default(comp_net.benchmarking.lineage_assignment.total_number)) >= 6 and (comp_net.benchmarking.lineage_assignment.panel_count | default(99)) <= 2) else "benchmark-figure"
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of lineage concordance by declared lineage assignment software configuration for {{ comp_code }}.** This boxplot summarises sample-level lineage concordance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1382,29 +1303,26 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 {% if comp_net.benchmarking.type_assignment %}
 ##### Type Assignment Software Name
 
-Based on metadata submissions, {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and type assignment database version when available.
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the concordance profile of declared type assignment software configurations for {{ comp_code }}.
-
-**Table {{ table_counter.value }}. Performance summary of declared type assignment software configurations for {{ comp_code }}.**
-
-| Type Assignment software | Version | N labs | Database version | % of type match |
-|---|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.type_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.type_hit_pct }} |
-{% endfor %}
+{{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and type assignment database version when available.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_type_assignment_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "type_assignment",
+  "table_num": appendix_type_assignment_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared type assignment software configuration.
+The type assignment plot is limited to configurations with evaluable concordance results, and therefore may contain fewer categories than the total number declared in metadata. The complete list of declared configurations and summary values is provided in Appendix Table {{ appendix_type_assignment_table_num }}.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.type_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by type assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.type_assignment.n_plot_groups | default(comp_net.benchmarking.type_assignment.total_number)) >= 6 and (comp_net.benchmarking.type_assignment.panel_count | default(99)) <= 2) else None
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.type_assignment.n_plot_groups | default(comp_net.benchmarking.type_assignment.total_number)) >= 6 and (comp_net.benchmarking.type_assignment.panel_count | default(99)) <= 2) else "benchmark-figure"
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of type concordance by declared type assignment software configuration for {{ comp_code }}.** This boxplot summarises sample-level type concordance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1415,29 +1333,26 @@ Figure {{ fig_counter.value + 1 }} summarises the distribution of key performanc
 
 ##### Subtype Assignment Software Name
 
-Based on metadata submissions, {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component. For this benchmarking category, configurations were counted as unique combinations of software name, software version, and subtype assignment database version when available.
-
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} summarises the concordance profile of declared subtype assignment software configurations for {{ comp_code }}.
-
-**Table {{ table_counter.value }}. Performance summary of declared subtype assignment software configurations for {{ comp_code }}.**
-
-| Subtype Assignment software | Version | N labs | Database version | % of subtype match |
-|---|---:|---:|---:|---:|
-{% for p in comp_net.benchmarking.subtype_assignment.softwares %}
-| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.subtype_hit_pct }} |
-{% endfor %}
+{{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and subtype assignment database version when available.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set appendix_subtype_assignment_table_num = appendix_table_counter.value %}
+{% set _ = benchmark_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp_net": comp_net,
+  "kind": "subtype_assignment",
+  "table_num": appendix_subtype_assignment_table_num
+}) %}
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value + 1 }} summarises the distribution of key performance metrics stratified by declared subtype assignment software configuration.
+Subtype assignment configurations are plotted only when evaluable concordance data were available, so some declared categories may not be represented in the figure. Appendix Table {{ appendix_subtype_assignment_table_num }} contains the full list of declarations and their summary values.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.subtype_assignment.fig_metric_boxplots,
   "Distribution of performance metrics by subtype assignment software configuration for " ~ comp_code ~ ".",
-  "landscape-benchmark-figure" if ((comp_net.benchmarking.subtype_assignment.n_plot_groups | default(comp_net.benchmarking.subtype_assignment.total_number)) >= 6 and (comp_net.benchmarking.subtype_assignment.panel_count | default(99)) <= 2) else None
+  "benchmark-figure landscape-benchmark-figure" if ((comp_net.benchmarking.subtype_assignment.n_plot_groups | default(comp_net.benchmarking.subtype_assignment.total_number)) >= 6 and (comp_net.benchmarking.subtype_assignment.panel_count | default(99)) <= 2) else "benchmark-figure"
 ) }}
 
 **Figure {{ fig_counter.value }}. Distribution of subtype concordance by declared subtype assignment software configuration for {{ comp_code }}.** This boxplot summarises sample-level subtype concordance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
@@ -1466,7 +1381,7 @@ The submitted metadata documented substantial diversity in variant reporting beh
 
 Influenza results especially highlight the consequences of heterogeneous structural reporting. The network-level median number of variants with AF >=75% reported in metadata was {{ general.general_results.influenza_variants.median_variants_in_consensus }}, whereas the corresponding median derived from submitted VCF files was {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }}. The median discrepancy between these two representations was {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }}, and the total number of variants present in submitted VCF files ranged from {{ general.general_results.influenza_variants.min_variants_in_vcf }} to {{ general.general_results.influenza_variants.max_variants_in_vcf }}. Together, these values indicate that influenza variant outputs were not directly comparable under a single harmonised coordinate framework and that reporting conventions differed markedly across laboratories. That heterogeneity is also visible in the mixed reporting modes, the use of multiple reference genomes, and the wide structural ranges in both total VCF content and metadata-VCF discrepancies.
 
-In SARS-CoV-2, discrepancies between metadata-reported and VCF-derived values were generally limited, but the discrepancy profile still points to differences in filtering and interpretation rules. In SARS1, the most frequent discrepancy type was `de novo`, and samples such as SARS3 and especially SARS4 showed the highest discrepancy burdens, consistent with the fact that the curated reference VCF retains only variants above defined AF and coverage thresholds. Additional technical limitations also affected the calculation of VCF-derived variants with effect in this component: one submission was generated against an XBB reference genome rather than against the Wuhan-based reference framework used for the EQA gold standard, and another submission provided iVar TSV outputs instead of VCF files, which prevented standard annotation of VCF content for effect-based comparisons. This means that laboratories using different calling thresholds, or laboratories reporting only high-frequency variants, may inflate either `missing` or `de novo` categories even when the underlying VCF is internally coherent. In SARS2, overall discrepancy levels also remained low, but `missing` and `de novo` discrepancies were again the most frequent, and the highest-burden samples were the low-quality materials SARS9 and SARS10, which supports the interpretation that reporting concordance deteriorates primarily in analytically compromised datasets. Technical limitations also affected the availability of some VCF-derived summary metrics in this component: one laboratory did not submit VCF files, and in another case the VCFs had been generated with Medaka, which does not provide allele-frequency information. As a result, it was not possible in those submissions to derive AF >=75% variant counts or to calculate annotated variants with effect from the VCF content.
+In SARS-CoV-2, discrepancies between metadata-reported and VCF-derived values were generally limited, but the discrepancy profile still points to differences in filtering and interpretation rules. In SARS1, the most frequent discrepancy type was "De novo variants", and samples such as SARS3 and especially SARS4 showed the highest discrepancy burdens, consistent with the fact that the curated reference VCF retains only variants above defined AF and coverage thresholds. Additional technical limitations also affected the calculation of VCF-derived variants with effect in this component: one submission was generated against an XBB reference genome rather than against the Wuhan-based reference framework used for the EQA gold standard, and another submission provided iVar TSV outputs instead of VCF files, which prevented standard annotation of VCF content for effect-based comparisons. This means that laboratories using different calling thresholds, or laboratories reporting only high-frequency variants, may inflate either "Missing expected variants" or "De novo variant" categories even when the underlying VCF is internally coherent. In SARS2, overall discrepancy levels also remained low, but "Missing expected variants" and "De novo variants" were again the most frequent discrepancy types, and the highest-burden samples were the low-quality materials SARS9 and SARS10, which supports the interpretation that reporting concordance deteriorates primarily in analytically compromised datasets. Technical limitations also affected the availability of some VCF-derived summary metrics in this component: one laboratory did not submit VCF files, and in another case the VCFs had been generated with Medaka, which does not provide allele-frequency information. As a result, it was not possible in those submissions to derive AF >=75% variant counts or to calculate annotated variants with effect from the VCF content.
 
 For influenza, only a minority of laboratories reported metadata counts in a way that could be directly interpreted against the submitted VCFs, and some laboratories appear to have counted all VCF variants, including low-frequency calls, as if they belonged to the AF >=75% category. Others reported VCFs with very large total numbers of variants, indicating the inclusion of very low-frequency events supported by few reads. In practical terms, this means that the influenza discrepancies do not only reflect analytical differences in variant detection, but also differences in how laboratories interpreted software outputs and translated them into the metadata template. This reinforces the need for harmonised best practices defining which variants should be reported, under which AF thresholds, and how those thresholds should be represented in metadata.
 
@@ -1475,6 +1390,8 @@ For influenza, only a minority of laboratories reported metadata counts in a way
 Classification performance was acceptable overall but clearly stronger for lineage/type assignment than for clade assignment. SARS-CoV-2 lineage concordance reached {{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}, compared with {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} for SARS-CoV-2 clade assignment. Influenza type/subtype concordance reached {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}, compared with {{ pct(general.general_results.classification.influenza_clade_concordance_pct) }} for influenza clade assignment. In the SARS-CoV-2 submissions, this difference is consistent with metadata-level reporting problems in the clade field itself: among the clade assignments reviewed in the submitted JSON files, some were left empty and others contained values that matched the lineage assignment or had lineage-like syntax rather than a clade designation. This suggests that part of the excess clade discordance reflects field completion and nomenclature issues in addition to true analytical misclassification.
 
 QC interpretation showed additional between-component differences. Only 9 of the 19 participating laboratories reported at least one sample-level QC assessment in their submitted metadata. Among evaluable QC decisions, network-wide concordance was {{ pct(general.qc.reported_match_rate_pct) }}, and component-level concordance ranged from {{ pct(general.components.SARS1.qc.reported_match_rate_pct) }} in SARS1 to {{ pct(general.components.FLU2.qc.reported_match_rate_pct) }} in FLU2. This indicates that QC interpretation was not equally stable across all datasets, while also showing that many laboratories either did not apply or did not report a formal sample-level QC decision in the metadata template.
+
+Because QC assignment depends on how each laboratory interprets coverage, ambiguity, contamination, and other internal acceptance criteria, these results are better understood as reflecting heterogeneity in QC interpretation and reporting rather than a simple measure of analytical correctness alone.
 
 At sample level, the classification and QC discrepancies were concentrated in analytically difficult materials rather than being evenly distributed. In SARS1, the samples showing discordance against the ECDC gold standard were those flagged as low quality, such as SARS4 and SARS5, where low coverage or excess mixed sites likely shifted both QC status and downstream classification. In SARS2, SARS8 emerged as the most problematic lineage-assignment sample, with several laboratories reporting the parent lineage rather than the exact expected designation, again suggesting that small differences in masking and low-coverage treatment can propagate into classification discordance. At the same time, part of the observed clade discordance in SARS-CoV-2 was clearly metadata-driven: some laboratories populated the clade field with lineage values or left clade values empty, which inflated apparent clade disagreement independently of software performance or database version.
 
@@ -1531,9 +1448,9 @@ The EQA therefore provides a robust technical basis for harmonised, performance-
 
 {% if labdata %}
 {% set lab_code = labdata.lab.lab_cod | default(labdata.lab.submitting_institution_id) %}
-<h2 class="no-page-break">9. Individual Laboratory Technical Report</h2>
+<h2 id="9-individual-laboratory-technical-report" class="no-page-break">9. Individual Laboratory Technical Report</h2>
 
-<h3 class="no-page-break">Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})</h3>
+<h3 id="laboratory-{{ labdata.lab.lab_cod|lower }}" class="no-page-break">Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})</h3>
 
 This section provides a detailed technical assessment of the analytical results submitted by **{{ labdata.lab.lab_cod }}** within the 2026 RELECOV Dry-Lab EQA. Performance metrics are benchmarked against curated gold standards and contextualised relative to aggregated network-wide performance distributions. Network medians and interquartile ranges are provided for comparative interpretation, without disclosure of other laboratories’ identities.
 
@@ -1541,7 +1458,7 @@ The purpose of this section is to support technical optimisation, parameter harm
 
 Only files, metadata fields, and derived analytical metrics actually provided by the laboratory are displayed in this individual report. If a file was not submitted, or a metadata field was not provided, the corresponding table entries, panels, or figures are omitted for that laboratory.
 
-<h3 class="no-page-break">9.1. Participation Overview</h3>
+<h3 id="91-participation-overview" class="no-page-break">9.1. Participation Overview</h3>
 
 The laboratory analysed **{{ labdata.components | length }}** out of 4 components. Network median components analysed per laboratory: **{{ general.median_components_analysed_per_lab }}**.
 
@@ -1559,9 +1476,11 @@ Regarding general metadata completeness:
 
 {% if labdata.metadata.primary_incompleteness_drivers %}
 Primary contributors to incompleteness for {{ labdata.lab.lab_cod }}:
+<ul class="compact-list">
 {% for d in labdata.metadata.primary_incompleteness_drivers %}
-- {{ d }}
+<li>{{ d }}</li>
 {% endfor %}
+</ul>
 {% endif %}
 
 {% for comp_code, comp in labdata.components.items() %}
@@ -1585,9 +1504,11 @@ Regarding metadata completeness for {{ comp_code }}:
 
 {% if comp.metadata.primary_incompleteness_drivers %}
 Primary contributors to incompleteness for {{ comp_code }}:
+<ul class="compact-list">
 {% for d in comp.metadata.primary_incompleteness_drivers %}
-- {{ d }}
+<li>{{ d }}</li>
 {% endfor %}
+</ul>
 {% endif %}
 
 #### 9.{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance
@@ -1596,24 +1517,16 @@ Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}**
 
 ##### Per-sample summary metrics
 
-{% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Per-sample consensus reconstruction metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set lab_consensus_metrics_table_num = appendix_table_counter.value %}
+The detailed per-sample consensus reconstruction metrics for **{{ labdata.lab.lab_cod }}** are provided in Appendix Table {{ lab_consensus_metrics_table_num }}. The figure below summarises overall sequence similarity and discrepancy burden relative to the curated gold standard reference for {{ labdata.lab.lab_cod }} compared to the network.
 
-| Sample ID | {{ labdata.lab.lab_cod }} Genome identity (%) | Network Genome Identity Median | {{ labdata.lab.lab_cod }} Total discrepancies | Network total discrepancies median |
-|---|---:|---:|---:|---:|
-{% for collecting_lab_sample_id, s in comp.samples.items() -%}
-| {{ collecting_lab_sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ general.components[comp_code].consensus.samples[collecting_lab_sample_id].median_identity_pct }} | {{ s.consensus.total_discrepancies }} | {{ general.components[comp_code].consensus.samples[collecting_lab_sample_id].median_discrepancies }} |
-{% endfor %}
-
-The metrics presented in Table {{ table_counter.value }} summarise overall sequence similarity and discrepancy burden relative to the curated gold standard reference for {{ labdata.lab.lab_cod }} compared to the Network's median.
 
 {% set consensus_distribution_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/consensus_distribution_panel.png" %}
 {% if path_exists(consensus_distribution_panel_path) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the distribution of consensus discrepancies and genome identity per sample across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
-
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 90%;" %}
 {{ render_figure(
   consensus_distribution_panel_path,
   comp_code ~ ": distribution of consensus discrepancies and genome identity per sample across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
@@ -1627,9 +1540,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of consensus discrep
 {% if path_exists(consensus_breakdown_path) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} summarises the discrepancy profile reported by **{{ labdata.lab.lab_cod }}** across samples in the {{ comp_code }} component.
-
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 80%;" %}
 {{ render_figure(
   consensus_breakdown_path,
   comp_code ~ ": discrepancy type breakdown by sample for " ~ labdata.lab.lab_cod ~ "."
@@ -1638,16 +1549,15 @@ Figure {{ fig_counter.value }} summarises the discrepancy profile reported by **
 **Figure {{ fig_counter.value }}. Discrepancy type breakdown by sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).** Stacked bars show the contribution of each discrepancy category to the total consensus differences observed for each sample submitted by **{{ labdata.lab.lab_cod }}**.
 {% endif %}
 
-{% set table_counter.value = table_counter.value + 1 %}
-Table {{ table_counter.value }} provides a detailed characterisation of discrepancy categories contributing to the total differences observed for each sample.
-
-**Table {{ table_counter.value }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
-
-| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total nucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
-|---|---:|---:|---:|---:|---:|---:|---:|
-{% for collecting_lab_sample_id, s in comp.samples.items() -%}
-| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
-{% endfor %}
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set lab_consensus_breakdown_table_num = appendix_table_counter.value %}
+{% set _ = lab_consensus_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "metrics_table_num": lab_consensus_metrics_table_num,
+  "breakdown_table_num": lab_consensus_breakdown_table_num
+}) %}
+The full discrepancy-type breakdown per sample for **{{ labdata.lab.lab_cod }}** is provided in Appendix Table {{ lab_consensus_breakdown_table_num }}.
 
 {% if comp.metadata.vcf_submitted >=1 %}
 
@@ -1656,15 +1566,13 @@ Table {{ table_counter.value }} provides a detailed characterisation of discrepa
 {% if comp_code in ["SARS1", "SARS2"] %}
 For SARS-CoV-2, variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated reference variant set for each sample included in the {{ comp_code }} component.
 
-The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set and benchmark the laboratory’s results against the network median for the same sample.
+The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set and benchmark the laboratory’s results against the network median for the same sample. The laboratory-reported variant counts declared in the metadata were also compared against the values derived directly from the submitted VCF files for each sample.
 
 {% set variant_detection_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/variant_metadata_vs_vcf_distribution.png" %}
 {% if path_exists(variant_detection_path) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the distribution of variant detection performance metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
-
-{% set figure_style = "max-width: 80%;" %}
+{% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   variant_detection_path,
   comp_code ~ ": distribution of variant detection metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ "."
@@ -1688,7 +1596,7 @@ Figure {{ fig_counter.value }} illustrates the distribution of variant detection
 {% if comp_code in ["FLU1", "FLU2"] %}
 For influenza components, evaluation focused on structural reporting metrics and concordance between metadata-reported and VCF-derived variant counts for each sample.
 {% else %}
-The laboratory-reported variant counts declared in the metadata were also compared against the values derived directly from the submitted VCF files for each sample.
+
 {% endif %}
 
 {% set table_counter.value = table_counter.value + 1 %}
@@ -1711,26 +1619,15 @@ The laboratory-reported variant counts declared in the metadata were also compar
 {% endif %}
 {% set variant_metrics_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/variant_metrics_distribution.png" %}
 {% if path_exists(variant_metrics_path) %}
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-{% if comp_code in ["SARS1", "SARS2"] %}
-Figure {{ fig_counter.value }} illustrates the distribution of metadata-reported and VCF-derived variant metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
-{% else %}
-Figure {{ fig_counter.value }} illustrates the distribution of influenza-specific reporting metrics across participating laboratories in the network, contextualising the results obtained by **{{ labdata.lab.lab_cod }}**.
-{% endif %}
-
-{% set figure_style = "max-width: 100%;" %}
-{{ render_figure(
-  variant_metrics_path,
-  comp_code ~ ": distribution of variant reporting metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
-  has_panels=True
-) }}
-
-{% if comp_code in ["SARS1", "SARS2"] %}
-**Figure {{ fig_counter.value }}. Metadata-reported and VCF-derived variant metrics across participating laboratories ({{ comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B reported variants with effect, Panel C variants in VCF with AF >=75%, Panel D variants with effect in VCF, Panel E metadata-VCF discrepancies for AF >=75% variants, and Panel F metadata-VCF discrepancies for variants with effect across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
-{% else %}
-**Figure {{ fig_counter.value }}. Influenza-specific variant reporting metrics across participating laboratories ({{ comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B VCF-derived variants with AF >=75%, Panel C reported variants with effect, Panel D metadata-VCF discrepancies, and Panel E total variants present in the submitted VCF files across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
-{% endif %}
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set lab_variant_metrics_figure_num = appendix_fig_counter.value %}
+{% set _ = lab_variant_figure_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "figure_num": lab_variant_metrics_figure_num,
+  "variant_metrics_path": variant_metrics_path
+}) %}
+The distribution of metadata-reported and VCF-derived variant metrics across participating laboratories for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_variant_metrics_figure_num }}.
 {% endif %}
 {% endif %}
 
@@ -1739,21 +1636,16 @@ Figure {{ fig_counter.value }} illustrates the distribution of influenza-specifi
 Lineage/type and clade assignments submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated gold standard classifications for each sample included in the {{ comp_code }} component.
 {% set classification_concordance_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/classification_dimension_concordance.png" %}
 {% if path_exists(classification_concordance_path) %}
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-Figure {{ fig_counter.value }} presents the distribution of classification outcomes across participating laboratories for each sample included in the {{ comp_code }} component, while highlighting the specific result reported by **{{ labdata.lab.lab_cod }}**.
-
-{% set figure_style = "max-width: 100%;" %}
-{{ render_figure(
-  classification_concordance_path,
-  comp_code ~ ": lineage/type and clade classification outcomes across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
-  has_panels=True
-) }}
-
-**_Figure {{ fig_counter.value }}_. Lineage/type and clade classification outcomes across participating laboratories ({{ comp_code }}).** Panel A shows the proportion of Match, Discrepancy, and Not provided outcomes for lineage/type assignments across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Stacked bars represent the percentage of laboratories with correct classifications, incorrect classifications, or missing classifications relative to the curated gold standard. The black diamond marks the result reported by **{{ labdata.lab.lab_cod }}**, positioned within the Match, Discrepancy, or Not provided segment for each sample.
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set lab_classification_figure_num = appendix_fig_counter.value %}
+{% set _ = lab_classification_figure_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "figure_num": lab_classification_figure_num,
+  "classification_concordance_path": classification_concordance_path
+}) %}
+The distribution of lineage/type and clade classification outcomes across participating laboratories for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_classification_figure_num }}.
 {% endif %}
-
-Table {{ table_counter.value }} summarises the concordance between expected and reported lineage/type and clade classifications for each sample.
 
 {% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Per-sample lineage/type and clade assignment results for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
@@ -1777,18 +1669,15 @@ Positioning was evaluated based on four primary performance indicators:
 
 {% set workflow_positioning_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/workflow_positioning_boxplots.png" %}
 {% if path_exists(workflow_positioning_path) %}
-{% set fig_counter.value = fig_counter.value + 1 %}
-
-Figure {{ fig_counter.value }} illustrates the position of the workflow declared by **{{ labdata.lab.lab_cod }}** within the network-wide distribution of key performance indicators for the {{ comp_code }} component.
-
-{% set figure_style = "max-width: 100%;" %}
-{{ render_figure(
-  workflow_positioning_path,
-  comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond.",
-  has_panels=True
-) }}
-
-**Figure {{ fig_counter.value }}. Workflow positioning within the RELECOV network for {{ comp_code }}.** Multi-panel boxplots summarise the laboratory-level distribution across the network for Panel A total consensus discrepancies, Panel B median genome identity, Panel C total classification matches, and Panel D metadata completeness. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set lab_workflow_figure_num = appendix_fig_counter.value %}
+{% set _ = lab_workflow_figure_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "figure_num": lab_workflow_figure_num,
+  "workflow_positioning_path": workflow_positioning_path
+}) %}
+The workflow positioning across the RELECOV network for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_workflow_figure_num }}.
 {% endif %}
 
 Table {{ table_counter.value }} summarises the software configuration declared by **{{ labdata.lab.lab_cod }}** for each analysed sample in {{ comp_code }}. Table {{ table_counter.value + 1 }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. For all four indicators, the reported network median and min-max range correspond to laboratory-level summaries across participating laboratories for the same component.
@@ -1841,22 +1730,19 @@ Only metrics explicitly provided by the laboratory are included in the comparati
 | {{ collecting_lab_sample_id }} | {{ s.qc_test if s.qc_test is not none else "NA" }} | {{ ns.gold_standard_qc if ns else "NA" }} | {{ pct(ns.reported_match_rate_pct) if ns and ns.reported_match_rate_pct is not none else "NA" }} |
 {% endfor %}
 
-Table {{ table_counter.value }} summarises the QC decision reported by **{{ labdata.lab.lab_cod }}** for each sample and benchmarks it against the network-level QC concordance for the same sample.
-
 {% set qc_tests_reported = (comp.samples.values() | selectattr("qc_test", "ne", none) | list | length) > 0 %}
 {% set qc_match_rate_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/qc_match_rate.png" %}
 {% if qc_tests_reported and path_exists(qc_match_rate_path) %}
-{% set fig_counter.value = fig_counter.value + 1 %}
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set lab_qc_figure_num = appendix_fig_counter.value %}
+{% set _ = lab_qc_figure_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "figure_num": lab_qc_figure_num,
+  "qc_match_rate_path": qc_match_rate_path
+}) %}
 
-Figure {{ fig_counter.value }} contextualises the laboratory’s QC decision performance reported by **{{ labdata.lab.lab_cod }}** relative to network-wide QC concordance for each evaluable sample.
-
-{% set figure_style = "max-width: 80%;" %}
-{{ render_figure(
-  qc_match_rate_path,
-  comp_code ~ ": sample-level QC concordance across the network, with " ~ labdata.lab.lab_cod ~ " highlighted."
-) }}
-
-**_Figure {{ fig_counter.value }}_. Sample-level QC concordance across the network for {{ comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Stacked bars represent the network-wide proportions of Match, Discrepancy, and Not provided outcomes relative to the gold standard for each sample. The black diamond indicates whether **{{ labdata.lab.lab_cod }}** reported a Match, a Discrepancy, or did not provide a QC assessment for the corresponding sample. Not provided values are shown separately and are not counted as discrepancies.
+The sample-level QC concordance across the network for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_qc_figure_num }}.
 {% else %}
 
 No comparative QC concordance figure is shown for {{ comp_code }} because **{{ labdata.lab.lab_cod }}** did not report any sample-level QC assessment for this component.
@@ -1864,14 +1750,9 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 
 ##### Other metrics
 
-{% set metadata_metric_labels = {
-  "per_genome_greater_10x": "% Genome > 10x",
-  "depth_of_coverage_value": "Depth of coverage mean value",
-  "per_Ns": "% Ns",
-  "per_reads_virus": "% Reads virus",
-  "per_reads_host": "% Reads host"
-} %}
+Additional metadata-derived analytical metrics were available for a subset of {{ comp_code }} samples, including genome coverage above 10x, mean depth of coverage, proportion of Ns, and the fraction of viral and host reads where reported. The comparative figure below summarises how the values reported by **{{ labdata.lab.lab_cod }}** relate to the network-wide distribution, while the full per-sample tables are provided in the appendix.
 {% set metadata_metrics_reported = namespace(count=0) %}
+{% set metadata_metrics_appendix_summary = namespace(first_table_num=None, last_table_num=None, first_sample_id=None, last_sample_id=None, sample_count=0) %}
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 {% set m = s.metadata_metrics -%}
 {% if m -%}
@@ -1884,32 +1765,34 @@ No comparative QC concordance figure is shown for {{ comp_code }} because **{{ l
 {% endfor -%}
 {% if sample_metrics.count > 0 -%}
 {% set metadata_metrics_reported.count = metadata_metrics_reported.count + sample_metrics.count -%}
-
-{% set table_counter.value = table_counter.value + 1 %}
-
-##### {{ collecting_lab_sample_id }}
-
-**Table {{ table_counter.value }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} (component {{ comp_code }}, sample {{ collecting_lab_sample_id }}).**
-
-| Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
-|---|---:|---:|---:|
-{% for metric_key, metric_label in metadata_metric_labels.items() -%}
-| {{ metric_label }} | {{ m[metric_key] if m.get(metric_key) is not none else "NA" }} | {{ ns[metric_key].median if ns and ns.get(metric_key) else "NA" }} | {{ ns[metric_key].min if ns and ns.get(metric_key) else "NA" }} - {{ ns[metric_key].max if ns and ns.get(metric_key) else "NA" }} |
-{% endfor %}
-
-Table {{ table_counter.value }} contextualises laboratory-reported analytical parameters relative to the distribution of values observed across the RELECOV network for the same sample.
+{% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
+{% set metadata_metrics_table_num = appendix_table_counter.value %}
+{% set _ = lab_metadata_metrics_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "collecting_lab_sample_id": collecting_lab_sample_id,
+  "sample": s,
+  "network_sample_metrics": ns,
+  "table_num": metadata_metrics_table_num
+}) %}
+{% if metadata_metrics_appendix_summary.first_table_num is none %}{% set metadata_metrics_appendix_summary.first_table_num = metadata_metrics_table_num %}{% endif %}
+{% if metadata_metrics_appendix_summary.first_sample_id is none %}{% set metadata_metrics_appendix_summary.first_sample_id = collecting_lab_sample_id %}{% endif %}
+{% set metadata_metrics_appendix_summary.last_table_num = metadata_metrics_table_num %}
+{% set metadata_metrics_appendix_summary.last_sample_id = collecting_lab_sample_id %}
+{% set metadata_metrics_appendix_summary.sample_count = metadata_metrics_appendix_summary.sample_count + 1 %}
 
 {% endif %}
 {% endif %}
 {% endfor %}
+{% if metadata_metrics_appendix_summary.sample_count > 0 %}
+Appendix Table{% if metadata_metrics_appendix_summary.sample_count > 1 %}s{% endif %} {{ metadata_metrics_appendix_summary.first_table_num }}{% if metadata_metrics_appendix_summary.last_table_num != metadata_metrics_appendix_summary.first_table_num %}–{{ metadata_metrics_appendix_summary.last_table_num }}{% endif %} report the metadata-derived analytical metrics for sample{% if metadata_metrics_appendix_summary.sample_count > 1 %}s{% endif %} **{{ metadata_metrics_appendix_summary.first_sample_id }}{% if metadata_metrics_appendix_summary.last_sample_id != metadata_metrics_appendix_summary.first_sample_id %}–{{ metadata_metrics_appendix_summary.last_sample_id }}{% endif %}**.
+{% endif %}
 
 {% set metadata_metrics_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/metadata_metrics_panel.png" %}
 {% if metadata_metrics_reported.count > 0 and path_exists(metadata_metrics_panel_path) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
 
-Figure {{ fig_counter.value }} illustrates the distribution of metadata-derived analytical metrics across participating laboratories for the {{ comp_code }} component.
-
-{% set figure_style = "max-width: 100%;" %}
+{% set figure_cfg.style = "max-width: 98%;" %}
 {{ render_figure(
   metadata_metrics_panel_path,
   comp_code ~ ": distribution of metadata-derived analytical metrics across the network per sample; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
@@ -1935,3 +1818,392 @@ For any questions, technical clarifications, or follow-up discussions regarding 
 ## Appendix
 
 This appendix is reserved for supplementary material that may support interpretation of the report but is not essential to the main narrative. Additional figures, extended tables, sensitivity analyses, or other secondary outputs can be included here when relevant.
+
+{% if labdata and lab_consensus_appendix_entries.value %}
+### Individual Laboratory Supplementary Material
+
+{% for entry in lab_consensus_appendix_entries.value %}
+#### {{ entry.comp_code }} ({{ entry.comp.display_name }})
+
+##### Consensus Genome Reconstruction Performance
+
+**Appendix Table {{ entry.metrics_table_num }}. Per-sample consensus reconstruction metrics for {{ labdata.lab.lab_cod }} ({{ entry.comp_code }}).**
+
+| Sample ID | {{ labdata.lab.lab_cod }} Genome identity (%) | Network Genome Identity Median | {{ labdata.lab.lab_cod }} Total discrepancies | Network total discrepancies median |
+|---|---:|---:|---:|---:|
+{% for collecting_lab_sample_id, s in entry.comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ pct(s.consensus.genome_identity_pct, 4) }} | {{ general.components[entry.comp_code].consensus.samples[collecting_lab_sample_id].median_identity_pct }} | {{ s.consensus.total_discrepancies }} | {{ general.components[entry.comp_code].consensus.samples[collecting_lab_sample_id].median_discrepancies }} |
+{% endfor %}
+
+##### Discrepancy type breakdown per sample
+
+**Appendix Table {{ entry.breakdown_table_num }}. Discrepancy type breakdown per sample for {{ labdata.lab.lab_cod }} ({{ entry.comp_code }}).**
+
+| Sample ID | Total wrong nucleotides | Total ambiguity instead of nucleotide | Total nucleotide instead of ambiguity | Total stretch of Ns instead of nucleotide stretch | Total nucleotide stretch instead of stretch of Ns | Total insertion relative to gold standard | Total deletion relative to gold standard |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for collecting_lab_sample_id, s in entry.comp.samples.items() -%}
+| {{ collecting_lab_sample_id }} | {{ s.consensus.discrepancy_breakdown.wrong_nt }} | {{ s.consensus.discrepancy_breakdown.ambiguity2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ambiguity }} | {{ s.consensus.discrepancy_breakdown.ns2nt }} | {{ s.consensus.discrepancy_breakdown.nt2ns }} | {{ s.consensus.discrepancy_breakdown.insertions }} | {{ s.consensus.discrepancy_breakdown.deletions }} |
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+
+{% if labdata and lab_variant_figure_appendix_entries.value %}
+### Individual Laboratory Variant Detection Supplementary Material
+
+{% for entry in lab_variant_figure_appendix_entries.value %}
+#### {{ entry.comp_code }} ({{ entry.comp.display_name }})
+
+##### Variant Detection Performance
+
+{% set figure_cfg.style = "max-width: 98%;" %}
+{{ render_figure(
+  entry.variant_metrics_path,
+  entry.comp_code ~ ": distribution of variant reporting metrics across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
+  has_panels=True
+) }}
+
+{% if entry.comp_code in ["SARS1", "SARS2"] %}
+**Appendix Figure {{ entry.figure_num }}. Metadata-reported and VCF-derived variant metrics across participating laboratories ({{ entry.comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B reported variants with effect, Panel C variants in VCF with AF >=75%, Panel D variants with effect in VCF, Panel E metadata-VCF discrepancies for AF >=75% variants, and Panel F metadata-VCF discrepancies for variants with effect across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% else %}
+**Appendix Figure {{ entry.figure_num }}. Influenza-specific variant reporting metrics across participating laboratories ({{ entry.comp_code }}).** Panel A shows reported variants with AF >=75%, Panel B VCF-derived variants with AF >=75%, Panel C reported variants with effect, Panel D metadata-VCF discrepancies, and Panel E total variants present in the submitted VCF files across the RELECOV network. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if labdata and lab_classification_figure_appendix_entries.value %}
+### Individual Laboratory Classification Supplementary Material
+
+{% for entry in lab_classification_figure_appendix_entries.value %}
+#### {{ entry.comp_code }} ({{ entry.comp.display_name }})
+
+##### Lineage, Subtype and Clade Assignment
+
+{% set figure_cfg.style = "max-width: 98%;" %}
+{{ render_figure(
+  entry.classification_concordance_path,
+  entry.comp_code ~ ": lineage/type and clade classification outcomes across the network; black diamond indicates " ~ labdata.lab.lab_cod ~ ".",
+  has_panels=True
+) }}
+
+**Appendix Figure {{ entry.figure_num }}. Lineage/type and clade classification outcomes across participating laboratories ({{ entry.comp_code }}).** Panel A shows the proportion of Match, Discrepancy, and Not provided outcomes for lineage/type assignments across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Stacked bars represent the percentage of laboratories with correct classifications, incorrect classifications, or missing classifications relative to the curated gold standard. The black diamond marks the result reported by **{{ labdata.lab.lab_cod }}**, positioned within the Match, Discrepancy, or Not provided segment for each sample.
+
+{% endfor %}
+{% endif %}
+
+{% if labdata and lab_qc_figure_appendix_entries.value %}
+### Individual Laboratory QC Supplementary Material
+
+{% for entry in lab_qc_figure_appendix_entries.value %}
+#### {{ entry.comp_code }} ({{ entry.comp.display_name }})
+
+##### Sample Quality Control Assessment
+
+{% set figure_cfg.style = "max-width: 80%;" %}
+{{ render_figure(
+  entry.qc_match_rate_path,
+  entry.comp_code ~ ": sample-level QC concordance across the network, with " ~ labdata.lab.lab_cod ~ " highlighted."
+) }}
+
+**Appendix Figure {{ entry.figure_num }}. Sample-level QC concordance across the network for {{ entry.comp_code }}, with {{ labdata.lab.lab_cod }} highlighted.** Stacked bars represent the network-wide proportions of Match, Discrepancy, and Not provided outcomes relative to the gold standard for each sample. The black diamond indicates whether **{{ labdata.lab.lab_cod }}** reported a Match, a Discrepancy, or did not provide a QC assessment for the corresponding sample. Not provided values are shown separately and are not counted as discrepancies.
+
+{% endfor %}
+{% endif %}
+
+{% if labdata and lab_metadata_metrics_appendix_entries.value %}
+### Individual Laboratory Metadata-Derived Analytical Metrics Supplementary Material
+
+{% for entry in lab_metadata_metrics_appendix_entries.value %}
+#### {{ entry.comp_code }} ({{ entry.comp.display_name }})
+
+##### Other metrics
+
+###### {{ entry.collecting_lab_sample_id }}
+
+**Appendix Table {{ entry.table_num }}. Metadata-derived analytical metrics for {{ labdata.lab.lab_cod }} (component {{ entry.comp_code }}, sample {{ entry.collecting_lab_sample_id }}).**
+
+| Metric | {{ labdata.lab.lab_cod }} | Network median | Network min - max |
+|---|---:|---:|---:|
+{% for metric_key, metric_label in metadata_metric_labels.items() -%}
+| {{ metric_label }} | {{ entry.sample.metadata_metrics[metric_key] if entry.sample.metadata_metrics.get(metric_key) is not none else "NA" }} | {{ entry.network_sample_metrics[metric_key].median if entry.network_sample_metrics and entry.network_sample_metrics.get(metric_key) else "NA" }} | {{ entry.network_sample_metrics[metric_key].min if entry.network_sample_metrics and entry.network_sample_metrics.get(metric_key) else "NA" }} - {{ entry.network_sample_metrics[metric_key].max if entry.network_sample_metrics and entry.network_sample_metrics.get(metric_key) else "NA" }} |
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+
+{% if labdata and lab_workflow_figure_appendix_entries.value %}
+### Individual Laboratory Workflow Benchmarking Supplementary Material
+
+{% for entry in lab_workflow_figure_appendix_entries.value %}
+#### {{ entry.comp_code }} ({{ entry.comp.display_name }})
+
+##### Pipeline Benchmarking and Comparative Performance
+
+{% set figure_cfg.style = "max-width: 98%;" %}
+{{ render_figure(
+  entry.workflow_positioning_path,
+  entry.comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond.",
+  has_panels=True
+) }}
+
+**Appendix Figure {{ entry.figure_num }}. Workflow positioning within the RELECOV network for {{ entry.comp_code }}.** Multi-panel boxplots summarise the laboratory-level distribution across the network for Panel A total consensus discrepancies, Panel B median genome identity, Panel C total classification matches, and Panel D metadata completeness. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+
+{% endfor %}
+{% endif %}
+
+{# Use `appendix_fig_counter` and `appendix_table_counter` for supplementary material moved here.
+   Refer to them from the main text as "Appendix Figure X" and "Appendix Table X". #}
+
+{% set appendix_components = [
+  ("SARS1", "SARS-CoV-2, Illumina"),
+  ("SARS2", "SARS-CoV-2, Oxford Nanopore Technologies"),
+  ("FLU1", "Influenza virus, Illumina"),
+  ("FLU2", "Influenza virus, Oxford Nanopore Technologies")
+] %}
+
+{% for appendix_comp_code, appendix_comp_name in appendix_components %}
+{% set appendix_ns = namespace(has_material=false) %}
+{% for entry in consensus_appendix_entries.value %}{% if entry.comp_code == appendix_comp_code %}{% set appendix_ns.has_material = true %}{% endif %}{% endfor %}
+{% for entry in variant_sars_appendix_entries.value %}{% if entry.comp_code == appendix_comp_code %}{% set appendix_ns.has_material = true %}{% endif %}{% endfor %}
+{% for entry in variant_flu_appendix_entries.value %}{% if entry.comp_code == appendix_comp_code %}{% set appendix_ns.has_material = true %}{% endif %}{% endfor %}
+{% for entry in classification_appendix_entries.value %}{% if entry.comp_code == appendix_comp_code %}{% set appendix_ns.has_material = true %}{% endif %}{% endfor %}
+{% for entry in qc_appendix_entries.value %}{% if entry.comp_code == appendix_comp_code %}{% set appendix_ns.has_material = true %}{% endif %}{% endfor %}
+{% for entry in benchmark_appendix_entries.value %}{% if entry.comp_code == appendix_comp_code %}{% set appendix_ns.has_material = true %}{% endif %}{% endfor %}
+
+{% if appendix_ns.has_material %}
+### {{ appendix_comp_code }} ({{ appendix_comp_name }})
+
+{% for entry in consensus_appendix_entries.value %}
+{% if entry.comp_code == appendix_comp_code %}
+#### Consensus Genome Reconstruction Supplementary Material
+
+**Appendix Table {{ entry.metrics_table_num }}. Network-level consensus reconstruction metrics per sample for {{ entry.comp_code }}.**
+
+| Sample ID | Median genome identity (%) | Median discrepancies | Discrepancies min-max |
+|---|---:|---:|---:|
+{% for s in entry.comp_net.consensus.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.median_identity_pct) }} | {{ s.median_discrepancies }} | {{ s.min }} – {{ s.max }} |
+{% endfor %}
+
+**Appendix Table {{ entry.sample_table_num }}. Network-level consensus discrepancy types per sample for {{ entry.comp_code }}.**
+
+| Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
+|---|---:|---:|---:|---:|---:|---:|---:|
+{% for s in entry.comp_net.consensus.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambiguity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }} |
+{% endfor %}
+
+**Appendix Table {{ entry.type_table_num }}. Network-level discrepancy composition by type for {{ entry.comp_code }}.**
+
+| Discrepancy type | Network median per sample | Min-max occurrencies |
+|---|---:|---:|
+| Incorrect nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.wrong_nt.max) }} |
+| Ambiguity instead of nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max) }} |
+| Nucleotide instead of ambiguity | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max) }} |
+| Stretch of Ns instead of nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.max) }} |
+| Nucleotide stretch instead of stretch of Ns | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.max) }} |
+| Insertion relative to gold standard | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.insertions.max) }} |
+| Deletion relative to gold standard | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.deletions.max) }} |
+
+Figure {{ entry.type_fig_num }} in the appendix summarises the contribution of each discrepancy category observed in {{ entry.comp_code }} relative to the curated gold standard.
+
+{% set figure_cfg.style = "max-width: 96%;" %}
+{{ render_figure(
+  entry.comp_net.consensus.fig_discrepancy_type_boxplot,
+  "Composition of consensus discrepancy types for " ~ entry.comp_code ~ " relative to the curated gold standard."
+) }}
+
+**Appendix Figure {{ entry.type_fig_num }}. Composition of consensus discrepancy types relative to the curated gold standard for {{ entry.comp_code }}.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
+{% endif %}
+{% endfor %}
+
+{% for entry in variant_sars_appendix_entries.value %}
+{% if entry.comp_code == appendix_comp_code %}
+#### Variant Detection Accuracy Supplementary Material
+
+**Appendix Table {{ entry.profile_table_num }}. Network-level SARS-CoV-2 variant calling profile per sample for {{ entry.comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
+
+| Sample ID | Median successful hits | Median discrepancies | Discrepancies min-max | Median wrong nucleotide | Median insertions | Median deletions | Median missing | Median _de novo_ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+{% for s in entry.comp_net.variant.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.median_discrepancies if s.median_discrepancies is not none else "NA" }} | {{ s.min if s.min is not none else "NA" }} – {{ s.max if s.max is not none else "NA" }} | {{ s.wrong_nt if s.wrong_nt is not none else "NA" }} | {{ s.insertions if s.insertions is not none else "NA" }} | {{ s.deletions if s.deletions is not none else "NA" }} | {{ s.missing if s.missing is not none else "NA" }} | {{ s.denovo if s.denovo is not none else "NA" }} |
+{% endfor %}
+
+**Appendix Table {{ entry.type_table_num }}. Network-level discrepancy composition by type for {{ entry.comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
+
+| Discrepancy type | Network median per sample | Network min-max per sample |
+|---|---:|---:|
+| Incorrect nucleotide | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.wrong_nt.max) }} |
+| Insertion relative to gold standard | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.insertions.max) }} |
+| Deletions relative to gold standard | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.deletions.max) }} |
+| Missing expected variants | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.missing.median) }} | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.missing.min) }}–{{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.missing.max) }} |
+| De novo variants | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.denovo.median) }} | {{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.denovo.min) }}–{{ "%.0f"|format(entry.comp_net.variant.discrepancy_breakdown.denovo.max) }} |
+
+Figure {{ entry.type_fig_num }} in the appendix summarises the contribution of each discrepancy category observed in {{ entry.comp_code }} relative to the curated gold standard.
+
+{% set figure_cfg.style = "max-width: 90%;" %}
+{{ render_figure(
+  entry.comp_net.variant.fig_discrepancy_type_boxplot,
+  "Composition of variant discrepancy types for " ~ entry.comp_code ~ " relative to the curated gold standard."
+) }}
+
+**Appendix Figure {{ entry.type_fig_num }}. Composition of variant discrepancy types relative to the curated gold standard for {{ entry.comp_code }}.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). Where required, a broken y-axis is used to preserve visual resolution in the lower discrepancy range while still displaying higher values above an empty interval. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
+{% endif %}
+{% endfor %}
+
+{% for entry in variant_flu_appendix_entries.value %}
+{% if entry.comp_code == appendix_comp_code %}
+#### Variant Detection Accuracy Supplementary Material
+
+**Appendix Table {{ entry.aggregated_table_num }}. Aggregated influenza variant reporting metrics for {{ entry.comp_code }}.**
+
+| Metric | Network median | Network min-max |
+|---|---:|---:|
+| Variants >=75% AF in metadata | {{ entry.comp_net.variant.median_variants_in_consensus if entry.comp_net.variant.median_variants_in_consensus is not none else "NA" }} | {{ entry.comp_net.variant.min_variants_in_consensus if entry.comp_net.variant.min_variants_in_consensus is not none else "NA" }}–{{ entry.comp_net.variant.max_variants_in_consensus if entry.comp_net.variant.max_variants_in_consensus is not none else "NA" }} |
+| Variants >=75% AF in VCF | {{ entry.comp_net.variant.median_variants_in_consensus_vcf if entry.comp_net.variant.median_variants_in_consensus_vcf is not none else "NA" }} | {{ entry.comp_net.variant.min_variants_in_consensus_vcf if entry.comp_net.variant.min_variants_in_consensus_vcf is not none else "NA" }}–{{ entry.comp_net.variant.max_variants_in_consensus_vcf if entry.comp_net.variant.max_variants_in_consensus_vcf is not none else "NA" }} |
+| Discrepancies between metadata and VCF | {{ entry.comp_net.variant.median_discrepancies_in_reported_variants if entry.comp_net.variant.median_discrepancies_in_reported_variants is not none else "NA" }} | {{ entry.comp_net.variant.min_discrepancies_in_reported_variants if entry.comp_net.variant.min_discrepancies_in_reported_variants is not none else "NA" }}–{{ entry.comp_net.variant.max_discrepancies_in_reported_variants if entry.comp_net.variant.max_discrepancies_in_reported_variants is not none else "NA" }} |
+| Total variants in VCF (n={{ entry.comp_net.variant_metadata_reporting.total_variants_in_vcf_reported_n_labs }}) | {{ entry.comp_net.variant.median_variants_in_vcf if entry.comp_net.variant.median_variants_in_vcf is not none else "NA" }} | {{ entry.comp_net.variant.min_variants_in_vcf if entry.comp_net.variant.min_variants_in_vcf is not none else "NA" }}–{{ entry.comp_net.variant.max_variants_in_vcf if entry.comp_net.variant.max_variants_in_vcf is not none else "NA" }} |
+{% endif %}
+{% endfor %}
+
+{% for entry in classification_appendix_entries.value %}
+{% if entry.comp_code == appendix_comp_code %}
+#### Lineage, Subtype and Clade Assignment Supplementary Material
+
+**Appendix Table {{ entry.table_num }}. Network-level classification outcomes per sample for {{ entry.comp_code }}.**
+
+| Sample ID | Lineage/Subtype matches (%) | Clade matches (%) |
+|---|---:|---:|
+{% for s in entry.comp_net.typing.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ "%.2f"|format(s.lineage_hit_pct) }} | {{ "%.2f"|format(s.clade_hit_pct) }} |
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+{% for entry in qc_appendix_entries.value %}
+{% if entry.comp_code == appendix_comp_code %}
+#### Sample Quality Control Assessment Supplementary Material
+
+**Appendix Table {{ entry.table_num }}. Sample-level QC concordance for {{ entry.comp_code }} for reported QC classification.**
+
+| Sample ID | Gold standard QC | % Match | # Matches | # Discrepancies | Total evaluations |
+|---|---:|---:|---:|---:|---:|
+{% for s in entry.comp_net.qc.samples %}
+| {{ s.collecting_lab_sample_id }} | {{ s.gold_standard_qc }} | {{ pct(s.reported_match_rate_pct) }} | {{ s.matches }} | {{ s.discrepancies }} | {{ s.total_evaluations }} |
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+{% set benchmark_heading_ns = namespace(shown=false) %}
+{% for entry in benchmark_appendix_entries.value %}
+{% if entry.comp_code == appendix_comp_code %}
+{% if not benchmark_heading_ns.shown %}
+{% set benchmark_heading_ns.shown = true %}
+<h4 class="appendix-landscape-heading">Pipeline Benchmarking and Comparative Performance Supplementary Material</h4>
+{% endif %}
+
+{% if entry.kind == "dehosting" %}
+<h5 class="appendix-landscape-heading">De-hosting</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared de-hosting software for {{ entry.comp_code }}.**
+
+| De-hosting software | Version | N labs | Median % host reads |
+|---|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.dehosting.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.per_reads_host }} |
+{% endfor %}
+{% elif entry.kind == "preprocessing" %}
+<h5 class="appendix-landscape-heading">Pre-processing</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared pre-processing software configurations for {{ entry.comp_code }}.**
+
+| Pre-processing software | Version | N labs | Most common configuration | Median number of reads sequenced | Median reads passing filters |
+|---|---:|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.preprocessing.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.number_of_reads_sequenced }} | {{ p.pass_reads }} |
+{% endfor %}
+{% elif entry.kind == "mapping" %}
+<h5 class="appendix-landscape-heading">Mapping</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared mapping software configurations for {{ entry.comp_code }}.**
+
+| Mapping software | Version | N labs | Most common configuration | Most common depth of coverage threshold | Median % reads virus |
+|---|---:|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.mapping.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.depth_of_coverage_threshold if p.depth_of_coverage_threshold is not none else "N/A" }} | {{ p.per_reads_virus if p.per_reads_virus is not none else "N/A" }} |
+{% endfor %}
+{% elif entry.kind == "assembly" %}
+<h5 class="appendix-landscape-heading">Assembly</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared assembly software configurations for {{ entry.comp_code }}.**
+
+| Assembly software | Version | N labs | Most common configuration | Median consensus genome length | Median genome identity | Median number of discrepancies per sample |
+|---|---:|---:|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.assembly.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} | {{ p.median_discrepancies }} |
+{% endfor %}
+{% elif entry.kind == "consensus_software" %}
+<h5 class="appendix-landscape-heading">Consensus software</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared consensus software configurations for {{ entry.comp_code }}.**
+
+| Consensus software | Version | N labs | Most common configuration | Median consensus genome length | Median genome identity | Median number of discrepancies per sample |
+|---|---:|---:|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.consensus_software.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.consensus_genome_length }} | {{ p.median_identity_pct }} | {{ p.median_discrepancies }} |
+{% endfor %}
+{% elif entry.kind == "variant_calling" %}
+<h5 class="appendix-landscape-heading">Variant calling</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared variant calling software configurations for {{ entry.comp_code }}.**
+
+{% if entry.comp_code[:3] == "FLU" %}
+| Variant calling software | Version | N labs | Most common configuration | Median high and low frequency (%) | Median high frequency only (%) | Median low frequency only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median metadata-VCF discrepancies | Median total variants in VCF |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.variant_calling.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.params|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.discrepancies_in_reported_variants }} | {{ p.number_of_variants_in_vcf }} |
+{% endfor %}
+{% else %}
+| Variant calling software | Version | N labs | {{ "Model used" if entry.comp_code == "SARS2" else "Most common configuration" }} | Median high and low frequency (%) | Median high frequency only (%) | Median low frequency only (%) | Median variants (AF >=75%) | Median variants in VCF (AF >=75%) | Median variants with effect | Median variants with effect in VCF | Median metadata-VCF discrepancies | Median effect discrepancies | Median successful hits | Median total discrepancies |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.variant_calling.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ (p.model if entry.comp_code == "SARS2" else p.params)|mdcell }} | {{ p.high_and_low_freq_pct }} | {{ p.high_freq_only_pct }} | {{ p.low_freq_only_pct }} | {{ p.number_of_variants_in_consensus }} | {{ p.number_of_variants_in_consensus_vcf }} | {{ p.number_of_variants_with_effect }} | {{ p.number_of_variants_with_effect_vcf }} | {{ p.discrepancies_in_reported_variants }} | {{ p.discrepancies_in_reported_variants_effect }} | {{ p.successful_hits }} | {{ p.total_discrepancies }} |
+{% endfor %}
+{% endif %}
+{% elif entry.kind == "clade_assignment" %}
+<h5 class="appendix-landscape-heading">Clade assignment</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared clade assignment software configurations for {{ entry.comp_code }}.**
+
+| Clade assignment software | Version | N labs | Database version | % of clade match |
+|---|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.clade_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.clade_hit_pct }} |
+{% endfor %}
+{% elif entry.kind == "lineage_assignment" %}
+<h5 class="appendix-landscape-heading">Lineage assignment</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared lineage assignment software configurations for {{ entry.comp_code }}.**
+
+| Lineage Assignment software | Version | N labs | Database version | % of lineage match |
+|---|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.lineage_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.lineage_hit_pct }} |
+{% endfor %}
+{% elif entry.kind == "type_assignment" %}
+<h5 class="appendix-landscape-heading">Type assignment</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared type assignment software configurations for {{ entry.comp_code }}.**
+
+| Type Assignment software | Version | N labs | Database version | % of type match |
+|---|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.type_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.type_hit_pct }} |
+{% endfor %}
+{% elif entry.kind == "subtype_assignment" %}
+<h5 class="appendix-landscape-heading">Subtype assignment</h5>
+**Appendix Table {{ entry.table_num }}. Performance summary of declared subtype assignment software configurations for {{ entry.comp_code }}.**
+
+| Subtype Assignment software | Version | N labs | Database version | % of subtype match |
+|---|---:|---:|---:|---:|
+{% for p in entry.comp_net.benchmarking.subtype_assignment.softwares %}
+| {{ p.name }} | {{ p.version }} | {{ p.n_labs }} | {{ p.database_version|mdcell }} | {{ p.subtype_hit_pct }} |
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% endfor %}

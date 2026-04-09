@@ -268,8 +268,12 @@ def postprocess_rendered_html(html_text: str) -> str:
 
 def wrap_wide_tables_for_landscape(html_text: str) -> str:
     table_pattern = re.compile(
-        r"(?P<header><p>(?:<strong>|<em><strong>|<strong><em>)Table\s+\d+.*?</p>\s*)?(?P<table><table>.*?</table>)",
+        r"(?P<header><p>(?:<strong>|<em><strong>|<strong><em>)(?:Appendix\s+)?Table\s+\d+.*?</p>\s*)?(?P<table><table>.*?</table>)",
         re.DOTALL,
+    )
+    forced_landscape_captions = (
+        "Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking",
+        "Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA",
     )
 
     def replace_table(match: re.Match[str]) -> str:
@@ -278,9 +282,10 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
         thead_match = re.search(r"<thead>(.*?)</thead>", table_html, re.DOTALL)
         header_html = thead_match.group(1) if thead_match else table_html
         column_count = len(re.findall(r"<th\b", header_html))
-        if column_count > 6:
+        caption_html = match.group("header") or ""
+        force_landscape = any(text in caption_html for text in forced_landscape_captions)
+        if column_count > 6 or force_landscape:
             table_with_class = table_html.replace("<table>", '<table class="wide-table">', 1)
-            caption_html = match.group("header") or ""
             return f'<div class="table-block landscape-section">{caption_html}{table_with_class}</div>'
         if match.group("header"):
             return f'<div class="table-block">{match.group("header")}{table_html}</div>'
@@ -288,8 +293,8 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
 
     html_text = table_pattern.sub(replace_table, html_text)
     html_text = re.sub(
-        r'</div>\s*<div class="table-block landscape-section">',
-        "",
+        r'</table></div>\s*<div class="table-block landscape-section"><p><em><strong>Table 3</strong>\. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features\.</em></p>',
+        r'</table><p><em><strong>Table 3</strong>. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features.</em></p>',
         html_text,
         flags=re.DOTALL,
     )
