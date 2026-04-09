@@ -30,6 +30,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
           "expected_qc": "Fail",
+          "expected_variats": 36,
           "non_evaluable_metadata": [
             "Variant calling fields",
             "Consensus analysis fields",
@@ -54,6 +55,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "High-quality baseline sample",
           "expected_qc": "Pass",
+          "expected_variats": 65,
           "non_evaluable_metadata": [
             "Type assignment fields",
             "Subtype assignment fields"
@@ -71,6 +73,7 @@
           "enrichment_panel": "ARTIC",
           "enrichment_panel_version": "v4.1",
           "key_feature": "XBB sample, insertion challenge",
+          "expected_variats": 95,
           "expected_qc": "Pass",
           "non_evaluable_metadata": [
             "Type assignment fields",
@@ -90,6 +93,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "Very low read depth",
           "expected_qc": "Fail",
+          "expected_variats": 75,
           "non_evaluable_metadata": [
             "Type assignment fields",
             "Subtype assignment fields"
@@ -108,6 +112,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": ">10 mixed sites",
           "expected_qc": "Fail",
+          "expected_variats": 65,
           "non_evaluable_metadata": [
             "Type assignment fields",
             "Subtype assignment fields"
@@ -145,6 +150,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "High-quality baseline sample",
           "expected_qc": "Pass",
+          "expected_variats": 118,
           "non_evaluable_metadata": [
             "Type assignment fields",
             "Subtype assignment fields"
@@ -163,6 +169,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "XBB sample, ambiguity next to a deletion",
           "expected_qc": "Pass",
+          "expected_variats": 97,
           "non_evaluable_metadata": [
             "Type assignment fields",
             "Subtype assignment fields"
@@ -181,6 +188,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": ">10 mixed sites",
           "expected_qc": "Fail",
+          "expected_variats": 94,
           "non_evaluable_metadata": [
             "Type assignment fields",
             "Subtype assignment fields"
@@ -199,6 +207,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "Influenza virus sample with some SARS-CoV-2 reads",
           "expected_qc": "Fail",
+          "expected_variats": 16,
           "non_evaluable_metadata": [
             "Variant calling fields",
             "Consensus analysis fields",
@@ -223,6 +232,7 @@
           "enrichment_panel_version": "v4.1",
           "key_feature": "Very low read depth",
           "expected_qc": "Fail",
+          "expected_variats": 11,
           "non_evaluable_metadata": [
             "Variant calling fields",
             "Consensus analysis fields",
