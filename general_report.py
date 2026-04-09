@@ -3951,7 +3951,77 @@ def make_lab_workflow_positioning_boxplot(
     axes = axes.flatten()
 
     for ax, (title, ylabel, metric_data, color, y_limits) in zip(axes, panel_data_specs):
-        data = [metric_data["network_values"]]
+        plotted_network_values = list(metric_data["network_values"])
+        low_outlier_annotations: List[tuple[float, float]] = []
+        high_outlier_annotations: List[tuple[float, float]] = []
+        lab_value_for_plot = metric_data["lab_value"]
+        custom_y_upper: Optional[float] = None
+
+        if ylabel == "Genome identity (%)" and comp_code == "FLU2":
+            combined_identity_values = [
+                float(value)
+                for value in plotted_network_values
+                if safe_number(value) is not None
+            ]
+            lab_identity_value = safe_number(metric_data["lab_value"])
+            if lab_identity_value is not None:
+                combined_identity_values.append(float(lab_identity_value))
+
+            if len(combined_identity_values) >= 4:
+                q1 = float(np.percentile(combined_identity_values, 25))
+                q3 = float(np.percentile(combined_identity_values, 75))
+                iqr = q3 - q1
+                low_outlier_threshold = q1 - 1.5 * iqr
+
+                filtered_network_values = []
+                for value in plotted_network_values:
+                    numeric_value = safe_number(value)
+                    if numeric_value is not None and numeric_value < low_outlier_threshold:
+                        low_outlier_annotations.append((1, float(numeric_value)))
+                    else:
+                        filtered_network_values.append(value)
+
+                if filtered_network_values:
+                    plotted_network_values = filtered_network_values
+
+                if lab_identity_value is not None and lab_identity_value < low_outlier_threshold:
+                    low_outlier_annotations.append((0.84, float(lab_identity_value)))
+                    lab_value_for_plot = None
+
+        if ylabel == "Total discrepancies" and comp_code == "FLU2":
+            combined_discrepancy_values = [
+                float(value)
+                for value in plotted_network_values
+                if safe_number(value) is not None
+            ]
+            lab_discrepancy_value = safe_number(metric_data["lab_value"])
+            if lab_discrepancy_value is not None:
+                combined_discrepancy_values.append(float(lab_discrepancy_value))
+
+            if len(combined_discrepancy_values) >= 4:
+                q1 = float(np.percentile(combined_discrepancy_values, 25))
+                q3 = float(np.percentile(combined_discrepancy_values, 75))
+                iqr = q3 - q1
+                high_outlier_threshold = q3 + 1.5 * iqr
+
+                filtered_network_values = []
+                for value in plotted_network_values:
+                    numeric_value = safe_number(value)
+                    if numeric_value is not None and numeric_value > high_outlier_threshold:
+                        high_outlier_annotations.append((1, float(numeric_value)))
+                    else:
+                        filtered_network_values.append(value)
+
+                if filtered_network_values:
+                    plotted_network_values = filtered_network_values
+                    filtered_max = max(float(v) for v in plotted_network_values if safe_number(v) is not None)
+                    custom_y_upper = max(1500.0, filtered_max * 1.15 if filtered_max > 0 else 1.0)
+
+                if lab_discrepancy_value is not None and lab_discrepancy_value > high_outlier_threshold:
+                    high_outlier_annotations.append((0.84, float(lab_discrepancy_value)))
+                    lab_value_for_plot = None
+
+        data = [plotted_network_values]
         bp = ax.boxplot(
             data,
             patch_artist=True,
@@ -3986,8 +4056,8 @@ def make_lab_workflow_positioning_boxplot(
         add_lab_result_diamond(
             ax=ax,
             positions=[0.84],
-            values=[metric_data["lab_value"]],
-            y_upper=y_limits[1] if y_limits is not None else None,
+            values=[lab_value_for_plot],
+            y_upper=y_limits[1] if y_limits is not None else custom_y_upper,
         )
 
         ax.set_xticks([1])
@@ -3996,17 +4066,34 @@ def make_lab_workflow_positioning_boxplot(
         ax.set_title(title)
         if y_limits is not None:
             if ylabel == "Genome identity (%)":
-                if comp_code in {"SARS1", "FLU1"}:
-                    style_truncated_percent_boxplot_axis(
+                truncated_values = list(plotted_network_values)
+                if safe_number(lab_value_for_plot) is not None:
+                    truncated_values.append(lab_value_for_plot)
+                style_truncated_percent_boxplot_axis(ax, truncated_values)
+                if comp_code == "FLU2":
+                    _, y_max = ax.get_ylim()
+                    ax.set_ylim(93, y_max)
+                if low_outlier_annotations:
+                    annotate_outlier_caps(
                         ax,
-                        metric_data["network_values"] + [metric_data["lab_value"]],
+                        low_outlier_annotations,
+                        0,
+                        COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+                        direction="low",
                     )
-                else:
-                    style_percent_boxplot_axis(ax)
             elif ylabel.endswith("(%)"):
                 style_percent_boxplot_axis(ax)
             else:
                 ax.set_ylim(*y_limits)
+        elif custom_y_upper is not None:
+            ax.set_ylim(0, custom_y_upper)
+            if high_outlier_annotations:
+                annotate_outlier_caps(
+                    ax,
+                    high_outlier_annotations,
+                    custom_y_upper,
+                    COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+                )
 
     for ax in axes[len(panel_data_specs):]:
         ax.set_visible(False)
@@ -4421,7 +4508,7 @@ def make_lab_variant_metrics_distribution_plot(
                 "A. Total discrepancies",
                 "Total discrepancies",
                 lambda s: s.get("variants", {}).get("total_discrepancies"),
-                None,
+                100.0 if comp_code == "SARS1" else None,
                 False,
             ),
             (
