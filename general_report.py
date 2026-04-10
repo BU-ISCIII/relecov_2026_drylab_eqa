@@ -71,10 +71,10 @@ CONSENSUS_DISCREPANCY_TYPE_ORDER = [
 
 CONSENSUS_DISCREPANCY_TYPE_LABELS = {
     "wrong_nt": "Wrong nucleotide",
-    "ambiguity2nt": "Ambiguity instead\nof nucleotide",
-    "nt2ambiguity": "Nucleotide instead\nof ambiguity",
-    "ns2nt": "Stretch of Ns\ninstead of nucleotide",
-    "nt2ns": "Nucleotide stretch\ninstead of Ns",
+    "ambiguity2nt": "Nucleotide instead\nof ambiguity",
+    "nt2ambiguity": "Ambiguity instead\nof nucleotide",
+    "ns2nt": "Nucleotide stretch\ninstead of Ns",
+    "nt2ns": "Stretch of Ns\ninstead of nucleotide",
     "insertions": "Insertion relative\nto gold standard",
     "deletions": "Deletion relative\nto gold standard",
 }

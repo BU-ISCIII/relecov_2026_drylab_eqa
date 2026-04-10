@@ -33,10 +33,10 @@
 {% macro discrepancy_label(key) -%}
 {%- set labels = {
   "wrong_nt": "Wrong nucleotide",
-  "ambiguity2nt": "Ambiguity instead of nucleotide",
-  "nt2ambiguity": "Nucleotide instead of ambiguity",
-  "ns2nt": "Stretch of Ns instead of nucleotide stretch",
-  "nt2ns": "Nucleotide stretch instead of stretch of Ns",
+  "ambiguity2nt": "Nucleotide instead of ambiguity",
+  "nt2ambiguity": "Ambiguity instead of nucleotide",
+  "ns2nt": "Nucleotide stretch instead of stretch of Ns",
+  "nt2ns": "Stretch of Ns instead of nucleotide stretch",
   "insertions": "Insertion relative to gold standard",
   "deletions": "Deletion relative to gold standard",
   "missing": "Missing variant",
@@ -355,8 +355,8 @@ Differences between submitted sequences and gold standard sequences were categor
 - **Wrong nucleotide**: A nucleotide different from the allowed reference or ambiguity code.
 - **Ambiguity instead of nucleotide**: Ambiguity codes introduced where a defined nucleotide was expected.
 - **Nucleotide instead of ambiguity**: Defined nucleotide provided where an ambiguity code was expected.
-- **Stretch of Ns instead of nucleotide stretch**: Continuous region of Ns where defined bases were expected.
 - **Nucleotide stretch instead of stretch of Ns**: Defined bases provided where Ns were expected.
+- **Stretch of Ns instead of nucleotide stretch**: Continuous region of Ns where defined bases were expected.
 - **Insertion relative to gold standard**
 - **Deletion relative to gold standard**
 
@@ -1371,7 +1371,7 @@ Consensus reconstruction results were strongest in the Illumina-based components
 
 At the same time, the ranges observed across laboratories show that high medians did not eliminate outlier behaviour. In particular, the minimum identity values in SARS2 and FLU2 dropped to {{ pct(general.components.SARS2.consensus.identity_pct_min, 2) }} and {{ pct(general.components.FLU2.consensus.identity_pct_min, 2) }}, indicating that a subset of submissions diverged markedly from the curated gold standard.
 
-The dominant discrepancy categories also differed by component. SARS1 was dominated by stretches of Ns in submitted consensuses where defined nucleotides were present in the gold standard (`ns2nt`), whereas SARS2 was dominated by defined nucleotides where stretches of Ns were present in the gold standard (`nt2ns`). These patterns are consistent with differences in masking behaviour and minimum coverage policies relative to the gold standard reconstruction criteria. This was especially clear in samples such as SARS4 in SARS1 and SARS8 in SARS2, where low depth or mixed-site complexity increased sensitivity to local masking decisions and likely exposed differences between ECDC reconstruction criteria and the thresholds applied within the network. In influenza, both FLU1 and FLU2 were dominated by deletions relative to the gold standard, suggesting that consensus generation parameters remain important contributors to inter-laboratory divergence. The most discrepancy-prone samples were in-silico datasets  with segment dropouts or contamination, which supports the interpretation that indel calling thresholds and segment-specific handling rules remain insufficiently harmonised in influenza workflows.
+The dominant discrepancy categories also differed by component. SARS1 was dominated by defined nucleotides in submitted consensuses where stretches of Ns were present in the gold standard (`ns2nt`), whereas SARS2 was dominated by stretches of Ns where defined nucleotides were present in the gold standard (`nt2ns`). These patterns are consistent with differences in masking behaviour and minimum coverage policies relative to the gold standard reconstruction criteria. This was especially clear in samples such as SARS4 in SARS1 and SARS8 in SARS2, where low depth or mixed-site complexity increased sensitivity to local masking decisions and likely exposed differences between ECDC reconstruction criteria and the thresholds applied within the network. In influenza, both FLU1 and FLU2 were dominated by deletions relative to the gold standard, suggesting that consensus generation parameters remain important contributors to inter-laboratory divergence. The most discrepancy-prone samples were in-silico datasets  with segment dropouts or contamination, which supports the interpretation that indel calling thresholds and segment-specific handling rules remain insufficiently harmonised in influenza workflows.
 
 ### 7.2. Variant Detection and Reporting
 
@@ -1855,7 +1855,7 @@ This appendix is reserved for supplementary material that may support interpreta
 
 **Appendix Table {{ entry.sample_table_num }}. Network-level consensus discrepancy types per sample for {{ entry.comp_code }}.**
 
-| Sample ID | Median of Wrong nucleotide | Median Ambiguity instead of nucleotide | Median Nucleotide instead of ambiguity | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
+| Sample ID | Median of Wrong nucleotide | Median Nucleotide instead of ambiguity | Median Ambiguity instead of nucleotide | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
 |---|---:|---:|---:|---:|---:|---:|---:|
 {% for s in entry.comp_net.consensus.samples %}
 | {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambiguity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }} |
@@ -1866,10 +1866,10 @@ This appendix is reserved for supplementary material that may support interpreta
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
 | Incorrect nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.wrong_nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.wrong_nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.wrong_nt.max) }} |
-| Ambiguity instead of nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max) }} |
-| Nucleotide instead of ambiguity | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max) }} |
-| Stretch of Ns instead of nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.max) }} |
-| Nucleotide stretch instead of stretch of Ns | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.max) }} |
+| Nucleotide instead of ambiguity | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ambiguity2nt.max) }} |
+| Ambiguity instead of nucleotide | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ambiguity.max) }} |
+| Nucleotide stretch instead of stretch of Ns | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.ns2nt.max) }} |
+| Stretch of Ns instead of nucleotide stretch | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.nt2ns.max) }} |
 | Insertion relative to gold standard | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.insertions.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.insertions.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.insertions.max) }} |
 | Deletion relative to gold standard | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.deletions.median) }} | {{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.deletions.min) }}–{{ "%.0f"|format(entry.comp_net.consensus.discrepancy_breakdown.deletions.max) }} |
 
