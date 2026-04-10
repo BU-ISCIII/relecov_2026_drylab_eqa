@@ -60,13 +60,13 @@
       "max_variants_in_consensus": 1797.0,
       "median_variants_in_consensus_vcf": 188.0,
       "min_variants_in_consensus_vcf": 0.0,
-      "max_variants_in_consensus_vcf": 1363.0,
+      "max_variants_in_consensus_vcf": 1373.0,
       "median_discrepancies_in_reported_variants": 377.0,
-      "min_discrepancies_in_reported_variants": 8.0,
+      "min_discrepancies_in_reported_variants": 0.0,
       "max_discrepancies_in_reported_variants": 1797.0,
-      "median_variants_in_vcf": 541.0,
+      "median_variants_in_vcf": 526.0,
       "min_variants_in_vcf": 0.0,
-      "max_variants_in_vcf": 39071.0
+      "max_variants_in_vcf": 7903.0
     },
     "classification": {
       "sars_lineage_concordance_pct": 77.66,
@@ -1007,6 +1007,7 @@
         "samples": [
           {
             "collecting_lab_sample_id": "SARS1",
+            "expected_hits": 36.0,
             "variants_in_consensus": {
               "median": 30.0,
               "min": 30.0,
@@ -1127,6 +1128,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS2",
+            "expected_hits": 65.0,
             "variants_in_consensus": {
               "median": 61.0,
               "min": 61.0,
@@ -1247,6 +1249,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS3",
+            "expected_hits": 95.0,
             "variants_in_consensus": {
               "median": 92.0,
               "min": 92.0,
@@ -1367,6 +1370,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS4",
+            "expected_hits": 75.0,
             "variants_in_consensus": {
               "median": 70.0,
               "min": 45.0,
@@ -1487,6 +1491,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS5",
+            "expected_hits": 65.0,
             "variants_in_consensus": {
               "median": 56.0,
               "min": 52.0,
@@ -3341,6 +3346,7 @@
         "samples": [
           {
             "collecting_lab_sample_id": "SARS6",
+            "expected_hits": 118.0,
             "variants_in_consensus": {
               "median": 117.0,
               "min": 95.0,
@@ -3461,6 +3467,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS7",
+            "expected_hits": 97.0,
             "variants_in_consensus": {
               "median": 94.0,
               "min": 73.0,
@@ -3581,6 +3588,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS8",
+            "expected_hits": 94.0,
             "variants_in_consensus": {
               "median": 93.0,
               "min": 72.0,
@@ -3701,6 +3709,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS9",
+            "expected_hits": 16.0,
             "variants_in_consensus": {
               "median": 16.0,
               "min": 14.0,
@@ -3821,6 +3830,7 @@
           },
           {
             "collecting_lab_sample_id": "SARS10",
+            "expected_hits": 11.0,
             "variants_in_consensus": {
               "median": 11.0,
               "min": 10.0,
@@ -5486,33 +5496,33 @@
         },
         "median_variants_in_consensus_vcf": 174.0,
         "min_variants_in_consensus_vcf": 0.0,
-        "max_variants_in_consensus_vcf": 1356.0,
+        "max_variants_in_consensus_vcf": 1373.0,
         "variants_in_consensus_vcf_summary": {
           "median": 174.0,
           "min": 0.0,
-          "max": 1356.0,
+          "max": 1373.0,
           "observed_count": 43,
           "zero_count": 17,
           "missing_or_null_count": 0
         },
-        "median_discrepancies_in_reported_variants": 247.5,
-        "min_discrepancies_in_reported_variants": 8.0,
+        "median_discrepancies_in_reported_variants": 239.5,
+        "min_discrepancies_in_reported_variants": 0.0,
         "max_discrepancies_in_reported_variants": 1797.0,
         "reported_variant_discrepancies_summary": {
-          "median": 247.5,
-          "min": 8.0,
+          "median": 239.5,
+          "min": 0.0,
           "max": 1797.0,
           "observed_count": 8,
-          "zero_count": 0,
+          "zero_count": 1,
           "missing_or_null_count": 0
         },
         "median_variants_in_vcf": 306.0,
         "min_variants_in_vcf": 0.0,
-        "max_variants_in_vcf": 39071.0,
+        "max_variants_in_vcf": 1382.0,
         "variants_in_vcf_summary": {
           "median": 306.0,
           "min": 0.0,
-          "max": 39071.0,
+          "max": 1382.0,
           "observed_count": 43,
           "zero_count": 1,
           "missing_or_null_count": 0
@@ -5531,22 +5541,22 @@
             "variants_in_consensus_vcf": {
               "median": 383.0,
               "min": 0.0,
-              "max": 1356.0,
+              "max": 1373.0,
               "observed_count": 9,
               "zero_count": 4,
               "missing_or_null_count": 3
             },
             "reported_variant_discrepancies": {
-              "median": 909.0,
-              "min": 21.0,
+              "median": 900.5,
+              "min": 4.0,
               "max": 1797.0,
               "observed_count": 2,
               "zero_count": 0,
               "missing_or_null_count": 10
             },
             "discrepancies_in_reported_variants": {
-              "median": 909.0,
-              "min": 21.0,
+              "median": 900.5,
+              "min": 4.0,
               "max": 1797.0,
               "observed_count": 2,
               "zero_count": 0,
@@ -5555,7 +5565,7 @@
             "variants_in_vcf": {
               "median": 383.0,
               "min": 14.0,
-              "max": 37523.0,
+              "max": 1382.0,
               "observed_count": 9,
               "zero_count": 0,
               "missing_or_null_count": 3
@@ -5580,16 +5590,16 @@
               "missing_or_null_count": 1
             },
             "reported_variant_discrepancies": {
-              "median": 751.5,
-              "min": 8.0,
+              "median": 749.0,
+              "min": 3.0,
               "max": 1495.0,
               "observed_count": 2,
               "zero_count": 0,
               "missing_or_null_count": 10
             },
             "discrepancies_in_reported_variants": {
-              "median": 751.5,
-              "min": 8.0,
+              "median": 749.0,
+              "min": 3.0,
               "max": 1495.0,
               "observed_count": 2,
               "zero_count": 0,
@@ -5598,7 +5608,7 @@
             "variants_in_vcf": {
               "median": 522.0,
               "min": 43.0,
-              "max": 39071.0,
+              "max": 813.0,
               "observed_count": 11,
               "zero_count": 0,
               "missing_or_null_count": 1
@@ -5666,16 +5676,16 @@
               "missing_or_null_count": 2
             },
             "reported_variant_discrepancies": {
-              "median": 247.5,
-              "min": 27.0,
+              "median": 239.5,
+              "min": 11.0,
               "max": 468.0,
               "observed_count": 2,
               "zero_count": 0,
               "missing_or_null_count": 10
             },
             "discrepancies_in_reported_variants": {
-              "median": 247.5,
-              "min": 27.0,
+              "median": 239.5,
+              "min": 11.0,
               "max": 468.0,
               "observed_count": 2,
               "zero_count": 0,
@@ -5684,7 +5694,7 @@
             "variants_in_vcf": {
               "median": 306.5,
               "min": 50.0,
-              "max": 25977.0,
+              "max": 733.0,
               "observed_count": 10,
               "zero_count": 0,
               "missing_or_null_count": 2
@@ -5693,8 +5703,8 @@
           {
             "collecting_lab_sample_id": "FLU5",
             "variants_in_consensus": {
-              "median": 467.0,
-              "min": 455.0,
+              "median": 464.5,
+              "min": 450.0,
               "max": 479.0,
               "observed_count": 2,
               "zero_count": 0,
@@ -5709,25 +5719,25 @@
               "missing_or_null_count": 1
             },
             "reported_variant_discrepancies": {
-              "median": 247.0,
-              "min": 15.0,
+              "median": 239.5,
+              "min": 0.0,
               "max": 479.0,
               "observed_count": 2,
-              "zero_count": 0,
+              "zero_count": 1,
               "missing_or_null_count": 10
             },
             "discrepancies_in_reported_variants": {
-              "median": 247.0,
-              "min": 15.0,
+              "median": 239.5,
+              "min": 0.0,
               "max": 479.0,
               "observed_count": 2,
-              "zero_count": 0,
+              "zero_count": 1,
               "missing_or_null_count": 10
             },
             "variants_in_vcf": {
               "median": 174.0,
               "min": 6.0,
-              "max": 34996.0,
+              "max": 514.0,
               "observed_count": 11,
               "zero_count": 0,
               "missing_or_null_count": 1
@@ -6381,15 +6391,15 @@
             {
               "name": "Custom variant calling script",
               "n_labs": 1,
-              "params": "-f 0.25 -d 10",
+              "params": "-f 0.1 -d 10 -t 10",
               "high_and_low_freq_pct": 100.0,
               "high_freq_only_pct": 0.0,
               "low_freq_only_pct": 0.0,
-              "number_of_variants_in_consensus": 473.5,
-              "number_of_variants_in_consensus_vcf": 453.0,
+              "number_of_variants_in_consensus": 471.0,
+              "number_of_variants_in_consensus_vcf": 465.5,
               "number_of_variants_with_effect": 104.5,
-              "discrepancies_in_reported_variants": 18.0,
-              "number_of_variants_in_vcf": 36259.5
+              "discrepancies_in_reported_variants": 3.5,
+              "number_of_variants_in_vcf": 721.0
             },
             {
               "name": "IRMA custom VariantCaller",
@@ -7363,13 +7373,13 @@
           "zero_count": 0,
           "missing_or_null_count": 0
         },
-        "median_variants_in_vcf": 1143.0,
+        "median_variants_in_vcf": 1085.5,
         "min_variants_in_vcf": 0.0,
-        "max_variants_in_vcf": 21455.0,
+        "max_variants_in_vcf": 7903.0,
         "variants_in_vcf_summary": {
-          "median": 1143.0,
+          "median": 1085.5,
           "min": 0.0,
-          "max": 21455.0,
+          "max": 7903.0,
           "observed_count": 38,
           "zero_count": 1,
           "missing_or_null_count": 0
@@ -7453,9 +7463,9 @@
               "missing_or_null_count": 8
             },
             "variants_in_vcf": {
-              "median": 970.5,
+              "median": 916.5,
               "min": 219.0,
-              "max": 2892.0,
+              "max": 2568.0,
               "observed_count": 8,
               "zero_count": 0,
               "missing_or_null_count": 2
@@ -7496,9 +7506,9 @@
               "missing_or_null_count": 8
             },
             "variants_in_vcf": {
-              "median": 1000.0,
+              "median": 873.5,
               "min": 414.0,
-              "max": 2796.0,
+              "max": 2558.0,
               "observed_count": 8,
               "zero_count": 0,
               "missing_or_null_count": 2
@@ -7507,7 +7517,7 @@
           {
             "collecting_lab_sample_id": "FLU9",
             "variants_in_consensus": {
-              "median": 399.0,
+              "median": 398.0,
               "min": 377.0,
               "max": 458.0,
               "observed_count": 3,
@@ -7541,7 +7551,7 @@
             "variants_in_vcf": {
               "median": 751.5,
               "min": 0.0,
-              "max": 11792.0,
+              "max": 7393.0,
               "observed_count": 8,
               "zero_count": 1,
               "missing_or_null_count": 2
@@ -7582,9 +7592,9 @@
               "missing_or_null_count": 8
             },
             "variants_in_vcf": {
-              "median": 4541.0,
+              "median": 1321.0,
               "min": 1061.0,
-              "max": 21455.0,
+              "max": 7903.0,
               "observed_count": 6,
               "zero_count": 0,
               "missing_or_null_count": 4
@@ -8160,7 +8170,7 @@
             {
               "name": "Custom variant calling script",
               "n_labs": 1,
-              "params": "-f 0.25 -d 10",
+              "params": "-f 0.1 -d 10 -t 10",
               "high_and_low_freq_pct": 100.0,
               "high_freq_only_pct": 0.0,
               "low_freq_only_pct": 0.0,
@@ -8168,7 +8178,7 @@
               "number_of_variants_in_consensus_vcf": 419.0,
               "number_of_variants_with_effect": 95.0,
               "discrepancies_in_reported_variants": 18.0,
-              "number_of_variants_in_vcf": 4531.0
+              "number_of_variants_in_vcf": 1431.0
             },
             {
               "name": "IRMA custom VariantCaller",

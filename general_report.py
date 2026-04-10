@@ -2764,6 +2764,7 @@ def make_component_influenza_variant_reporting_summary(
     trimmed_total_vcf_data, total_vcf_outliers = trim_boxplot_extreme_outliers(total_vcf_data)
     valid_total_vcf_data = [values for values in trimmed_total_vcf_data if values]
     if valid_total_vcf_data:
+        panel_b_color = COMPONENT_BOX_COLORS.get(comp_code, INFLUENZA_TOTAL_VCF_COLOR)
         bp_total = axes[1].boxplot(
             trimmed_total_vcf_data,
             positions=base_positions,
@@ -2771,13 +2772,13 @@ def make_component_influenza_variant_reporting_summary(
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot_with_color(bp_total, INFLUENZA_TOTAL_VCF_COLOR, ax=axes[1])
+        style_boxplot_with_color(bp_total, panel_b_color, ax=axes[1])
         add_boxplot_points(
             axes[1],
             bp_total,
             trimmed_total_vcf_data,
             list(base_positions),
-            INFLUENZA_TOTAL_VCF_COLOR,
+            panel_b_color,
         )
 
         panel_b_max = max(max(values) for values in valid_total_vcf_data)
@@ -2787,7 +2788,7 @@ def make_component_influenza_variant_reporting_summary(
             axes[1],
             [(base_positions[idx - 1], value) for idx, value in total_vcf_outliers],
             panel_b_upper,
-            INFLUENZA_TOTAL_VCF_COLOR,
+            panel_b_color,
         )
 
     axes[1].set_xticks(base_positions)
@@ -4445,8 +4446,22 @@ def make_lab_variant_boxplot_panel_figure(
         sample_names = panel_data["sample_names"]
         network_data = panel_data["network_data"]
         lab_values = panel_data["lab_values"]
+        plotted_network_data = [list(values) for values in network_data]
+        custom_outlier_annotations: List[tuple[float, float]] = []
+        custom_y_upper: Optional[float] = None
+
+        if title == "E. Total variants in VCF":
+            plotted_network_data, trimmed_outliers = trim_boxplot_extreme_outliers(network_data)
+            custom_outlier_annotations = [
+                (idx, value) for idx, value in trimmed_outliers
+            ]
+            valid_trimmed_values = [values for values in plotted_network_data if values]
+            if valid_trimmed_values:
+                panel_max = max(max(values) for values in valid_trimmed_values)
+                custom_y_upper = panel_max * 1.18 if panel_max > 0 else 1.0
+
         bp = ax.boxplot(
-            network_data,
+            plotted_network_data,
             labels=sample_names,
             showfliers=True,
             patch_artist=True,
@@ -4455,7 +4470,7 @@ def make_lab_variant_boxplot_panel_figure(
         add_component_boxplot_points(
             ax,
             bp,
-            network_data,
+            plotted_network_data,
             list(range(1, len(sample_names) + 1)),
             [comp_code] * len(sample_names),
         )
@@ -4463,7 +4478,7 @@ def make_lab_variant_boxplot_panel_figure(
             ax,
             list(range(1, len(sample_names) + 1)),
             lab_values,
-            y_upper=y_limit,
+            y_upper=y_limit if y_limit is not None else custom_y_upper,
         )
 
         ax.set_title(title)
@@ -4482,6 +4497,14 @@ def make_lab_variant_boxplot_panel_figure(
                 ax,
                 combined_annotations,
                 y_limit,
+                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+            )
+        elif custom_y_upper is not None:
+            ax.set_ylim(0, custom_y_upper)
+            annotate_outlier_caps(
+                ax,
+                custom_outlier_annotations,
+                custom_y_upper,
                 COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
             )
 
@@ -5549,6 +5572,11 @@ def build_general(expected_data: Dict[str, Any], labs: List[Dict[str, Any]]) -> 
 
                 variant_samples.append({
                     "collecting_lab_sample_id": sample_id,
+                    "expected_hits": safe_number(
+                        expected_sample.get("expected_variants")
+                        if expected_sample.get("expected_variants") is not None
+                        else expected_sample.get("expected_variats")
+                    ),
                     "variants_in_consensus": variants_in_consensus_summary,
                     "variants_in_consensus_vcf": variants_in_consensus_vcf_summary,
                     "variants_with_effect": variants_with_effect_summary,
