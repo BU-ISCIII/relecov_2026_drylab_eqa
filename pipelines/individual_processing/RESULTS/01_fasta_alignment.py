@@ -23,15 +23,6 @@ GLOBAL_ERROR_LOG = FAST_LOG_DIR / "global_fasta_issues.log"
 
 WUHAN_REF = Path("/data/ucct/bi/references/virus/coronaviridae/NC_045512.2.fasta")
 
-NUMBERING_DIR = BASE_DIR / "influenza_reference_numbering"
-AH1_FILE = NUMBERING_DIR / "AH1_N1_numbering.fasta"
-AH3_FILE = NUMBERING_DIR / "AH3_N2_numbering.fasta"
-AH5_FILE = NUMBERING_DIR / "AH5_N1_numbering_2025.fasta"
-
-AH5_samples = {"FLU1"}
-AH1_samples = {"FLU2", "FLU7", "FLU9"}
-AH3_samples = {"FLU4", "FLU5", "FLU8"}
-
 ALIGN_DIR_SARS.mkdir(exist_ok=True)
 ALIGN_DIR_FLU.mkdir(exist_ok=True)
 FAST_LOG_DIR.mkdir(exist_ok=True)
@@ -65,19 +56,6 @@ SEGMENT_NAME_MAP = {
     "NS": "NS",
 }
 
-# Conversión nombre → número para numbering
-SEGMENT_TO_NUMBER = {
-    "PB2": 1,
-    "PB1": 2,
-    "PA": 3,
-    "HA": 4,
-    "NP": 5,
-    "NA": 6,
-    "MP": 7,   # MP corresponde a segment 7
-    "NS": 8,
-}
-
-
 # ==========================================================
 # UTILIDADES
 # ==========================================================
@@ -90,8 +68,24 @@ def detect_influenza_segment(header):
         if key in header_upper:
             return val
 
-    # 2. Headers like FLU1_1, FLU1_2, ..., FLU1_8
-    match = re.search(r"(?:^|_)([1-8])(?:$|_)", header_upper)
+    # 2. Headers like FLU1_1, FLU1-1, FLU1.1, sample/1, etc.
+    match = re.search(r"(?:^|[_./-])([1-8])(?:$|[_./-])", header_upper)
+    if match:
+        segment_number = int(match.group(1))
+        number_to_segment = {
+            1: "PB2",
+            2: "PB1",
+            3: "PA",
+            4: "HA",
+            5: "NP",
+            6: "NA",
+            7: "MP",
+            8: "NS",
+        }
+        return number_to_segment.get(segment_number)
+
+    # 3. Explicit trailing pattern like FLU5_1
+    match = re.search(r"FLU\d+[_-]?([1-8])$", header_upper)
     if match:
         segment_number = int(match.group(1))
         number_to_segment = {
@@ -107,7 +101,6 @@ def detect_influenza_segment(header):
         return number_to_segment.get(segment_number)
 
     return None
-
 
 def log_and_print(msg, log):
     print(msg)
@@ -141,29 +134,6 @@ def find_fasta_recursively(base_dir: Path, filename: str, log):
 
     return None
 
-
-def record_matches_segment(record, segment_number):
-    """
-    Devuelve True si el record corresponde al número de segmento indicado.
-    Detecta:
-        - 'segment 4'
-        - 'Segment 4'
-        - 'Seg 4'
-        - 'Seg 4/'
-    """
-
-    desc = record.description.lower()
-
-    patterns = [
-        rf"segment\s+{segment_number}\b",
-        rf"seg\s+{segment_number}\b",
-    ]
-
-    for pattern in patterns:
-        if re.search(pattern, desc):
-            return True
-
-    return False
 
 def log_global_error(cod_name, sample_id, segment, message):
     with open(GLOBAL_ERROR_LOG, "a") as gf:
@@ -220,46 +190,7 @@ def initialize_flu_tmp_if_needed(tmp_file, flu_sample, segment):
 
     print(f"Inicializando {tmp_file.name}")
 
-    if flu_sample in AH5_samples:
-        numbering_file = AH5_FILE
-    elif flu_sample in AH1_samples:
-        numbering_file = AH1_FILE
-    elif flu_sample in AH3_samples:
-        numbering_file = AH3_FILE
-    else:
-        numbering_file = None
-
     with open(tmp_file, "w") as out_f:
-
-        ## Numbering reference
-        #if numbering_file and numbering_file.exists():
-        #    for rec in SeqIO.parse(numbering_file, "fasta"):
-        #        if rec.id.upper().endswith(f"_{segment}"):
-        #            SeqIO.write(rec, out_f, "fasta")
-        #            break
-        # Numbering reference (robust segment detection)
-        # Numbering reference
-        if numbering_file and numbering_file.exists():
-        
-            if segment not in SEGMENT_TO_NUMBER:
-                raise ValueError(f"Unknown influenza segment name: {segment}")
-
-            segment_number = SEGMENT_TO_NUMBER[segment]
-
-            found_numbering = False
-
-            for rec in SeqIO.parse(numbering_file, "fasta"):
-            
-                if record_matches_segment(rec, segment_number):
-                
-                    #rec.id = f"Numbering_reference_{segment}"
-                    #rec.description = ""
-                    SeqIO.write(rec, out_f, "fasta")
-                    found_numbering = True
-                    break
-                
-            if not found_numbering:
-                print(f"WARNING: No numbering reference found for segment {segment}")    
 
         # Gold standard
         comp = "INFL1" if int(flu_sample.replace("FLU", "")) <= 5 else "INFL2"
@@ -367,7 +298,6 @@ def process_json_and_append():
                 for header in expected_headers:
 
                     rec = record_dict[header]
-
                     segment_detected = detect_influenza_segment(header)
 
                     if not segment_detected:

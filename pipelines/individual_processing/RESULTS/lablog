@@ -11,6 +11,7 @@ ln -s /data/ucct/bi/research/EQA_RELECOV_2026/influenza_reference_numbering/* in
 # User-generated files
 
 ANALYSIS_RP=$( realpath ../ANALYSIS )
+COD_LAB=$( pwd | cut -d '/' -f8 )
 
 rm -r variants_long_table/ consensus_files/ validated_metadata.json
 mkdir variants_long_table
@@ -24,6 +25,8 @@ ln -s $( realpath ../RAW/validated*json ) validated_metadata.json
 # module load singularity MAFFT/7.475-gompi-2020b-with-extensions
 # micromamba activate biopython_v1.84
 
+mkdir logs
+
 echo \
  "srun \
 --chdir ${PWD} \
@@ -32,10 +35,41 @@ echo \
 --time 08:00:00 \
 --cpus-per-task 4 \
 --job-name ALIGNMENT_CONSENSUS \
---output fasta_analysis_reports.log \
-python3 01_fasta_alignment_SARS-CoV-2_FLU_EQA2026.py && \
-python3 02_fasta_comparison_and_reporting_SARS-CoV2_and_FLU_EQA2026.py &&
-python3 03_calculate_identity.py &"> _01_generate_fasta_analysis_reports.sh
+--output logs/aligment_consensus_%j.log \
+python3 01_fasta_alignment.py &" > _01_alignment.sh
+
+echo \
+ "srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name FASTA_COMPARISON \
+--output logs/fasta_comparison_%j.log \
+python3 02_fasta_comparison.py &" > _02_fasta_comparison.sh
+
+echo \
+ "srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name FASTA_REPORTING \
+--output logs/fasta_reporting_%j.log \
+python3 03_fasta_reporting.py &" > _03_fasta_reporting.sh
+
+echo \
+ "srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name CALCULATE_IDENTITY \
+--output logs/calculate_identity_%j.log \
+python3 04_calculate_identity.py &" > _04_calculate_identity.sh
 
 # Generate results for VCF FILES
 
@@ -46,7 +80,87 @@ echo \
 --mem 16G \
 --time 08:00:00 \
 --cpus-per-task 4 \
---job-name VCF \
---output vcf_analysis_reports.log \
-python3 variant_comparison_combined_vcf_to_gold_standard_eqa_2024_v2.py;
-python3 05_merge_json.py &" > _02_vcf_comparison.sh
+--job-name VARIANT_COMPARISON_ILLUMINA \
+--output logs/variant_comparison_%j.log \
+python3 05_variant_comparison.py gold_standard/variants_long_table/compSARS1_variant_long_table.csv variants_long_table/Severe_acute_respiratory_syndrome_coronavirus_2_Illumina_variants_long_table.csv &" > _05_variant_comparison_illumina.sh
+
+# echo \
+# "srun \
+# --chdir ${PWD} \
+# --partition middle_idx \
+# --mem 16G \
+# --time 08:00:00 \
+# --cpus-per-task 4 \
+# --job-name VARIANT_COMPARISON_ILLUMINA \
+# --output logs/variant_comparison_%j.log \
+# python3 05_variant_comparison.py gold_standard/variants_long_table/compSARS1_variant_long_table.csv --raw-dir ../RAW --component SARS1 &" > _05_variant_comparison_illumina.sh
+
+echo \
+"srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name VARIANT_COMPARISON_NANOPORE \
+--output logs/variant_comparison_%j.log \
+python3 05_variant_comparison.py gold_standard/variants_long_table/compSARS2_variant_long_table.csv variants_long_table/Severe_acute_respiratory_syndrome_coronavirus_2_Oxford_Nanopore_variants_long_table.csv &" > _06_variant_comparison_nanopore.sh
+
+# echo \
+# "srun \
+# --chdir ${PWD} \
+# --partition middle_idx \
+# --mem 16G \
+# --time 08:00:00 \
+# --cpus-per-task 4 \
+# --job-name VARIANT_COMPARISON_NANOPORE \
+# --output logs/variant_comparison_%j.log \
+# python3 05_variant_comparison.py gold_standard/variants_long_table/compSARS2_variant_long_table.csv --raw-dir ../RAW --component SARS2 &" > _06_variant_comparison_nanopore.sh
+
+echo \
+"srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name VARIANT_REPORTING \
+--output logs/variant_reportng_%j.log \
+python3 06_variant_reporting.py &" > _07_vcf_reporting.sh
+
+echo \
+"srun \
+--chdir ${PWD} \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name CONSOLIDATED \
+--output logs/consolidated_%j.log \
+python3 07_consolidated_json.py &" > _08_consolidated_json.sh
+
+echo \
+"srun \
+--partition middle_idx \
+--mem 16G \
+--time 08:00:00 \
+--cpus-per-task 4 \
+--job-name CREATE_REPORT_JSON \
+--output logs/create_report_json.log \
+python3 /data/ucct/bi/pipelines/relecov_2026_drylab_eqa/create_merged_json.py \
+--expected /data/ucct/bi/pipelines/relecov_2026_drylab_eqa/expected_data.json \
+--metadata ../RAW/validated_read_lab_metadata_*.json \
+--consolidated-json consolidated_json_reports.json \
+--output /data/ucct/bi/research/EQA_RELECOV_2026/DOWNLOADED_RESULTS/merged_results_per_lab/${COD_LAB}.json &" > _09_create_report_json.sh
+
+# echo \
+# "srun \
+# --partition middle_idx \
+# --mem 16G \
+# --time 08:00:00 \
+# --cpus-per-task 4 \
+# --job-name UPDATE_JSON \
+# --output update_json.log \
+# python3 07_update_json.py \
+# /data/ucct/bi/research/EQA_RELECOV_2026/DOWNLOADED_RESULTS/merged_results_per_lab/xxx.json \
+# consolidated_json_reports.json &" > _10_update_json.sh

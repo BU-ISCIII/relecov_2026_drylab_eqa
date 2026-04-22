@@ -3,15 +3,15 @@ import os
 
 def read_json(path):
     if os.path.isfile(path):
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             file = json.load(f)
     else:
         file = {}
     return file
 
 def write_json(path, dictionary):
-    with open(path, "w") as f:
-        json.dump(dictionary, f)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(dictionary, f, indent=4)
 
 def main(consensus_json="calculated_values.json", variants_json="variants_report.json"):
     consensus_json_value = read_json(consensus_json)

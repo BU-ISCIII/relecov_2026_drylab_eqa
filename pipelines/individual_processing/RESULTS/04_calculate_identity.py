@@ -9,6 +9,19 @@ BASE_DIR = Path.cwd()
 
 WANTED_COMPARISONS = ["_LC", "_Gold_Standard"]
 
+AMBIGUITY_MAP = {
+    "R": {"A", "G"},
+    "Y": {"C", "T"},
+    "S": {"G", "C"},
+    "W": {"A", "T"},
+    "K": {"G", "T"},
+    "M": {"A", "C"},
+    "B": {"C", "G", "T"},
+    "D": {"A", "G", "T"},
+    "H": {"A", "C", "T"},
+    "V": {"A", "C", "G"},
+}
+
 def find_reference_id(fasta_alignment_file):
     """
     Find the reference sequence based on WANTED_COMPARISONS
@@ -44,14 +57,32 @@ def write_identity(output_file, sample_name, record_id, identity_value):
         }
     if "genome_identity_pct" not in input_dict[sample_name]:
         input_dict[sample_name]["genome_identity_pct"] = []
-    elif isinstance(input_dict[sample_name]["genome_identity_pct"], float):
+    elif input_dict[sample_name]["genome_identity_pct"] is None:
+        input_dict[sample_name]["genome_identity_pct"] = []
+    elif isinstance(input_dict[sample_name]["genome_identity_pct"], (int, float)):
         input_dict[sample_name]["genome_identity_pct"] = []
     input_dict[sample_name]["genome_identity_pct"].append(identity_value)
     
     with open(output_file, "w") as f:
-        json.dump(input_dict, f)
-        
-def identity_vs_reference(ref_seq, query_seq):
+        json.dump(input_dict, f, indent=4)
+
+def flu_bases_are_equivalent(gold_base, sample_base):
+    gold = gold_base.upper()
+    sample = sample_base.upper()
+
+    if gold == sample:
+        return True
+
+    if gold in AMBIGUITY_MAP:
+        if sample in AMBIGUITY_MAP:
+            return True
+        if sample in AMBIGUITY_MAP[gold]:
+            return True
+
+    return False
+
+
+def identity_vs_reference(ref_seq, query_seq, use_flu_rules=False):
         matches = 0
         compared = 0
 
@@ -65,7 +96,10 @@ def identity_vs_reference(ref_seq, query_seq):
                 continue
 
             compared += 1
-            if r == q:
+            if use_flu_rules:
+                if flu_bases_are_equivalent(r, q):
+                    matches += 1
+            elif r == q:
                 matches += 1
 
         return matches / compared if compared > 0 else 0
@@ -89,7 +123,7 @@ def write_median_identity(output_file):
             full_file[sample]["genome_identity_pct"] = None
         else:
             median_value = median(clean_values)
-            full_file[sample]["genome_identity_pct"] = median_value * 100
+            full_file[sample]["genome_identity_pct"] = median_value * 100 if median_value <= 1 else median_value
 
         if "discrepancy_breakdown" not in full_file[sample]:
             # Zero values for the discrepancy breakdown. assuming if there is an identity AND they're not here
@@ -125,6 +159,7 @@ def main(alignment_file_path, reference_id, output_file):
         sys.exit(1)
 
     ref_seq = str(reference.seq)
+    use_flu_rules = "FLU" in alignment_file_path.name.upper()
 
     print(f"\nReference: {reference_id}\n")
 
@@ -154,7 +189,7 @@ def main(alignment_file_path, reference_id, output_file):
             print(f"{record.id}\tNA\t(NA)")
         else:
             print(f"Comparing {reference_id} against {record_id}")
-            identity = identity_vs_reference(ref_seq, query_seq)
+            identity = identity_vs_reference(ref_seq, query_seq, use_flu_rules=use_flu_rules)
             print(f"{record.id}\t{identity:.4f}\t({identity*100:.2f}%)")
 
         sample_name = alignment_file_path.name.split("_")[1]
