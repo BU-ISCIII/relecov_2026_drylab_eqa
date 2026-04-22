@@ -70,13 +70,13 @@
             "number_of_variants_in_consensus_vcf": 30,
             "number_of_variants_with_effect": 22,
             "discrepancies_in_reported_variants": 0,
-            "successful_hits": 36,
+            "successful_hits": 38,
             "number_of_variants_with_effect_vcf": 22,
             "discrepancies_in_reported_variants_effect": 0,
-            "total_discrepancies": 2,
+            "total_discrepancies": 0,
             "wrong_nt": 0,
-            "insertions": 1,
-            "deletions": 1,
+            "insertions": 0,
+            "deletions": 0,
             "missing": 0,
             "denovo": 0
           },
@@ -114,18 +114,18 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v1.0.1",
+            "preprocessing_software_version": "1.0.1",
             "preprocessing_params": "--cut_front --cut_tail --trim_poly_x --cut_mean_quality 20 --qualified_quality_phred 20 --unqualified_percent_limit 10 --length_required 50",
             "mapping_software_name": "bowtie2",
-            "mapping_software_version": "v2.5.4",
+            "mapping_software_version": "2.5.4",
             "mapping_params": "--local --very-sensitive-local --seed 1",
             "variant_calling_software_name": "Ivar",
-            "variant_calling_software_version": "v1.4.4",
+            "variant_calling_software_version": "1.4.4",
             "variant_calling_params": "-t 0.25 -q 20 -m 10",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.22",
@@ -223,18 +223,18 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v1.0.1",
+            "preprocessing_software_version": "1.0.1",
             "preprocessing_params": "--cut_front --cut_tail --trim_poly_x --cut_mean_quality 20 --qualified_quality_phred 20 --unqualified_percent_limit 10 --length_required 50",
             "mapping_software_name": "bowtie2",
-            "mapping_software_version": "v2.5.4",
+            "mapping_software_version": "2.5.4",
             "mapping_params": "--local --very-sensitive-local --seed 1",
             "variant_calling_software_name": "Ivar",
-            "variant_calling_software_version": "v1.4.4",
+            "variant_calling_software_version": "1.4.4",
             "variant_calling_params": "-t 0.25 -q 20 -m 10",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.22",
@@ -332,18 +332,18 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v1.0.1",
+            "preprocessing_software_version": "1.0.1",
             "preprocessing_params": "--cut_front --cut_tail --trim_poly_x --cut_mean_quality 20 --qualified_quality_phred 20 --unqualified_percent_limit 10 --length_required 50",
             "mapping_software_name": "bowtie2",
-            "mapping_software_version": "v2.5.4",
+            "mapping_software_version": "2.5.4",
             "mapping_params": "--local --very-sensitive-local --seed 1",
             "variant_calling_software_name": "Ivar",
-            "variant_calling_software_version": "v1.4.4",
+            "variant_calling_software_version": "1.4.4",
             "variant_calling_params": "-t 0.25 -q 20 -m 10",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.22",
@@ -441,18 +441,18 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v1.0.1",
+            "preprocessing_software_version": "1.0.1",
             "preprocessing_params": "--cut_front --cut_tail --trim_poly_x --cut_mean_quality 20 --qualified_quality_phred 20 --unqualified_percent_limit 10 --length_required 50",
             "mapping_software_name": "bowtie2",
-            "mapping_software_version": "v2.5.4",
+            "mapping_software_version": "2.5.4",
             "mapping_params": "--local --very-sensitive-local --seed 1",
             "variant_calling_software_name": "Ivar",
-            "variant_calling_software_version": "v1.4.4",
+            "variant_calling_software_version": "1.4.4",
             "variant_calling_params": "-t 0.25 -q 20 -m 10",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.22",
@@ -488,8 +488,8 @@
             "total_discrepancies": 6,
             "consensus_genome_length": "29876",
             "discrepancy_breakdown": {
-              "wrong_nt": 2,
-              "ambiguity2nt": 0,
+              "wrong_nt": 0,
+              "ambiguity2nt": 2,
               "nt2ambiguity": 0,
               "ns2nt": 1,
               "nt2ns": 0,
@@ -505,11 +505,11 @@
             "number_of_variants_in_consensus_vcf": 56,
             "number_of_variants_with_effect": 41,
             "discrepancies_in_reported_variants": 0,
-            "successful_hits": 65,
+            "successful_hits": 67,
             "number_of_variants_with_effect_vcf": 42,
             "discrepancies_in_reported_variants_effect": 1,
-            "total_discrepancies": 2,
-            "wrong_nt": 2,
+            "total_discrepancies": 0,
+            "wrong_nt": 0,
             "insertions": 0,
             "deletions": 0,
             "missing": 0,
@@ -550,18 +550,18 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v1.0.1",
+            "preprocessing_software_version": "1.0.1",
             "preprocessing_params": "--cut_front --cut_tail --trim_poly_x --cut_mean_quality 20 --qualified_quality_phred 20 --unqualified_percent_limit 10 --length_required 50",
             "mapping_software_name": "bowtie2",
-            "mapping_software_version": "v2.5.4",
+            "mapping_software_version": "2.5.4",
             "mapping_params": "--local --very-sensitive-local --seed 1",
             "variant_calling_software_name": "Ivar",
-            "variant_calling_software_version": "v1.4.4",
+            "variant_calling_software_version": "1.4.4",
             "variant_calling_params": "-t 0.25 -q 20 -m 10",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.22",
@@ -691,16 +691,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "mapping_software_name": "minimap2",
-            "mapping_software_version": "v2.28-r1209",
+            "mapping_software_version": "2.28-r1209",
             "mapping_params": "-a -x map-ont -t 12",
             "variant_calling_software_name": "Clair3",
-            "variant_calling_software_version": "v1.0.10",
+            "variant_calling_software_version": "1.0.10",
             "variant_calling_params": "--enable_long_indel --chunk_size=10000 --haploid_precise --no_phasing_for_fa --threads='12' --platform='ont' --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+            "model": "r941_prom_hac_g360+g422",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.17",
             "consensus_params": "--min-depth 20",
@@ -738,11 +739,11 @@
           ],
           "consensus": {
             "genome_identity_pct": 99.96315648445874,
-            "total_discrepancies": 1,
+            "total_discrepancies": 2,
             "consensus_genome_length": "29856",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
-              "ambiguity2nt": 0,
+              "ambiguity2nt": 1,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 1,
@@ -803,16 +804,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "mapping_software_name": "minimap2",
-            "mapping_software_version": "v2.28-r1209",
+            "mapping_software_version": "2.28-r1209",
             "mapping_params": "-a -x map-ont -t 12",
             "variant_calling_software_name": "Clair3",
-            "variant_calling_software_version": "v1.0.10",
+            "variant_calling_software_version": "1.0.10",
             "variant_calling_params": "--enable_long_indel --chunk_size=10000 --haploid_precise --no_phasing_for_fa --threads='12' --platform='ont' --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+            "model": "r941_prom_hac_g360+g422",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.17",
             "consensus_params": "--min-depth 20",
@@ -850,11 +852,11 @@
           ],
           "consensus": {
             "genome_identity_pct": 98.35494354541495,
-            "total_discrepancies": 2,
+            "total_discrepancies": 30,
             "consensus_genome_length": "29847",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
-              "ambiguity2nt": 0,
+              "ambiguity2nt": 28,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 2,
@@ -915,16 +917,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "mapping_software_name": "minimap2",
-            "mapping_software_version": "v2.28-r1209",
+            "mapping_software_version": "2.28-r1209",
             "mapping_params": "-a -x map-ont -t 12",
             "variant_calling_software_name": "Clair3",
-            "variant_calling_software_version": "v1.0.10",
+            "variant_calling_software_version": "1.0.10",
             "variant_calling_params": "--enable_long_indel --chunk_size=10000 --haploid_precise --no_phasing_for_fa --threads='12' --platform='ont' --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+            "model": "r941_prom_hac_g360+g422",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.17",
             "consensus_params": "--min-depth 20",
@@ -962,7 +965,7 @@
           ],
           "consensus": {
             "genome_identity_pct": null,
-            "total_discrepancies": 17,
+            "total_discrepancies": 16,
             "consensus_genome_length": "29894",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
@@ -971,7 +974,7 @@
               "ns2nt": 16,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 1
+              "deletions": 0
             }
           },
           "variants": {
@@ -1022,16 +1025,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "mapping_software_name": "minimap2",
-            "mapping_software_version": "v2.28-r1209",
+            "mapping_software_version": "2.28-r1209",
             "mapping_params": "-a -x map-ont -t 12",
             "variant_calling_software_name": "Clair3",
-            "variant_calling_software_version": "v1.0.10",
+            "variant_calling_software_version": "1.0.10",
             "variant_calling_params": "--enable_long_indel --chunk_size=10000 --haploid_precise --no_phasing_for_fa --threads='12' --platform='ont' --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+            "model": "r941_prom_hac_g360+g422",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.17",
             "consensus_params": "--min-depth 20",
@@ -1129,16 +1133,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "nf-core/viralrecon",
-            "bioinformatics_protocol_software_version": "v3.0.0",
+            "bioinformatics_protocol_software_version": "3.0.0",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.6",
             "mapping_software_name": "minimap2",
-            "mapping_software_version": "v2.28-r1209",
+            "mapping_software_version": "2.28-r1209",
             "mapping_params": "-a -x map-ont -t 12",
             "variant_calling_software_name": "Clair3",
-            "variant_calling_software_version": "v1.0.10",
+            "variant_calling_software_version": "1.0.10",
             "variant_calling_params": "--enable_long_indel --chunk_size=10000 --haploid_precise --no_phasing_for_fa --threads='12' --platform='ont' --model_path='/opt/conda/bin/models/r941_prom_hac_g360+g422' --include_all_ctgs",
+            "model": "r941_prom_hac_g360+g422",
             "consensus_sequence_software_name": "bcftools consensus",
             "consensus_sequence_software_version": "1.17",
             "consensus_params": "--min-depth 20",
@@ -1214,7 +1219,7 @@
           ],
           "consensus": {
             "genome_identity_pct": 96.06970382832452,
-            "total_discrepancies": 11,
+            "total_discrepancies": 27,
             "consensus_genome_length": "13136",
             "discrepancy_breakdown": {
               "wrong_nt": 11,
@@ -1223,7 +1228,7 @@
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 0
+              "deletions": 16
             }
           },
           "variants": {
@@ -1231,10 +1236,10 @@
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 1377,
-            "number_of_variants_in_consensus_vcf": 1356,
+            "number_of_variants_in_consensus_vcf": 1373,
             "number_of_variants_with_effect": 0,
-            "discrepancies_in_reported_variants": 21,
-            "number_of_variants_in_vcf": 37523
+            "discrepancies_in_reported_variants": 4,
+            "number_of_variants_in_vcf": 1382
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -1266,17 +1271,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v0.20.0",
+            "preprocessing_software_version": "0.20.0",
             "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -1284,7 +1289,7 @@
             "clade_assignment_software_database_version": "2025-09-09--12-13-13Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU2": {
@@ -1316,8 +1321,8 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 96.15024850617078,
-            "total_discrepancies": 5,
+            "genome_identity_pct": 95.95826597834211,
+            "total_discrepancies": 16,
             "consensus_genome_length": "13162",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
@@ -1326,7 +1331,7 @@
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 5
+              "deletions": 16
             }
           },
           "variants": {
@@ -1334,10 +1339,10 @@
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 449,
-            "number_of_variants_in_consensus_vcf": 441,
+            "number_of_variants_in_consensus_vcf": 446,
             "number_of_variants_with_effect": 113,
-            "discrepancies_in_reported_variants": 8,
-            "number_of_variants_in_vcf": 39071
+            "discrepancies_in_reported_variants": 3,
+            "number_of_variants_in_vcf": 709
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1369,17 +1374,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v0.20.0",
+            "preprocessing_software_version": "0.20.0",
             "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -1387,7 +1392,7 @@
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU3": {
@@ -1462,12 +1467,12 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v0.20.0",
+            "preprocessing_software_version": "0.20.0",
             "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe"
           }
         },
@@ -1500,17 +1505,17 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 96.21274198504558,
+            "genome_identity_pct": 96.1922224117346,
             "total_discrepancies": 16,
             "consensus_genome_length": "13142",
             "discrepancy_breakdown": {
-              "wrong_nt": 1,
+              "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 15
+              "deletions": 16
             }
           },
           "variants": {
@@ -1518,10 +1523,10 @@
             "high_freq_only": false,
             "low_freq_only": false,
             "number_of_variants_in_consensus": 492,
-            "number_of_variants_in_consensus_vcf": 465,
+            "number_of_variants_in_consensus_vcf": 481,
             "number_of_variants_with_effect": 111,
-            "discrepancies_in_reported_variants": 27,
-            "number_of_variants_in_vcf": 25977
+            "discrepancies_in_reported_variants": 11,
+            "number_of_variants_in_vcf": 733
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1553,17 +1558,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v0.20.0",
+            "preprocessing_software_version": "0.20.0",
             "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -1571,7 +1576,7 @@
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU5": {
@@ -1603,8 +1608,8 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 95.94828140746617,
-            "total_discrepancies": 29,
+            "genome_identity_pct": 95.90525878308608,
+            "total_discrepancies": 30,
             "consensus_genome_length": "13129",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
@@ -1613,18 +1618,18 @@
               "ns2nt": 0,
               "nt2ns": 14,
               "insertions": 0,
-              "deletions": 15
+              "deletions": 16
             }
           },
           "variants": {
             "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
-            "number_of_variants_in_consensus": 455,
-            "number_of_variants_in_consensus_vcf": 440,
+            "number_of_variants_in_consensus": 450,
+            "number_of_variants_in_consensus_vcf": 450,
             "number_of_variants_with_effect": 98,
-            "discrepancies_in_reported_variants": 15,
-            "number_of_variants_in_vcf": 34996
+            "discrepancies_in_reported_variants": 0,
+            "number_of_variants_in_vcf": 481
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1656,17 +1661,17 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
             "preprocessing_software_name": "Fastp",
-            "preprocessing_software_version": "v0.20.0",
+            "preprocessing_software_version": "0.20.0",
             "preprocessing_params": "--cut_front --cut_tail --cut_mean_quality 15 --qualified_quality_phred 15 --trim_poly_x --length_required 50 --detect_adapter_for_pe",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -1674,7 +1679,7 @@
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         }
       },
@@ -1744,16 +1749,16 @@
           ],
           "consensus": {
             "genome_identity_pct": 95.63662891078266,
-            "total_discrepancies": 0,
+            "total_discrepancies": 21,
             "consensus_genome_length": "12983",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 2,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 0,
-              "insertions": 0,
-              "deletions": 0
+              "nt2ns": 1,
+              "insertions": 2,
+              "deletions": 16
             }
           },
           "variants": {
@@ -1792,7 +1797,7 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
@@ -1800,9 +1805,9 @@
             "preprocessing_software_version": "v0.2.4",
             "preprocessing_params": "-q 7 -l 300 --maxlength 2500",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -1810,7 +1815,7 @@
             "clade_assignment_software_database_version": "2025-09-09--12-13-13Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU7": {
@@ -1842,17 +1847,17 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 95.91838361931492,
-            "total_discrepancies": 8,
+            "genome_identity_pct": 95.49861530215199,
+            "total_discrepancies": 16,
             "consensus_genome_length": "13133",
             "discrepancy_breakdown": {
-              "wrong_nt": 3,
+              "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 5
+              "deletions": 16
             }
           },
           "variants": {
@@ -1863,7 +1868,7 @@
             "number_of_variants_in_consensus_vcf": 419,
             "number_of_variants_with_effect": 101,
             "discrepancies_in_reported_variants": 16,
-            "number_of_variants_in_vcf": 2892
+            "number_of_variants_in_vcf": 967
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -1895,7 +1900,7 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
@@ -1903,9 +1908,9 @@
             "preprocessing_software_version": "v0.2.4",
             "preprocessing_params": "-q 7 -l 300 --maxlength 2500",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -1913,7 +1918,7 @@
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU8": {
@@ -1945,17 +1950,17 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 95.90439911526174,
-            "total_discrepancies": 20,
+            "genome_identity_pct": 95.7726815177907,
+            "total_discrepancies": 19,
             "consensus_genome_length": "13123",
             "discrepancy_breakdown": {
-              "wrong_nt": 3,
+              "wrong_nt": 1,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
               "insertions": 0,
-              "deletions": 17
+              "deletions": 18
             }
           },
           "variants": {
@@ -1966,7 +1971,7 @@
             "number_of_variants_in_consensus_vcf": 471,
             "number_of_variants_with_effect": 111,
             "discrepancies_in_reported_variants": 21,
-            "number_of_variants_in_vcf": 2796
+            "number_of_variants_in_vcf": 1004
           },
           "classification": {
             "expected_lineage": "A/H3N2",
@@ -1998,7 +2003,7 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
@@ -2006,9 +2011,9 @@
             "preprocessing_software_version": "v0.2.4",
             "preprocessing_params": "-q 7 -l 300 --maxlength 2500",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -2016,7 +2021,7 @@
             "clade_assignment_software_database_version": "2026-01-14--19-24-43Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU9": {
@@ -2054,8 +2059,8 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 95.46819084747528,
-            "total_discrepancies": 6,
+            "genome_identity_pct": 95.4415143208335,
+            "total_discrepancies": 17,
             "consensus_genome_length": "13069",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
@@ -2064,18 +2069,18 @@
               "ns2nt": 0,
               "nt2ns": 1,
               "insertions": 0,
-              "deletions": 5
+              "deletions": 16
             }
           },
           "variants": {
             "high_and_low_freq": true,
             "high_freq_only": false,
             "low_freq_only": false,
-            "number_of_variants_in_consensus": 399,
-            "number_of_variants_in_consensus_vcf": 379,
+            "number_of_variants_in_consensus": 398,
+            "number_of_variants_in_consensus_vcf": 378,
             "number_of_variants_with_effect": 89,
             "discrepancies_in_reported_variants": 20,
-            "number_of_variants_in_vcf": 11792
+            "number_of_variants_in_vcf": 1572
           },
           "classification": {
             "expected_lineage": "A/H1N1",
@@ -2107,7 +2112,7 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
@@ -2115,14 +2120,14 @@
             "preprocessing_software_version": "v0.2.4",
             "preprocessing_params": "-q 7 -l 300 --maxlength 2500",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         },
         "FLU10": {
@@ -2155,16 +2160,16 @@
           ],
           "consensus": {
             "genome_identity_pct": 96.10988142511631,
-            "total_discrepancies": 0,
+            "total_discrepancies": 24,
             "consensus_genome_length": "13140",
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
+              "wrong_nt": 6,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
               "nt2ns": 0,
-              "insertions": 0,
-              "deletions": 0
+              "insertions": 2,
+              "deletions": 16
             }
           },
           "variants": {
@@ -2175,7 +2180,7 @@
             "number_of_variants_in_consensus_vcf": 1363,
             "number_of_variants_with_effect": 0,
             "discrepancies_in_reported_variants": 8,
-            "number_of_variants_in_vcf": 21455
+            "number_of_variants_in_vcf": 1431
           },
           "classification": {
             "expected_lineage": "A/H5N1",
@@ -2207,7 +2212,7 @@
           },
           "software_benchmarking": {
             "bioinformatics_protocol_software_name": "IRMA",
-            "bioinformatics_protocol_software_version": "v1.3.1",
+            "bioinformatics_protocol_software_version": "1.3.1",
             "commercial_open_source_both": "Open Source [SWO:1000008]",
             "dehosting_method_software_name": "Kraken2",
             "dehosting_method_software_version": "2.1.3",
@@ -2215,9 +2220,9 @@
             "preprocessing_software_version": "v0.2.4",
             "preprocessing_params": "-q 7 -l 300 --maxlength 2500",
             "variant_calling_software_name": "Custom variant calling script",
-            "variant_calling_params": "-f 0.25 -d 10",
+            "variant_calling_params": "-f 0.1 -d 10 -t 10",
             "consensus_sequence_software_name": "IRMA consensus",
-            "consensus_sequence_software_version": "v1.3.1",
+            "consensus_sequence_software_version": "1.3.1",
             "consensus_params": "MIN_AMBIG=0.75; MIN_CONS_SUPPORT=9",
             "depth_of_coverage_threshold": "10x",
             "clade_assignment_software_name": "Nextclade",
@@ -2225,7 +2230,7 @@
             "clade_assignment_software_database_version": "2025-09-09--12-13-13Z",
             "type_assignment_software_name": "IRMA typing",
             "subtype_assignment_software_name": "IRMA subtyping",
-            "subtype_assignment_software_version": "v1.3.1"
+            "subtype_assignment_software_version": "1.3.1"
           }
         }
       },
