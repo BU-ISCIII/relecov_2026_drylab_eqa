@@ -342,8 +342,30 @@ def style_truncated_percent_boxplot_axis(ax: Any, values: Iterable[Any]) -> None
     value_span = max_value - min_value
     lower_margin = max(0.5, value_span * 0.08)
     upper_margin = max(0.5, value_span * 0.12)
-    ax.set_ylim(max(0, min_value - lower_margin), min(110, max_value + upper_margin))
-    add_truncated_y_axis_mark(ax)
+    lower_limit = max(0, min_value - lower_margin)
+    ax.set_ylim(lower_limit, min(110, max_value + upper_margin))
+    if lower_limit >= 1.0:
+        add_truncated_y_axis_mark(ax)
+
+
+def style_percent_boxplot_axis_to_data_range(ax: Any, values: Iterable[Any]) -> None:
+    clean_values = []
+    for value in values:
+        numeric_value = safe_number(value)
+        if numeric_value is not None:
+            clean_values.append(float(numeric_value))
+
+    if not clean_values:
+        style_percent_boxplot_axis(ax)
+        return
+
+    min_value = min(clean_values)
+    max_value = max(clean_values)
+    value_span = max_value - min_value
+    lower_margin = max(0.5, value_span * 0.08)
+    upper_margin = max(0.5, value_span * 0.12)
+    lower_limit = max(0, min_value - lower_margin)
+    ax.set_ylim(lower_limit, min(110, max_value + upper_margin))
 
 
 def annotate_group_n_labs(ax: Any, positions: List[float], counts: List[int], y_offset: float = -0.22) -> None:
@@ -1329,11 +1351,13 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                 max_value = max(all_identity_values)
                 lower_margin = max(0.5, (max_value - min_value) * 0.08)
                 upper_margin = max(0.5, (max_value - min_value) * 0.12)
-                ax.set_ylim(max(0, min_value - lower_margin), min(110, max_value + upper_margin))
+                lower_limit = max(0, min_value - lower_margin)
+                ax.set_ylim(lower_limit, min(110, max_value + upper_margin))
             ax.tick_params(axis="x", rotation=0, labelsize=8)
             ax.set_title(title)
             ax.set_ylabel(ylabel)
-            add_truncated_y_axis_mark(ax)
+            if ax.get_ylim()[0] >= 1.0:
+                add_truncated_y_axis_mark(ax)
             return True
 
         bp = ax.boxplot(
@@ -1740,7 +1764,7 @@ def make_component_benchmark_metric_boxplots(
 
         if benchmark_key == "variant_calling" and panel_idx == 0:
             mode_keys = ["high_and_low_freq", "low_freq_only", "high_freq_only"]
-            mode_labels = ["High and low frequency", "Low frequency only", "High frequency only"]
+            mode_labels = ["High and low\nfrequency", "Low frequency only", "High frequency only"]
             mode_colors = [
                 CBF_COLORS["high_and_low_freq"],
                 CBF_COLORS["low_freq_only"],
@@ -1804,7 +1828,14 @@ def make_component_benchmark_metric_boxplots(
             labelsize=8,
             pad=10 if stacked_vertical_benchmark else 4,
         )
-        if ylabel.endswith("(%)"):
+        if ylabel.endswith("(%)") and benchmark_key == "dehosting":
+            flattened_percent_values = [
+                value
+                for values in plotted_panel_data
+                for value in values
+            ]
+            style_percent_boxplot_axis_to_data_range(ax, flattened_percent_values)
+        elif ylabel.endswith("(%)"):
             style_percent_boxplot_axis(ax)
         elif panel_y_limit is not None:
             limit_mode, limit_min, limit_max = panel_y_limit
@@ -2020,6 +2051,11 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
             for x_pos, display_value in outlier_annotations:
                 y_marker = y_upper * 0.95
                 y_text = y_upper * 0.91
+                outlier_label = (
+                    f"Outlier:\n{display_value:g}"
+                    if comp_code == "FLU2"
+                    else f"Outlier: {display_value:g}"
+                )
                 axes[0].text(
                     x_pos,
                     y_marker,
@@ -2033,7 +2069,7 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
                 axes[0].text(
                     x_pos,
                     y_text,
-                    f"Outlier: {display_value:g}",
+                    outlier_label,
                     ha="center",
                     va="top",
                     fontsize=9,
@@ -2098,9 +2134,11 @@ def make_component_consensus_discrepancies_stacked_by_sample(
     if not sample_names:
         return str(output_path)
 
-    stacked_values = {key: [] for key in CONSENSUS_DISCREPANCY_TYPE_ORDER}
+    plotted_sample_names = []
+    plotted_sample_totals = []
     for sample_id in sample_names:
         totals = {key: 0.0 for key in CONSENSUS_DISCREPANCY_TYPE_ORDER}
+        evaluable_count = 0
         for lab in labs:
             comp = lab.get("components", {}).get(comp_code)
             if not comp:
@@ -2115,19 +2153,32 @@ def make_component_consensus_discrepancies_stacked_by_sample(
             if gi is None:
                 continue
 
+            evaluable_count += 1
             discrepancy_breakdown = consensus.get("discrepancy_breakdown", {})
             for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
                 value = safe_number(discrepancy_breakdown.get(key))
                 if value is not None:
                     totals[key] += value
 
-        for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
-            stacked_values[key].append(totals[key])
+        total_discrepancies = sum(totals.values())
+        if evaluable_count == 0 or total_discrepancies == 0:
+            continue
 
-    x_positions = list(range(len(sample_names)))
-    bottoms = [0.0] * len(sample_names)
+        plotted_sample_names.append(sample_id)
+        plotted_sample_totals.append(totals)
 
-    plt.figure(figsize=(max(8, len(sample_names) * 1.15), 6))
+    if not plotted_sample_names:
+        return str(output_path)
+
+    stacked_values = {
+        key: [totals[key] for totals in plotted_sample_totals]
+        for key in CONSENSUS_DISCREPANCY_TYPE_ORDER
+    }
+
+    x_positions = list(range(len(plotted_sample_names)))
+    bottoms = [0.0] * len(plotted_sample_names)
+
+    plt.figure(figsize=(max(8, len(plotted_sample_names) * 1.15), 6))
 
     for key in CONSENSUS_DISCREPANCY_TYPE_ORDER:
         values = stacked_values[key]
@@ -2140,7 +2191,7 @@ def make_component_consensus_discrepancies_stacked_by_sample(
         )
         bottoms = [bottom + value for bottom, value in zip(bottoms, values)]
 
-    plt.xticks(x_positions, sample_names, rotation=0, ha="center")
+    plt.xticks(x_positions, plotted_sample_names, rotation=0, ha="center")
     plt.xlabel("Sample")
     plt.ylabel("Total consensus discrepancies")
     plt.title(f"{comp_code} consensus discrepancy types by sample")
@@ -2256,8 +2307,9 @@ def make_component_consensus_discrepancy_type_boxplot(
         plt.ylim(0, y_limit)
         for x_pos, outliers in outlier_annotations:
             outlier_color = CONSENSUS_DISCREPANCY_TYPE_COLORS.get(used_keys[x_pos - 1], CBF_COLORS["outlier"])
+            plot_x = positions[x_pos - 1]
             plt.text(
-                x_pos,
+                plot_x,
                 y_limit * 0.95,
                 "*",
                 ha="center",
@@ -2267,7 +2319,7 @@ def make_component_consensus_discrepancy_type_boxplot(
                 fontweight="bold",
             )
             plt.text(
-                x_pos,
+                plot_x,
                 y_limit * 0.91,
                 f"Outlier: {outliers[0]:g}",
                 ha="center",
@@ -2605,6 +2657,23 @@ def trim_boxplot_extreme_outliers(
     return trimmed_data, outlier_annotations
 
 
+def restore_outliers_within_axis_range(
+    trimmed_data: List[List[float]],
+    outlier_annotations: List[tuple[int, float]],
+    y_upper: float,
+) -> tuple[List[List[float]], List[tuple[int, float]]]:
+    restored_data = [list(values) for values in trimmed_data]
+    remaining_annotations: List[tuple[int, float]] = []
+
+    for idx, value in outlier_annotations:
+        if value <= y_upper:
+            restored_data[idx - 1].append(value)
+        else:
+            remaining_annotations.append((idx, value))
+
+    return restored_data, remaining_annotations
+
+
 def add_boxplot_points(
     ax: Any,
     bp: Dict[str, Any],
@@ -2710,7 +2779,7 @@ def make_component_influenza_variant_reporting_summary(
     box_width = 0.22
 
     panel_a_max = 0.0
-    panel_a_annotations = []
+    panel_a_specs = []
 
     for offset, (metric_key, label, color) in zip(offsets, INFLUENZA_REPORTING_METRICS):
         metric_data = [
@@ -2724,20 +2793,48 @@ def make_component_influenza_variant_reporting_summary(
         if not valid_data:
             continue
 
+        panel_a_max = max(panel_a_max, max(max(values) for values in valid_data))
+        panel_a_specs.append(
+            {
+                "data": trimmed_data,
+                "positions": positions,
+                "color": color,
+                "outliers": outlier_annotations,
+            }
+        )
+
+    panel_a_upper = panel_a_max * 1.18 if panel_a_max > 0 else 1.0
+    panel_a_annotations = []
+
+    for spec in panel_a_specs:
+        restored_data, remaining_outliers = restore_outliers_within_axis_range(
+            spec["data"],
+            spec["outliers"],
+            panel_a_upper,
+        )
+        valid_data = [values for values in restored_data if values]
+        if valid_data:
+            panel_a_max = max(panel_a_max, max(max(values) for values in valid_data))
+        spec["data"] = restored_data
+        spec["outliers"] = remaining_outliers
+
+    panel_a_upper = panel_a_max * 1.18 if panel_a_max > 0 else 1.0
+
+    for spec in panel_a_specs:
         bp = axes[0].boxplot(
-            trimmed_data,
-            positions=positions,
+            spec["data"],
+            positions=spec["positions"],
             widths=box_width,
             showfliers=True,
             patch_artist=True,
         )
-        style_boxplot_with_color(bp, color, ax=axes[0])
-        add_boxplot_points(axes[0], bp, trimmed_data, positions, color)
+        style_boxplot_with_color(bp, spec["color"], ax=axes[0])
+        add_boxplot_points(axes[0], bp, spec["data"], spec["positions"], spec["color"])
+        panel_a_annotations.extend(
+            (spec["positions"][idx - 1], value, spec["color"])
+            for idx, value in spec["outliers"]
+        )
 
-        panel_a_max = max(panel_a_max, max(max(values) for values in valid_data))
-        panel_a_annotations.extend((positions[idx - 1], value, color) for idx, value in outlier_annotations)
-
-    panel_a_upper = panel_a_max * 1.18 if panel_a_max > 0 else 1.0
     axes[0].set_ylim(0, panel_a_upper)
     for x_pos, display_value, color in panel_a_annotations:
         annotate_outlier_caps(axes[0], [(x_pos, display_value)], panel_a_upper, color)
@@ -2765,6 +2862,17 @@ def make_component_influenza_variant_reporting_summary(
     valid_total_vcf_data = [values for values in trimmed_total_vcf_data if values]
     if valid_total_vcf_data:
         panel_b_color = COMPONENT_BOX_COLORS.get(comp_code, INFLUENZA_TOTAL_VCF_COLOR)
+        panel_b_max = max(max(values) for values in valid_total_vcf_data)
+        panel_b_upper = panel_b_max * 1.18 if panel_b_max > 0 else 1.0
+        trimmed_total_vcf_data, total_vcf_outliers = restore_outliers_within_axis_range(
+            trimmed_total_vcf_data,
+            total_vcf_outliers,
+            panel_b_upper,
+        )
+        valid_total_vcf_data = [values for values in trimmed_total_vcf_data if values]
+        panel_b_max = max(max(values) for values in valid_total_vcf_data)
+        panel_b_upper = panel_b_max * 1.18 if panel_b_max > 0 else 1.0
+
         bp_total = axes[1].boxplot(
             trimmed_total_vcf_data,
             positions=base_positions,
@@ -2781,8 +2889,6 @@ def make_component_influenza_variant_reporting_summary(
             panel_b_color,
         )
 
-        panel_b_max = max(max(values) for values in valid_total_vcf_data)
-        panel_b_upper = panel_b_max * 1.18 if panel_b_max > 0 else 1.0
         axes[1].set_ylim(0, panel_b_upper)
         annotate_outlier_caps(
             axes[1],
@@ -2881,7 +2987,15 @@ def make_consensus_summary_plot(
     if not discrepancy_data or not identity_data:
         return str(output_path)
 
-    fixed_y_upper = 500.0
+    all_discrepancy_values = sorted(
+        value
+        for values in discrepancy_data
+        for value in values
+    )
+    if len(all_discrepancy_values) > 1 and all_discrepancy_values[-1] > all_discrepancy_values[-2] + 300:
+        fixed_y_upper = all_discrepancy_values[-2] + 300
+    else:
+        fixed_y_upper = (all_discrepancy_values[-1] + 300) if all_discrepancy_values else 500.0
     plotted_discrepancy_data = [list(vals) for vals in discrepancy_data]
     outlier_annotations = []
 
@@ -3000,7 +3114,18 @@ def make_variant_summary_plot(
     if not data:
         return str(output_path)
 
-    fixed_y_upper = 210.0
+    all_variant_discrepancy_values = sorted(
+        value
+        for values in data
+        for value in values
+    )
+    if (
+        len(all_variant_discrepancy_values) > 1
+        and all_variant_discrepancy_values[-1] > all_variant_discrepancy_values[-2] + 15
+    ):
+        fixed_y_upper = all_variant_discrepancy_values[-2] + 15
+    else:
+        fixed_y_upper = all_variant_discrepancy_values[-1] + 15
     plotted_data = [list(vals) for vals in data]
     outlier_annotations = []
 

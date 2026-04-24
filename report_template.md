@@ -1,5 +1,5 @@
 {# =========================
-  JINJA2 TEMPLATE: RELECOV EQA REPORT
+  JINJA2 TEMPLATE: RELECOV Interlaboratory Comparison Exercise REPORT
   Context expected:
     - general: dict (from general.json)
     - labdata: dict (from lab_<LAB_COD>.json)
@@ -70,19 +70,19 @@
   "per_reads_host": "% Reads host"
 } %}
 
-# RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network
+# Interlaboratory Comparison Exercise RELECOV 2.0 - Consolidation of WGS and RT-PCR activities for SARS-CoV-2 in Spain towards sustainable use and integration of enhanced infrastructure and capacities in the RELECOV network
 
-##### Sarai Varona, Enrique Sapena, Pablo Mata, Alejandro Bernabéu, Pau Pascual, Magdalena Matito, Juan Ledesma, Sara Monzón, Isabel Cuesta
+##### Sarai Varona, Enrique Sapena, Pablo Mata, Alejandro Bernabéu, Pau Pascual, Magdalena Matito, Juan Ledesma, Emilia Arjona, Victor Lopez, Olga Dolgova, Sara Monzón, Isabel Cuesta
 
 ## Table of Contents
 
 - [Executive Summary](#executive-summary)
 - [1. Introduction](#1-introduction)
-- [2. Scope of the EQA](#2-scope-of-the-eqa)
+- [2. Scope of the Interlaboratory Comparison Exercise](#2-scope-of-the-interlaboratory-comparison-study)
 - [3. Dataset Design and Sample Selection Criteria](#3-dataset-design-and-sample-selection-criteria)
     - [3.1. Rationale for Dataset Selection](#31-rationale-for-dataset-selection)
-    - [3.2. SARS-CoV-2 Dataset Selection](#32-sars-cov-2-dataset-selection)
-    - [3.3. Influenza Dataset Selection](#33-influenza-dataset-selection)
+    - [3.2. SARS-CoV-2 Dataset](#32-sars-cov-2-dataset)
+    - [3.3. Influenza Dataset](#33-influenza-dataset)
 - [4. Methodology of Evaluation](#4-methodology-of-evaluation)
     - [4.1. Submission Completeness](#41-submission-completeness)
     - [4.2. Evaluation of Consensus Genome Reconstruction Performance](#42-evaluation-of-consensus-genome-reconstruction-performance)
@@ -117,35 +117,35 @@
 
 ## Executive Summary
 
-The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment focused specifically on bioinformatic analytical performance across respiratory virus surveillance workflows. The exercise evaluated 20 distributed datasets grouped into four analytical components, comprising Illumina and Nanopore for SARS-CoV-2 and influenza. Participating laboratories were assessed on consensus genome reconstruction, variant reporting, lineage/type and clade assignment, metadata completeness, and the reproducibility of their declared analytical workflows relative to curated gold standards and network-wide distributions.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise provides the first network-wide dry-lab assessment focused specifically on bioinformatic analytical performance across respiratory virus genomic surveillance workflows. The exercise evaluated 20 distributed datasets grouped into four analytical components, comprising Illumina and Nanopore data for SARS-CoV-2 and influenza virus. Participating laboratories were assessed on consensus genome reconstruction, variant reporting, lineage/type and clade assignment, metadata completeness, and the reproducibility of their declared analytical workflows relative to curated gold standards and network-wide distributions.
 
-Nineteen laboratories participated, corresponding to {{ pct(general.total_participants_pct, 2) }} of invited laboratories, with high submission rates for expected analytical outputs: {{ pct(general.submission_rates_pct.fasta, 2) }} for consensus genome files and {{ pct(general.submission_rates_pct.vcf, 2) }} for VCF files.
+Nineteen RELECOV member laboratories participated, corresponding to {{ pct(general.total_participants_pct, 2) }} of invited laboratories, with high submission rates for expected analytical outputs: {{ pct(general.submission_rates_pct.fasta, 2) }} for consensus genome files and {{ pct(general.submission_rates_pct.vcf, 2) }} for VCF files.
 
 Across the network, consensus genome reconstruction performed best in the Illumina-based components, with a combined median genome identity of {{ pct(general.general_results.consensus.median_identity_illumina_pct, 2) }}, compared with {{ pct(general.general_results.consensus.median_identity_nanopore_pct, 2) }} in the Nanopore-based components. However, broad identity ranges in SARS2 and FLU2 indicate that outlier submissions remained present, particularly in contexts where masking, coverage thresholds, and consensus-generation choices differed across laboratories.
 
-Variant reporting showed clear methodological heterogeneity. For SARS-CoV-2, the median number of discrepancies relative to the curated reference variant sets was {{ general.general_results.sars_variants.median_discrepancy_illumina }} in the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} in the Nanopore component. Influenza submissions were more heterogeneous structurally: the median number of high-frequency variants reported in metadata was {{ general.general_results.influenza_variants.median_variants_in_consensus }}, whereas the corresponding median obtained from submitted VCF files after filtering to AF >=75% was {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }}. The median discrepancy between these two representations was {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }}, indicating that metadata declarations and filtered VCF content were not always directly concordant.
+Variant reporting showed clear methodological heterogeneity. For SARS-CoV-2, the median number of discrepancies relative to the curated reference variant sets was {{ general.general_results.sars_variants.median_discrepancy_illumina }} in the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} in the Nanopore component. Influenza submissions were more heterogeneous structurally: the median number of high-frequency variants reported in metadata was {{ general.general_results.influenza_variants.median_variants_in_consensus }}, whereas the corresponding median obtained from submitted VCF files after filtering to Allele Frequency (AF) >=75% was {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }}. The median discrepancy between these two representations was {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }}, indicating that metadata declarations and filtered VCF content were not always directly concordant.
 
 Classification performance was consistently higher for lineage/type assignment than for clade assignment. SARS-CoV-2 lineage concordance reached {{ pct(general.general_results.classification.sars_lineage_concordance_pct) }}, compared with {{ pct(general.general_results.classification.sars_clade_concordance_pct) }} for clade assignment, while influenza type/subtype concordance reached {{ pct(general.general_results.classification.influenza_type_concordance_pct) }}, compared with {{ pct(general.general_results.classification.influenza_clade_concordance_pct) }} for clade assignment. Review of submitted files further indicated that part of the excess discordance in clade assignment reflected field completion and nomenclature issues, including missing clade entries and lineage/type-like values entered in the clade field.
 
 Metadata completeness and reporting remain major priorities for harmonisation. The median metadata completeness rate across participating laboratories was {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Although software names were reported for {{ pct(general.metadata_completeness.software_names_pct) }} of expected fields, only {{ pct(general.metadata_completeness.software_version_pct) }} of software-version fields, {{ pct(general.metadata_completeness.coverage_threshold_pct) }} of coverage thresholds, {{ pct(general.metadata_completeness.variant_calling_params_pct) }} of variant-calling parameter fields, and {{ pct(general.metadata_completeness.reference_genome_pct) }} of reference genome identifiers were completed. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified, together with substantial diversity in consensus, variant calling, and classification software.
 
-Overall, the EQA shows that RELECOV laboratories already have substantial bioinformatic capacity, but also that inter-laboratory comparability is limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities centred on minimum performance standards, stronger metadata requirements, clearer reporting rules for consensus and variants, and component-aware benchmarking rather than a single cross-context pipeline ranking.
+Overall, the Interlaboratory Comparison Exercise shows that RELECOV laboratories already have substantial bioinformatic capacity, but also that inter-laboratory comparability is limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities centred on minimum performance standards, stronger metadata requirements, clearer reporting rules for consensus and variants, and component-aware benchmarking rather than a single cross-context pipeline ranking.
 
 ## 1. Introduction
 
 The RELECOV Network aims to strengthen genomic surveillance of respiratory viruses by developing and harmonising analytical capacities across the participating laboratories. In this context, it was essential to **assess the consistency, reproducibility and maturity of the bioinformatics workflows implemented within the network**.
 
-To this end, an **external quality assessment (EQA) exercise in dry lab format** was conducted, inspired by the ECDC’s 2024 dry-lab EQA. The exercise focused on the bioinformatic characterisation of respiratory viruses, covering key analytical tasks including viral genome reconstruction, variant identification, and lineage and clade assignment.
+To this end, an **Interlaboratory Comparison Exercise exercise in dry lab format** was conducted, inspired by the European Centre for Disease Prevention and Control (ECDC) 2024 dry-lab EQA. The exercise focused on the bioinformatic characterisation of respiratory viruses, covering key analytical tasks including viral genome reconstruction, variant identification, and lineage and clade assignment.
 
-A central component of this initiative was to evaluate the range of analytical pipelines used across the RELECOV Network, identify their relative performance, and determine which approaches were best suited to support a genomic surveillance standard within the network. This evaluation contributes directly to **Objective 2.1** of RELECOV 2.0, which focuses on _improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform_. Furthermore, the EQA provides the practical evidence base required for **Task T6.1**, which aims to  _identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians_, in order to define the workflow that should be integrated into the RELECOV analytical platform.
+A central component of this initiative was to evaluate the range of analytical pipelines used across the RELECOV Network, identify their relative performance, and determine which approaches were best suited to support a genomic surveillance standard within the network. This evaluation contributes directly to **Objective 2.1** of RELECOV 2.0, which focuses on _improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform_. Furthermore, the exercise provides the practical evidence base required for **Task T6.1**, which aims to  _identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians_, in order to define the workflow that should be integrated into the RELECOV analytical platform.
 
 The exercise was also aligned with **Milestone M6.3**, which pertains to _define sequencing and analysis protocols for each of the sequencing platforms_. In addition, the exercise provided operational insights relevant to **Task T6.5**, which addresses _the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network_. It also contributed to **Task T6.4**, related to _sequence metadata annotation with ontologies, schema generation, parsing and validation_, by highlighting practical issues affecting metadata completeness, controlled-vocabulary use, and the consistency of reported analytical parameters.
 
 The overall objective of the exercise was to **assess the bioinformatic performance of the participating laboratories, identify areas for improvement, and promote the adoption of consistent and comparable analytical practices across the network**. The outcomes presented in this report strengthen RELECOV’s preparedness and response capacity in routine surveillance and public health emergencies, support the quality and robustness of genomic analyses performed throughout the network, and contribute directly to the fulfilment of key project objectives, milestones and deliverables.
 
-## 2. Scope of the EQA
+## 2. Scope of the Interlaboratory Comparison Exercise
 
-The 2026 RELECOV Dry-Lab External Quality Assessment (EQA) was designed to evaluate the bioinformatic analytical performance of laboratories participating in the RELECOV Network in the context of respiratory virus genomic surveillance.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was designed to evaluate the bioinformatic analytical performance of laboratories participating in the RELECOV Network in the context of respiratory virus genomic surveillance.
 
 Participating laboratories were provided with raw sequencing datasets corresponding to four independent analytical components:
 
@@ -162,7 +162,7 @@ Laboratories were requested to submit:
     - One or more variant call files in .vcf format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
 - A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, Lineage, Subtype or clade assignment tools, and file paths to submitted outputs.
 
-The primary objective of the exercise was to assess the consistency, reproducibility, and comparability of bioinformatic workflows currently implemented across the network. The evaluation focused on core analytical tasks that are essential for routine genomic surveillance and public health response, including:
+The evaluation focused on core analytical tasks that are essential for routine genomic surveillance and public health response, including:
 
 - **Viral genome reconstruction**: Generation of high-quality consensus genome sequences from raw sequencing reads produced using Illumina and Oxford Nanopore Technologies platforms.
 - **Variant identification and reporting**: Detection and annotation of nucleotide variants relative to a chosen reference genome, including evaluation of filtering criteria, allele frequency thresholds, and variant file standardisation.
@@ -173,7 +173,7 @@ The primary objective of the exercise was to assess the consistency, reproducibi
 
 ### 3.1. Rationale for Dataset Selection
 
-The 2026 RELECOV Dry-Lab EQA was specifically designed for laboratories operating in a clinical and hospital-based diagnostic context, where routine genomic surveillance primarily involves human respiratory samples.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was specifically designed for laboratories operating in a clinical and hospital-based diagnostic context, where routine genomic surveillance primarily involves human respiratory samples.
 
 Sample selection followed three guiding principles:
 
@@ -188,7 +188,7 @@ Datasets were derived from two sources:
 
 The integration of both sources allowed alignment with internationally validated materials while tailoring the exercise to the operational reality of RELECOV clinical laboratories.
 
-### 3.2. SARS-CoV-2 Dataset Selection
+### 3.2. SARS-CoV-2 Dataset
 
 SARS-CoV-2 datasets were selected from the 2024 ECDC ESIB EQA to ensure comparability with internationally benchmarked material. Both Illumina and Nanopore panels included samples representing:
 
@@ -202,23 +202,23 @@ Only samples generated using the same ARTIC primer scheme (v4.1) were selected t
 
 {% set table_counter.value = table_counter.value + 1 %}
 
-_**Table {{ table_counter.value }}**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab EQA.
+_**Table {{ table_counter.value }}**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab Interlaboratory Comparison Exercise .
 The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
-| Sample | Source             | Platform | Amplicon primers version | Ref sample | Key Feature                                       | FASTQ files | Read layout | Clade Assignment | Lineage Assignment | Quality check |
-|--------|--------------------|----------|--------------------------|------------|---------------------------------------------------|-------------|-------------|------------------|--------------------|---------------|
-| SARS1  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end  | -                | -                  | Bad           |
-| SARS2  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | 21K              | BA.1.13            | Ok            |
-| SARS3  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end  | 23A              | XBB.1.5            | Ok            |
-| SARS4  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.20   | Very low read depth                               | 2           | Paired-end  | 22E              | BQ.1.1             | Bad           |
-| SARS5  | ECDC-ESIB EQA 2024 | Illumina | ARTIC v4.1               | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | 21K              | BA.1.1             | Bad           |
-| SARS6  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.01   | High-quality baseline sample                      | 1           | Single-end  | recombinant      | XCH.1              | Ok            |
-| SARS7  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end  | 23A              | XBB.1.5.24         | Ok            |
-| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D              | XBB.1.9.1          | Bad           |
-| SARS9  | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end  | -                | -                  | Bad           |
-| SARS10 | ECDC-ESIB EQA 2024 | Nanopore | ARTIC v4.1               | SARS1.05   | Very low read depth                               | 1           | Single-end  | -                | -                  | Bad           |
+| Sample | Source             | Platform | Ref sample | Key Feature                                       | FASTQ files | Read layout | Clade Assignment | Lineage Assignment | Quality check |
+|--------|--------------------|----------|------------|---------------------------------------------------|-------------|-------------|------------------|--------------------|---------------|
+| SARS1  | ECDC-ESIB EQA 2024 | Illumina | SARS2.04   | Influenza virus sample with some SARS-CoV-2 reads | 2           | Paired-end  | -                | -                  | Bad           |
+| SARS2  | ECDC-ESIB EQA 2024 | Illumina | SARS2.01   | High-quality baseline sample                      | 2           | Paired-end  | 21K              | BA.1.13            | Ok            |
+| SARS3  | ECDC-ESIB EQA 2024 | Illumina | SARS2.16   | XBB sample / insertion challenge                  | 2           | Paired-end  | 23A              | XBB.1.5            | Ok            |
+| SARS4  | ECDC-ESIB EQA 2024 | Illumina | SARS2.20   | Very low read depth                               | 2           | Paired-end  | 22E              | BQ.1.1             | Bad           |
+| SARS5  | ECDC-ESIB EQA 2024 | Illumina | SARS2.13   | >10 mixed sites                                   | 2           | Paired-end  | 21K              | BA.1.1             | Bad           |
+| SARS6  | ECDC-ESIB EQA 2024 | Nanopore | SARS1.01   | High-quality baseline sample                      | 1           | Single-end  | recombinant      | XCH.1              | Ok            |
+| SARS7  | ECDC-ESIB EQA 2024 | Nanopore | SARS1.09   | XBB sample / ambiguity next to a deletion         | 1           | Single-end  | 23A              | XBB.1.5.24         | Ok            |
+| SARS8  | ECDC-ESIB EQA 2024 | Nanopore | SARS1.15   | >10 mixed sites                                   | 1           | Single-end  | 23D              | XBB.1.9.1          | Bad           |
+| SARS9  | ECDC-ESIB EQA 2024 | Nanopore | SARS1.12   | Influenza virus sample with some SARS-CoV-2 reads | 1           | Single-end  | -                | -                  | Bad           |
+| SARS10 | ECDC-ESIB EQA 2024 | Nanopore | SARS1.05   | Very low read depth                               | 1           | Single-end  | -                | -                  | Bad           |
 
-### 3.3. Influenza Dataset Selection
+### 3.3. Influenza Dataset
 
 The influenza datasets provided in the 2024 ECDC ESIB EQA predominantly correspond to zoonotic influenza strains of animal origin, including H5N1, H5N6, and reassortant genomes.
 
@@ -227,7 +227,7 @@ While these datasets are valuable for specialised surveillance contexts, they do
 - Seasonal human Influenza A/H1N1
 - Seasonal human Influenza A/H3N2
 
-Given that the objective of this EQA is to benchmark bioinformatic workflows in a clinical hospital environment, it was considered methodologically necessary to include representative seasonal human influenza strains.
+Given that the objective of this Interlaboratory Comparison Exercise is to benchmark bioinformatic workflows in a clinical hospital environment, it was considered methodologically necessary to include representative seasonal human influenza strains.
 
 Therefore, selected ECDC influenza samples were complemented with newly generated in-silico datasets designed to simulate:
 
@@ -276,7 +276,7 @@ _**Table {{ table_counter.value }}**. Viral, host and contaminant composition de
 
 {% set table_counter.value = table_counter.value + 1 %}
 
-_**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
+_**Table {{ table_counter.value }}**. Influenza virus samples used in the RELECOV 2026 Dry-Lab Interlaboratory Comparison Exercise, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
 
 | Sample | Source    | Platform | Enrichment Strategy | Primer Scheme                                   | Read Layout | Ref_sample        | Type   | Clade HA  | Legacy Clade       | Key Feature                             | Quality check |
 |--------|-----------|----------|---------------------|-------------------------------------------------|-------------|-------------------|--------|-----------| ------------------ | ----------------------------------------|---------------|
@@ -343,12 +343,14 @@ Missing files were recorded but not penalised beyond descriptive reporting, as l
 
 ### 4.2. Evaluation of Consensus Genome Reconstruction Performance
 
-For each sample, a curated gold standard consensus genome was provided by the ECDC or generated internally. These reference sequences served as the ground truth for comparative analysis.
+For each sample, a curated gold standard consensus genome was provided by the ECDC or generated internally. These reference sequences served as the ground truth for comparative analysis. Influenza gold standard consensus sequences generated for this exercise are available in the project GitHub repository. Gold standard consensus sequences corresponding to ECDC-provided samples are not distributed with the repository, as we are not authorised to provide those datasets.
 
 All submitted consensus sequences (.fasta) were:
 
 - Aligned against the corresponding gold standard sequence using [Mafft v7.475](https://mafft.cbrc.jp/alignment/software/).
 - Compared position-by-position relative to the declared reference genome coordinate system.
+
+For SARS-CoV-2 samples, evaluated positions were reported relative to the Wuhan reference genome coordinate system. For influenza virus samples, evaluated positions were reported relative to the curated gold standard sequence for each segment. In the influenza gold standards, primer-binding regions were masked to allow evaluation of laboratories that retained primer-derived regions in the submitted consensus sequence. Influenza positions showing two alternative alleles at approximately balanced frequencies (40-60% allele frequency for each allele) were represented using IUPAC ambiguity codes in the gold standard. At these positions, either the corresponding ambiguity code or either of the two represented nucleotides was accepted as concordant with the gold standard.
 
 Differences between submitted sequences and gold standard sequences were categorised into the following classes:
 
@@ -553,7 +555,7 @@ The benchmarking framework therefore provides an empirical basis for:
 
 ## 5. General Results
 
-A total of 52 laboratories within the RELECOV network were invited to participate. Of these, {{ general.total_participants }} laboratories {{ pct(general.total_participants_pct) }} submitted results for one or more components with the following distribution:
+A total of 52 laboratories within the RELECOV network were invited to participate. Of these, {{ general.total_participants }} laboratories ({{ pct(general.total_participants_pct) }}) submitted results for one or more components with the following distribution:
 
 - SARS1 (SARS-CoV-2, Illumina): {{ general.participation_per_component.SARS1 }} laboratories.
 - SARS2 (SARS-CoV-2, Oxford Nanopore Technologies): {{ general.participation_per_component.SARS2 }} laboratories.
@@ -605,16 +607,15 @@ Variant detection performance differed across components (Figure {{ fig_counter.
 - Allele frequency thresholds used for incorporation into vcf files
 - Variant normalization practices (variant caller software and params)
 
-
 {% set figure_cfg.style = "max-width: 70%;" %}
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary." ) }}
 **_Figure {{ fig_counter.value }}_. SARS-CoV-2 network-level variant detection performance summary**. Boxplots represent the number of variant discrepancies per SARS-CoV-2 component across participating laboratories. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
 
 Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
 
-- {{ general.general_results.sars_variants.high_and_low_freq_pct }}% of laboratories reported both high- and low-frequency variants.
-- {{ general.general_results.sars_variants.low_freq_only_pct }}% reported exclusively low-frequency variants.
-- {{ general.general_results.sars_variants.high_freq_only_pct }}% reported only high-frequency variants.
+- {{ "None" if general.general_results.sars_variants.high_and_low_freq_pct == 0 else pct(general.general_results.sars_variants.high_and_low_freq_pct) }} of laboratories reported both high- and low-frequency variants.
+- {{ "None" if general.general_results.sars_variants.high_freq_only_pct == 0 else pct(general.general_results.sars_variants.high_freq_only_pct) }} reported only high-frequency variants.
+- {{ "None" if general.general_results.sars_variants.low_freq_only_pct == 0 else pct(general.general_results.sars_variants.low_freq_only_pct) }} reported exclusively low-frequency variants.
 
 Additionally, a total of {{ general.general_results.sars_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components ({{ general.general_results.sars_variants.distinct_references | join(", ") }}).
 
@@ -634,9 +635,9 @@ For influenza virus components (FLU1 and FLU2), variant evaluation focused on st
 
 At network level:
 
-- {{ general.general_results.influenza_variants.high_and_low_freq_pct }}% of laboratories reported both high- and low-frequency variants.
-- {{ general.general_results.influenza_variants.low_freq_only_pct }}% reported exclusively low-frequency variants.
-- {{ general.general_results.influenza_variants.high_freq_only_pct }}% reported only high-frequency variants.
+- {{ "None" if general.general_results.influenza_variants.high_and_low_freq_pct == 0 else pct(general.general_results.influenza_variants.high_and_low_freq_pct) }} of laboratories reported both high- and low-frequency variants.
+- {{ "None" if general.general_results.influenza_variants.high_freq_only_pct == 0 else pct(general.general_results.influenza_variants.high_freq_only_pct) }} reported only high-frequency variants.
+- {{ "None" if general.general_results.influenza_variants.low_freq_only_pct == 0 else pct(general.general_results.influenza_variants.low_freq_only_pct) }} reported exclusively low-frequency variants.
 
 Additionally, an estimated total of {{ "%.0f"|format(general.general_results.influenza_variants.total_distinct_references) }} distinct reference genomes were employed for variant calling or mapping across influenza components. This value was rounded to the nearest whole genome by dividing the total number of distinct fragment references ({{ general.general_results.influenza_variants.total_distinct_fragments }}) by 8 influenza genome segments.
 
@@ -919,7 +920,7 @@ Figure {{ fig_counter.value }} summarises the distribution of declared variant r
 
 **Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
-The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}. These patterns should be interpreted in the context of threshold choices, reference-genome selection, and declared pipeline configurations, all of which can shift the balance between successful hits, missing expected variants, and de novo calls even when laboratories analyse the same raw data. The full sample-level variant calling profile is provided in Appendix Table {{ appendix_variant_profile_table_num }}, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table {{ appendix_variant_type_table_num }} and Appendix Figure {{ appendix_variant_type_fig_num }}, respectively.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}. Here, "dominant" refers to the discrepancy category with the highest median burden across evaluable observations, rather than the category with the single highest maximum value or the largest cumulative total. This choice reduces sensitivity to a small number of extreme outliers and is intended to reflect the most typical discrepancy pattern observed across laboratories. These patterns should be interpreted in the context of threshold choices, reference-genome selection, and declared pipeline configurations, all of which can shift the balance between successful hits, missing expected variants, and de novo calls even when laboratories analyse the same raw data. The full sample-level variant calling profile is provided in Appendix Table {{ appendix_variant_profile_table_num }}, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table {{ appendix_variant_type_table_num }} and Appendix Figure {{ appendix_variant_type_fig_num }}, respectively.
 
 {% else %}
 
@@ -1363,7 +1364,7 @@ Subtype assignment configurations are plotted only when evaluable concordance da
 
 ## 7. Discussion
 
-The 2026 RELECOV Dry-Lab EQA provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions.
 
 ### 7.1. Consensus Genome Reconstruction
 
@@ -1371,19 +1372,21 @@ Consensus reconstruction results were strongest in the Illumina-based components
 
 At the same time, the ranges observed across laboratories show that high medians did not eliminate outlier behaviour. In particular, the minimum identity values in SARS2 and FLU2 dropped to {{ pct(general.components.SARS2.consensus.identity_pct_min, 2) }} and {{ pct(general.components.FLU2.consensus.identity_pct_min, 2) }}, indicating that a subset of submissions diverged markedly from the curated gold standard.
 
-The dominant discrepancy categories also differed by component. SARS1 was dominated by defined nucleotides in submitted consensuses where stretches of Ns were present in the gold standard (`ns2nt`), whereas SARS2 was dominated by stretches of Ns where defined nucleotides were present in the gold standard (`nt2ns`). These patterns are consistent with differences in masking behaviour and minimum coverage policies relative to the gold standard reconstruction criteria. This was especially clear in samples such as SARS4 in SARS1 and SARS8 in SARS2, where low depth or mixed-site complexity increased sensitivity to local masking decisions and likely exposed differences between ECDC reconstruction criteria and the thresholds applied within the network. In influenza, both FLU1 and FLU2 were dominated by deletions relative to the gold standard, suggesting that consensus generation parameters remain important contributors to inter-laboratory divergence. The most discrepancy-prone samples were in-silico datasets  with segment dropouts or contamination, which supports the interpretation that indel calling thresholds and segment-specific handling rules remain insufficiently harmonised in influenza workflows.
+The dominant discrepancy categories also differed by component. SARS1 component was dominated by defined nucleotides in submitted consensuses where stretches of Ns were present in the gold standard, consistent with more permissive reconstruction in regions that had been masked in the curated reference set. In SARS2 component, by contrast, the most frequent discrepancy category was the presence of a nucleotide when gold standard has an ambiguity, followed by the presence of stretch of Ns when the gold standard has a nucleotide, indicating that disagreement was driven less by a single masking pattern and more by a combination of ambiguity handling and local masking decisions. This was especially clear in samples such as SARS4 in Illumina component and SARS8 in Nanopore component, where low depth or mixed-site complexity increased sensitivity to local reconstruction rules and likely exposed differences between ECDC reconstruction criteria and the thresholds applied within the network.
+
+In influenza, the corrected discrepancy profiles were not uniformly dominated by deletions. FLU1 component showed a mixed pattern with substantial contributions of the presence of ambiguities when the gold standard has a nucleotide and deletions, whereas FLU2 component was dominated primarily by wrong nucleotides followed by the presence of ambiguities when the gold standard has a nucleotide. Although primer-masked regions in the influenza gold standards were not counted as consensus errors, some consensus-generation software still appeared not to reconstruct terminal non-coding regions outside the CDS, which continued to contribute to deletion calls at segment ends. Taken together, these results suggest that influenza inter-laboratory divergence is shaped by a broader combination of ambiguity handling, terminal trimming behaviour, and segment-specific reconstruction rules rather than by end deletions alone.
 
 ### 7.2. Variant Detection and Reporting
 
-For SARS-CoV-2, variant detection performance did not follow a simple platform ranking. The median number of discrepancies relative to the curated variant set was {{ general.general_results.sars_variants.median_discrepancy_illumina }} in the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} in the Nanopore component. This indicates that platform effects were present, but that they interacted with sample composition, reporting choices, and software configuration rather than determining performance on their own.
+For SARS-CoV-2, variant detection performance did not follow a simple platform ranking. The median number of discrepancies relative to the curated variant set was {{ general.general_results.sars_variants.median_discrepancy_illumina }} in the Illumina component and {{ general.general_results.sars_variants.median_discrepancy_nanopore }} in the Nanopore component. This indicates that component-specific performance likely reflected an interaction between sample composition, reporting choices, and software configuration, rather than a simple platform effect alone.
 
 The submitted metadata documented substantial diversity in variant reporting behaviour. Across SARS-CoV-2 submissions, {{ general.general_results.sars_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants, whereas {{ general.general_results.sars_variants.high_freq_only_pct }} reported high-frequency variants only. Influenza reporting was more heterogeneous: {{ general.general_results.influenza_variants.high_and_low_freq_pct }} of laboratories reported both high- and low-frequency variants, {{ general.general_results.influenza_variants.low_freq_only_pct }} reported low-frequency variants only, and {{ general.general_results.influenza_variants.high_freq_only_pct }} reported high-frequency variants only.
 
 Influenza results especially highlight the consequences of heterogeneous structural reporting. The network-level median number of variants with AF >=75% reported in metadata was {{ general.general_results.influenza_variants.median_variants_in_consensus }}, whereas the corresponding median derived from submitted VCF files was {{ general.general_results.influenza_variants.median_variants_in_consensus_vcf }}. The median discrepancy between these two representations was {{ general.general_results.influenza_variants.median_discrepancies_in_reported_variants }}, and the total number of variants present in submitted VCF files ranged from {{ general.general_results.influenza_variants.min_variants_in_vcf }} to {{ general.general_results.influenza_variants.max_variants_in_vcf }}. Together, these values indicate that influenza variant outputs were not directly comparable under a single harmonised coordinate framework and that reporting conventions differed markedly across laboratories. That heterogeneity is also visible in the mixed reporting modes, the use of multiple reference genomes, and the wide structural ranges in both total VCF content and metadata-VCF discrepancies.
 
-In SARS-CoV-2, discrepancies between metadata-reported and VCF-derived values were generally limited, but the discrepancy profile still points to differences in filtering and interpretation rules. In SARS1, the most frequent discrepancy type was "De novo variants", and samples such as SARS3 and especially SARS4 showed the highest discrepancy burdens, consistent with the fact that the curated reference VCF retained only variants supported by a minimum total depth of 10x and a minimum allele frequency of 25%. Additional technical limitations also affected the calculation of VCF-derived variants with effect in this component: one submission was generated against an XBB reference genome rather than against the Wuhan-based reference framework used for the EQA gold standard, and another submission provided iVar TSV outputs instead of VCF files, which prevented standard annotation of VCF content for effect-based comparisons. This means that laboratories using different calling thresholds, or laboratories reporting only high-frequency variants, may inflate either "Missing expected variants" or "De novo variant" categories even when the underlying VCF is internally coherent. In SARS2, overall discrepancy levels also remained low, but "Missing expected variants" and "De novo variants" were again the most frequent discrepancy types, and the highest-burden samples were the low-quality materials SARS9 and SARS10. In that component, the curated reference VCF was more stringent, retaining only variants supported by a minimum total depth of 20x and a minimum allele frequency of 50%, which likely increased the sensitivity of concordance metrics to differences in filtering and reporting decisions. Technical limitations also affected the availability of some VCF-derived summary metrics in this component: one laboratory did not submit VCF files, and in another case the VCFs had been generated with Medaka, which does not provide allele-frequency information. As a result, it was not possible in those submissions to derive AF >=75% variant counts or to calculate annotated variants with effect from the VCF content.
+In SARS-CoV-2, discrepancies between metadata-reported and VCF-derived values were generally limited, but the discrepancy profile between the reported VCFs and the gold standard VCFs still points to differences in filtering and interpretation rules. In the SARS1 component, the dominant discrepancy category by median burden was the absence of expected variants, whereas the cumulative discrepancy load across all observations was more strongly influenced by the presence of _de novo_ variants, indicating that a relatively small number of submissions contributed disproportionately large _de novo_ counts. The highest discrepancy burdens were observed in samples such as SARS3 and especially SARS4, consistent with the fact that the curated reference VCF retained only variants supported by a minimum total depth of 10x and a minimum allele frequency of 25%. Additional technical limitations also affected the calculation of VCF-derived variants with effect in this component: one submission was generated against an XBB reference genome rather than against the Wuhan-based reference framework used for the exercise gold standard, and another submission provided iVar TSV outputs instead of VCF files, which prevented standard annotation of VCF content for effect-based comparisons. This means that laboratories using different calling thresholds, or laboratories reporting only high-frequency variants, may inflate either "Missing expected variants" or "De novo variant" categories even when the underlying VCF is internally coherent. In SARS2 compoenent, overall discrepancy levels also remained low, but the presence of _de novo_ variants remained the largest cumulative discrepancy category, and the highest-burden samples were the low-quality samples SARS9 and SARS10. In that component, the curated reference VCF was more stringent, retaining only variants supported by a minimum total depth of 20x and a minimum allele frequency of 50%, which likely increased the sensitivity of concordance metrics to differences in filtering and reporting decisions. Technical limitations also affected the availability of some VCF-derived summary metrics in this component: one laboratory did not submit VCF files, and in another case the VCFs had been generated with Medaka, which does not provide allele-frequency information. As a result, it was not possible in those submissions to derive AF >=75% variant counts or to calculate annotated variants with effect from the VCF content.
 
-For influenza, only a minority of laboratories reported metadata counts in a way that could be directly interpreted against the submitted VCFs, and some laboratories appear to have counted all VCF variants, including low-frequency calls, as if they belonged to the AF >=75% category. Others reported VCFs with very large total numbers of variants, indicating the inclusion of very low-frequency events supported by few reads. In practical terms, this means that the influenza discrepancies do not only reflect analytical differences in variant detection, but also differences in how laboratories interpreted software outputs and translated them into the metadata template. This reinforces the need for harmonised best practices defining which variants should be reported, under which AF thresholds, and how those thresholds should be represented in metadata.
+For influenza, only a minority of laboratories reported metadata counts, and some laboratories appear to have counted all VCF variants, including low-frequency calls, as if they belonged to the AF >=75% category. Others reported VCFs with very large total numbers of variants, indicating the inclusion of very low-frequency events supported by few reads. In practical terms, this means that the influenza discrepancies do not only reflect analytical differences in variant detection, but also differences in how laboratories interpreted software outputs and translated them into the metadata template. This reinforces the need for harmonised best practices defining which variants should be reported, under which AF thresholds, and how those thresholds should be represented in metadata.
 
 ### 7.3. Classification and QC Interpretation
 
@@ -1428,7 +1431,7 @@ Taken together, the results support a harmonisation strategy centred on minimum 
 
 ## 8. Conclusions
 
-The 2026 RELECOV Dry-Lab EQA shows that participating laboratories already have substantial bioinformatic capacity for respiratory virus genomic surveillance, but that performance and comparability still depend strongly on the analytical context in which each task is performed.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise shows that participating laboratories already have substantial bioinformatic capacity for respiratory virus genomic surveillance, but that performance and comparability still depend strongly on the analytical context in which each task is performed.
 
 Consensus genome reconstruction was generally strongest in the Illumina-based components, while broader performance ranges in SARS2 and FLU2 indicate that a subset of submissions remained highly sensitive to masking behaviour, coverage thresholds, and consensus-generation choices. Variant analysis showed that direct SARS-CoV-2 comparison against curated reference sets is feasible, whereas influenza reporting remained much more heterogeneous because of mixed allele frequency reporting strategies, multiple reference backbones, and large discrepancies between metadata-reported and VCF-derived summaries.
 
@@ -1444,7 +1447,7 @@ Overall, the results support RELECOV 2.0 priorities centred on:
 
 Taken together, these findings provide a practical basis for harmonising analytical expectations across the network while preserving the methodological flexibility needed for different pathogens, sequencing platforms, and surveillance scenarios.
 
-The EQA therefore provides a robust technical basis for harmonised, performance-driven genomic surveillance within RELECOV 2.0.
+The Interlaboratory Comparison Exercise therefore provides a robust technical basis for harmonised, performance-driven genomic surveillance within RELECOV 2.0.
 
 {% if labdata %}
 {% set lab_code = labdata.lab.lab_cod | default(labdata.lab.submitting_institution_id) %}
@@ -1452,7 +1455,7 @@ The EQA therefore provides a robust technical basis for harmonised, performance-
 
 <h3 id="laboratory-{{ labdata.lab.lab_cod|lower }}" class="no-page-break">Laboratory: {{ labdata.lab.laboratory_name }} ({{ labdata.lab.lab_cod }})</h3>
 
-This section provides a detailed technical assessment of the analytical results submitted by **{{ labdata.lab.lab_cod }}** within the 2026 RELECOV Dry-Lab EQA. Performance metrics are benchmarked against curated gold standards and contextualised relative to aggregated network-wide performance distributions. Network medians and interquartile ranges are provided for comparative interpretation, without disclosure of other laboratories’ identities.
+This section provides a detailed technical assessment of the analytical results submitted by **{{ labdata.lab.lab_cod }}** within the 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise. Performance metrics are benchmarked against curated gold standards and contextualised relative to aggregated network-wide performance distributions. Network medians and interquartile ranges are provided for comparative interpretation, without disclosure of other laboratories’ identities.
 
 The purpose of this section is to support technical optimisation, parameter harmonisation, and alignment with the analytical standards defined within RELECOV 2.0.
 
@@ -1706,8 +1709,8 @@ Table {{ table_counter.value }} summarises the software configuration declared b
 
 | Metric | {{ labdata.lab.lab_cod }} workflow | Network median | Network min - max |
 |---|---:|---:|---:|
-| Total number of discrepancies | {{ comp.total_number_discrepancies_consensus if comp.total_number_discrepancies_consensus is not none else "NA" }} | {{ general.components[comp_code].workflow_total_discrepancies_median if general.components[comp_code].workflow_total_discrepancies_median is not none else "NA" }} | {{ general.components[comp_code].workflow_total_discrepancies_min if general.components[comp_code].workflow_total_discrepancies_min is not none else "NA" }} - {{ general.components[comp_code].workflow_total_discrepancies_max if general.components[comp_code].workflow_total_discrepancies_max is not none else "NA" }} |
-| Median genome identity (%) | {{ pct(comp.median_genome_identity_pct, 4) if comp.median_genome_identity_pct is not none else "NA" }} | {{ pct(general.components[comp_code].workflow_median_identity_pct_median, 4) if general.components[comp_code].workflow_median_identity_pct_median is not none else "NA" }} | {{ pct(general.components[comp_code].workflow_median_identity_pct_min, 4) if general.components[comp_code].workflow_median_identity_pct_min is not none else "NA" }} - {{ pct(general.components[comp_code].workflow_median_identity_pct_max, 4) if general.components[comp_code].workflow_median_identity_pct_max is not none else "NA" }} |
+| Total number of discrepancies in consensus | {{ comp.total_number_discrepancies_consensus if comp.total_number_discrepancies_consensus is not none else "NA" }} | {{ general.components[comp_code].workflow_total_discrepancies_median if general.components[comp_code].workflow_total_discrepancies_median is not none else "NA" }} | {{ general.components[comp_code].workflow_total_discrepancies_min if general.components[comp_code].workflow_total_discrepancies_min is not none else "NA" }} - {{ general.components[comp_code].workflow_total_discrepancies_max if general.components[comp_code].workflow_total_discrepancies_max is not none else "NA" }} |
+| Median genome identity (%) | {{ pct(comp.median_genome_identity_pct) if comp.median_genome_identity_pct is not none else "NA" }} | {{ pct(general.components[comp_code].workflow_median_identity_pct_median) if general.components[comp_code].workflow_median_identity_pct_median is not none else "NA" }} | {{ pct(general.components[comp_code].workflow_median_identity_pct_min) if general.components[comp_code].workflow_median_identity_pct_min is not none else "NA" }} - {{ pct(general.components[comp_code].workflow_median_identity_pct_max) if general.components[comp_code].workflow_median_identity_pct_max is not none else "NA" }} |
 | Total classification matches | {{ comp.total_classification_matches if comp.total_classification_matches is not none else "NA" }} | {{ general.components[comp_code].typing.total_classification_matches_median if general.components[comp_code].typing.total_classification_matches_median is not none else "NA" }} | {{ general.components[comp_code].typing.total_classification_matches_min if general.components[comp_code].typing.total_classification_matches_min is not none else "NA" }} - {{ general.components[comp_code].typing.total_classification_matches_max if general.components[comp_code].typing.total_classification_matches_max is not none else "NA" }}|
 | Metadata completeness (%) | {{ pct(comp.metadata.completeness_pct, 2) if comp.metadata.completeness_pct is not none else "NA" }} | {{ pct(general.components[comp_code].metadata_completeness_median, 2) if general.components[comp_code].metadata_completeness_median is not none else "NA" }} | {{ general.components[comp_code].metadata_completeness_min_pct if general.components[comp_code].metadata_completeness_min_pct is not none else "NA" }} - {{ general.components[comp_code].metadata_completeness_max_pct if general.components[comp_code].metadata_completeness_max_pct is not none else "NA" }} |
 
@@ -1810,7 +1813,7 @@ No comparative metadata-derived analytical metrics figure is shown for {{ comp_c
 
 ### Acknowledgement
 
-We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 2026 RELECOV Dry-Lab EQA. The contribution of each laboratory is fundamental to maintaining analytical comparability, reproducibility, and interoperability across the network.
+We sincerely thank **{{ labdata.lab.lab_cod }}** for its participation in the 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise. The contribution of each laboratory is fundamental to maintaining analytical comparability, reproducibility, and interoperability across the network.
 
 For any questions, technical clarifications, or follow-up discussions regarding this report, please contact the RELECOV WP.6 coordination team at [bioinformatica@isciii.es](mailto:bioinformatica@isciii.es).
 {% endif %}
@@ -2076,7 +2079,7 @@ Figure {{ entry.type_fig_num }} in the appendix summarises the contribution of e
 {% endfor %}
 
 {% if labdata %}
-### Individual Laboratory Supplementary Material
+### Individual Laboratory Supplementary Material for {{ labdata.lab.lab_cod }}
 
 {% for appendix_comp_code, appendix_comp_name in [
   ("SARS1", "SARS-CoV-2, Illumina"),

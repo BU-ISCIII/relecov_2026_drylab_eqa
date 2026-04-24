@@ -293,8 +293,8 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
 
     html_text = table_pattern.sub(replace_table, html_text)
     html_text = re.sub(
-        r'</table></div>\s*<div class="table-block landscape-section"><p><em><strong>Table 3</strong>\. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features\.</em></p>',
-        r'</table><p><em><strong>Table 3</strong>. Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA, including sequencing platform, enrichment strategy, primer scheme, and key analytical features.</em></p>',
+        r'(Table\s+2\b.*?</table>)</div>\s*<div class="table-block landscape-section">(?=\s*<p><em><strong>Table\s+3\b)',
+        r"\1",
         html_text,
         flags=re.DOTALL,
     )
