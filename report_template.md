@@ -613,9 +613,9 @@ Variant detection performance differed across components (Figure {{ fig_counter.
 
 Variant evaluation included structural reporting characteristics and methodological heterogeneity. At network level:
 
-- {{ "None" if general.general_results.sars_variants.high_and_low_freq_pct == 0 else pct(general.general_results.sars_variants.high_and_low_freq_pct) }} of laboratories reported both high- and low-frequency variants.
-- {{ "None" if general.general_results.sars_variants.high_freq_only_pct == 0 else pct(general.general_results.sars_variants.high_freq_only_pct) }} reported only high-frequency variants.
-- {{ "None" if general.general_results.sars_variants.low_freq_only_pct == 0 else pct(general.general_results.sars_variants.low_freq_only_pct) }} reported exclusively low-frequency variants.
+- {{ "No laboratories" if general.general_results.sars_variants.high_and_low_freq_pct == 0 else pct(general.general_results.sars_variants.high_and_low_freq_pct) }} of laboratories reported both high- and low-frequency variants.
+- {{ "No laboratories" if general.general_results.sars_variants.high_freq_only_pct == 0 else pct(general.general_results.sars_variants.high_freq_only_pct) }} reported only high-frequency variants.
+- {{ "No laboratories" if general.general_results.sars_variants.low_freq_only_pct == 0 else pct(general.general_results.sars_variants.low_freq_only_pct) }} reported exclusively low-frequency variants.
 
 Additionally, a total of {{ general.general_results.sars_variants.total_distinct_references }} distinct reference genomes were employed for variant calling across SARS-CoV-2 components ({{ general.general_results.sars_variants.distinct_references | join(", ") }}).
 
@@ -635,9 +635,9 @@ For influenza virus components (FLU1 and FLU2), variant evaluation focused on st
 
 At network level:
 
-- {{ "None" if general.general_results.influenza_variants.high_and_low_freq_pct == 0 else pct(general.general_results.influenza_variants.high_and_low_freq_pct) }} of laboratories reported both high- and low-frequency variants.
-- {{ "None" if general.general_results.influenza_variants.high_freq_only_pct == 0 else pct(general.general_results.influenza_variants.high_freq_only_pct) }} reported only high-frequency variants.
-- {{ "None" if general.general_results.influenza_variants.low_freq_only_pct == 0 else pct(general.general_results.influenza_variants.low_freq_only_pct) }} reported exclusively low-frequency variants.
+- {{ "No laboratories" if general.general_results.influenza_variants.high_and_low_freq_pct == 0 else pct(general.general_results.influenza_variants.high_and_low_freq_pct) }} of laboratories reported both high- and low-frequency variants.
+- {{ "No laboratories" if general.general_results.influenza_variants.high_freq_only_pct == 0 else pct(general.general_results.influenza_variants.high_freq_only_pct) }} reported only high-frequency variants.
+- {{ "No laboratories" if general.general_results.influenza_variants.low_freq_only_pct == 0 else pct(general.general_results.influenza_variants.low_freq_only_pct) }} reported exclusively low-frequency variants.
 
 Additionally, an estimated total of {{ "%.0f"|format(general.general_results.influenza_variants.total_distinct_references) }} distinct reference genomes were employed for variant calling or mapping across influenza components. This value was rounded to the nearest whole genome by dividing the total number of distinct fragment references ({{ general.general_results.influenza_variants.total_distinct_fragments }}) by 8 influenza genome segments.
 
