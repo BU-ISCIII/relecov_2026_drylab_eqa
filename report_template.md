@@ -145,7 +145,7 @@ The overall objective of the exercise was to **assess the bioinformatic performa
 
 ## 2. Scope of the Interlaboratory Comparison Exercise
 
-The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was designed to evaluate the bioinformatic analytical performance of laboratories participating in the RELECOV Network in the context of respiratory virus genomic surveillance.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was designed to evaluate the bioinformatic performance of laboratories participating in the RELECOV Network in the context of respiratory virus genomic surveillance.
 
 Participating laboratories were provided with raw sequencing datasets corresponding to four independent analytical components:
 
@@ -154,8 +154,9 @@ Participating laboratories were provided with raw sequencing datasets correspond
 - **FLU1**: Five influenza virus samples sequenced using paired-end Illumina technology, 3 generated in-silico and 2 from the 2024 ECDC ESIB EQA.
 - **FLU2**: Five influenza virus samples sequenced using Oxford Nanopore Technologies, 3 generated in-silico and 2 from the 2024 ECDC ESIB EQA.
 
-Datasets were distributed as raw sequencing reads (.fastq files), and laboratories were free to analyse any subset of components according to their technical capacity and routine workflow.
-Laboratories were requested to submit:
+Datasets were distributed as raw sequencing reads (.fastq files), and each component could be analysed independently, allowing laboratories to participate according to their technical capacity and routine workflow.
+
+Laboratories were requested to submit the following deliverables:
 
 - For each analysed sample:
     - One consensus genome sequence in .fasta format, containing exclusively the target viral genome reconstructed from the provided reads.
@@ -168,6 +169,7 @@ The evaluation focused on core analytical tasks that are essential for routine g
 - **Variant identification and reporting**: Detection and annotation of nucleotide variants relative to a chosen reference genome, including evaluation of filtering criteria, allele frequency thresholds, and variant file standardisation.
 - **Lineage, Subtype and clade assignment**: Accurate classification of reconstructed genomes using established nomenclature systems and version-controlled databases.
 - **Metadata reporting and interoperability**: Completion of a harmonised metadata template capturing software versions, analytical parameters, reference genome selection, and file traceability, ensuring compatibility with automated validation and integration into the RELECOV analytical platform.
+- **Quality control assesment**: Evaluation of laboratory quality-control practices, including the interpretation of sequencing quality, the identification of analytical limitations, the application of quality thresholds, and the completeness and consistency of quality-control information reported throughout the submitted results.
 
 ## 3. Dataset Design and Sample Selection Criteria
 
