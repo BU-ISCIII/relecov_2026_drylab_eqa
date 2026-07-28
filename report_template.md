@@ -79,7 +79,7 @@
 - [Executive Summary](#executive-summary)
 - [1. Introduction](#1-introduction)
 - [2. Scope of the Interlaboratory Comparison Exercise](#2-scope-of-the-interlaboratory-comparison-study)
-- [3. Dataset Design and Sample Selection Criteria](#3-dataset-design-and-sample-selection-criteria)
+- [3. Dataset Design and Selection Strategy](#3-dataset-design-and-selection-strategy)
     - [3.1. Rationale for Dataset Selection](#31-rationale-for-dataset-selection)
     - [3.2. SARS-CoV-2 Dataset](#32-sars-cov-2-dataset)
     - [3.3. Influenza Dataset](#33-influenza-dataset)
@@ -171,16 +171,16 @@ The evaluation focused on core analytical tasks that are essential for routine g
 - **Metadata reporting and interoperability**: Completion of a harmonised metadata template capturing software versions, analytical parameters, reference genome selection, and file traceability, ensuring compatibility with automated validation and integration into the RELECOV analytical platform.
 - **Quality control assesment**: Evaluation of laboratory quality-control practices, including the interpretation of sequencing quality, the identification of analytical limitations, the application of quality thresholds, and the completeness and consistency of quality-control information reported throughout the submitted results.
 
-## 3. Dataset Design and Sample Selection Criteria
+## 3. Dataset Design and Selection Strategy
 
 ### 3.1. Rationale for Dataset Selection
 
-The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was specifically designed for laboratories operating in a clinical and hospital-based diagnostic context, where routine genomic surveillance primarily involves human respiratory samples.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was specifically designed for microbiology laboratories participating in the RELECOV Network, which perform genomic surveillance of respiratory viruses in Spain.
 
 Sample selection followed three guiding principles:
 
 - Representation of realistic genomic surveillance scenarios.
-- Inclusion of defined analytical challenges.
+- Inclusion of predefined analytical challenges.
 - Ensuring methodological benchmarking robustness.
 
 Datasets were derived from two sources:
@@ -200,7 +200,7 @@ SARS-CoV-2 datasets were selected from the 2024 ECDC ESIB EQA to ensure comparab
 - Contamination with non-target viral reads.
 - Lineages of epidemiological relevance (e.g., recombinant or XBB-related lineages).
 
-Only samples generated using the same ARTIC primer scheme (v4.1) were selected to avoid introducing variability associated with enrichment panel differences. This ensured that observed performance differences reflect analytical workflow characteristics rather than primer design heterogeneity.
+Only samples generated using the same ARTIC primer scheme (v4.1) were selected to avoid introducing variability associated with enrichment panel differences. This ensured that observed performance differences reflect analytical workflow characteristics rather than enrichment strategies heterogeneity.
 
 {% set table_counter.value = table_counter.value + 1 %}
 
@@ -224,10 +224,8 @@ The table details sample origin, sequencing technology (Illumina paired-end or O
 
 The influenza datasets provided in the 2024 ECDC ESIB EQA predominantly correspond to zoonotic influenza strains of animal origin, including H5N1, H5N6, and reassortant genomes.
 
-While these datasets are valuable for specialised surveillance contexts, they do not represent the routine analytical scenario encountered by most RELECOV laboratories, which primarily process:
+While these datasets are valuable for specialised surveillance contexts, they do not represent the routine analytical scenario encountered by most RELECOV laboratories, which primarily process seasonal human Influenza A/H1N1 and A/H3N2.
 
-- Seasonal human Influenza A/H1N1
-- Seasonal human Influenza A/H3N2
 
 Given that the objective of this Interlaboratory Comparison Exercise is to benchmark bioinformatic workflows in a clinical hospital environment, it was considered methodologically necessary to include representative seasonal human influenza strains.
 
@@ -262,6 +260,9 @@ This approach allowed precise control over:
 - Segment coverage distribution
 - Contamination levels
 - Platform-dependent error profiles
+
+These design features ensured that individual analytical challenges could be evaluated independently while maintaining biologically plausible sequencing datasets.
+
 
 {% set table_counter.value = table_counter.value + 1 %}
 
