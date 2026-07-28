@@ -159,9 +159,9 @@ Datasets were distributed as raw sequencing reads (.fastq files), and each compo
 Laboratories were requested to submit the following deliverables:
 
 - For each analysed sample:
-    - One consensus genome sequence in .fasta format, containing exclusively the target viral genome reconstructed from the provided reads.
-    - One or more variant call files in .vcf format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
-- A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, Lineage, Subtype or clade assignment tools, and file paths to submitted outputs.
+    - One consensus genome sequence in `.fasta` format, containing exclusively the target viral genome reconstructed from the provided reads.
+    - One or more variant call files in `.vcf` format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
+- A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, Lineage, Subtype or clade assignment tools, file names of submitted outputs, and the analytical decisions required to interpret and evaluate consensus reconstruction, variant reporting, lineage/type assignment, clade assignment, and quality control results. The values declared in this template were used throughout the evaluation to contextualise laboratory performance and to compare metadata-reported outputs against the submitted files. The template used in this exercise is available here: [Relecov_metadata_template_EQA2026.xlsx](https://github.com/BU-ISCIII/relecov_2026_drylab_eqa/blob/main/Relecov_metadata_template_EQA2026.xlsx).
 
 The evaluation focused on core analytical tasks that are essential for routine genomic surveillance and public health response, including:
 
@@ -346,12 +346,12 @@ Missing files were recorded but not penalised beyond descriptive reporting, as l
 
 ### 4.2. Evaluation of Consensus Genome Reconstruction Performance
 
-For each sample, a curated gold standard consensus genome was provided by the ECDC or generated internally. These reference sequences served as the ground truth for comparative analysis. Influenza gold standard consensus sequences generated for this exercise are available in the project GitHub repository. Gold standard consensus sequences corresponding to ECDC-provided samples are not distributed with the repository, as we are not authorised to provide those datasets.
+For each sample, a curated consensus sequence was provided by the ECDC or generated in silico as previously explained. Hereafter, this consensus sequence will be referred to as the **gold standard**. For the in silico samples, the gold standard corresponds to the original FASTA genome used to simulate the sequencing reads. Influenza gold standard consensus sequences generated for this exercise are available in the project GitHub repository. Gold standard consensus sequences corresponding to ECDC-provided samples are not distributed with the repository, as we are not authorised to provide those datasets.
 
 All submitted consensus sequences (.fasta) were:
 
-- Aligned against the corresponding gold standard sequence using [Mafft v7.475](https://mafft.cbrc.jp/alignment/software/).
-- Compared position-by-position relative to the declared reference genome coordinate system.
+- Aligned against the corresponding gold standard genome sequence using [Mafft v7.475](https://mafft.cbrc.jp/alignment/software/).
+- Compared position-by-position relative to the declared gold standard coordinate system.
 
 For SARS-CoV-2 samples, evaluated positions were reported relative to the Wuhan reference genome coordinate system. For influenza virus samples, evaluated positions were reported relative to the curated gold standard sequence for each segment. In the influenza gold standards, primer-binding regions were masked to allow evaluation of laboratories that retained primer-derived regions in the submitted consensus sequence. Influenza positions showing two alternative alleles at approximately balanced frequencies (40-60% allele frequency for each allele) were represented using IUPAC ambiguity codes in the gold standard. At these positions, either the corresponding ambiguity code or either of the two represented nucleotides was accepted as concordant with the gold standard.
 
@@ -362,29 +362,20 @@ Differences between submitted sequences and gold standard sequences were categor
 - **Nucleotide instead of ambiguity**: Defined nucleotide provided where an ambiguity code was expected.
 - **Nucleotide stretch instead of stretch of Ns**: Defined bases provided where Ns were expected.
 - **Stretch of Ns instead of nucleotide stretch**: Continuous region of Ns where defined bases were expected.
-- **Insertion relative to gold standard**
-- **Deletion relative to gold standard**
+- **Insertion relative to gold standard**: One or more nucleotides present in the submitted sequence at a position where no corresponding bases are present in the gold standard.
+- **Deletion relative to gold standard**: One or more nucleotides absent from the submitted sequence at a position where corresponding bases are present in the gold standard.
 
 Each insertion, deletion, or contiguous stretch of Ns was counted as a single event.
 
 For each laboratory and sample, the following summary metrics were compiled:
 
 - Total number of nucleotide discrepancies
-- Percentage genome identity relative to the curated gold standard reference sequence
+- Percentage genome identity relative to the curated gold standard
 
 The proportional contribution of each discrepancy category was calculated relative to the total number of discrepancies observed per component.
 
 ### 4.3. Evaluation of Variant Detection Accuracy
 
-For influenza virus datasets, direct position-by-position comparison of reported variants against the curated reference variant set was not feasible under the same framework applied to SARS-CoV-2.
-
-Unlike SARS-CoV-2, where laboratories predominantly use a shared and globally standardised reference genomes (either MN908947.3 or NC_045512.2), influenza virus analyses exhibited substantial heterogeneity in reference genome selection. As a result:
-
-- Variant coordinates were reported relative to different reference accessions.
-- Segment boundaries and numbering schemes varied.
-- Insertions and deletions were represented inconsistently across reference backbones.
-
-This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artifacts and interpretation bias.
 
 #### 4.3.1. SARS-CoV-2
 
@@ -398,8 +389,8 @@ Submitted .vcf files were:
 Differences between submitted variants and reference variant set were categorised into the following classes:
 
 - **Wrong nucleotide**: A nucleotide different from the allowed reference or ambiguity code.
-- **Insertion relative to gold standard**
-- **Deletion relative to gold standard**
+- **Insertion relative to gold standard**: A variant call indicating inserted nucleotides in the submitted variant set at a position where no insertion is present in the gold standard variant set.
+- **Deletion relative to gold standard**: A variant call indicating deleted nucleotides in the submitted variant set at a position where no deletion is present in the gold standard variant set.
 - **Missing variant**: Variants present in the reference but missing in the sample.
 - **De novo**: Variants present in the sample but missing in the reference set.
 
@@ -415,7 +406,19 @@ Metadata describing the following analytical settings were collected to support 
 - Minimum coverage thresholds
 - Reference genome selection
 
-#### 4.3.2. Descriptive and Structural Variant Reporting Metrics
+#### 4.3.2 Influenza
+
+For influenza virus datasets, direct position-by-position comparison of reported variants against the curated reference variant set was not feasible under the same framework applied to SARS-CoV-2.
+
+Unlike SARS-CoV-2, where laboratories predominantly use a globally standardised reference genomes (either MN908947.3 or NC_045512.2), influenza virus analyses exhibited heterogeneity in reference genome selection. As a result:
+
+- Variant coordinates were reported relative to different reference accessions.
+- Segment boundaries and numbering schemes varied.
+- Insertions and deletions were represented inconsistently across reference backbones.
+
+This heterogeneity prevented robust coordinate harmonisation across submissions without introducing alignment-dependent artifacts and interpretation bias.
+
+#### 4.3.3. Descriptive and Structural Variant Reporting Metrics
 
 In addition to nucleotide-level discrepancy analysis for SARS-CoV-2, both SARS-CoV-2 and influenza submissions were evaluated using descriptive and structural reporting metrics to characterise reporting behaviour and methodological heterogeneity across laboratories.
 
@@ -428,8 +431,8 @@ For both viruses, the following reporting practice metrics were collected:
 
 For influenza virus, additional structural summary metrics were calculated because direct coordinate-harmonised comparison of all submitted variants was not methodologically robust across segment-specific references:
 
-- Number of variants with an allele frequency higher than 75%.
-- Number of variants with an allele frequency higher than 75% derived from VCF files.
+- Number of variants with an allele frequency higher than 75% reported in metadata.
+- Number of variants with an allele frequency higher than 75% derived from submitted VCF files.
 - Total number of variants present in the submitted VCF.
 - Discrepancies between variants with an allele frequency higher than 75% reported in the metadata and in the VCF file.
 
@@ -477,8 +480,6 @@ Potential contributors considered during result interpretation included:
 - Reporting practices and field completion
 - The possible relationship between consensus discrepancies and lineage/type assignment performance
 
-Failure to identify virus presence in positive samples, or misclassification of negative samples, was recorded separately.
-
 ### 4.5. Evaluation of Metadata Completeness and Compliance
 
 Metadata assessment focused on analytical transparency and interoperability rather than biological correctness. Before the start of the exercise, a metadata template with controlled-vocabulary dropdowns was distributed among the laboratories to review the available options and incorporation of missing software tools into the schema.
@@ -497,7 +498,7 @@ Laboratory-level and component-level completeness summaries were then derived fr
 - Compliance with controlled vocabularies. Metadata entries were considered non-compliant when:
     - Controlled vocabulary options were bypassed
     - Free-text substitutions replaced defined values
-- Valid file path reporting
+- Valid file name reporting
 
 This evaluation allowed quantification of metadata standardisation and reproducibility readiness across the network.
 
