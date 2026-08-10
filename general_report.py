@@ -52,11 +52,11 @@ COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS = {
     "SARS1": None,
     "SARS2": None,
     "FLU1": None,
-    "FLU2": 410.0,
+    "FLU2": 550.0,
 }
 
 COMPONENT_CONSENSUS_TYPE_BOXPLOT_Y_LIMITS = {
-    "FLU2": 400.0,
+    "FLU2": 550.0,
 }
 
 CONSENSUS_DISCREPANCY_TYPE_ORDER = [
@@ -1325,7 +1325,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                     continue
 
                 plotted_data[idx] = plotted_values
-                outlier_annotations.append((idx + 1, outliers_above_limit[0]))
+                outlier_annotations.append((idx + 1, outliers_above_limit))
 
         use_broken_identity_axis = panel_idx == 0 and comp_code in {"SARS1", "FLU1", "FLU2"}
 
@@ -1722,7 +1722,7 @@ def make_component_benchmark_metric_boxplots(
                         continue
 
                     plotted_panel_data[idx] = plotted_values
-                    panel_outlier_annotations.append((idx + 1, outliers_below_limit[0]))
+                    panel_outlier_annotations.append((idx + 1, outliers_below_limit))
                 else:
                     outliers_above_limit = sorted([value for value in values if value > limit_max], reverse=True)
                     if not outliers_above_limit:
@@ -1733,7 +1733,7 @@ def make_component_benchmark_metric_boxplots(
                         continue
 
                     plotted_panel_data[idx] = plotted_values
-                    panel_outlier_annotations.append((idx + 1, outliers_above_limit[0]))
+                    panel_outlier_annotations.append((idx + 1, outliers_above_limit))
 
         if use_broken_identity_axis:
             bp = ax.boxplot(
@@ -2005,18 +2005,11 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
             if not outliers_above_limit:
                 continue
 
-            excluded_outlier = outliers_above_limit[0]
-            removed = False
-            filtered_values = []
-            for value in values:
-                if not removed and value == excluded_outlier:
-                    removed = True
-                    continue
-                filtered_values.append(value)
+            filtered_values = [value for value in values if value <= y_limit]
 
-            if removed and filtered_values:
+            if filtered_values:
                 plotted_discrepancy_data[idx] = filtered_values
-                outlier_annotations.append((idx + 1, excluded_outlier))
+                outlier_annotations.append((idx + 1, outliers_above_limit))
 
     valid_plotted_discrepancies = [values for values in plotted_discrepancy_data if values]
     y_upper = 1.0
@@ -2051,10 +2044,11 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
             for x_pos, display_value in outlier_annotations:
                 y_marker = y_upper * 0.95
                 y_text = y_upper * 0.91
+                formatted_value = format_outlier_label(display_value)
                 outlier_label = (
-                    f"Outlier:\n{display_value:g}"
+                    formatted_value
                     if comp_code == "FLU2"
-                    else f"Outlier: {display_value:g}"
+                    else formatted_value.replace("\n", " ")
                 )
                 axes[0].text(
                     x_pos,
@@ -2308,6 +2302,7 @@ def make_component_consensus_discrepancy_type_boxplot(
         for x_pos, outliers in outlier_annotations:
             outlier_color = CONSENSUS_DISCREPANCY_TYPE_COLORS.get(used_keys[x_pos - 1], CBF_COLORS["outlier"])
             plot_x = positions[x_pos - 1]
+            outlier_label = format_outlier_label(outliers)
             plt.text(
                 plot_x,
                 y_limit * 0.95,
@@ -2321,7 +2316,7 @@ def make_component_consensus_discrepancy_type_boxplot(
             plt.text(
                 plot_x,
                 y_limit * 0.91,
-                f"Outlier: {outliers[0]:g}",
+                outlier_label,
                 ha="center",
                 va="top",
                 fontsize=9,
@@ -2632,9 +2627,9 @@ def style_boxplot_with_color(bp: Dict[str, Any], color: str, ax: Optional[Any] =
 
 def trim_boxplot_extreme_outliers(
     data: List[List[float]],
-) -> tuple[List[List[float]], List[tuple[int, float]]]:
+) -> tuple[List[List[float]], List[tuple[int, Any]]]:
     trimmed_data: List[List[float]] = []
-    outlier_annotations: List[tuple[int, float]] = []
+    outlier_annotations: List[tuple[int, Any]] = []
 
     for idx, values in enumerate(data, start=1):
         plotted_values = list(values)
@@ -2648,28 +2643,49 @@ def trim_boxplot_extreme_outliers(
                 and max_value > whisker_high * 2
             ):
                 candidate_values = [value for value in values if value <= whisker_high]
-                if candidate_values:
+                outlier_values = sorted([value for value in values if value > whisker_high], reverse=True)
+                if candidate_values and outlier_values:
                     plotted_values = candidate_values
-                    outlier_annotations.append((idx, max_value))
+                    outlier_annotations.append((idx, outlier_values))
 
         trimmed_data.append(plotted_values)
 
     return trimmed_data, outlier_annotations
 
 
+def normalize_outlier_values(value: Any) -> List[float]:
+    if isinstance(value, (list, tuple, set)):
+        values = [safe_number(item) for item in value]
+    else:
+        values = [safe_number(value)]
+    return sorted([item for item in values if item is not None], reverse=True)
+
+
+def format_outlier_label(value: Any) -> str:
+    values = normalize_outlier_values(value)
+    if len(values) > 1:
+        return "Outliers:\n" + ", ".join(f"{item:g}" for item in values)
+    if values:
+        return f"Outlier:\n{values[0]:g}"
+    return "Outlier"
+    return "Outlier"
+
+
 def restore_outliers_within_axis_range(
     trimmed_data: List[List[float]],
-    outlier_annotations: List[tuple[int, float]],
+    outlier_annotations: List[tuple[int, Any]],
     y_upper: float,
-) -> tuple[List[List[float]], List[tuple[int, float]]]:
+) -> tuple[List[List[float]], List[tuple[int, Any]]]:
     restored_data = [list(values) for values in trimmed_data]
-    remaining_annotations: List[tuple[int, float]] = []
+    remaining_annotations: List[tuple[int, Any]] = []
 
     for idx, value in outlier_annotations:
-        if value <= y_upper:
-            restored_data[idx - 1].append(value)
-        else:
-            remaining_annotations.append((idx, value))
+        values = normalize_outlier_values(value)
+        restored_values = [item for item in values if item <= y_upper]
+        remaining_values = [item for item in values if item > y_upper]
+        restored_data[idx - 1].extend(restored_values)
+        if remaining_values:
+            remaining_annotations.append((idx, remaining_values))
 
     return restored_data, remaining_annotations
 
@@ -2699,19 +2715,25 @@ def add_boxplot_points(
 
 def annotate_outlier_caps(
     ax: Any,
-    annotations: List[tuple[float, float]],
+    annotations: List[tuple[float, Any]],
     y_anchor: float,
     color: str,
     direction: str = "high",
 ) -> None:
     y_min, y_max = ax.get_ylim()
     y_range = y_max - y_min
+    grouped_annotations: Dict[float, List[float]] = defaultdict(list)
     for x_pos, display_value in annotations:
+        grouped_annotations[x_pos].extend(normalize_outlier_values(display_value))
+
+    for x_pos, values in grouped_annotations.items():
         if direction == "low":
+            values = sorted(values)
             y_star = y_min + y_range * 0.08
             y_text = y_min + y_range * 0.16
             va = "bottom"
         else:
+            values = sorted(values, reverse=True)
             y_star = y_max - y_range * 0.05
             y_text = y_max - y_range * 0.11
             va = "top"
@@ -2728,7 +2750,7 @@ def annotate_outlier_caps(
         ax.text(
             x_pos,
             y_text,
-            f"Outlier:\n{display_value:g}",
+            format_outlier_label(values),
             ha="center",
             va=va,
             fontsize=9,
@@ -3026,7 +3048,7 @@ def make_consensus_summary_plot(
     axes[0].tick_params(axis="x", rotation=0)
 
     for x_pos, outliers in outlier_annotations:
-        display_value = outliers[0]
+        outlier_label = format_outlier_label(outliers)
         y_marker = fixed_y_upper * 0.95
         y_text = fixed_y_upper * 0.91
         component_label = component_names[x_pos - 1]
@@ -3044,7 +3066,7 @@ def make_consensus_summary_plot(
         axes[0].text(
             x_pos,
             y_text,
-            f"Outlier: {display_value:g}",
+            outlier_label,
             ha="center",
             va="top",
             fontsize=9,
@@ -3154,7 +3176,7 @@ def make_variant_summary_plot(
     plt.xlim(0.5, len(component_names) + 0.5)
 
     for x_pos, outliers in outlier_annotations:
-        display_value = outliers[0]
+        outlier_label = format_outlier_label(outliers)
         y_marker = fixed_y_upper * 0.95
         y_text = fixed_y_upper * 0.91
         component_label = component_names[x_pos - 1]
@@ -3172,7 +3194,7 @@ def make_variant_summary_plot(
         plt.text(
             x_pos,
             y_text,
-            f"Outlier: {display_value:g}",
+            outlier_label,
             ha="center",
             va="top",
             fontsize=9,
@@ -3563,7 +3585,7 @@ def collect_lab_consensus_metric_distribution_data(
             plotted_values = [value for value in sample_values if value <= y_limit]
             if outliers_above_limit and plotted_values:
                 sample_values = plotted_values
-                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
+                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit))
         if y_limit is not None and lab_value is not None and lab_value > y_limit:
             lab_outlier_annotations.append((len(sample_names) + 1, lab_value))
 
@@ -4512,7 +4534,7 @@ def collect_lab_variant_metric_distribution_data(
             plotted_values = [value for value in sample_values if value <= y_limit]
             if outliers_above_limit and plotted_values:
                 sample_values = plotted_values
-                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
+                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit))
         if y_limit is not None and lab_value is not None and lab_value > y_limit:
             lab_outlier_annotations.append((len(sample_names) + 1, lab_value))
 
