@@ -124,7 +124,7 @@ Classification performance was consistently higher for lineage/type assignment t
 
 Metadata completeness and reporting remain major priorities for harmonisation. The median metadata completeness rate across participating laboratories was {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Although software names were reported for {{ pct(general.metadata_completeness.software_names_pct) }} of expected fields, only {{ pct(general.metadata_completeness.software_version_pct) }} of software-version fields, {{ pct(general.metadata_completeness.coverage_threshold_pct) }} of coverage thresholds, {{ pct(general.metadata_completeness.variant_calling_params_pct) }} of variant-calling parameter fields, and {{ pct(general.metadata_completeness.reference_genome_pct) }} of reference genome identifiers were completed. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified, together with diversity in consensus, variant calling, and classification software.
 
-Overall, the EQA demonstrates substantial analytical capability across the RELECOV network under the evaluated conditions, while also showing that interlaboratory comparability remains limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities of establishing minimum performance standards, strengthening metadata requirements, clarifying reporting rules for consensus and variants, and promoting component-aware benchmarking rather than a single cross-context pipeline ranking.
+Overall, the EQA demonstrates substantial analytical capability across the RELECOV network under the evaluated conditions, while also showing that interlaboratory comparability remains limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities of establishing minimum performance standards, strengthening metadata requirements, clarifying reporting rules for consensus and variants, and guiding component-aware recommendations for future harmonisation. A separate benchmarking deliverable document complements this report with a workflow-level comparison of analytical pipelines and software combinations.
 
 ## 1. Introduction
 
@@ -135,6 +135,8 @@ To this end, an **Interlaboratory Comparison Exercise exercise in dry lab format
 Beyond its role as an external quality assessment of laboratory performance, the exercise was also designed to support the methodological harmonisation objectives of RELECOV 2.0. A central component of this initiative was to characterise the diversity of analytical pipelines implemented across the RELECOV Network, evaluate their performance under the conditions of this exercise, and generate evidence to support future harmonisation activities within the network. This evaluation contributes directly to **Objective 2.1** of RELECOV 2.0, which focuses on _improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform_. Furthermore, the exercise provides the practical evidence base required for **Task T6.1**, which aims to  _identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians_, in order to define the workflow that should be integrated into the RELECOV analytical platform.
 
 The exercise was also aligned with **Milestone M6.3**, which pertains to _define sequencing and analysis protocols for each of the sequencing platforms_. In addition, the exercise provided operational insights relevant to **Task T6.5**, which addresses _the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network_. It also contributed to **Task T6.4**, related to _sequence metadata annotation with ontologies, schema generation, parsing and validation_, by highlighting practical issues affecting metadata completeness, controlled-vocabulary use, and the consistency of reported analytical parameters.
+
+The present report focuses on the interlaboratory assessment of analytical performance, reporting quality, and harmonisation needs. A separate benchmarking deliverable document complements this report with a workflow-level comparison of pipelines, software combinations, and parameter configurations.
 
 The overall objective of the exercise was to **assess the bioinformatic performance of the participating laboratories, identify areas for improvement, and promote the adoption of consistent and comparable analytical practices across the network**. The outcomes presented in this report are expected to strengthen RELECOV’s preparedness and response capacity for routine surveillance and public health emergencies, while supporting the harmonisation objectives defined within RELECOV 2.0.
 
@@ -176,7 +178,7 @@ Sample selection followed three guiding principles:
 
 - Representation of realistic genomic surveillance scenarios.
 - Inclusion of predefined analytical challenges.
-- Ensuring methodological benchmarking robustness.
+- Ensuring methodological robustness and representativeness.
 
 Datasets were derived from two sources:
 
@@ -523,33 +525,6 @@ $$
 QC evaluations were calculated only for samples analysed by the laboratory.
 
 The QC assessment evaluation was limited to concordance analysis. The exercise did not attempt to infer the internal QC criteria applied by laboratories, but rather assessed agreement with the predefined gold standard QC status to evaluate interpretative consistency across the network.
-
-### 4.6. Pipeline Benchmarking and Comparative Performance
-
-The pipeline benchmarking analysis was designed to evaluate analytical performance at the pipeline and software level, rather than solely at the individual laboratory level. The objective was to identify which analytical workflows most consistently generate results that closely match the curated gold standard datasets.
-
-For each declared pipeline or analytical workflow (including software combinations and parameter configurations), performance was aggregated across all laboratories using that approach.
-
-The primary benchmarking criterion was based on these performance indicators:
-
-- Median consensus genome identity relative to the curated gold standard.
-- Median number of discrepancies relative to the curated gold standard.
-- Exact lineage/type and clade classification concordance.
-- Median metadata completeness
-
-These metrics were analysed to determine whether pipelines achieving high consensus similarity also demonstrated consistent downstream analytical accuracy.
-
-Benchmarking results were interpreted to identify:
-
-- Pipelines demonstrating consistently low divergence from gold standards
-- Parameter configurations associated with systematic discrepancies
-- The impact of software versioning and reference genome selection
-
-The benchmarking framework therefore provides an empirical basis for:
-
-- Identifying best-performing analytical workflows
-- Defining minimum performance criteria for network harmonisation
-- Informing recommendations for standardisation within the RELECOV analytical platform
 
 ## 5. General Results
 
@@ -983,7 +958,7 @@ comp_net.qc.fig_qc_match_by_sample,
 
 ## 7. Discussion
 
-The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions.
+The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions. A separate benchmarking deliverable complements this report with a workflow-level comparison of pipelines and software configurations.
 
 ### 7.1. Consensus Genome Reconstruction
 
@@ -1023,11 +998,7 @@ Because QC assignment depends on how each laboratory interprets coverage, ambigu
 
 The metadata confirms that RELECOV laboratories currently use a diverse analytical landscape. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified across participating laboratories, together with distinct tools or tool/version combinations for consensus genome generation ({{ general.metadata_completeness.total_consensus_softwares }}), variant calling ({{ general.metadata_completeness.total_variant_softwares }}), SARS-CoV-2 lineage assignment ({{ general.metadata_completeness.total_lineage_assignment_softwares }}), influeza type/subtype assignment ({{ general.metadata_completeness.total_subtype_assignment_softwares }}) and clade assignment ({{ general.metadata_completeness.total_clade_assignment_softwares }}).
 
-This diversity is analytically valuable, but its interpretation is constrained by incomplete metadata reporting. Only {{ pct(general.metadata_completeness.software_version_pct) }} of software-version fields were completed, {{ pct(general.metadata_completeness.coverage_threshold_pct) }} of submitted samples specified a minimum coverage threshold, {{ pct(general.metadata_completeness.variant_calling_params_pct) }} reported variant calling parameters, and {{ pct(general.metadata_completeness.reference_genome_pct) }} reported a reference genome accession or identifier. For that reason, some plausible explanations for performance differences can only be discussed as contributing context rather than demonstrated causal effects.
-
 The main incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, consensus analysis, and classification-related metadata. This pattern suggests that laboratories were more consistent in declaring core tool identities than in documenting the exact thresholds and parameter sets that determine analytical behaviour.
-
-The submitted metadata also supports the view that parameter heterogeneity contributed to consensus and variant calling variability. Across all submitted samples, laboratories reported at least 8 different conventions for minimum coverage thresholds, 13 distinct consensus parameter strings, 13 distinct mapping parameter strings, and 14 distinct variant calling parameter strings. These differences do not prove causality for any individual discrepancy, but they do show that laboratories were not applying a uniform set of masking, filtering, or coverage rules.
 
 ### 7.5. Metadata Reporting and Schema Compliance
 
@@ -1057,7 +1028,6 @@ Overall, the results support RELECOV 2.0 priorities centred on:
 - clearer rules for masking, coverage thresholds, and allele frequency reporting
 - stronger metadata requirements for software versions, parameters, and reference genomes
 - improved consistency in classification and QC field completion
-- component-aware benchmarking rather than a single cross-context workflow ranking
 
 Taken together, these findings provide a practical basis for harmonising analytical expectations across the network while preserving the methodological flexibility needed for different pathogens, sequencing platforms, and surveillance scenarios.
 
