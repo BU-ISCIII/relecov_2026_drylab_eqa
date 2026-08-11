@@ -119,7 +119,7 @@ Because laboratories used different reference strategies, parameter settings, so
 
 The benchmarking results will support the further development of RELECOV 2.0 by helping to identify workflow configurations associated with more consistent performance, define minimum performance criteria for network harmonisation, clarify the metadata and reporting requirements needed to interpret differences in analytical performance, and inform recommendations for the standardisation and further development of the RELECOV analytical platform.
 
-### 3. Analytical workflow diversity across the RELECOV network
+## 3. Analytical workflow diversity across the RELECOV network
 
 The metadata submissions provide an overview of the analytical workflows currently used across the RELECOV network. A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified, based on unique combinations of the software tools and versions reported in the metadata template.
 
@@ -138,11 +138,7 @@ The performance of individual software components is assessed in [Section 4](#4-
 
 ## 4. Component-specific Results
 
-This section presents the analytical results disaggregated by component, allowing a detailed assessment of performance within each dataset and sequencing technology. For each component, results are structured according to participation and submission metrics, consensus genome reconstruction performance, variant detection accuracy, and Lineage, Subtype or clade assignment concordance, as applicable.
-
-Component-level analyses enable identification of platform-specific patterns, dataset-dependent challenges, and variability associated with particular sample characteristics. This approach facilitates a more granular interpretation of performance differences observed at the network level and supports targeted harmonisation recommendations.
-
-All component-level results below are reported using the same evaluation framework described in [Section 4](#4-methodology-of-evaluation).
+This section presents the analytical results stratified by component, allowing a detailed assessment of performance for each dataset and sequencing technology. For each component, the results are structured according to participation and submission metrics, consensus genome reconstruction performance, variant detection accuracy, and lineage, type/subtype, or clade assignment concordance, as applicable. Component-level analyses allow the identification of platform-specific patterns, differences associated with specific datasets, and variability between workflow configurations. This approach provides a more granular view of the performance differences observed across the network and can inform targeted harmonisation recommendations.
 
 {% for comp_code, comp_net in general.components.items() %}
 
