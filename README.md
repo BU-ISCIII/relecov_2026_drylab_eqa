@@ -80,16 +80,28 @@ Example: general report only
 ```bash
 python3 render_reports.py \
   --template general_report_template.md \
-  --general-json general.json
+  --general-json general.json \
+  --report-type general
 ```
 
-Example: general report plus individual lab reports
+Example: individual lab reports only
 
 ```bash
 python3 render_reports.py \
-  --template general_report_template.md \
+  --template individual_report_template.md \
   --general-json general.json \
-  --labs-dir merged_json_results/
+  --labs-dir merged_json_results/ \
+  --report-type labs
+```
+
+Example: Benchmarking report only
+
+```bash
+python3 render_reports.py \
+  --template benchmarking_template.md \
+  --general-json general.json \
+  --labs-dir merged_json_results/ \
+  --report-type benchmarking
 ```
 
 Example: markdown only
