@@ -399,6 +399,7 @@ def build_report_targets(
     labs_dir: Optional[Path],
     figures_dir: Optional[Path] = None,
     include_general: bool = True,
+    report_type: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     reports: List[Dict[str, Any]] = []
     # Only include the general report if requested and we have general data (i.e. --general-json was given)
@@ -413,6 +414,19 @@ def build_report_targets(
                 "stem": "general_report",
             }
         )
+
+    if report_type == "benchmarking" and general_data is not None:
+        reports.append(
+            {
+                "kind": "benchmarking",
+                "identifier": "benchmarking",
+                "title": "RELECOV 2026 Dry-Lab EQA Benchmarking Report",
+                "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
+                "subdir": Path(),
+                "stem": "benchmarking_report",
+            }
+        )
+        return reports
 
     if not labs_dir:
         return reports
@@ -598,7 +612,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         # Load general data only if provided; otherwise skip general report
         general_data = normalize_general_payload(load_json(general_json_path)) if general_json_path else None
         reports = build_report_targets(
-            general_data, template_path, labs_dir, figures_dir=figures_dir, include_general=include_general
+            general_data,
+            template_path,
+            labs_dir,
+            figures_dir=figures_dir,
+            include_general=include_general,
+            report_type=report_type,
         )
         base_dir = template_path.parent
 
