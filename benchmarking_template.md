@@ -76,116 +76,67 @@
 
 ## Table of Contents
 
-- [1. Introduction](#1-introduction)
-- [2. Pipeline Benchmarking and Comparative Performance](#2-pipeline-benchmarking-and-comparative-performance)
-- [3. Component-Specific Results](#3-component-specific-results)
-    - [3.1. SARS1 (SARS-CoV-2, Illumina)](#31-sars1-sars-cov-2-illumina)
-    - [3.2. SARS2 (SARS-CoV-2, Oxford Nanopore Technologies)](#32-sars2-sars-cov-2-oxford-nanopore-technologies)
-    - [3.3. FLU1 (Influenza virus, Illumina)](#33-flu1-influenza-virus-illumina)
-    - [3.4. FLU2 (Influenza virus, Oxford Nanopore Technologies)](#34-flu2-influenza-virus-oxford-nanopore-technologies)
-- [4. Discussion](#7-discussion)
-- [5. Conclusions](#8-conclusions)
+- [1. Introduction and scope](#1-introduction-and-scope)
+- [2. Benchmarking approach](#2-benchmarking-approach)
+- [3. Analytical workflow diversity across the RELECOV network](#3-analytical-workflow-diversity-across-the-relecov-network)
+- [4. Component-Specific Results](#4-component-specific-results)
+    - [4.1. SARS1 (SARS-CoV-2, Illumina)](#41-sars1-sars-cov-2-illumina)
+    - [4.2. SARS2 (SARS-CoV-2, Oxford Nanopore Technologies)](#42-sars2-sars-cov-2-oxford-nanopore-technologies)
+    - [4.3. FLU1 (Influenza virus, Illumina)](#43-flu1-influenza-virus-illumina)
+    - [4.4. FLU2 (Influenza virus, Oxford Nanopore Technologies)](#44-flu2-influenza-virus-oxford-nanopore-technologies)
+- [5. Discussion](#5-discussion)
+- [6. Conclusions](#6-conclusions)
 - [Appendix](#appendix)
 
-## 1. Introduction
+## 1. Introduction and scope
 
-The RELECOV Network aims to strengthen genomic surveillance of respiratory viruses by developing and harmonising analytical capacities across the participating laboratories. In this context, it was essential to **assess the consistency, reproducibility and maturity of the bioinformatic workflows implemented across the network**.
+This document presents the benchmarking component of the 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise. The exercise contributes to **Objective 2.1** of RELECOV 2.0, which focuses on *improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform*. It also supports **Task T6.1**, which aims to *identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians*. The results will contribute to defining the workflow to be integrated into the RELECOV analytical platform.
 
-To this end, an **Interlaboratory Comparison Exercise exercise in dry lab format** was conducted, based on the European Centre for Disease Prevention and Control (ECDC) 2024 dry-lab EQA. The exercise focused on the bioinformatic characterisation of respiratory viruses, covering key analytical tasks including viral genome reconstruction, variant identification, and lineage and clade assignment.
+The exercise is also related to **Milestone M6.3**, which concerns the *definition of sequencing and analysis protocols for each of the sequencing platforms*, and to **Task T6.5**, focused on *the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network*.
 
-Beyond its role as an external quality assessment of laboratory performance, the exercise was also designed to support the methodological harmonisation objectives of RELECOV 2.0. A central component of this initiative was to characterise the diversity of analytical pipelines implemented across the RELECOV Network, evaluate their performance under the conditions of this exercise, and generate evidence to support future harmonisation activities within the network. This evaluation contributes directly to **Objective 2.1** of RELECOV 2.0, which focuses on _improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform_. Furthermore, the exercise provides the practical evidence base required for **Task T6.1**, which aims to  _identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians_, in order to define the workflow that should be integrated into the RELECOV analytical platform.
+The benchmarking exercise compares the analytical workflows reported by participating laboratories using SARS-CoV-2 and influenza datasets. The comparison considers factors that may affect analytical performance, including software selection, software and database versions, parameter settings, reference strategies, and reporting practices. These aspects are considered together with the metadata needed to interpret and reproduce the reported results.
 
-The exercise was also aligned with **Milestone M6.3**, which pertains to _define sequencing and analysis protocols for each of the sequencing platforms_. In addition, the exercise provided operational insights relevant to **Task T6.5**, which addresses _the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network_. It also contributed to **Task T6.4**, related to _sequence metadata annotation with ontologies, schema generation, parsing and validation_, by highlighting practical issues affecting metadata completeness, controlled-vocabulary use, and the consistency of reported analytical parameters.
+The aim of the benchmarking is to assess analytical performance at the workflow and pipeline level rather than solely at the individual laboratory level. In particular, the analysis examines whether differences in workflow configuration are associated with differences in performance when laboratories analyse the same datasets under comparable conditions.
 
-The overall objective of the exercise was to **assess the bioinformatic performance of the participating laboratories, identify areas for improvement, and promote the adoption of consistent and comparable analytical practices across the network**. The outcomes presented in this report are expected to strengthen RELECOV’s preparedness and response capacity for routine surveillance and public health emergencies, while supporting the harmonisation objectives defined within RELECOV 2.0.
+Further information on the exercise, including its design and the selection of samples, is provided in the main Interlaboratory Comparison Exercise document.
 
-The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise was designed to evaluate the bioinformatic performance of laboratories participating in the RELECOV Network in the context of respiratory virus genomic surveillance.
+## 2. Benchmarking approach
 
-Participating laboratories were provided with raw sequencing datasets corresponding to four independent analytical components:
+For each declared pipeline or analytical workflow, including the software combinations and parameter configurations reported by the laboratories, performance was assessed across all laboratories using that approach. This approach allows workflow characteristics to be compared while taking into account the results obtained across the network.
 
-- **SARS1**: Five SARS-CoV-2 samples sequenced using paired-end Illumina technology from the 2024 ECDC ESIB EQA
-- **SARS2**: Five SARS-CoV-2 samples sequenced using Oxford Nanopore Technologies from the 2024 ECDC ESIB EQA
-- **FLU1**: Five influenza virus samples sequenced using paired-end Illumina technology, 3 generated in-silico and 2 from the 2024 ECDC ESIB EQA.
-- **FLU2**: Five influenza virus samples sequenced using Oxford Nanopore Technologies, 3 generated in-silico and 2 from the 2024 ECDC ESIB EQA.
-
-Datasets were distributed as raw sequencing reads (.fastq files), and each component could be analysed independently, allowing laboratories to participate according to their technical capacity and routine workflow.
-
-Laboratories were requested to submit the following deliverables:
-
-- For each analysed sample:
-    - One consensus genome sequence in `.fasta` format, containing exclusively the target viral genome reconstructed from the provided reads.
-    - One or more variant call files in `.vcf` format, listing detected nucleotide variants relative to the reference genome selected by the laboratory.
-- A completed harmonised metadata template, documenting analytical tools, software versions, reference genomes used, parameter settings, coverage thresholds, Lineage, Subtype or clade assignment tools, file names of submitted outputs, and the analytical decisions required to interpret and evaluate consensus reconstruction, variant reporting, lineage/type assignment, clade assignment, and quality control results. The values declared in this template were used throughout the evaluation to contextualise laboratory performance and to compare metadata-reported outputs against the submitted files. The template used in this exercise is available here: [Relecov_metadata_template_EQA2026.xlsx](https://github.com/BU-ISCIII/relecov_2026_drylab_eqa/blob/main/Relecov_metadata_template_EQA2026.xlsx).
-
-The evaluation focused on core analytical tasks that are essential for routine genomic surveillance and public health response, including:
-
-- **Viral genome reconstruction**: Generation of high-quality consensus genome sequences from raw sequencing reads produced using Illumina and Oxford Nanopore Technologies platforms.
-- **Variant identification and reporting**: Detection and annotation of nucleotide variants relative to a chosen reference genome, including evaluation of filtering criteria, allele frequency thresholds, and variant file standardisation.
-- **Lineage, Subtype and clade assignment**: Accurate classification of reconstructed genomes using established nomenclature systems and version-controlled databases.
-- **Metadata reporting and interoperability**: Completion of a harmonised metadata template capturing software versions, analytical parameters, reference genome selection, and file traceability, ensuring compatibility with automated validation and integration into the RELECOV analytical platform.
-- **Quality control assesment**: Evaluation of laboratory quality-control practices, including the interpretation of sequencing quality, the identification of analytical limitations, the application of quality thresholds, and the completeness and consistency of quality-control information reported throughout the submitted results.
-
-The pipeline benchmarking analysis was designed to evaluate analytical performance at the pipeline and software level, rather than solely at the individual laboratory level. The objective was to identify which analytical workflows most consistently generate results that closely match the curated gold standard datasets.
-
-For each declared pipeline or analytical workflow (including software combinations and parameter configurations), performance was aggregated across all laboratories using that approach.
-
-The primary benchmarking criterion was based on these performance indicators:
+The primary benchmarking criteria were based on the following performance indicators:
 
 - Median consensus genome identity relative to the curated gold standard.
 - Median number of discrepancies relative to the curated gold standard.
 - Exact lineage/type and clade classification concordance.
-- Median metadata completeness
+- Median metadata completeness.
 
-These metrics were analysed to determine whether pipelines achieving high consensus similarity also demonstrated consistent downstream analytical accuracy.
+These metrics were used to assess whether workflows producing high consensus similarity also showed consistent downstream analytical performance. The analysis also considered the consistency of declared workflows across laboratories and the potential effect of software versions, reference genome selection, and parameter settings.
 
-Benchmarking results were interpreted to identify:
+The benchmarking results were used to identify workflow configurations showing more consistent performance, as well as parameter settings or other workflow characteristics associated with systematic discrepancies. They also provide information on the potential effects of software versioning and reference genome selection on the results.
 
-- Pipelines demonstrating consistently low divergence from gold standards
-- Parameter configurations associated with systematic discrepancies
-- The impact of software versioning and reference genome selection
+Because laboratories used different reference strategies, parameter settings, software versions, and output formats, the results should be interpreted as a descriptive comparison of the performance patterns observed across the network rather than as a strict ranking of tools or pipelines.
 
-The benchmarking framework therefore provides an empirical basis for:
+The benchmarking results will support the further development of RELECOV 2.0 by helping to identify workflow configurations associated with more consistent performance, define minimum performance criteria for network harmonisation, clarify the metadata and reporting requirements needed to interpret differences in analytical performance, and inform recommendations for the standardisation and further development of the RELECOV analytical platform.
 
-- Identifying best-performing analytical workflows
-- Defining minimum performance criteria for network harmonisation
-- Informing recommendations for standardisation within the RELECOV analytical platform
+### 3. Analytical workflow diversity across the RELECOV network
 
-### 2. Pipeline Benchmarking and Comparative Performance
+The metadata submissions provide an overview of the analytical workflows currently used across the RELECOV network. A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified, based on unique combinations of the software tools and versions reported in the metadata template.
 
-The benchmarking analysis was designed to assess whether differences in analytical software and parameterisation were associated with measurable variability in performance across participating laboratories.
+The submitted metadata show considerable diversity in the software used for the main analytical steps. Based on the declared software name and version, where available, the following numbers of distinct software identities were identified:
 
-The submitted metadata documented heterogeneity in:
+- Consensus reconstruction software ({{ general.metadata_completeness.total_consensus_softwares }} distinct declared software identities)
+- Variant calling tools ({{ general.metadata_completeness.total_variant_softwares }} distinct declared software identities)
+- SARS-CoV-2 lineage assignment software ({{ general.metadata_completeness.total_lineage_assignment_softwares }} distinct declared software identities)
+- Clade assignment software ({{ general.metadata_completeness.total_clade_assignment_softwares }} distinct declared software identities)
+- Influenza type assignment software ({{ general.metadata_completeness.total_type_assignment_softwares }} distinct declared software identities)
+- Influenza subtype assignment software ({{ general.metadata_completeness.total_subtype_assignment_softwares }} distinct declared software identities)
 
-- Choice of consensus reconstruction software
-- Variant calling strategies
-- Lineage and clade assignment tool's version and database versions.
-- Reference genome selection
-- Coverage and allele frequency thresholds
+For the lineage, clade, type, and subtype benchmarking presented in [Section 4](#4-component-specific-results), these software identities are further separated by database version when this information was available. As a result, the categories used for benchmarking may be more detailed than the overall software diversity counts presented above.
 
-#### Diversity of Analytical Workflows
+The performance of individual software components is assessed in [Section 4](#4-component-specific-results) within the relevant analytical context: SARS-CoV-2 Illumina, SARS-CoV-2 Nanopore, Influenza Illumina, and Influenza Nanopore. This component-specific approach is important because performance varied depending on both the analytical component and the metric considered. Software comparisons were therefore not combined into a single ranking across the different components.
 
-The metadata submissions allowed characterisation of the analytical landscape currently implemented across the RELECOV network.
-
-A total of {{ general.metadata_completeness.total_workflows }} distinct analytical workflows were identified across participating laboratories, defined as unique combinations of software tools and versions declared in the metadata template.
-
-Substantial diversity was observed in the selection of core analytical tools, based on distinct declared software identities in the submitted metadata (software name plus version where applicable):
-
-- Consensus reconstruction software ( {{ general.metadata_completeness.total_consensus_softwares }} distinct declared software identities )
-- Variant calling tools ( {{ general.metadata_completeness.total_variant_softwares }} distinct declared software identities )
-- SARS-CoV-2 lineage assignment software ( {{ general.metadata_completeness.total_lineage_assignment_softwares }} distinct declared software identities )
-- Clade assignment software ( {{ general.metadata_completeness.total_clade_assignment_softwares }} distinct declared software identities )
-- Influenza type assignment software ( {{ general.metadata_completeness.total_type_assignment_softwares }} distinct declared software identities )
-- Influenza subtype assignment software ( {{ general.metadata_completeness.total_subtype_assignment_softwares }} distinct declared software identities )
-
-For lineage, clade, type, and subtype benchmarking in Section 6, these declared software identities are further stratified by database version when that information was reported, so the benchmarking categories may be more granular than the metadata diversity counts summarised here.
-
-Comparative performance analyses stratified by component are presented in Section 6, where software-level differences are evaluated within homogeneous analytical contexts (SARS-CoV-2 Illumina, SARS-CoV-2 Nanopore, Influenza Illumina, Influenza Nanopore).
-
-Because performance differed by component and by metric, software-level comparisons are presented in Section 6 within component-specific contexts rather than collapsed into a single cross-component ranking.
-
-This diversity shows that multiple analytical configurations are currently in use across the RELECOV network. These findings highlight the importance of harmonising minimum analytical criteria while preserving methodological flexibility within the network.
-
-## 3. Component-specific Results
+## 4. Component-specific Results
 
 This section presents the analytical results disaggregated by component, allowing a detailed assessment of performance within each dataset and sequencing technology. For each component, results are structured according to participation and submission metrics, consensus genome reconstruction performance, variant detection accuracy, and Lineage, Subtype or clade assignment concordance, as applicable.
 
@@ -195,13 +146,12 @@ All component-level results below are reported using the same evaluation framewo
 
 {% for comp_code, comp_net in general.components.items() %}
 
-### 3.{{ loop.index }}. {{ comp_code }} ({{ comp_net.name }})
-
+### 4.{{ loop.index }}. {{ comp_code }} ({{ comp_net.name }})
 
 This section presents an exploratory comparative analysis of declared workflow configurations within {{ comp_code }}. Because laboratories differed in reference selection, software versions, parameterisation, reporting detail, and internal decision criteria, the results below should be interpreted as descriptive comparisons of observed performance patterns rather than as a controlled ranking of pipelines.
 
 {% if comp_net.benchmarking.bioinformatics_protocol %}
-#### 3.1. Bioinformatics protocol
+#### 4.1. Bioinformatics protocol
 
 Based on metadata submissions, {{ comp_net.benchmarking.bioinformatics_protocol.total_number }} distinct bioinformatics protocols were reported for the {{ comp_code }} component. These summaries compare declared workflow configurations as they were used in practice across participating laboratories.
 
@@ -240,7 +190,7 @@ The observed differences across configurations should be read in the context of 
 {% endif %}
 
 {% if comp_net.benchmarking.dehosting %}
-#### 3.2. De-hosting software
+#### 4.2. De-hosting software
 
 {{ comp_net.benchmarking.dehosting.total_number }} distinct de-hosting software declarations were reported for the {{ comp_code }} component.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -269,7 +219,7 @@ The distribution below reflects only configurations with evaluable percentage of
 {% endif %}
 
 {% if comp_net.benchmarking.preprocessing %}
-#### 3.3. Preprocessing software
+#### 4.3. Preprocessing software
 
 {{ comp_net.benchmarking.preprocessing.total_number }} distinct pre-processing software configurations were reported for the {{ comp_code }} component.
 
@@ -300,7 +250,7 @@ Only pre-processing configurations with evaluable observations for the displayed
 {% endif %}
 
 {% if comp_net.benchmarking.mapping %}
-#### 3.4. Mapping software
+#### 4.4. Mapping software
 
 {{ comp_net.benchmarking.mapping.total_number }} distinct mapping software configurations were reported for the {{ comp_code }} component.
 
@@ -330,7 +280,7 @@ The mapping boxplots include only configurations for which the relevant performa
 {% endif %}
 
 {% if comp_net.benchmarking.assembly %}
-#### 3.5. Assembly software
+#### 4.5. Assembly software
 
 {{ comp_net.benchmarking.assembly.total_number }} distinct assembly software configurations were reported for the {{ comp_code }} component.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -360,7 +310,7 @@ The assembly figures are restricted to configurations with evaluable values for 
 {% endif %}
 
 {% if comp_net.benchmarking.consensus_software %}
-#### 3.6. Consensus software
+#### 4.6. Consensus software
 
 {{ comp_net.benchmarking.consensus_software.total_number }} distinct consensus software configurations were reported for the {{ comp_code }} component.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -389,7 +339,7 @@ Only consensus software configurations with sufficient evaluable data are visual
 {% endif %}
 
 {% if comp_net.benchmarking.variant_calling %}
-#### 3.7. Variant calling software
+#### 4.7. Variant calling software
 
 {{ comp_net.benchmarking.variant_calling.total_number }} distinct variant calling software configurations were reported for the {{ comp_code }} component.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -423,7 +373,7 @@ The plotted variant calling categories correspond only to configurations with ev
 {% endif %}
 
 {% if comp_net.benchmarking.clade_assignment %}
-#### 3.8. Clade Assignment Software
+#### 4.8. Clade Assignment Software
 
 {{ comp_net.benchmarking.clade_assignment.total_number }} distinct clade assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and clade assignment database version when available.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -452,7 +402,7 @@ Because clade concordance could not be evaluated for every declared configuratio
 {% endif %}
 
 {% if comp_net.benchmarking.lineage_assignment %}
-#### 3.9. Lineage Assignment Software Name
+#### 4.9. Lineage Assignment Software Name
 
 {{ comp_net.benchmarking.lineage_assignment.total_number }} distinct lineage assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and lineage assignment database version when available.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -481,7 +431,7 @@ Lineage assignment configurations are shown only when concordance values were ev
 {% endif %}
 
 {% if comp_net.benchmarking.type_assignment %}
-#### 3.10. Type Assignment Software Name
+#### 4.10. Type Assignment Software Name
 
 {{ comp_net.benchmarking.type_assignment.total_number }} distinct type assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and type assignment database version when available.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -511,7 +461,7 @@ The type assignment plot is limited to configurations with evaluable concordance
 
 {% if comp_net.benchmarking.subtype_assignment %}
 
-#### 3.11. Subtype Assignment Software Name
+#### 4.11. Subtype Assignment Software Name
 
 {{ comp_net.benchmarking.subtype_assignment.total_number }} distinct subtype assignment software configurations were reported for the {{ comp_code }} component. For this category, configurations were counted as unique combinations of software name, software version, and subtype assignment database version when available.
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
@@ -541,35 +491,32 @@ Subtype assignment configurations are plotted only when evaluable concordance da
 
 {% endfor %}
 
-## 4. Discussion
+## 5. Discussion
 
-The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise provides the first network-wide dry-lab assessment focused specifically on bioinformatic performance across consensus reconstruction, variant reporting, classification, metadata reporting, and QC interpretation. By combining ECDC datasets with in-silico influenza material, the exercise captures both routine-use analytical behaviour and performance under heterogeneous reference and reporting conditions.
+The benchmarking results indicate that workflow-level performance was shaped by the interaction between component type, pathogen biology, software configuration, and reporting quality. The most informative signal was not a single universally best-performing pipeline, but the extent to which a configuration produced consistent results across laboratories and remained interpretable through the metadata provided.
 
-The benchmarking results also suggest that apparent top-performing configurations should be interpreted against the number of laboratories supporting them. In SARS1 and SARS2, several of the most favourable raw performance values were associated with single-laboratory configurations, whereas nf-core/viralrecon was supported by multiple laboratories and combined consistently high genome identity with low discrepancy burdens and strong metadata completeness. That pattern makes it a more informative indicator of reproducible network performance than a nominally better single-observation configuration. At the same time, the SARS results do not show a simple linear relationship between consensus discrepancy counts and classification concordance: most pipelines retained very high lineage or clade performance despite modest sequence-level variation, suggesting that SARS classification is robust to moderate reconstruction differences but still sensitive to reporting quality.
+Overall, the metadata show that a range of analytical configurations is currently in use across the RELECOV network. This diversity provides a useful picture of current practice and also highlights the need to establish common minimum analytical criteria, while allowing laboratories to retain some flexibility in the choice of tools and workflow configurations.
 
-The influenza benchmarking profiles were more heterogeneous and showed stronger configuration-dependent effects. In FLU1, DRAGEN achieved the highest identity but only on a single observation, whereas custom pipelines and different IRMA versions showed broader performance ranges. INSaFLU performed worse in both identity and discrepancy burden in that component, suggesting that workflow choice can have more impact in influenza than in SARS-CoV-2 under these datasets. In FLU2, IRMA v1.3.1 provided the most balanced profile across discrepancy burden and classification performance, whereas other versions, particularly IRMA v1.2.0, showed poorer consensus reconstruction behaviour despite acceptable classification fields. Taken together, these results indicate that influenza benchmarking is more sensitive to software versioning, parameterisation, and component-specific sample properties, and therefore requires more explicit best-practice recommendations rather than simple transfer of SARS-CoV-2 assumptions.
+In the SARS-CoV-2 components, several configurations showed strong raw performance values, but the most robust interpretation emerged when those results were considered alongside laboratory support and metadata completeness. Configurations represented by multiple laboratories, such as nf-core/viralrecon, were particularly informative because they combined high genome identity, low discrepancy burden, and stronger reporting quality. This suggests that reproducibility across the network is at least as important as isolated best-case performance.
 
-Taken together, the results support a harmonisation strategy centred on minimum performance and reporting standards rather than on enforcement of a single analytical pipeline. The data do not support a universal workflow ranking that would apply equally across all viruses, platforms, and tasks. Instead, they show that performance depends on the interaction between dataset characteristics, reporting conventions, software choice, and parameterisation.
+The influenza benchmarking profiles were more heterogeneous and more sensitive to workflow choice. In FLU1 and FLU2, differences between software versions, parameterisation, and reference use appeared to have a stronger impact on consensus reconstruction and typing outcomes than in the SARS-CoV-2 components. These findings indicate that benchmarking in influenza should remain component-specific and should not rely on assumptions transferred directly from SARS-CoV-2 workflows.
 
-## 5. Conclusions
+Overall, the benchmarking exercise supports a harmonisation approach based on minimum performance and reporting standards rather than the imposition of a single analytical pipeline. The evidence points to the importance of transparent metadata, comparable reference frameworks, and clear reporting of software and database versions when interpreting workflow performance.
 
-The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise shows that participating laboratories already have bioinformatic capacity for respiratory virus genomic surveillance, but that performance and comparability still depend strongly on the analytical context in which each task is performed.
+## 6. Conclusions
 
-Consensus genome reconstruction was generally strongest in the Illumina-based components, while broader performance ranges in SARS2 and FLU2 indicate that a subset of submissions remained highly sensitive to masking behaviour, coverage thresholds, and consensus-generation choices. Variant analysis showed that direct SARS-CoV-2 comparison against curated reference sets is feasible, whereas influenza reporting remained much more heterogeneous because of mixed allele frequency reporting strategies, multiple reference backbones, and large discrepancies between metadata-reported and VCF-derived summaries.
+The benchmarking exercise shows that analytical performance depends strongly on the interaction between workflow design, software configuration, reference choice, and reporting quality. It also shows that the most informative comparisons are those made within component-specific contexts, rather than through a single cross-platform ranking.
 
-Classification and QC interpretation further showed that harmonisation challenges are not limited to core sequence processing. Lineage/type assignment was more concordant than clade assignment, and part of the excess clade discordance in SARS-CoV-2 appears to reflect metadata completion and nomenclature problems in the clade field itself. QC interpretation was also unevenly reported, with only a subset of laboratories providing explicit sample-level QC assessments in the metadata template.
+Across the four components, the benchmarking analysis identified several consistent patterns. SARS-CoV-2 workflows were generally more stable and easier to compare, whereas influenza workflows were more sensitive to software versioning, parameterisation, and component-specific sample characteristics. In both cases, the clarity of the interpretation depended on the completeness and consistency of the metadata submitted with each workflow.
 
-Overall, the results support RELECOV 2.0 priorities centred on:
+The main conclusions of the benchmarking exercise are therefore:
 
-- minimum performance standards for consensus reconstruction and variant reporting
-- clearer rules for masking, coverage thresholds, and allele frequency reporting
-- stronger metadata requirements for software versions, parameters, and reference genomes
-- improved consistency in classification and QC field completion
-- component-aware benchmarking rather than a single cross-context workflow ranking
+- workflow performance should be evaluated within component-specific analytical contexts
+- reproducible benchmarking requires transparent metadata, software versions, and parameter reporting
+- harmonisation should prioritise minimum reporting and performance standards rather than the enforcement of a single pipeline
+- future benchmarking activities should continue to distinguish between analytical performance and reporting quality
 
-Taken together, these findings provide a practical basis for harmonising analytical expectations across the network while preserving the methodological flexibility needed for different pathogens, sequencing platforms, and surveillance scenarios.
-
-The Interlaboratory Comparison Exercise therefore provides a technical basis for harmonised, performance-driven genomic surveillance within RELECOV 2.0.
+Taken together, these findings provide a practical basis for refining benchmarking practices within RELECOV and for supporting more reproducible workflow comparisons in future interlaboratory exercises.
 
 ## Appendix
 
