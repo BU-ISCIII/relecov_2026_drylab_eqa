@@ -1,5 +1,5 @@
 {# =========================
-  JINJA2 TEMPLATE: RELECOV Interlaboratory Comparison Exercise REPORT
+  JINJA2 TEMPLATE: Individual Laboratory Technical Report
   Context expected:
     - general: dict (from general.json)
     - labdata: dict (from lab_<LAB_COD>.json)

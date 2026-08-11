@@ -274,7 +274,7 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
     )
     forced_landscape_captions = (
         "Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking",
-        "Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA",
+        "Influenza virus samples used in the RELECOV 2026 Dry-Lab Interlaboratory Comparison Exercise",
     )
 
     def replace_table(match: re.Match[str]) -> str:
@@ -408,7 +408,7 @@ def build_report_targets(
             {
                 "kind": "general",
                 "identifier": "general",
-                "title": "RELECOV 2026 Dry-Lab EQA General Report",
+                "title": "General Report Dry-Lab Interlaboratory Comparison Exercise RELECOV 2026",
                 "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
                 "subdir": Path(),
                 "stem": "general_report",
@@ -420,7 +420,7 @@ def build_report_targets(
             {
                 "kind": "benchmarking",
                 "identifier": "benchmarking",
-                "title": "RELECOV 2026 Dry-Lab EQA Benchmarking Report",
+                "title": "Benchmarking Report Dry-Lab Interlaboratory Comparison Exercise RELECOV 2026",
                 "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
                 "subdir": Path(),
                 "stem": "benchmarking_report",
@@ -444,7 +444,7 @@ def build_report_targets(
             {
                 "kind": "lab",
                 "identifier": lab_id,
-                "title": f"RELECOV 2026 Dry-Lab EQA Technical Report - {lab_id}",
+                "title": f"Technical Report {lab_id} Dry-Lab Interlaboratory Comparison Exercise RELECOV 2026",
                 "markdown_text": render_template(template_path, general_data, labdata=payload, figures_dir=figures_dir),
                 "subdir": Path("labs"),
                 "stem": f"lab_{lab_id}",
