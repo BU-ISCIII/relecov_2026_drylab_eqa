@@ -79,12 +79,12 @@
 
 - [1. Participation Overview](#1-participation-overview)
 {% for comp_code, comp in labdata.components.items() %}
-- [{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})](#component-{{ loop.index }}-{{ comp_code|lower|replace(' ', '-') }})
-    - [{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance](#component-{{ loop.index }}-{{ comp_code|lower|replace(' ', '-') }}-consensus)
-    - [{{ loop.index + 1 }}.2. Variant Detection Performance](#component-{{ loop.index }}-{{ comp_code|lower|replace(' ', '-') }}-variant)
-    - [{{ loop.index + 1 }}.3. Lineage, Subtype and Clade Assignment](#component-{{ loop.index }}-{{ comp_code|lower|replace(' ', '-') }}-classification)
-    - [{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance](#component-{{ loop.index }}-{{ comp_code|lower|replace(' ', '-') }}-workflow)
-    - [{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)](#component-{{ loop.index }}-{{ comp_code|lower|replace(' ', '-') }}-metadata)
+- [{{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})](#{{ loop.index + 1 }}-{{ comp_code|lower }}-{{ comp.display_name|lower|replace(' ', '-')|replace('(', '')|replace(')', '')|replace(',', '') }})
+    - [{{ loop.index + 1 }}.1. Consensus Genome Reconstruction Performance](#{{ loop.index + 1 }}1-consensus-genome-reconstruction-performance)
+    - [{{ loop.index + 1 }}.2. Variant Detection Performance](#{{ loop.index + 1 }}2-variant-detection-performance)
+    - [{{ loop.index + 1 }}.3. Lineage, Subtype and Clade Assignment](#{{ loop.index + 1 }}3-lineage-subtype-and-clade-assignment)
+    - [{{ loop.index + 1 }}.4. Pipeline Benchmarking and Comparative Performance](#{{ loop.index + 1 }}4-pipeline-benchmarking-and-comparative-performance)
+    - [{{ loop.index + 1 }}.5. Metadata-Derived Analytical Metrics (per sample)](#{{ loop.index + 1 }}5-metadata-derived-analytical-metrics-per-sample)
 {% endfor %}
 - [Appendix](#appendix)
 
