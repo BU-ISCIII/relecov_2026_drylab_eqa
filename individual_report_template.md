@@ -70,7 +70,7 @@
   "per_reads_host": "% Reads host"
 } %}
 
-# Individual Laboratory Technical Report - Interlaboratory Comparison Exercise RELECOV 2.0
+# {{ labdata.lab.lab_cod }} Individual Laboratory Technical Report - Interlaboratory Comparison Exercise RELECOV 2.0
 
 ##### Sarai Varona, Enrique Sapena, Pablo Mata, Alejandro Bernabéu, Pau Pascual, Magdalena Matito, Juan Ledesma, Emilia Arjona, Victor Lopez, Olga Dolgova, Sara Monzón, Isabel Cuesta
 
@@ -125,7 +125,7 @@ Primary contributors to incompleteness for {{ labdata.lab.lab_cod }}:
 
 ## {{ loop.index + 1 }}. {{ comp_code }} ({{ comp.display_name }})
 
-The laboratory submitted results for the **{{ comp_code }}** component from {{ comp.sequencing_instrument_platform }} platform.
+The {{ labdata.lab.lab_cod }} laboratory submitted results for the **{{ comp_code }}** component from {{ comp.sequencing_instrument_platform }} platform.
 
 Number of ssubmitted outputs:
 
@@ -157,12 +157,13 @@ Consensus genome sequences (`.fasta`) submitted by **{{ labdata.lab.lab_cod }}**
 
 {% set appendix_table_counter.value = appendix_table_counter.value + 1 %}
 {% set lab_consensus_metrics_table_num = appendix_table_counter.value %}
-The detailed per-sample consensus reconstruction metrics for **{{ labdata.lab.lab_cod }}** are provided in Appendix Table {{ lab_consensus_metrics_table_num }}. The figure below summarises overall sequence similarity and discrepancy burden relative to the curated gold standard for {{ labdata.lab.lab_cod }} compared to the network.
+{% set fig_counter.value = fig_counter.value + 1 %}
+
+The detailed per-sample consensus reconstruction metrics for **{{ labdata.lab.lab_cod }}** are provided in Appendix Table {{ lab_consensus_metrics_table_num }}. Figure {{ fig_counter.value }} summarises overall sequence similarity and discrepancy burden relative to the curated gold standard for {{ labdata.lab.lab_cod }} compared to the network.
 
 
 {% set consensus_distribution_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/consensus_distribution_panel.png" %}
 {% if path_exists(consensus_distribution_panel_path) %}
-{% set fig_counter.value = fig_counter.value + 1 %}
 
 {% set figure_cfg.style = "max-width: 90%;" %}
 {{ render_figure(
@@ -204,8 +205,6 @@ The full discrepancy-type breakdown per sample for **{{ labdata.lab.lab_cod }}**
 {% if comp_code in ["SARS1", "SARS2"] %}
 For SARS-CoV-2, variant call files (`.vcf`) submitted by **{{ labdata.lab.lab_cod }}** were compared against the curated reference variant set for each sample included in the {{ comp_code }} component.
 
-The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set and benchmark the laboratory’s results against the network median for the same sample. The laboratory-reported variant counts declared in the metadata were also compared against the values derived directly from the submitted VCF files for each sample.
-
 {% set variant_detection_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/variant_metadata_vs_vcf_distribution.png" %}
 {% if path_exists(variant_detection_path) %}
 {% set fig_counter.value = fig_counter.value + 1 %}
@@ -219,7 +218,23 @@ The metrics presented in Table {{ table_counter.value }} summarise per-sample va
 **Figure {{ fig_counter.value }}. Variant detection performance across participating laboratories ({{ comp_code }}).** Panel A shows the distribution of total variant discrepancies per sample across the RELECOV network. Panel B shows the corresponding distribution of successful hits per sample. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range across the network, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 {% endif %}
 
+
 {% set table_counter.value = table_counter.value + 1 %}
+The metrics presented in Table {{ table_counter.value }} summarise per-sample variant detection accuracy relative to the curated reference variant set and benchmark the laboratory’s results against the network median for the same sample. The laboratory-reported variant counts declared in the metadata were also compared against the values derived directly from the submitted VCF files for each sample and these results are presented in Table {{ table_counter.value + 1 }}.
+
+{% set variant_metrics_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/variant_metrics_distribution.png" %}
+{% if path_exists(variant_metrics_path) %}
+{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
+{% set lab_variant_metrics_figure_num = appendix_fig_counter.value %}
+{% set _ = lab_variant_figure_appendix_entries.value.append({
+  "comp_code": comp_code,
+  "comp": comp,
+  "figure_num": lab_variant_metrics_figure_num,
+  "variant_metrics_path": variant_metrics_path
+}) %}
+The graphical representation of the comparison of metadata-reported and VCF-derived variant metrics across participating laboratories for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_variant_metrics_figure_num }}.
+{% endif %}
+
 **Table {{ table_counter.value }}. Per-sample variant detection performance metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
 | Sample ID | Reporting mode | Expected hits | {{ labdata.lab.lab_cod }} total discrepancies | Network median total discrepancies | {{ labdata.lab.lab_cod }} successful hits | Network median successful hits | Wrong variants | Insertions | Deletions | Missing expected variants | De novo variants |
@@ -246,6 +261,7 @@ For influenza components, evaluation focused on structural reporting metrics and
 {% for collecting_lab_sample_id, s in comp.samples.items() -%}
 | {{ collecting_lab_sample_id }} | {{ "High and low frequency" if s.variants.high_and_low_freq else ("High frequency only" if s.variants.high_freq_only else ("Low frequency only" if s.variants.low_freq_only else "NA")) }} | {{ s.variants.number_of_variants_in_consensus if s.variants and s.variants.number_of_variants_in_consensus is not none else "NA" }} | {{ s.variants.number_of_variants_in_consensus_vcf if s.variants and s.variants.number_of_variants_in_consensus_vcf is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect if s.variants and s.variants.number_of_variants_with_effect is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect_vcf if s.variants and s.variants.number_of_variants_with_effect_vcf is not none else "NA" }} | {{ s.variants.discrepancies_in_reported_variants if s.variants and s.variants.discrepancies_in_reported_variants is not none else "NA" }} | {{ s.variants.discrepancies_in_reported_variants_effect if s.variants and s.variants.discrepancies_in_reported_variants_effect is not none else "NA" }} |
 {% endfor %}
+
 {% else %}
 **Table {{ table_counter.value }}. Metadata-reported and VCF-derived variant metrics for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
@@ -255,18 +271,7 @@ For influenza components, evaluation focused on structural reporting metrics and
 | {{ collecting_lab_sample_id }} | {{ "High and low frequency" if s.variants.high_and_low_freq else ("High frequency only" if s.variants.high_freq_only else ("Low frequency only" if s.variants.low_freq_only else "NA")) }} | {{ s.variants.number_of_variants_in_consensus if s.variants and s.variants.number_of_variants_in_consensus is not none else "NA" }} | {{ s.variants.number_of_variants_in_consensus_vcf if s.variants and s.variants.number_of_variants_in_consensus_vcf is not none else "NA" }} | {{ s.variants.number_of_variants_with_effect if s.variants and s.variants.number_of_variants_with_effect is not none else "NA" }} | {{ s.variants.discrepancies_in_reported_variants if s.variants and s.variants.discrepancies_in_reported_variants is not none else "NA" }} | {{ s.variants.number_of_variants_in_vcf if s.variants and s.variants.number_of_variants_in_vcf is not none else "NA" }} |
 {% endfor %}
 {% endif %}
-{% set variant_metrics_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/variant_metrics_distribution.png" %}
-{% if path_exists(variant_metrics_path) %}
-{% set appendix_fig_counter.value = appendix_fig_counter.value + 1 %}
-{% set lab_variant_metrics_figure_num = appendix_fig_counter.value %}
-{% set _ = lab_variant_figure_appendix_entries.value.append({
-  "comp_code": comp_code,
-  "comp": comp,
-  "figure_num": lab_variant_metrics_figure_num,
-  "variant_metrics_path": variant_metrics_path
-}) %}
-The distribution of metadata-reported and VCF-derived variant metrics across participating laboratories for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_variant_metrics_figure_num }}.
-{% endif %}
+
 {% endif %}
 
 ### {{ loop.index + 1 }}.3. Lineage, Subtype and Clade Assignment
@@ -282,7 +287,7 @@ Lineage/type and clade assignments submitted by **{{ labdata.lab.lab_cod }}** we
   "figure_num": lab_classification_figure_num,
   "classification_concordance_path": classification_concordance_path
 }) %}
-The distribution of lineage/type and clade classification outcomes across participating laboratories for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_classification_figure_num }}.
+The distribution of lineage/type and clade classification outcomes across participating laboratories for **{{ labdata.lab.lab_cod }}** is displayed in Table {{ table_counter.value + 1 }} and the graphical representation is shown in Appendix Figure {{ lab_classification_figure_num }}.
 {% endif %}
 
 {% set table_counter.value = table_counter.value + 1 %}
@@ -318,9 +323,10 @@ Positioning was evaluated based on four primary performance indicators:
 The workflow positioning across the RELECOV network for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_workflow_figure_num }}.
 {% endif %}
 
+{% set table_counter.value = table_counter.value + 1 %}
+
 Table {{ table_counter.value }} summarises the software configuration declared by **{{ labdata.lab.lab_cod }}** for each analysed sample in {{ comp_code }}. Table {{ table_counter.value + 1 }} contextualises the performance of the declared workflow relative to aggregated network-level metrics. For all four indicators, the reported network median and min-max range correspond to laboratory-level summaries across participating laboratories for the same component.
 
-{% set table_counter.value = table_counter.value + 1 %}
 **Table {{ table_counter.value }}. Declared workflow configuration for {{ labdata.lab.lab_cod }} ({{ comp_code }}).**
 
 {% if comp_code in ["SARS1", "SARS2"] %}
@@ -380,7 +386,7 @@ Only metrics explicitly provided by the laboratory are included in the comparati
   "qc_match_rate_path": qc_match_rate_path
 }) %}
 
-The sample-level QC concordance across the network for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_qc_figure_num }}.
+The graphical representation of the sample-level QC concordance across the network for **{{ labdata.lab.lab_cod }}** is shown in Appendix Figure {{ lab_qc_figure_num }}.
 {% else %}
 
 No comparative QC concordance figure is shown for {{ comp_code }} because **{{ labdata.lab.lab_cod }}** did not report any sample-level QC assessment for this component.
@@ -423,7 +429,7 @@ Additional metadata-derived analytical metrics were available for a subset of {{
 {% endif %}
 {% endfor %}
 {% if metadata_metrics_appendix_summary.sample_count > 0 %}
-Appendix Table{% if metadata_metrics_appendix_summary.sample_count > 1 %}s{% endif %} {{ metadata_metrics_appendix_summary.first_table_num }}{% if metadata_metrics_appendix_summary.last_table_num != metadata_metrics_appendix_summary.first_table_num %}–{{ metadata_metrics_appendix_summary.last_table_num }}{% endif %} report the metadata-derived analytical metrics for sample{% if metadata_metrics_appendix_summary.sample_count > 1 %}s{% endif %} **{{ metadata_metrics_appendix_summary.first_sample_id }}{% if metadata_metrics_appendix_summary.last_sample_id != metadata_metrics_appendix_summary.first_sample_id %}–{{ metadata_metrics_appendix_summary.last_sample_id }}{% endif %}**.
+Appendix Table{% if metadata_metrics_appendix_summary.sample_count > 1 %}s{% endif %} {{ metadata_metrics_appendix_summary.first_table_num }}{% if metadata_metrics_appendix_summary.last_table_num != metadata_metrics_appendix_summary.first_table_num %}–{{ metadata_metrics_appendix_summary.last_table_num }}{% endif %} report the metadata-derived analytical metrics for sample{% if metadata_metrics_appendix_summary.sample_count > 1 %}s{% endif %} **{{ metadata_metrics_appendix_summary.first_sample_id }}{% if metadata_metrics_appendix_summary.last_sample_id != metadata_metrics_appendix_summary.first_sample_id %}–{{ metadata_metrics_appendix_summary.last_sample_id }}{% endif %}**. A graphical representation of the sample-level performance of metadata-derived analytical metrics is displayed in Figure {{ fig_counter.value + 1 }}.
 {% endif %}
 
 {% set metadata_metrics_panel_path = "figures/labs/" ~ lab_code ~ "/" ~ comp_code ~ "/metadata_metrics_panel.png" %}
@@ -530,6 +536,21 @@ This appendix for {{ labdata.lab.lab_cod }} is reserved for supplementary materi
 {% endfor %}
 {% endif %}
 
+{% if comp_workflow_entries %}
+##### Pipeline Benchmarking and Comparative Performance
+
+{% for entry in comp_workflow_entries %}
+{% set figure_cfg.style = "max-width: 98%;" %}
+{{ render_figure(
+  entry.workflow_positioning_path,
+  entry.comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond.",
+  has_panels=True
+) }}
+
+**Appendix Figure {{ entry.figure_num }}. Workflow positioning within the RELECOV network for {{ entry.comp_code }}.** Multi-panel boxplots summarise the laboratory-level distribution across the network for Panel A total consensus discrepancies, Panel B median genome identity, Panel C total classification matches, and Panel D metadata completeness. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
+{% endfor %}
+{% endif %}
+
 {% if comp_qc_entries %}
 ##### Sample Quality Control Assessment Supplementary Material
 
@@ -557,21 +578,6 @@ This appendix for {{ labdata.lab.lab_cod }} is reserved for supplementary materi
 {% for metric_key, metric_label in metadata_metric_labels.items() -%}
 | {{ metric_label }} | {{ entry.sample.metadata_metrics[metric_key] if entry.sample.metadata_metrics.get(metric_key) is not none else "NA" }} | {{ entry.network_sample_metrics[metric_key].median if entry.network_sample_metrics and entry.network_sample_metrics.get(metric_key) else "NA" }} | {{ entry.network_sample_metrics[metric_key].min if entry.network_sample_metrics and entry.network_sample_metrics.get(metric_key) else "NA" }} - {{ entry.network_sample_metrics[metric_key].max if entry.network_sample_metrics and entry.network_sample_metrics.get(metric_key) else "NA" }} |
 {% endfor %}
-{% endfor %}
-{% endif %}
-
-{% if comp_workflow_entries %}
-##### Workflow Benchmarking Supplementary Material
-
-{% for entry in comp_workflow_entries %}
-{% set figure_cfg.style = "max-width: 98%;" %}
-{{ render_figure(
-  entry.workflow_positioning_path,
-  entry.comp_code ~ ": workflow positioning relative to network-wide distributions, with " ~ labdata.lab.lab_cod ~ " highlighted by a black diamond.",
-  has_panels=True
-) }}
-
-**Appendix Figure {{ entry.figure_num }}. Workflow positioning within the RELECOV network for {{ entry.comp_code }}.** Multi-panel boxplots summarise the laboratory-level distribution across the network for Panel A total consensus discrepancies, Panel B median genome identity, Panel C total classification matches, and Panel D metadata completeness. Only panels with evaluable data for **{{ labdata.lab.lab_cod }}** are shown. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values. The black diamond corresponds to the results obtained by **{{ labdata.lab.lab_cod }}**.
 {% endfor %}
 {% endif %}
 
