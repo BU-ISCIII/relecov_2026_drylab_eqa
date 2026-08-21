@@ -555,8 +555,8 @@ Across the two Illumina-based components, the combined median genome identity wa
 Dominant discrepancy patterns differed by component:
 
 - In SARS1, the most frequent discrepancy category was defined nucleotides in the submitted consensus where stretches of Ns were present in the gold standard (as shown in Appendix Table 3 and Appendix Figure 1).
-- In SARS2, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard (as shown in Appendix Table XXTODO and Appendix Figure XXTODO).
-- FLU1 and FLU2 were both dominated by deletions relative to the gold standard (as shown in Appendix Table XXTODO).
+- In SARS2, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard (as shown in Appendix Table 10 and Appendix Figure 3).
+- FLU1 and FLU2 were both dominated by deletions relative to the gold standard (as shown in Appendix Table 17 and Appendix Table 23 and Appendix Figure 5 and Appendix Figure 6).
 
 
 Across components, many discrepancy categories had medians of zero, indicating that errors tended to be concentrated in a smaller number of laboratories or samples rather than being uniformly distributed across the network.
@@ -636,7 +636,7 @@ general.figures.influenza_variant_reporting_summary,
 
 **_Figure {{ fig_counter.value }}_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
-Together, these results show heterogeneity in influenza variant reporting within the network (Table {{ table_counter.value }}, Figure {{ fig_counter.value }}).
+Together, these results show heterogeneity in influenza variant reporting within the network.
 
 ### 5.4. Lineage, Subtype and Clade Assignment
 
@@ -1085,7 +1085,7 @@ This appendix is reserved for supplementary material that may support interpreta
 | {{ s.collecting_lab_sample_id }} | {{ s.wrong_nt }} | {{ s.ambiguity2nt }} | {{ s.nt2ambiguity }} | {{ s.ns2nt }} | {{ s.nt2ns }} | {{ s.insertions }} | {{ s.deletions }} |
 {% endfor %}
 
-**Appendix Table {{ entry.type_table_num }}. Network-level discrepancy composition by type for {{ entry.comp_code }}.**
+**Appendix Table {{ entry.type_table_num }}. Network-level consensus discrepancy composition by type for {{ entry.comp_code }}.**
 
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
@@ -1121,7 +1121,7 @@ Figure {{ entry.type_fig_num }} in the appendix summarises the contribution of e
 | {{ s.collecting_lab_sample_id }} | {{ s.median_successful_hits if s.median_successful_hits is not none else "NA" }} | {{ s.median_discrepancies if s.median_discrepancies is not none else "NA" }} | {{ s.min if s.min is not none else "NA" }} – {{ s.max if s.max is not none else "NA" }} | {{ s.wrong_nt if s.wrong_nt is not none else "NA" }} | {{ s.insertions if s.insertions is not none else "NA" }} | {{ s.deletions if s.deletions is not none else "NA" }} | {{ s.missing if s.missing is not none else "NA" }} | {{ s.denovo if s.denovo is not none else "NA" }} |
 {% endfor %}
 
-**Appendix Table {{ entry.type_table_num }}. Network-level discrepancy composition by type for {{ entry.comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
+**Appendix Table {{ entry.type_table_num }}. Network-level variant discrepancy composition by type for {{ entry.comp_code }}.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
 |---|---:|---:|

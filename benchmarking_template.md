@@ -202,7 +202,6 @@ The observed differences across configurations should be read in the context of 
 
 The distribution below reflects only configurations with evaluable percentage of host reads values in the reported metadata, so the number of boxplots may be lower than the total number of declared de-hosting configurations. The full list of declared configurations and associated summary values is provided in Appendix Table {{ appendix_dehosting_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.dehosting.fig_metric_boxplots,
@@ -232,7 +231,6 @@ The distribution below reflects only configurations with evaluable percentage of
 
 Only pre-processing configurations with evaluable observations for the displayed metrics contribute to the figure, so some declared categories may not appear in the plot. The complete list of declared configurations and their summary values is provided in Appendix Table {{ appendix_preprocessing_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.preprocessing.fig_metric_boxplots,
@@ -263,7 +261,6 @@ Only pre-processing configurations with evaluable observations for the displayed
 
 The mapping boxplots include only configurations for which the relevant performance metrics were available, which means that fewer categories may be plotted than were originally declared. Full configuration-level summaries are reported in Appendix Table {{ appendix_mapping_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.mapping.fig_metric_boxplots,
@@ -292,7 +289,6 @@ The mapping boxplots include only configurations for which the relevant performa
 
 The assembly figures are restricted to configurations with evaluable values for the displayed metrics. As a result, some declared assembly categories may be absent from the plots; the full set of declared configurations and summary values is provided in Appendix Table {{ appendix_assembly_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.assembly.fig_metric_boxplots,
@@ -321,7 +317,6 @@ The assembly figures are restricted to configurations with evaluable values for 
 
 Only consensus software configurations with sufficient evaluable data are visualised in the figure below, so the plotted set may be smaller than the total set of declarations. All declared configurations and their associated summary values can be reviewed in Appendix Table {{ appendix_consensus_software_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.consensus_software.fig_metric_boxplots,
@@ -351,7 +346,6 @@ Only consensus software configurations with sufficient evaluable data are visual
 
 The plotted variant calling categories correspond only to configurations with evaluable observations for the displayed metrics. Consequently, the figure may show fewer configurations than were declared overall; the complete summaries are listed in Appendix Table {{ appendix_variant_calling_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.variant_calling.fig_metric_boxplots,
@@ -385,7 +379,6 @@ The plotted variant calling categories correspond only to configurations with ev
 
 Because clade concordance could not be evaluated for every declared configuration, the boxplot includes only categories with usable observations. The full list of declared configurations and their summary values is available in Appendix Table {{ appendix_clade_assignment_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.clade_assignment.fig_metric_boxplots,
@@ -414,7 +407,6 @@ Because clade concordance could not be evaluated for every declared configuratio
 
 Lineage assignment configurations are shown only when concordance values were evaluable for the submitted observations, so the plotted categories may represent only a subset of the declarations. The complete configuration-level summary is provided in Appendix Table {{ appendix_lineage_assignment_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.lineage_assignment.fig_metric_boxplots,
@@ -443,7 +435,6 @@ Lineage assignment configurations are shown only when concordance values were ev
 
 The type assignment plot is limited to configurations with evaluable concordance results, and therefore may contain fewer categories than the total number declared in metadata. The complete list of declared configurations and summary values is provided in Appendix Table {{ appendix_type_assignment_table_num }}.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.type_assignment.fig_metric_boxplots,
@@ -473,7 +464,6 @@ The type assignment plot is limited to configurations with evaluable concordance
 
 Subtype assignment configurations are plotted only when evaluable concordance data were available, so some declared categories may not be represented in the figure. Appendix Table {{ appendix_subtype_assignment_table_num }} contains the full list of declarations and their summary values.
 
-{% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 96%;" %}
 {{ render_figure(
   comp_net.benchmarking.subtype_assignment.fig_metric_boxplots,
