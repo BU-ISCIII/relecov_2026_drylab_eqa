@@ -483,8 +483,8 @@ Across the two Illumina-based components, the combined median genome identity wa
 Dominant discrepancy patterns differed by component:
 
 - In SARS1, the most frequent discrepancy category was defined nucleotides in the submitted consensus where stretches of Ns were present in the gold standard (as shown in Appendix Table 3 and Appendix Figure 1).
-- In SARS2, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard (as shown in Appendix Table XXTODO and Appendix Figure XXTODO).
-- FLU1 and FLU2 were both dominated by deletions relative to the gold standard (as shown in Appendix Table XXTODO).
+- In SARS2, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard (as shown in Appendix Table 10 and Appendix Figure 3).
+- FLU1 and FLU2 were both dominated by deletions relative to the gold standard (as shown in Appendix Table 17 and Appendix Table 23 and Appendix Figure 5 and Appendix Figure 6).
 
 
 Across components, many discrepancy categories had medians of zero, indicating that errors tended to be concentrated in a smaller number of laboratories or samples rather than being uniformly distributed across the network.
@@ -594,7 +594,7 @@ Structural summary metrics derived from submitted influenza VCF files are presen
 
 **_Figure 4_. Influenza variant reporting characteristics across the network**. Summarise the proportion of laboratories reporting high- and/or low-frequency variants.
 
-Together, these results show heterogeneity in influenza variant reporting within the network (Table 4, Figure 4).
+Together, these results show heterogeneity in influenza variant reporting within the network.
 
 ### 5.4. Lineage, Subtype and Clade Assignment
 
@@ -1637,7 +1637,7 @@ This appendix is reserved for supplementary material that may support interpreta
 | SARS5 | 0 | 2 | 0 | 1 | 0 | 0 | 0 |
 
 
-**Appendix Table 3. Network-level discrepancy composition by type for SARS1.**
+**Appendix Table 3. Network-level consensus discrepancy composition by type for SARS1.**
 
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
@@ -1688,7 +1688,7 @@ Figure 1 in the appendix summarises the contribution of each discrepancy categor
 | SARS5 | 64 | 2 | 0 – 67 | 0 | 0 | 0 | 1 | 0 |
 
 
-**Appendix Table 5. Network-level discrepancy composition by type for SARS1.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
+**Appendix Table 5. Network-level variant discrepancy composition by type for SARS1.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
 |---|---:|---:|
@@ -1811,7 +1811,7 @@ Figure 2 in the appendix summarises the contribution of each discrepancy categor
 | SARS10 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
 
 
-**Appendix Table 10. Network-level discrepancy composition by type for SARS2.**
+**Appendix Table 10. Network-level consensus discrepancy composition by type for SARS2.**
 
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
@@ -1862,7 +1862,7 @@ Figure 3 in the appendix summarises the contribution of each discrepancy categor
 | SARS10 | 11 | 0 | 0 – 184 | 0 | 0 | 0 | 0 | 0 |
 
 
-**Appendix Table 12. Network-level discrepancy composition by type for SARS2.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
+**Appendix Table 12. Network-level variant discrepancy composition by type for SARS2.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
 |---|---:|---:|
@@ -1985,7 +1985,7 @@ Figure 4 in the appendix summarises the contribution of each discrepancy categor
 | FLU5 | 0 | 0 | 0 | 1 | 6.5 | 0 | 14 |
 
 
-**Appendix Table 17. Network-level discrepancy composition by type for FLU1.**
+**Appendix Table 17. Network-level consensus discrepancy composition by type for FLU1.**
 
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|
@@ -2131,7 +2131,7 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 | FLU10 | 8 | 0 | 0 | 0 | 0 | 2 | 16 |
 
 
-**Appendix Table 23. Network-level discrepancy composition by type for FLU2.**
+**Appendix Table 23. Network-level consensus discrepancy composition by type for FLU2.**
 
 | Discrepancy type | Network median per sample | Min-max occurrencies |
 |---|---:|---:|

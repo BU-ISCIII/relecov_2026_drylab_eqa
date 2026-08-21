@@ -146,12 +146,11 @@ The distribution below reflects only configurations with evaluable percentage of
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS1/dehosting_metric_boxplots_by_pipeline.png" alt="Distribution of percentage of host reads metrics by dehosting software version for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 4. Distribution of percentage of host reads by declared dehosting software version for SARS1.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 3. Distribution of percentage of host reads by declared dehosting software version for SARS1.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -176,12 +175,11 @@ Only pre-processing configurations with evaluable observations for the displayed
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS1/preprocessing_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pre-processing software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 6. Distribution of performance metrics by declared pre-processing software configuration for SARS1.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 4. Distribution of performance metrics by declared pre-processing software configuration for SARS1.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -206,12 +204,11 @@ The mapping boxplots include only configurations for which the relevant performa
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS1/mapping_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by mapping software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 8. Distribution of performance metrics by declared mapping software configuration for SARS1.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 5. Distribution of performance metrics by declared mapping software configuration for SARS1.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -235,12 +232,11 @@ The assembly figures are restricted to configurations with evaluable values for 
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS1/assembly_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by assembly software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 10. Distribution of performance metrics by declared assembly software configuration for SARS1.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 6. Distribution of performance metrics by declared assembly software configuration for SARS1.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -263,12 +259,11 @@ Only consensus software configurations with sufficient evaluable data are visual
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS1/consensus_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by consensus software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 12. Distribution of performance metrics by declared consensus software configuration for SARS1.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 7. Distribution of performance metrics by declared consensus software configuration for SARS1.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -292,13 +287,12 @@ The plotted variant calling categories correspond only to configurations with ev
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS1/variant_calling_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by variant calling software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 
-**Figure 14. Distribution of performance metrics by declared variant calling software configuration for SARS1.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays discrepancies in reported variants with AF >=75% in the submitted VCF, Panel C discrepancies in reported variants with effect, Panel D successful hits, and Panel E total discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 8. Distribution of performance metrics by declared variant calling software configuration for SARS1.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays discrepancies in reported variants with AF >=75% in the submitted VCF, Panel C discrepancies in reported variants with effect, Panel D successful hits, and Panel E total discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -323,12 +317,11 @@ Because clade concordance could not be evaluated for every declared configuratio
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/SARS1/clade_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by clade assignment software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 16. Distribution of clade concordance by declared clade assignment software configuration for SARS1.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 9. Distribution of clade concordance by declared clade assignment software configuration for SARS1.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -352,12 +345,11 @@ Lineage assignment configurations are shown only when concordance values were ev
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/SARS1/lineage_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by lineage assignment software configuration for SARS1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 18. Distribution of lineage concordance by declared lineage assignment software configuration for SARS1.** This boxplot summarises sample-level lineage concordance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 10. Distribution of lineage concordance by declared lineage assignment software configuration for SARS1.** This boxplot summarises sample-level lineage concordance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -389,7 +381,7 @@ Based on metadata submissions, 5 distinct bioinformatics protocols were reported
 <img src="figures/SARS2/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png" alt="Distribution of consensus discrepancies by pipeline configuration for SARS2." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-**Figure 19. Distribution of consensus discrepancies by declared pipeline configuration for SARS2.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 11. Distribution of consensus discrepancies by declared pipeline configuration for SARS2.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -419,7 +411,7 @@ The observed differences across configurations should be read in the context of 
 <img src="figures/SARS2/bioinformatics_protocol_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pipeline configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 20. Distribution of performance metrics by declared pipeline configuration for SARS2.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 12. Distribution of performance metrics by declared pipeline configuration for SARS2.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -443,12 +435,11 @@ The distribution below reflects only configurations with evaluable percentage of
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS2/dehosting_metric_boxplots_by_pipeline.png" alt="Distribution of percentage of host reads metrics by dehosting software version for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 22. Distribution of percentage of host reads by declared dehosting software version for SARS2.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 13. Distribution of percentage of host reads by declared dehosting software version for SARS2.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -473,12 +464,11 @@ Only pre-processing configurations with evaluable observations for the displayed
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS2/preprocessing_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pre-processing software configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 24. Distribution of performance metrics by declared pre-processing software configuration for SARS2.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 14. Distribution of performance metrics by declared pre-processing software configuration for SARS2.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -503,12 +493,11 @@ The mapping boxplots include only configurations for which the relevant performa
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS2/mapping_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by mapping software configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 26. Distribution of performance metrics by declared mapping software configuration for SARS2.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 15. Distribution of performance metrics by declared mapping software configuration for SARS2.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -533,12 +522,11 @@ Only consensus software configurations with sufficient evaluable data are visual
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS2/consensus_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by consensus software configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 28. Distribution of performance metrics by declared consensus software configuration for SARS2.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 16. Distribution of performance metrics by declared consensus software configuration for SARS2.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -562,13 +550,12 @@ The plotted variant calling categories correspond only to configurations with ev
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/SARS2/variant_calling_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by variant calling software configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 
-**Figure 30. Distribution of performance metrics by declared variant calling software configuration for SARS2.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays discrepancies in reported variants with AF >=75% in the submitted VCF, Panel C discrepancies in reported variants with effect, Panel D successful hits, and Panel E total discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 17. Distribution of performance metrics by declared variant calling software configuration for SARS2.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays discrepancies in reported variants with AF >=75% in the submitted VCF, Panel C discrepancies in reported variants with effect, Panel D successful hits, and Panel E total discrepancies. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -593,12 +580,11 @@ Because clade concordance could not be evaluated for every declared configuratio
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/SARS2/clade_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by clade assignment software configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 32. Distribution of clade concordance by declared clade assignment software configuration for SARS2.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 18. Distribution of clade concordance by declared clade assignment software configuration for SARS2.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -622,12 +608,11 @@ Lineage assignment configurations are shown only when concordance values were ev
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/SARS2/lineage_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by lineage assignment software configuration for SARS2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 34. Distribution of lineage concordance by declared lineage assignment software configuration for SARS2.** This boxplot summarises sample-level lineage concordance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 19. Distribution of lineage concordance by declared lineage assignment software configuration for SARS2.** This boxplot summarises sample-level lineage concordance stratified by lineage assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and lineage assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -659,7 +644,7 @@ Based on metadata submissions, 6 distinct bioinformatics protocols were reported
 <img src="figures/FLU1/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png" alt="Distribution of consensus discrepancies by pipeline configuration for FLU1." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-**Figure 35. Distribution of consensus discrepancies by declared pipeline configuration for FLU1.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 20. Distribution of consensus discrepancies by declared pipeline configuration for FLU1.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -690,7 +675,7 @@ The observed differences across configurations should be read in the context of 
 <img src="figures/FLU1/bioinformatics_protocol_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pipeline configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 36. Distribution of performance metrics by declared pipeline configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 21. Distribution of performance metrics by declared pipeline configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -714,12 +699,11 @@ The distribution below reflects only configurations with evaluable percentage of
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU1/dehosting_metric_boxplots_by_pipeline.png" alt="Distribution of percentage of host reads metrics by dehosting software version for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 38. Distribution of percentage of host reads by declared dehosting software version for FLU1.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 22. Distribution of percentage of host reads by declared dehosting software version for FLU1.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -744,12 +728,11 @@ Only pre-processing configurations with evaluable observations for the displayed
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU1/preprocessing_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pre-processing software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 40. Distribution of performance metrics by declared pre-processing software configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 23. Distribution of performance metrics by declared pre-processing software configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -774,12 +757,11 @@ The mapping boxplots include only configurations for which the relevant performa
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU1/mapping_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by mapping software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 42. Distribution of performance metrics by declared mapping software configuration for FLU1.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 24. Distribution of performance metrics by declared mapping software configuration for FLU1.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -803,12 +785,11 @@ The assembly figures are restricted to configurations with evaluable values for 
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU1/assembly_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by assembly software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 44. Distribution of performance metrics by declared assembly software configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 25. Distribution of performance metrics by declared assembly software configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -831,12 +812,11 @@ Only consensus software configurations with sufficient evaluable data are visual
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU1/consensus_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by consensus software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 46. Distribution of performance metrics by declared consensus software configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 26. Distribution of performance metrics by declared consensus software configuration for FLU1.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -860,13 +840,12 @@ The plotted variant calling categories correspond only to configurations with ev
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU1/variant_calling_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by variant calling software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 
-**Figure 48. Distribution of performance metrics by declared variant calling software configuration for FLU1.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays the number of reported variants with AF >=75%, Panel C the number of variants with AF >=75% in the submitted VCF, Panel D the number of variants with effect, Panel E metadata-VCF discrepancies, and Panel F the total number of variants present in the submitted VCF files. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 27. Distribution of performance metrics by declared variant calling software configuration for FLU1.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays the number of reported variants with AF >=75%, Panel C the number of variants with AF >=75% in the submitted VCF, Panel D the number of variants with effect, Panel E metadata-VCF discrepancies, and Panel F the total number of variants present in the submitted VCF files. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -891,12 +870,11 @@ Because clade concordance could not be evaluated for every declared configuratio
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/FLU1/clade_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by clade assignment software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 50. Distribution of clade concordance by declared clade assignment software configuration for FLU1.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 28. Distribution of clade concordance by declared clade assignment software configuration for FLU1.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -922,12 +900,11 @@ The type assignment plot is limited to configurations with evaluable concordance
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/FLU1/type_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by type assignment software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 52. Distribution of type concordance by declared type assignment software configuration for FLU1.** This boxplot summarises sample-level type concordance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 29. Distribution of type concordance by declared type assignment software configuration for FLU1.** This boxplot summarises sample-level type concordance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -952,12 +929,11 @@ Subtype assignment configurations are plotted only when evaluable concordance da
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/FLU1/subtype_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by subtype assignment software configuration for FLU1." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 54. Distribution of subtype concordance by declared subtype assignment software configuration for FLU1.** This boxplot summarises sample-level subtype concordance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 30. Distribution of subtype concordance by declared subtype assignment software configuration for FLU1.** This boxplot summarises sample-level subtype concordance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -985,7 +961,7 @@ Based on metadata submissions, 5 distinct bioinformatics protocols were reported
 <img src="figures/FLU2/bioinformatics_protocol_discrepancies_boxplot_by_pipeline.png" alt="Distribution of consensus discrepancies by pipeline configuration for FLU2." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-**Figure 55. Distribution of consensus discrepancies by declared pipeline configuration for FLU2.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 31. Distribution of consensus discrepancies by declared pipeline configuration for FLU2.** This boxplot summarises sample-level consensus discrepancies stratified by bioinformatics protocol. The left y-axis shows discrepancy counts, while the right y-axis overlays lineage/type and clade classification accuracy for the same software configuration. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1015,7 +991,7 @@ The observed differences across configurations should be read in the context of 
 <img src="figures/FLU2/bioinformatics_protocol_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pipeline configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 56. Distribution of performance metrics by declared pipeline configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 32. Distribution of performance metrics by declared pipeline configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by bioinformatics protocols. Panel A displays genome identity (%), Panel B metadata completeness (%), and Panel C exact classification concordance (%). X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Where required, Panel A uses a truncated y-axis to highlight differences among high-identity values. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1039,12 +1015,11 @@ The distribution below reflects only configurations with evaluable percentage of
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU2/dehosting_metric_boxplots_by_pipeline.png" alt="Distribution of percentage of host reads metrics by dehosting software version for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 58. Distribution of percentage of host reads by declared dehosting software version for FLU2.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 33. Distribution of percentage of host reads by declared dehosting software version for FLU2.** Boxplots summarise sample-level percentage of host reads stratified by dehosting software version. Only configurations with evaluable percentage of host reads values are displayed, so some declared software categories may be absent from the plot. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each version, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1069,12 +1044,11 @@ Only pre-processing configurations with evaluable observations for the displayed
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU2/preprocessing_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by pre-processing software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 60. Distribution of performance metrics by declared pre-processing software configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 34. Distribution of performance metrics by declared pre-processing software configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by pre-processing software. Panel A displays Number of reads sequenced and Panel B Reads passing filters. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1099,12 +1073,11 @@ The mapping boxplots include only configurations for which the relevant performa
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU2/mapping_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by mapping software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 62. Distribution of performance metrics by declared mapping software configuration for FLU2.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 35. Distribution of performance metrics by declared mapping software configuration for FLU2.** Boxplots summarise sample-level performance stratified by mapping software. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1128,12 +1101,11 @@ The assembly figures are restricted to configurations with evaluable values for 
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU2/assembly_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by assembly software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 64. Distribution of performance metrics by declared assembly software configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 36. Distribution of performance metrics by declared assembly software configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by assembly software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -1156,12 +1128,11 @@ Only consensus software configurations with sufficient evaluable data are visual
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU2/consensus_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by consensus software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 66. Distribution of performance metrics by declared consensus software configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
+**Figure 37. Distribution of performance metrics by declared consensus software configuration for FLU2.** Multi-panel boxplots summarise sample-level performance stratified by consensus software. Panel A displays consensus genome length, Panel B genome identity, and Panel C discrepancy counts. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers. For SARS1 and FLU1, Panel B uses a truncated y-axis to highlight differences among high-identity values.
 
 
 
@@ -1185,13 +1156,12 @@ The plotted variant calling categories correspond only to configurations with ev
 
 
 
-
 <figure class="benchmark-figure">
 <img src="figures/FLU2/variant_calling_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by variant calling software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 
-**Figure 68. Distribution of performance metrics by declared variant calling software configuration for FLU2.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays the number of reported variants with AF >=75%, Panel C the number of variants with AF >=75% in the submitted VCF, Panel D the number of variants with effect, Panel E metadata-VCF discrepancies, and Panel F the total number of variants present in the submitted VCF files. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 38. Distribution of performance metrics by declared variant calling software configuration for FLU2.** Panel A is a stacked bar chart showing the number of evaluable samples assigned to each allele frequency reporting pattern for each software configuration. Boxplot Panel B displays the number of reported variants with AF >=75%, Panel C the number of variants with AF >=75% in the submitted VCF, Panel D the number of variants with effect, Panel E metadata-VCF discrepancies, and Panel F the total number of variants present in the submitted VCF files. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. Only panels with evaluable data are shown. In the boxplots, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1216,12 +1186,11 @@ Because clade concordance could not be evaluated for every declared configuratio
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/FLU2/clade_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by clade assignment software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 70. Distribution of clade concordance by declared clade assignment software configuration for FLU2.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 39. Distribution of clade concordance by declared clade assignment software configuration for FLU2.** This boxplot summarises sample-level clade concordance stratified by clade assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and clade assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1247,12 +1216,11 @@ The type assignment plot is limited to configurations with evaluable concordance
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/FLU2/type_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by type assignment software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 72. Distribution of type concordance by declared type assignment software configuration for FLU2.** This boxplot summarises sample-level type concordance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 40. Distribution of type concordance by declared type assignment software configuration for FLU2.** This boxplot summarises sample-level type concordance stratified by type assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and type assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
@@ -1277,12 +1245,11 @@ Subtype assignment configurations are plotted only when evaluable concordance da
 
 
 
-
 <figure class="benchmark-figure landscape-benchmark-figure">
 <img src="figures/FLU2/subtype_assignment_metric_boxplots_by_pipeline.png" alt="Distribution of performance metrics by subtype assignment software configuration for FLU2." style="width: 96%; max-width: 96%;"/>
 </figure>
 
-**Figure 74. Distribution of subtype concordance by declared subtype assignment software configuration for FLU2.** This boxplot summarises sample-level subtype concordance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
+**Figure 41. Distribution of subtype concordance by declared subtype assignment software configuration for FLU2.** This boxplot summarises sample-level subtype concordance stratified by subtype assignment software configuration, where each configuration corresponds to a unique combination of software name, software version, and subtype assignment database version when available. X-axis labels report the declared software configuration and the number of laboratories (`n`) contributing observations to each category. The central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range of sample-level observations across participating laboratories using each configuration, translucent points correspond to individual sample-level observations submitted by participating laboratories, and hollow circles beyond the whiskers indicate outliers.
 
 
 
