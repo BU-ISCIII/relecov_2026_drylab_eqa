@@ -12,11 +12,11 @@
   "median_components_analysed_per_lab": 2.0,
   "total_fasta_submitted": 197,
   "total_fasta_expected": 202,
-  "total_vcf_submitted": 176,
+  "total_vcf_submitted": 180,
   "total_vcf_expected": 202,
   "submission_rates_pct": {
     "fasta": 97.52,
-    "vcf": 87.13
+    "vcf": 89.11
   },
   "figures": {
     "consensus_summary": "figures/network/consensus_summary.png",
@@ -4808,7 +4808,7 @@
       "name": "Influenza virus, Illumina",
       "total_labs": 12,
       "total_fasta": 47,
-      "total_vcf": 38,
+      "total_vcf": 42,
       "metadata_completeness_median": 53.6638,
       "metadata_completeness_min_pct": 25.0,
       "metadata_completeness_max_pct": 88.2591,
