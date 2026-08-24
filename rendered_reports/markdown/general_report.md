@@ -42,7 +42,7 @@
 
 The 2026 RELECOV Dry-Lab Interlaboratory Comparison Exercise provides the first network-wide dry-lab assessment focused specifically on bioinformatic analytical performance across respiratory virus genomic surveillance workflows. The exercise evaluated 20 distributed datasets grouped into four analytical components, comprising Illumina and Nanopore data for SARS-CoV-2 and influenza virus. Participating laboratories were assessed on consensus genome reconstruction, variant reporting, lineage/type and clade assignment, metadata completeness, and the reproducibility of their declared analytical workflows relative to curated gold standards and network-wide distributions.
 
-Nineteen RELECOV member laboratories participated, corresponding to 36.54% of invited laboratories, with high submission rates for expected analytical outputs: 97.52% for consensus genome files and 87.13% for VCF files.
+Nineteen RELECOV member laboratories participated, corresponding to 36.54% of invited laboratories, with high submission rates for expected analytical outputs: 97.52% for consensus genome files and 89.11% for VCF files.
 
 Across the network, consensus genome reconstruction performed slightly better in the Illumina-based components, with a combined median genome identity of 97.72%, compared with 96.17% in the Nanopore-based components. However, broad identity ranges in SARS2 and FLU2 indicate that outlier submissions remained present, particularly in contexts where masking, coverage thresholds, and consensus-generation choices differed across laboratories.
 
@@ -472,7 +472,7 @@ The results presented below are interpreted according to the evaluation framewor
 Across all components:
 
 - 97.5% of laboratories submitted consensus genome files (.fasta), where applicable.
-- 87.1% submitted variant call files (.vcf), where applicable.
+- 89.1% submitted variant call files (.vcf), where applicable.
 
 Component-level submission totals are presented in Section 6 and reflect both the number of participating laboratories and the expected output files for each dataset.
 
@@ -1129,7 +1129,7 @@ Sample-level QC in SARS2 was evaluated as concordance between the laboratory-rep
 A total of 12 laboratories submitted results for the FLU1 component:
 
 - A total of 47 consensus genome sequences (.fasta) were submitted.
-- A total of 38 variant call files (.vcf) were submitted.
+- A total of 42 variant call files (.vcf) were submitted.
 - The metadata template completeness for FLU1 submissions had a median of 53.7%.
 
 
