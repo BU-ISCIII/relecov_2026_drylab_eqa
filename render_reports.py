@@ -167,7 +167,7 @@ def build_environment(template_path: Path, figures_dir: Optional[Path] = None) -
 
 def render_template(
     template_path: Path,
-    general_data: Dict[str, Any],
+    general_data: Optional[Dict[str, Any]],
     labdata: Optional[Dict[str, Any]],
     figures_dir: Optional[Path] = None,
 ) -> str:
@@ -249,12 +249,23 @@ def normalize_missing_markers(markdown_text: str) -> str:
     return markdown_text
 
 
+def collapse_blank_lines(markdown_text: str) -> str:
+    # Collapse 3+ consecutive newlines (i.e. 2+ blank lines) into a single
+    # blank line (exactly one "\n\n" between blocks). Lines that only
+    # contain whitespace are treated as blank too.
+    text = re.sub(r"[ \t]+\n", "\n", markdown_text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
+
+
 def postprocess_rendered_markdown(markdown_text: str) -> str:
     cleaned = markdown_text.lstrip()
     cleaned = normalize_figure_blocks(cleaned)
     cleaned = normalize_table_spacing(cleaned)
     cleaned = replace_display_math_blocks(cleaned)
     cleaned = normalize_missing_markers(cleaned)
+    cleaned = re.sub(r"(?m)^[ \t]*<!-- TEMPLATE_TOC -->\s*$\n?", "", cleaned)
+    cleaned = collapse_blank_lines(cleaned)
     return cleaned
 
 
@@ -273,7 +284,7 @@ def wrap_wide_tables_for_landscape(html_text: str) -> str:
     )
     forced_landscape_captions = (
         "Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking",
-        "Influenza virus samples used in the RELECOV 2026 Dry-Lab EQA",
+        "Influenza virus samples used in the RELECOV 2026 Dry-Lab Interlaboratory Comparison Exercise",
     )
 
     def replace_table(match: re.Match[str]) -> str:
@@ -319,6 +330,7 @@ def rewrite_figure_sources(markdown_text: str, figures_dir: Optional[Path]) -> s
 
 def markdown_to_html(markdown_text: str, title: str, css_text: str, base_dir: Path, figures_dir: Optional[Path] = None) -> str:
     markdown_text = rewrite_figure_sources(markdown_text, figures_dir)
+    markdown_text = re.sub(r"(?m)^[ \t]*<!-- TEMPLATE_TOC -->\s*$\n?", "", markdown_text)
     html_body = md_lib.markdown(markdown_text, extensions=MARKDOWN_EXTENSIONS)
     html_body = postprocess_rendered_html(html_body)
     return f"""<!doctype html>
@@ -392,22 +404,40 @@ def discover_existing_markdown_reports(markdown_root: Path) -> List[Dict[str, An
 
 
 def build_report_targets(
-    general_data: Dict[str, Any],
+    general_data: Optional[Dict[str, Any]],
     template_path: Path,
     labs_dir: Optional[Path],
     figures_dir: Optional[Path] = None,
+    include_general: bool = True,
+    report_type: Optional[str] = None,
+    lab_cod: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     reports: List[Dict[str, Any]] = []
-    reports.append(
-        {
-            "kind": "general",
-            "identifier": "general",
-            "title": "RELECOV 2026 Dry-Lab EQA General Report",
-            "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
-            "subdir": Path(),
-            "stem": "general_report",
-        }
-    )
+    # Only include the general report if requested and we have general data (i.e. --general-json was given)
+    if include_general and general_data is not None:
+        reports.append(
+            {
+                "kind": "general",
+                "identifier": "general",
+                "title": "General Report Dry-Lab Interlaboratory Comparison Exercise RELECOV 2026",
+                "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
+                "subdir": Path(),
+                "stem": "general_report",
+            }
+        )
+
+    if report_type == "benchmarking" and general_data is not None:
+        reports.append(
+            {
+                "kind": "benchmarking",
+                "identifier": "benchmarking",
+                "title": "Benchmarking Report Dry-Lab Interlaboratory Comparison Exercise RELECOV 2026",
+                "markdown_text": render_template(template_path, general_data, labdata=None, figures_dir=figures_dir),
+                "subdir": Path(),
+                "stem": "benchmarking_report",
+            }
+        )
+        return reports
 
     if not labs_dir:
         return reports
@@ -419,13 +449,28 @@ def build_report_targets(
             "Expected files with top-level 'lab' and 'components' keys."
         )
 
+    if lab_cod:
+        target_id = sanitize_filename(lab_cod)
+        filtered = [
+            (path, payload)
+            for path, payload in lab_entries
+            if get_lab_identifier(payload, path.stem) == target_id
+        ]
+        if not filtered:
+            available = ", ".join(sorted(get_lab_identifier(p, path.stem) for path, p in lab_entries))
+            raise SystemExit(
+                f"No lab matching --lab_cod {lab_cod!r} was found in {labs_dir}. "
+                f"Available lab_cod values: {available}"
+            )
+        lab_entries = filtered
+
     for path, payload in lab_entries:
         lab_id = get_lab_identifier(payload, path.stem)
         reports.append(
             {
                 "kind": "lab",
                 "identifier": lab_id,
-                "title": f"RELECOV 2026 Dry-Lab EQA Technical Report - {lab_id}",
+                "title": f"Technical Report {lab_id} Dry-Lab Interlaboratory Comparison Exercise RELECOV 2026",
                 "markdown_text": render_template(template_path, general_data, labdata=payload, figures_dir=figures_dir),
                 "subdir": Path("labs"),
                 "stem": f"lab_{lab_id}",
@@ -444,6 +489,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         )
     )
     parser.add_argument("--template", required=False, help="Path to the markdown Jinja template.")
+    parser.add_argument(
+        "--input-template",
+        required=False,
+        help=(
+            "Optional: an input markdown Jinja template to render. If provided, this template "
+            "will be used instead of `--template`. When used together with `--labs-dir` but "
+            "without `--general-json`, only individual lab reports will be rendered."
+        ),
+    )
     parser.add_argument("--general-json", required=False, help="Path to general.json.")
     parser.add_argument(
         "--labs-dir",
@@ -488,6 +542,26 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--report-type",
+        choices=["general", "labs", "benchmarking"],
+        required=False,
+        help=(
+            "Optional: select the type of report to generate. \n"
+            "`general`: only generate the general report. \n"
+            "`labs`: generate individual lab reports (requires --labs-dir and --general-json). \n"
+            "`benchmarking`: generate the benchmarking report (uses benchmarking_template.md if no template provided)."
+        ),
+    )
+    parser.add_argument(
+        "--lab_cod",
+        default=None,
+        help=(
+            "Optional: only render the individual lab report matching this lab_cod "
+            "(e.g. COD-2400). Requires --labs-dir. Files in --labs-dir are matched "
+            "regardless of any suffix after the lab_cod (e.g. COD-2400-MAD-CNM.json)."
+        ),
+    )
+    parser.add_argument(
         "--figures-dir",
         default=None,
         help=(
@@ -507,7 +581,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     render_markdown = not args.pdf_only
     render_pdf = not args.markdown_only
 
-    template_path = Path(args.template).resolve() if args.template else None
+    # Prefer --input-template over --template when provided
+    chosen_template = args.input_template if args.input_template else args.template
+    template_path = Path(chosen_template).resolve() if chosen_template else None
     general_json_path = Path(args.general_json).resolve() if args.general_json else None
     labs_dir = Path(args.labs_dir).resolve() if args.labs_dir else None
     input_markdown_dir = Path(args.input_markdown_dir).resolve() if args.input_markdown_dir else None
@@ -517,14 +593,45 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     render_from_existing_markdown = input_markdown_dir is not None
 
+    report_type = args.report_type
+
+    # If benchmarking and no template provided, try default benchmarking_template.md
+    if report_type == "benchmarking" and template_path is None:
+        default_bench = Path("benchmarking_template.md")
+        if default_bench.exists():
+            template_path = default_bench.resolve()
+
     if render_from_existing_markdown and render_markdown:
         raise SystemExit("--input-markdown-dir can only be used with PDF export. Use --pdf-only or omit --markdown-only.")
 
     if not render_from_existing_markdown:
         if template_path is None or not template_path.exists():
             raise SystemExit(f"Template not found: {template_path}")
-        if general_json_path is None or not general_json_path.exists():
+        # Require at least one of general_json or labs_dir to be provided
+        if general_json_path is None and labs_dir is None:
+            raise SystemExit("Either --general-json or --labs-dir must be provided when rendering from a template.")
+        if general_json_path and not general_json_path.exists():
             raise SystemExit(f"General JSON not found: {general_json_path}")
+
+        # Validate report_type-specific requirements
+        include_general = True
+        if report_type == "general":
+            if general_json_path is None:
+                raise SystemExit("--general-json is required for report-type 'general'.")
+            labs_dir = None
+            include_general = True
+        elif report_type == "labs":
+            if labs_dir is None:
+                raise SystemExit("--labs-dir is required for report-type 'labs'.")
+            if general_json_path is None:
+                raise SystemExit("--general-json is required for report-type 'labs'. Individual templates need the general JSON.")
+            include_general = False
+        elif report_type == "benchmarking":
+            if general_json_path is None:
+                raise SystemExit("--general-json is required for report-type 'benchmarking'.")
+            include_general = False
+    if args.lab_cod and labs_dir is None:
+        raise SystemExit("--lab_cod requires --labs-dir to be provided.")
     if labs_dir and not labs_dir.exists():
         raise SystemExit(f"Labs directory not found: {labs_dir}")
     if input_markdown_dir and not input_markdown_dir.exists():
@@ -539,8 +646,17 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             raise SystemExit(f"No markdown files were found under {input_markdown_dir}")
         base_dir = input_markdown_dir
     else:
-        general_data = normalize_general_payload(load_json(general_json_path))
-        reports = build_report_targets(general_data, template_path, labs_dir, figures_dir=figures_dir)
+        # Load general data only if provided; otherwise skip general report
+        general_data = normalize_general_payload(load_json(general_json_path)) if general_json_path else None
+        reports = build_report_targets(
+            general_data,
+            template_path,
+            labs_dir,
+            figures_dir=figures_dir,
+            include_general=include_general,
+            report_type=report_type,
+            lab_cod=args.lab_cod,
+        )
         base_dir = template_path.parent
 
     markdown_root = output_dir / "markdown"

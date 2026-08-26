@@ -79,24 +79,36 @@ Example: general report only
 
 ```bash
 python3 render_reports.py \
-  --template report_template.md \
-  --general-json general.json
+  --template general_report_template.md \
+  --general-json general.json \
+  --report-type general
 ```
 
-Example: general report plus individual lab reports
+Example: individual lab reports only
 
 ```bash
 python3 render_reports.py \
-  --template report_template.md \
+  --template individual_report_template.md \
   --general-json general.json \
-  --labs-dir merged_json_results/
+  --labs-dir merged_json_results/ \
+  --report-type labs
+```
+
+Example: Benchmarking report only
+
+```bash
+python3 render_reports.py \
+  --template benchmarking_template.md \
+  --general-json general.json \
+  --labs-dir merged_json_results/ \
+  --report-type benchmarking
 ```
 
 Example: markdown only
 
 ```bash
 python3 render_reports.py \
-  --template report_template.md \
+  --template general_report_template.md \
   --general-json general.json \
   --labs-dir merged_json_results/ \
   --figures-dir figures/ \
@@ -107,7 +119,7 @@ Example: PDF only
 
 ```bash
 python3 render_reports.py \
-  --template report_template.md \
+  --template general_report_template.md \
   --general-json general.json \
   --labs-dir merged_json_results/ \
   --figures-dir figures/ \
@@ -128,7 +140,7 @@ Example: rendering in an external reports directory where figures live outside `
 
 ```bash
 python3 render_reports.py \
-  --template /path/to/report_template.md \
+  --template /path/to/general_report_template.md \
   --general-json general.json \
   --labs-dir /path/to/merged_results_per_lab/ \
   --output-dir /path/to/reports_and_figures/rendered_reports/ \
@@ -139,7 +151,7 @@ python3 render_reports.py \
 
 ```bash
 python3 render_reports.py \
-  --template /path/to/report_template.md \
+  --template /path/to/general_report_template.md \
   --general-json general.json \
   --labs-dir /path/to/merged_results_per_lab/ \
   --output-dir /path/to/reports_and_figures/rendered_reports/ \
@@ -182,4 +194,4 @@ If you want to generate the full reporting output from processed lab folders, th
 - If `--input-markdown-dir` is used, `render_reports.py` can generate PDFs directly from existing markdown files without needing `--template` or `--general-json`.
 - If figures are stored outside the repository or outside the `rendered_reports` tree, pass `--figures-dir` both when rendering markdown and when generating PDFs. This is also needed so that `path_exists(...)` conditions inside the Jinja template can correctly detect external figure files.
 - PDF generation currently uses a Chrome/Chromium executable available in `PATH`.
-- The report template is `report_template.md` and the PDF stylesheet is `report_pdf.css`.
+- The report template is `general_report_template.md` and the PDF stylesheet is `report_pdf.css`.
