@@ -2476,7 +2476,7 @@
             },
             {
               "name": "Nextclade",
-              "n_labs": 4,
+              "n_labs": 6,
               "version": "3.18.1",
               "database_version": "2026-01-06--14-59-32Z",
               "clade_discordance_pct": 16.67,
@@ -2564,7 +2564,7 @@
             },
             {
               "name": "Pangolin",
-              "n_labs": 3,
+              "n_labs": 4,
               "version": "4.3.4",
               "database_version": "4.3.4",
               "lineage_discordance_pct": 0.0,
@@ -4681,7 +4681,7 @@
             },
             {
               "name": "Nextclade",
-              "n_labs": 4,
+              "n_labs": 5,
               "version": "3.18.1",
               "database_version": "2026-01-06--14-59-32Z",
               "clade_discordance_pct": 0.0,
@@ -6063,7 +6063,7 @@
           "softwares": [
             {
               "name": "Custom pipeline/workflow",
-              "n_labs": 4,
+              "n_labs": 5,
               "median_identity_pct": 96.0697,
               "median_discrepancies": 21.0,
               "median_metadata_completeness_pct": 60.7143,
@@ -6136,7 +6136,7 @@
             },
             {
               "name": "Kraken2",
-              "n_labs": 1,
+              "n_labs": 2,
               "version": "2.1.6",
               "per_reads_host": null
             },
@@ -6191,7 +6191,7 @@
             },
             {
               "name": "Fastp",
-              "n_labs": 1,
+              "n_labs": 2,
               "version": "1.0.1",
               "params": null,
               "number_of_reads_sequenced": null,
@@ -6246,7 +6246,7 @@
             },
             {
               "name": "bwa mem",
-              "n_labs": 2,
+              "n_labs": 3,
               "version": "0.7.19-r1273",
               "params": "-p -Y -v 2",
               "depth_of_coverage_threshold": "10x",
@@ -6498,7 +6498,7 @@
             },
             {
               "name": "Nextclade",
-              "n_labs": 2,
+              "n_labs": 4,
               "version": "3.18.1",
               "database_version": "2025-09-09--12-13-13Z",
               "clade_discordance_pct": 0.0,
@@ -6506,7 +6506,7 @@
             },
             {
               "name": "Nextclade",
-              "n_labs": 3,
+              "n_labs": 5,
               "version": "3.18.1",
               "database_version": "2026-01-14--19-24-43Z",
               "clade_discordance_pct": 0.0,
@@ -8252,7 +8252,7 @@
             },
             {
               "name": "Nextclade",
-              "n_labs": 2,
+              "n_labs": 3,
               "version": "3.18.1",
               "database_version": "2025-09-09--12-13-13Z",
               "clade_discordance_pct": 0.0,
@@ -8260,7 +8260,7 @@
             },
             {
               "name": "Nextclade",
-              "n_labs": 4,
+              "n_labs": 5,
               "version": "3.18.1",
               "database_version": "2026-01-14--19-24-43Z",
               "clade_discordance_pct": 5.88,
