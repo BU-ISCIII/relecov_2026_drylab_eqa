@@ -127,8 +127,6 @@ SARS-CoV-2 datasets were selected from the 2024 ECDC ESIB EQA to ensure comparab
 
 Only samples generated using the same ARTIC primer scheme (v4.1) were selected to avoid introducing variability associated with enrichment panel differences. This ensured that observed performance differences reflect analytical workflow characteristics rather than enrichment strategies heterogeneity.
 
-
-
 _**Table 1**. Overview of SARS-CoV-2 datasets used in the RELECOV 2026 Dry-Lab Interlaboratory Comparison Exercise .
 The table details sample origin, sequencing technology (Illumina paired-end or Oxford Nanopore Technologies), amplicon primer scheme version, and specific analytical characteristics intentionally selected to assess workflow robustness under challenging conditions._
 
@@ -150,7 +148,6 @@ The table details sample origin, sequencing technology (Illumina paired-end or O
 The influenza datasets provided in the 2024 ECDC ESIB EQA predominantly correspond to zoonotic influenza strains of animal origin, including H5N1, H5N6, and reassortant genomes.
 
 While these datasets are valuable for specialised surveillance contexts, they do not represent the routine analytical scenario encountered by most RELECOV laboratories, which primarily process seasonal human Influenza A/H1N1 and A/H3N2.
-
 
 Given that the objective of this Interlaboratory Comparison Exercise is to benchmark bioinformatic workflows in a clinical hospital environment, it was considered methodologically necessary to include representative seasonal human influenza strains.
 
@@ -188,9 +185,6 @@ This approach allowed precise control over:
 
 These design features ensured that individual analytical challenges could be evaluated independently while maintaining biologically plausible sequencing datasets.
 
-
-
-
 _**Table 2**. Viral, host and contaminant composition design of in-silico influenza datasets used for benchmarking._
 
 | Sample | Influenza reads | Host reads | Additional Viral reads  | Total reads | Analytical Challenge                |
@@ -201,8 +195,6 @@ _**Table 2**. Viral, host and contaminant composition design of in-silico influe
 | FLU7   | 5677            | 100        | 255 Rhinovirus reads    | 6032        | Cross-virus contamination challenge |
 | FLU8   | 5380            | 300        | 0                       | 5680        | Baseline performance assessment     |
 | FLU9   | 19989           | 500        | 0                       | 20489       | HA segment dropout                  |
-
-
 
 _**Table 3**. Influenza virus samples used in the RELECOV 2026 Dry-Lab Interlaboratory Comparison Exercise, including sequencing platform, enrichment strategy, primer scheme, and key analytical features._
 
@@ -261,11 +253,7 @@ For each analysed component, laboratories were expected to submit:
 
 Submission completeness was calculated as:
 
-
-
 <div class="equation"><span class="equation-lhs">File submission rate</span><span class="equation-equals">=</span><span class="equation-fraction"><span class="equation-numerator">Number of submitted files</span><span class="equation-denominator">Total number of expected files</span></span></div>
-
-
 
 Missing files were recorded but not penalised beyond descriptive reporting, as laboratories were allowed to participate selectively according to local analytical capacity.
 
@@ -410,11 +398,7 @@ Metadata assessment focused on analytical transparency and interoperability rath
 
 For each submitted sample, metadata completeness was calculated as:
 
-
-
 <div class="equation"><span class="equation-lhs">Sample metadata completeness</span><span class="equation-equals">=</span><span class="equation-fraction"><span class="equation-numerator">Number of correctly populated fields</span><span class="equation-denominator">Total number of applicable fields</span></span></div>
-
-
 
 Laboratory-level and component-level completeness summaries were then derived from these sample-level values. Fields were evaluated for:
 
@@ -444,11 +428,7 @@ For each laboratory, component, and the overall network, the following metrics w
 - Number of Matches
 - QC concordance rate, where:
 
-
-
 <div class="equation"><span class="equation-lhs">QC concordance rate</span><span class="equation-equals">=</span><span class="equation-fraction"><span class="equation-numerator">Number of Matches</span><span class="equation-denominator">Total QC evaluations</span></span></div>
-
-
 
 QC evaluations were calculated only for samples analysed by the laboratory.
 
@@ -486,18 +466,7 @@ Dominant discrepancy patterns differed by component:
 - In SARS2, the most frequent discrepancy category was stretches of Ns in the submitted consensus where defined nucleotides were present in the gold standard (as shown in Appendix Table 10 and Appendix Figure 3).
 - FLU1 and FLU2 were both dominated by deletions relative to the gold standard (as shown in Appendix Table 17 and Appendix Table 23 and Appendix Figure 5 and Appendix Figure 6).
 
-
 Across components, many discrepancy categories had medians of zero, indicating that errors tended to be concentrated in a smaller number of laboratories or samples rather than being uniformly distributed across the network.
-
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/network/consensus_summary.png" alt="Network-level consensus reconstruction performance summary." style="width: 98%; max-width: 98%;"/>
@@ -511,19 +480,10 @@ Across components, many discrepancy categories had medians of zero, indicating t
 
 For SARS-CoV-2 components (SARS1 and SARS2), variant detection accuracy was assessed against curated reference variant sets. Overall, submitted VCFs showed a median number of 3 discrepancies relative to the reference variant set for both Illumina and Nanopore components.
 
-
 Variant detection performance differed across components (Figure 2). Contextual factors documented in the metadata that may contribute to these differences included:
 
 - Allele frequency thresholds used for incorporation into vcf files
 - Variant normalization practices (variant caller software and params)
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/network/variant_summary.png" alt="Network-level variant detection performance summary." style="width: 70%; max-width: 70%;"/>
@@ -537,16 +497,6 @@ Variant evaluation included structural reporting characteristics and methodologi
 - No laboratories reported exclusively low-frequency variants.
 
 Additionally, a total of 3 distinct reference genomes were employed for variant calling across SARS-CoV-2 components (MN908947.3, NC_045512.2, XBB REFERENCE GENOME).
-
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/network/sars_variant_reporting_summary.png" alt="SARS-CoV-2 variant reporting practices across the network." style="width: 70%; max-width: 70%;"/>
@@ -568,7 +518,6 @@ Additionally, an estimated total of 8 distinct reference genomes were employed f
 
 Structural summary metrics derived from submitted influenza VCF files are presented in Table 4. These metrics capture the overall magnitude of reported variants in the metadata file and the discrepancy between reported variants with an allele frequency >= 75% in the metadata file and the VCF file, rather than direct nucleotide-level accuracy against a unified reference coordinate system.
 
-
 **Table 4. Network-level structural summary of influenza variant reporting.**
 
 | Metric | Network median | Min-max |
@@ -577,16 +526,6 @@ Structural summary metrics derived from submitted influenza VCF files are presen
 | Variants with AF>=75% in VCF | 188 | 0–1373 |
 | Discrepancies in reported variants | 377 | 0–1797 |
 | Total variants in VCF | 526 | 0–7903 |
-
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/network/influenza_variant_reporting_summary.png" alt="Influenza variant reporting practices across the network." style="width: 96%; max-width: 96%;"/>
@@ -607,16 +546,6 @@ Overall concordance rates were:
 
 Across components, lineage/type concordance was consistently higher than clade concordance. SARS-CoV-2 lineage assignment reached 77.7%, compared with 75.5% for SARS-CoV-2 clade assignment, while influenza type/subtype identification reached 87.8% compared with 67.3% for influenza clade assignment.
 
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/network/classification_summary.png" alt="Distribution of classification outcomes across participating laboratories." style="width: 98%; max-width: 98%;"/>
 </figure>
@@ -628,8 +557,6 @@ Across components, lineage/type concordance was consistently higher than clade c
 The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
 
 #### Overall Completeness
-
-
 
 Across all participating laboratories, the metadata template was completed at a median completeness rate of 59.1%, with values ranging from 11.3% to 92.0%. Component-level median completeness values were similar overall, but the observed ranges remained broad in all components (Figure 6). The leading incompleteness drivers were variant calling, pre-processing, and mapping fields, followed by QC metrics, de-hosting, and consensus analysis fields.
 
@@ -647,16 +574,6 @@ Most frequent incompleteness drivers across the network:
 <li>De-hosting fields (missing in 16 laboratories)</li>
 
 </ul>
-
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/network/metadata_completeness_distribution.png" alt="Distribution of metadata completeness across participating laboratories." style="width: 80%; max-width: 80%;"/>
@@ -698,17 +615,7 @@ Sample quality control (QC) classifications reported by laboratories (Pass/Fail)
 
 Overall, the network achieved 71.1% QC concordance, corresponding to 64 Matches and 26 Discrepancies across 90 evaluated sample-level QC decisions.
 
-
 QC concordance differed across components, ranging from 62.5% in SARS1 to 100.0% in FLU2, based on reported QC information (Figure 7).
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/network/qc_match_rate_by_component.png" alt="QC concordance by component (Match, Discrepancy, and Not provided relative to the gold standard)." style="width: 80%; max-width: 80%;"/>
@@ -724,8 +631,6 @@ Component-level analyses enable identification of platform-specific patterns, da
 
 All component-level results below are reported using the same evaluation framework described in [Section 4](#4-methodology-of-evaluation).
 
-
-
 ### 6.1. SARS1 (SARS-CoV-2, Illumina)
 
 #### 6.1.1. Participation and Submissions
@@ -735,7 +640,6 @@ A total of 16 laboratories submitted results for the SARS1 component:
 - A total of 64 consensus genome sequences (.fasta) were submitted.
 - A total of 64 variant call files (.vcf) were submitted.
 - The metadata template completeness for SARS1 submissions had a median of 55.8%.
-
 
 Most frequent incompleteness drivers in SARS1:
 <ul class="compact-list">
@@ -752,82 +656,39 @@ Most frequent incompleteness drivers in SARS1:
 
 </ul>
 
-
 #### 6.1.2. Consensus Genome Reconstruction Performance
 
 Consensus sequences were evaluated against the corresponding curated gold standard for each sample in the SARS1 component.
 
 Overall, SARS1 showed a median genome identity of 99.59%, with a median of 3 nucleotide discrepancies per sample (range: 1–125) (Figure 8).
 
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS1/consensus_discrepancies_boxplot_by_sample.png" alt="Consensus discrepancies per sample for SARS1 relative to the curated gold standard." style="width: 90%; max-width: 90%;"/>
 </figure>
-
 
 **Figure 8. Consensus reconstruction performance by sample for SARS1.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values.
 
 Figure 9 presents the distribution of nucleotide discrepancy types per sample across participating laboratories for SARS1.
 
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS1/consensus_discrepancies_stacked_by_sample.png" alt="Consensus discrepancy types per sample for SARS1 relative to the curated gold standard." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-
 **Figure 9. Consensus discrepancy type composition per sample for SARS1.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
-
-
-
-
-
-
-
 
 The dominant discrepancy pattern observed in SARS1 was Nucleotide stretch instead of stretch of Ns (Figure 9). Sample-level consensus reconstruction summary metrics are provided in Appendix Table 1. A full sample-level breakdown of discrepancy categories is provided in Appendix Table 2, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table 3 and Appendix Figure 1, respectively.
 
 #### 6.1.3. Variant Detection Accuracy
 
-
-
 Variant call files (.vcf) submitted for the SARS1 component were compared against the curated reference variant set corresponding to each sample in the SARS1 component.
 
 Overall, SARS1 showed a median of 3 variant discrepancies per sample (range: 0–518), together with a median of 65 successful hits per sample (Table 5, Figure 10).
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/SARS1/variant_discrepancies_stacked_by_sample.png" alt="Variant discrepancies per sample for SARS1 relative to the curated gold standard." style="width: 80%; max-width: 80%;"/>
 </figure>
 
 **Figure 10. Distribution of variant discrepancies per sample for SARS1.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
-
 
 **Table 5. Network-level SARS-CoV-2 variant reporting metrics per sample for SARS1.**
 
@@ -839,27 +700,9 @@ Overall, SARS1 showed a median of 3 variant discrepancies per sample (range: 0�
 | SARS4 | 75 | 75 | 70 | 73 | 52 | 50.5 | 1 | 1 |
 | SARS5 | 65 | 64 | 56 | 56 | 46 | 42 | 0 | 3.5 |
 
-
-
-
-
-
-
-
-
-
 At component level, 5 laboratories reported the number of variants in the metadata, whereas 11 did not report this field for any sample in SARS1. The median number of variants with an allele frequency (AF) >=75% was 61 in the metadata and 64 in the submitted VCF files (Table 5, Figure 11).
 
-
 Figure 11 summarises the distribution of declared variant reporting modes across submitted sample outputs in SARS1.
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/SARS1/variant_reporting_practice_by_component.png" alt="Variant reporting practices for SARS1." style="width: 70%; max-width: 70%;"/>
@@ -869,31 +712,15 @@ Figure 11 summarises the distribution of declared variant reporting modes across
 
 The dominant discrepancy pattern observed in SARS1 was Missing variant.  The full sample-level variant calling profile is provided in Appendix Table 4, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table 5 and Appendix Figure 2, respectively.
 
-
-
 #### 6.1.4. Lineage, Subtype and Clade Assignment
 
 Lineage, subtype and clade assignments submitted for the SARS1 component were evaluated for concordance with the curated gold standard classifications.
 
 Across all participating laboratories, lineage/subtype concordance reached 85.9%, whereas clade concordance reached 68.8%. The sample-level outcome distribution also shows that part of the observed discordance was associated with missing classifications or inconsistent completion of classification fields rather than with uniform analytical failure across all submissions.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS1/typing_outcome_stackedbar_by_sample.png" alt="Classification outcome distribution per sample for SARS1." style="width: 98%; max-width: 98%;"/>
 </figure>
-
 
 **Figure 12. Classification outcome distribution per sample for SARS1.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported. Detailed sample-level concordance percentages are provided in Appendix Table 6.
 
@@ -901,28 +728,11 @@ Across all participating laboratories, lineage/subtype concordance reached 85.9%
 
 Sample-level QC in SARS1 was evaluated as concordance between the laboratory-reported Pass/Fail classification and the predefined gold standard status. QC concordance was heterogeneous across samples, and some laboratories did not report a formal QC assessment. Network-wide concordance for reported QC decisions was 62.5%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS1/qc_match_by_sample.png" alt="Sample-level QC concordance for SARS1 (Match, Discrepancy, and Not provided relative to the gold standard)." style="width: 90%; max-width: 90%;"/>
 </figure>
 
-
 **_Figure 13_. Sample-level QC concordance for SARS1 relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement. Detailed sample-level percentages and counts are provided in Appendix Table 7.
-
-
 
 ### 6.2. SARS2 (SARS-CoV-2, Oxford Nanopore Technologies)
 
@@ -933,7 +743,6 @@ A total of 10 laboratories submitted results for the SARS2 component:
 - A total of 37 consensus genome sequences (.fasta) were submitted.
 - A total of 35 variant call files (.vcf) were submitted.
 - The metadata template completeness for SARS2 submissions had a median of 56.5%.
-
 
 Most frequent incompleteness drivers in SARS2:
 <ul class="compact-list">
@@ -950,82 +759,39 @@ Most frequent incompleteness drivers in SARS2:
 
 </ul>
 
-
 #### 6.2.2. Consensus Genome Reconstruction Performance
 
 Consensus sequences were evaluated against the corresponding curated gold standard for each sample in the SARS2 component.
 
 Overall, SARS2 showed a median genome identity of 99.79%, with a median of 11 nucleotide discrepancies per sample (range: 0–52) (Figure 14).
 
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS2/consensus_discrepancies_boxplot_by_sample.png" alt="Consensus discrepancies per sample for SARS2 relative to the curated gold standard." style="width: 90%; max-width: 90%;"/>
 </figure>
-
 
 **Figure 14. Consensus reconstruction performance by sample for SARS2.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values.
 
 Figure 15 presents the distribution of nucleotide discrepancy types per sample across participating laboratories for SARS2.
 
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS2/consensus_discrepancies_stacked_by_sample.png" alt="Consensus discrepancy types per sample for SARS2 relative to the curated gold standard." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-
 **Figure 15. Consensus discrepancy type composition per sample for SARS2.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
-
-
-
-
-
-
-
 
 The dominant discrepancy pattern observed in SARS2 was Stretch of Ns instead of nucleotide stretch (Figure 15). Sample-level consensus reconstruction summary metrics are provided in Appendix Table 8. A full sample-level breakdown of discrepancy categories is provided in Appendix Table 9, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table 10 and Appendix Figure 3, respectively.
 
 #### 6.2.3. Variant Detection Accuracy
 
-
-
 Variant call files (.vcf) submitted for the SARS2 component were compared against the curated reference variant set corresponding to each sample in the SARS2 component.
 
 Overall, SARS2 showed a median of 3 variant discrepancies per sample (range: 0–184), together with a median of 92 successful hits per sample (Table 6, Figure 16).
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/SARS2/variant_discrepancies_stacked_by_sample.png" alt="Variant discrepancies per sample for SARS2 relative to the curated gold standard." style="width: 80%; max-width: 80%;"/>
 </figure>
 
 **Figure 16. Distribution of variant discrepancies per sample for SARS2.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
-
 
 **Table 6. Network-level SARS-CoV-2 variant reporting metrics per sample for SARS2.**
 
@@ -1037,27 +803,9 @@ Overall, SARS2 showed a median of 3 variant discrepancies per sample (range: 0�
 | SARS9 | 16 | 15.5 | 16 | 16 | 8 | 10 | 0 | 1 |
 | SARS10 | 11 | 11 | 11 | 10.5 | 5 | 5 | 0 | 0 |
 
-
-
-
-
-
-
-
-
-
 At component level, 3 laboratories reported the number of variants in the metadata, whereas 7 did not report this field for any sample in SARS2. The median number of variants with an allele frequency (AF) >=75% was 73 in the metadata and 73 in the submitted VCF files (Table 6, Figure 17).
 
-
 Figure 17 summarises the distribution of declared variant reporting modes across submitted sample outputs in SARS2.
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/SARS2/variant_reporting_practice_by_component.png" alt="Variant reporting practices for SARS2." style="width: 70%; max-width: 70%;"/>
@@ -1067,31 +815,15 @@ Figure 17 summarises the distribution of declared variant reporting modes across
 
 The dominant discrepancy pattern observed in SARS2 was Missing variant.  The full sample-level variant calling profile is provided in Appendix Table 11, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table 12 and Appendix Figure 4, respectively.
 
-
-
 #### 6.2.4. Lineage, Subtype and Clade Assignment
 
 Lineage, subtype and clade assignments submitted for the SARS2 component were evaluated for concordance with the curated gold standard classifications.
 
 Across all participating laboratories, lineage/subtype concordance reached 60.0%, whereas clade concordance reached 90.0%. The sample-level outcome distribution also shows that part of the observed discordance was associated with missing classifications or inconsistent completion of classification fields rather than with uniform analytical failure across all submissions.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS2/typing_outcome_stackedbar_by_sample.png" alt="Classification outcome distribution per sample for SARS2." style="width: 98%; max-width: 98%;"/>
 </figure>
-
 
 **Figure 18. Classification outcome distribution per sample for SARS2.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported. Detailed sample-level concordance percentages are provided in Appendix Table 13.
 
@@ -1099,28 +831,11 @@ Across all participating laboratories, lineage/subtype concordance reached 60.0%
 
 Sample-level QC in SARS2 was evaluated as concordance between the laboratory-reported Pass/Fail classification and the predefined gold standard status. QC concordance was heterogeneous across samples, and some laboratories did not report a formal QC assessment. Network-wide concordance for reported QC decisions was 68.0%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS2/qc_match_by_sample.png" alt="Sample-level QC concordance for SARS2 (Match, Discrepancy, and Not provided relative to the gold standard)." style="width: 90%; max-width: 90%;"/>
 </figure>
 
-
 **_Figure 19_. Sample-level QC concordance for SARS2 relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement. Detailed sample-level percentages and counts are provided in Appendix Table 14.
-
-
 
 ### 6.3. FLU1 (Influenza virus, Illumina)
 
@@ -1131,7 +846,6 @@ A total of 12 laboratories submitted results for the FLU1 component:
 - A total of 47 consensus genome sequences (.fasta) were submitted.
 - A total of 42 variant call files (.vcf) were submitted.
 - The metadata template completeness for FLU1 submissions had a median of 53.7%.
-
 
 Most frequent incompleteness drivers in FLU1:
 <ul class="compact-list">
@@ -1148,75 +862,33 @@ Most frequent incompleteness drivers in FLU1:
 
 </ul>
 
-
 #### 6.3.2. Consensus Genome Reconstruction Performance
 
 Consensus sequences were evaluated against the corresponding curated gold standard for each sample in the FLU1 component.
 
 Overall, FLU1 showed a median genome identity of 95.96%, with a median of 27 nucleotide discrepancies per sample (range: 8–205) (Figure 20).
 
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU1/consensus_discrepancies_boxplot_by_sample.png" alt="Consensus discrepancies per sample for FLU1 relative to the curated gold standard." style="width: 90%; max-width: 90%;"/>
 </figure>
-
 
 **Figure 20. Consensus reconstruction performance by sample for FLU1.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values.
 
 Figure 21 presents the distribution of nucleotide discrepancy types per sample across participating laboratories for FLU1.
 
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU1/consensus_discrepancies_stacked_by_sample.png" alt="Consensus discrepancy types per sample for FLU1 relative to the curated gold standard." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-
 **Figure 21. Consensus discrepancy type composition per sample for FLU1.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
-
-
-
-
-
-
-
 
 The dominant discrepancy pattern observed in FLU1 was Deletion relative to gold standard (Figure 21). Sample-level consensus reconstruction summary metrics are provided in Appendix Table 15. A full sample-level breakdown of discrepancy categories is provided in Appendix Table 16, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table 17 and Appendix Figure 5, respectively.
 
 #### 6.3.3. Variant Detection Accuracy
 
-
-
 For the FLU1 component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. At component level, 2 laboratories reported the number of variants in the metadata, whereas 10 did not report this field for any sample in FLU1.
 
-
 Figure 22 summarises the distribution of declared variant reporting modes across submitted sample outputs in FLU1.
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/FLU1/variant_reporting_practice_by_component.png" alt="Variant reporting practices for FLU1." style="width: 80%; max-width: 80%;"/>
@@ -1225,7 +897,6 @@ Figure 22 summarises the distribution of declared variant reporting modes across
 **Figure 22. Variant reporting practices for FLU1.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
 Overall, FLU1 showed a median of 485.5 variants with allele frequency above 75% reported in the metadata template, compared with 174 corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was 239.5, while the median total number of variants present in the submitted VCF files was 306 (Table 7, Figure 23).
-
 
 **Table 7. Network-level influenza variant reporting metrics per sample for FLU1.**
 
@@ -1237,30 +908,13 @@ Overall, FLU1 showed a median of 485.5 variants with allele frequency above 75% 
 | FLU4 | 480 | 138.5 | 239.5 | 306.5 |
 | FLU5 | 464.5 | 174 | 239.5 | 174 |
 
-
-
-
-
-
 These patterns indicate that influenza discrepancies reflect not only analytical differences in variant detection, but also differences in reporting conventions, allele-frequency thresholds, and reference selection. The aggregated structural summary for FLU1 is provided in Appendix Table 18.
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/FLU1/influenza_variant_reporting_summary_by_sample.png" alt="Influenza variant reporting summary by sample for FLU1." style="width: 90%; max-width: 90%;"/>
 </figure>
 
-
 **Figure 23. Influenza variant reporting summary by sample for FLU1.** Panel A shows, for each sample, the distribution across participating laboratories of the number of variants with allele frequency above 75% reported in the metadata template, the corresponding number represented in the consensus-derived VCF, and the discrepancies between both representations. Panel B shows the distribution across participating laboratories of the total number of variants present in the submitted VCF files for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range within the plotted scale, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
 
 #### 6.3.4. Lineage, Subtype and Clade Assignment
 
@@ -1268,23 +922,9 @@ Lineage, subtype and clade assignments submitted for the FLU1 component were eva
 
 Across all participating laboratories, lineage/subtype concordance reached 95.8%, whereas clade concordance reached 68.8%. The sample-level outcome distribution also shows that part of the observed discordance was associated with missing classifications or inconsistent completion of classification fields rather than with uniform analytical failure across all submissions.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU1/typing_outcome_stackedbar_by_sample.png" alt="Classification outcome distribution per sample for FLU1." style="width: 98%; max-width: 98%;"/>
 </figure>
-
 
 **Figure 24. Classification outcome distribution per sample for FLU1.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported. Detailed sample-level concordance percentages are provided in Appendix Table 19.
 
@@ -1292,28 +932,11 @@ Across all participating laboratories, lineage/subtype concordance reached 95.8%
 
 Sample-level QC in FLU1 was evaluated as concordance between the laboratory-reported Pass/Fail classification and the predefined gold standard status. QC concordance was heterogeneous across samples, and some laboratories did not report a formal QC assessment. Network-wide concordance for reported QC decisions was 80.0%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU1/qc_match_by_sample.png" alt="Sample-level QC concordance for FLU1 (Match, Discrepancy, and Not provided relative to the gold standard)." style="width: 90%; max-width: 90%;"/>
 </figure>
 
-
 **_Figure 25_. Sample-level QC concordance for FLU1 relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement. Detailed sample-level percentages and counts are provided in Appendix Table 20.
-
-
 
 ### 6.4. FLU2 (Influenza virus, Oxford Nanopore Technologies)
 
@@ -1324,7 +947,6 @@ A total of 10 laboratories submitted results for the FLU2 component:
 - A total of 49 consensus genome sequences (.fasta) were submitted.
 - A total of 39 variant call files (.vcf) were submitted.
 - The metadata template completeness for FLU2 submissions had a median of 55.5%.
-
 
 Most frequent incompleteness drivers in FLU2:
 <ul class="compact-list">
@@ -1341,75 +963,33 @@ Most frequent incompleteness drivers in FLU2:
 
 </ul>
 
-
 #### 6.4.2. Consensus Genome Reconstruction Performance
 
 Consensus sequences were evaluated against the corresponding curated gold standard for each sample in the FLU2 component.
 
 Overall, FLU2 showed a median genome identity of 95.65%, with a median of 33 nucleotide discrepancies per sample (range: 11–2727) (Figure 26).
 
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU2/consensus_discrepancies_boxplot_by_sample.png" alt="Consensus discrepancies per sample for FLU2 relative to the curated gold standard." style="width: 90%; max-width: 90%;"/>
 </figure>
-
 
 **Figure 26. Consensus reconstruction performance by sample for FLU2.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values.
 
 Figure 27 presents the distribution of nucleotide discrepancy types per sample across participating laboratories for FLU2.
 
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU2/consensus_discrepancies_stacked_by_sample.png" alt="Consensus discrepancy types per sample for FLU2 relative to the curated gold standard." style="width: 80%; max-width: 80%;"/>
 </figure>
 
-
 **Figure 27. Consensus discrepancy type composition per sample for FLU2.** Stacked bars represent the number and type of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample.
-
-
-
-
-
-
-
 
 The dominant discrepancy pattern observed in FLU2 was Deletion relative to gold standard (Figure 27). Sample-level consensus reconstruction summary metrics are provided in Appendix Table 21. A full sample-level breakdown of discrepancy categories is provided in Appendix Table 22, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table 23 and Appendix Figure 6, respectively.
 
 #### 6.4.3. Variant Detection Accuracy
 
-
-
 For the FLU2 component, variant evaluation focused on the agreement between variants with allele frequency above 75% reported in the metadata template and those represented in the submitted VCF files, together with the overall number of variants present in the VCF output. At component level, 3 laboratories reported the number of variants in the metadata, whereas 7 did not report this field for any sample in FLU2.
 
-
 Figure 28 summarises the distribution of declared variant reporting modes across submitted sample outputs in FLU2.
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/FLU2/variant_reporting_practice_by_component.png" alt="Variant reporting practices for FLU2." style="width: 80%; max-width: 80%;"/>
@@ -1418,7 +998,6 @@ Figure 28 summarises the distribution of declared variant reporting modes across
 **Figure 28. Variant reporting practices for FLU2.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
 Overall, FLU2 showed a median of 468.5 variants with allele frequency above 75% reported in the metadata template, compared with 271.5 corresponding variants represented in the consensus-derived VCF. The median number of discrepancies between both representations was 377, while the median total number of variants present in the submitted VCF files was 1085.5 (Table 8, Figure 29).
-
 
 **Table 8. Network-level influenza variant reporting metrics per sample for FLU2.**
 
@@ -1430,30 +1009,13 @@ Overall, FLU2 showed a median of 468.5 variants with allele frequency above 75% 
 | FLU9 | 398 | 92.5 | 198.5 | 751.5 |
 | FLU10 | 1605 | 505 | 901 | 1321 |
 
-
-
-
-
-
 These patterns indicate that influenza discrepancies reflect not only analytical differences in variant detection, but also differences in reporting conventions, allele-frequency thresholds, and reference selection. The aggregated structural summary for FLU2 is provided in Appendix Table 24.
-
-
-
-
-
-
-
-
-
 
 <figure>
 <img src="figures/FLU2/influenza_variant_reporting_summary_by_sample.png" alt="Influenza variant reporting summary by sample for FLU2." style="width: 90%; max-width: 90%;"/>
 </figure>
 
-
 **Figure 29. Influenza variant reporting summary by sample for FLU2.** Panel A shows, for each sample, the distribution across participating laboratories of the number of variants with allele frequency above 75% reported in the metadata template, the corresponding number represented in the consensus-derived VCF, and the discrepancies between both representations. Panel B shows the distribution across participating laboratories of the total number of variants present in the submitted VCF files for each sample. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range within the plotted scale, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
 
 #### 6.4.4. Lineage, Subtype and Clade Assignment
 
@@ -1461,23 +1023,9 @@ Lineage, subtype and clade assignments submitted for the FLU2 component were eva
 
 Across all participating laboratories, lineage/subtype concordance reached 80.0%, whereas clade concordance reached 66.0%. The sample-level outcome distribution also shows that part of the observed discordance was associated with missing classifications or inconsistent completion of classification fields rather than with uniform analytical failure across all submissions.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU2/typing_outcome_stackedbar_by_sample.png" alt="Classification outcome distribution per sample for FLU2." style="width: 98%; max-width: 98%;"/>
 </figure>
-
 
 **Figure 30. Classification outcome distribution per sample for FLU2.** Panel A shows the proportion of lineage/subtype assignment Match, Discrepancy, and Not provided outcomes across participating laboratories for each sample. Panel B shows the corresponding proportions for clade assignments. Percentages are calculated over all participating laboratories in the component, so the Not provided segment captures samples for which lineage/subtype or clade information was not reported. Detailed sample-level concordance percentages are provided in Appendix Table 25.
 
@@ -1485,28 +1033,11 @@ Across all participating laboratories, lineage/subtype concordance reached 80.0%
 
 Sample-level QC in FLU2 was evaluated as concordance between the laboratory-reported Pass/Fail classification and the predefined gold standard status. QC concordance was heterogeneous across samples, and some laboratories did not report a formal QC assessment. Network-wide concordance for reported QC decisions was 100.0%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU2/qc_match_by_sample.png" alt="Sample-level QC concordance for FLU2 (Match, Discrepancy, and Not provided relative to the gold standard)." style="width: 90%; max-width: 90%;"/>
 </figure>
 
-
 **_Figure 31_. Sample-level QC concordance for FLU2 relative to the gold standard.** Bars represent the proportion of Match, Discrepancy, and Not provided outcomes per sample across participating laboratories. Higher discrepancy rates indicate samples for which laboratories more frequently diverged from the predefined QC status, whereas the Not provided segment captures missing QC assessments and is not interpreted as analytical disagreement. Detailed sample-level percentages and counts are provided in Appendix Table 26.
-
-
 
 ## 7. Discussion
 
@@ -1595,23 +1126,7 @@ Taken together, the findings provide a practical basis for improving the compara
 
 This appendix is reserved for supplementary material that may support interpretation of the report but is not essential to the main narrative. Additional figures, extended tables, sensitivity analyses, or other secondary outputs can be included here when relevant.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### SARS1 (SARS-CoV-2, Illumina)
-
-
 
 #### Consensus Genome Reconstruction Supplementary Material
 
@@ -1625,7 +1140,6 @@ This appendix is reserved for supplementary material that may support interpreta
 | SARS4 | 95.58 | 75.5 | 61 – 125 |
 | SARS5 | 99.80 | 5 | 3 – 6 |
 
-
 **Appendix Table 2. Network-level consensus discrepancy types per sample for SARS1.**
 
 | Sample ID | Median of Wrong nucleotide | Median Nucleotide instead of ambiguity | Median Ambiguity instead of nucleotide | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
@@ -1635,7 +1149,6 @@ This appendix is reserved for supplementary material that may support interpreta
 | SARS3 | 0 | 0 | 0 | 2 | 0 | 0 | 0 |
 | SARS4 | 0 | 0 | 0 | 38 | 29 | 0 | 0 |
 | SARS5 | 0 | 2 | 0 | 1 | 0 | 0 | 0 |
-
 
 **Appendix Table 3. Network-level consensus discrepancy composition by type for SARS1.**
 
@@ -1651,29 +1164,11 @@ This appendix is reserved for supplementary material that may support interpreta
 
 Figure 1 in the appendix summarises the contribution of each discrepancy category observed in SARS1 relative to the curated gold standard.
 
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS1/consensus_discrepancy_type_boxplot.png" alt="Composition of consensus discrepancy types for SARS1 relative to the curated gold standard." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 **Appendix Figure 1. Composition of consensus discrepancy types relative to the curated gold standard for SARS1.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
-
-
-
-
-
-
-
-
 
 <h4 class="appendix-landscape-heading">Variant Detection Accuracy Supplementary Material</h4>
 
@@ -1687,7 +1182,6 @@ Figure 1 in the appendix summarises the contribution of each discrepancy categor
 | SARS4 | 75 | 4 | 0 – 518 | 0 | 0 | 1 | 0 | 0 |
 | SARS5 | 64 | 2 | 0 – 67 | 0 | 0 | 0 | 1 | 0 |
 
-
 **Appendix Table 5. Network-level variant discrepancy composition by type for SARS1.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
@@ -1700,31 +1194,11 @@ Figure 1 in the appendix summarises the contribution of each discrepancy categor
 
 Figure 2 in the appendix summarises the contribution of each discrepancy category observed in SARS1 relative to the curated gold standard.
 
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS1/variant_discrepancy_type_boxplot.png" alt="Composition of variant discrepancy types for SARS1 relative to the curated gold standard." style="width: 90%; max-width: 90%;"/>
 </figure>
 
 **Appendix Figure 2. Composition of variant discrepancy types relative to the curated gold standard for SARS1.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). Where required, a broken y-axis is used to preserve visual resolution in the lower discrepancy range while still displaying higher values above an empty interval. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
-
-
-
-
-
-
-
-
-
-
 
 #### Lineage, Subtype and Clade Assignment Supplementary Material
 
@@ -1738,17 +1212,6 @@ Figure 2 in the appendix summarises the contribution of each discrepancy categor
 | SARS4 | 87.50 | 68.75 |
 | SARS5 | 87.50 | 68.75 |
 
-
-
-
-
-
-
-
-
-
-
-
 #### Sample Quality Control Assessment Supplementary Material
 
 **Appendix Table 7. Sample-level QC concordance for SARS1 for reported QC classification.**
@@ -1761,31 +1224,7 @@ Figure 2 in the appendix summarises the contribution of each discrepancy categor
 | SARS4 | Fail | 12.5% | 1 | 7 | 8 |
 | SARS5 | Fail | 0.0% | 0 | 8 | 8 |
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### SARS2 (SARS-CoV-2, Oxford Nanopore Technologies)
-
-
-
-
 
 #### Consensus Genome Reconstruction Supplementary Material
 
@@ -1799,7 +1238,6 @@ Figure 2 in the appendix summarises the contribution of each discrepancy categor
 | SARS9 | N/A | N/A | N/A – N/A |
 | SARS10 | 99.04 | 2 | 1 – 42 |
 
-
 **Appendix Table 9. Network-level consensus discrepancy types per sample for SARS2.**
 
 | Sample ID | Median of Wrong nucleotide | Median Nucleotide instead of ambiguity | Median Ambiguity instead of nucleotide | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
@@ -1809,7 +1247,6 @@ Figure 2 in the appendix summarises the contribution of each discrepancy categor
 | SARS8 | 0.5 | 24 | 0 | 0 | 7 | 0 | 0 |
 | SARS9 | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
 | SARS10 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-
 
 **Appendix Table 10. Network-level consensus discrepancy composition by type for SARS2.**
 
@@ -1825,29 +1262,11 @@ Figure 2 in the appendix summarises the contribution of each discrepancy categor
 
 Figure 3 in the appendix summarises the contribution of each discrepancy category observed in SARS2 relative to the curated gold standard.
 
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS2/consensus_discrepancy_type_boxplot.png" alt="Composition of consensus discrepancy types for SARS2 relative to the curated gold standard." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 **Appendix Figure 3. Composition of consensus discrepancy types relative to the curated gold standard for SARS2.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
-
-
-
-
-
-
-
-
 
 <h4 class="appendix-landscape-heading">Variant Detection Accuracy Supplementary Material</h4>
 
@@ -1861,7 +1280,6 @@ Figure 3 in the appendix summarises the contribution of each discrepancy categor
 | SARS9 | 15.5 | 6 | 0 – 157 | 0 | 0 | 0.5 | 0.5 | 4 |
 | SARS10 | 11 | 0 | 0 – 184 | 0 | 0 | 0 | 0 | 0 |
 
-
 **Appendix Table 12. Network-level variant discrepancy composition by type for SARS2.** The discrepancy-type columns correspond to the median count per sample across participating laboratories.
 
 | Discrepancy type | Network median per sample | Network min-max per sample |
@@ -1874,31 +1292,11 @@ Figure 3 in the appendix summarises the contribution of each discrepancy categor
 
 Figure 4 in the appendix summarises the contribution of each discrepancy category observed in SARS2 relative to the curated gold standard.
 
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/SARS2/variant_discrepancy_type_boxplot.png" alt="Composition of variant discrepancy types for SARS2 relative to the curated gold standard." style="width: 90%; max-width: 90%;"/>
 </figure>
 
 **Appendix Figure 4. Composition of variant discrepancy types relative to the curated gold standard for SARS2.** Boxplots represent aggregated discrepancies across all submitted variant calls, stratified by discrepancy category (incorrect nucleotide, excess ambiguous bases, and indels). Where required, a broken y-axis is used to preserve visual resolution in the lower discrepancy range while still displaying higher values above an empty interval. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
-
-
-
-
-
-
-
-
-
-
 
 #### Lineage, Subtype and Clade Assignment Supplementary Material
 
@@ -1912,17 +1310,6 @@ Figure 4 in the appendix summarises the contribution of each discrepancy categor
 | SARS9 | N/A | N/A |
 | SARS10 | N/A | N/A |
 
-
-
-
-
-
-
-
-
-
-
-
 #### Sample Quality Control Assessment Supplementary Material
 
 **Appendix Table 14. Sample-level QC concordance for SARS2 for reported QC classification.**
@@ -1935,31 +1322,7 @@ Figure 4 in the appendix summarises the contribution of each discrepancy categor
 | SARS9 | Fail | 80.0% | 4 | 1 | 5 |
 | SARS10 | Fail | 80.0% | 4 | 1 | 5 |
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### FLU1 (Influenza virus, Illumina)
-
-
-
-
-
-
 
 #### Consensus Genome Reconstruction Supplementary Material
 
@@ -1973,7 +1336,6 @@ Figure 4 in the appendix summarises the contribution of each discrepancy categor
 | FLU4 | 96.06 | 25 | 16 – 187 |
 | FLU5 | 95.78 | 25 | 19 – 159 |
 
-
 **Appendix Table 16. Network-level consensus discrepancy types per sample for FLU1.**
 
 | Sample ID | Median of Wrong nucleotide | Median Nucleotide instead of ambiguity | Median Ambiguity instead of nucleotide | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
@@ -1983,7 +1345,6 @@ Figure 4 in the appendix summarises the contribution of each discrepancy categor
 | FLU3 | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
 | FLU4 | 0 | 0 | 0 | 0 | 0 | 0 | 16 |
 | FLU5 | 0 | 0 | 0 | 1 | 6.5 | 0 | 14 |
-
 
 **Appendix Table 17. Network-level consensus discrepancy composition by type for FLU1.**
 
@@ -1999,31 +1360,11 @@ Figure 4 in the appendix summarises the contribution of each discrepancy categor
 
 Figure 5 in the appendix summarises the contribution of each discrepancy category observed in FLU1 relative to the curated gold standard.
 
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU1/consensus_discrepancy_type_boxplot.png" alt="Composition of consensus discrepancy types for FLU1 relative to the curated gold standard." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 **Appendix Figure 5. Composition of consensus discrepancy types relative to the curated gold standard for FLU1.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
-
-
-
-
-
-
-
-
-
-
 
 <h4 class="appendix-landscape-heading">Variant Detection Accuracy Supplementary Material</h4>
 
@@ -2035,16 +1376,6 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 | Variants >=75% AF in VCF | 174 | 0–1373 |
 | Discrepancies between metadata and VCF | 239.5 | 0–1797 |
 | Total variants in VCF (n=11) | 306 | 0–1382 |
-
-
-
-
-
-
-
-
-
-
 
 #### Lineage, Subtype and Clade Assignment Supplementary Material
 
@@ -2058,17 +1389,6 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 | FLU4 | 91.67 | 66.67 |
 | FLU5 | 100.00 | 75.00 |
 
-
-
-
-
-
-
-
-
-
-
-
 #### Sample Quality Control Assessment Supplementary Material
 
 **Appendix Table 20. Sample-level QC concordance for FLU1 for reported QC classification.**
@@ -2081,31 +1401,7 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 | FLU4 | Pass | 66.7% | 2 | 1 | 3 |
 | FLU5 | Fail | 66.7% | 2 | 1 | 3 |
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### FLU2 (Influenza virus, Oxford Nanopore Technologies)
-
-
-
-
-
-
-
-
 
 #### Consensus Genome Reconstruction Supplementary Material
 
@@ -2119,7 +1415,6 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 | FLU9 | 95.47 | 20.5 | 11 – 2727 |
 | FLU10 | 96.05 | 29 | 24 – 1828 |
 
-
 **Appendix Table 22. Network-level consensus discrepancy types per sample for FLU2.**
 
 | Sample ID | Median of Wrong nucleotide | Median Nucleotide instead of ambiguity | Median Ambiguity instead of nucleotide | Median Stretch of Ns instead of nucleotide stretch | Median Nucleotide stretch instead of stretch of Ns | Median Insertion relative to gold standard | Median Deletion relative to gold standard |
@@ -2129,7 +1424,6 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 | FLU8 | 0 | 0 | 0 | 0 | 1.5 | 0 | 18 |
 | FLU9 | 0 | 0 | 0 | 1 | 0 | 0 | 15 |
 | FLU10 | 8 | 0 | 0 | 0 | 0 | 2 | 16 |
-
 
 **Appendix Table 23. Network-level consensus discrepancy composition by type for FLU2.**
 
@@ -2145,31 +1439,11 @@ Figure 5 in the appendix summarises the contribution of each discrepancy categor
 
 Figure 6 in the appendix summarises the contribution of each discrepancy category observed in FLU2 relative to the curated gold standard.
 
-
-
-
-
-
-
-
-
 <figure>
 <img src="figures/FLU2/consensus_discrepancy_type_boxplot.png" alt="Composition of consensus discrepancy types for FLU2 relative to the curated gold standard." style="width: 96%; max-width: 96%;"/>
 </figure>
 
 **Appendix Figure 6. Composition of consensus discrepancy types relative to the curated gold standard for FLU2.** Boxplots represent aggregated discrepancies across all submitted consensus sequences, stratified by discrepancy category. The central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
-
-
-
-
-
-
-
-
-
-
-
-
 
 <h4 class="appendix-landscape-heading">Variant Detection Accuracy Supplementary Material</h4>
 
@@ -2181,16 +1455,6 @@ Figure 6 in the appendix summarises the contribution of each discrepancy categor
 | Variants >=75% AF in VCF | 271.5 | 0–1363 |
 | Discrepancies between metadata and VCF | 377 | 8–1794 |
 | Total variants in VCF (n=8) | 1085.5 | 0–7903 |
-
-
-
-
-
-
-
-
-
-
 
 #### Lineage, Subtype and Clade Assignment Supplementary Material
 
@@ -2204,17 +1468,6 @@ Figure 6 in the appendix summarises the contribution of each discrepancy categor
 | FLU9 | 80.00 | 20.00 |
 | FLU10 | 70.00 | 70.00 |
 
-
-
-
-
-
-
-
-
-
-
-
 #### Sample Quality Control Assessment Supplementary Material
 
 **Appendix Table 26. Sample-level QC concordance for FLU2 for reported QC classification.**
@@ -2226,8 +1479,4 @@ Figure 6 in the appendix summarises the contribution of each discrepancy categor
 | FLU8 | Pass | 100.0% | 2 | 0 | 2 |
 | FLU9 | Fail | 100.0% | 2 | 0 | 2 |
 | FLU10 | Pass | 100.0% | 2 | 0 | 2 |
-
-
-
-
 

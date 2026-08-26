@@ -249,6 +249,15 @@ def normalize_missing_markers(markdown_text: str) -> str:
     return markdown_text
 
 
+def collapse_blank_lines(markdown_text: str) -> str:
+    # Collapse 3+ consecutive newlines (i.e. 2+ blank lines) into a single
+    # blank line (exactly one "\n\n" between blocks). Lines that only
+    # contain whitespace are treated as blank too.
+    text = re.sub(r"[ \t]+\n", "\n", markdown_text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
+
+
 def postprocess_rendered_markdown(markdown_text: str) -> str:
     cleaned = markdown_text.lstrip()
     cleaned = normalize_figure_blocks(cleaned)
@@ -256,6 +265,7 @@ def postprocess_rendered_markdown(markdown_text: str) -> str:
     cleaned = replace_display_math_blocks(cleaned)
     cleaned = normalize_missing_markers(cleaned)
     cleaned = re.sub(r"(?m)^[ \t]*<!-- TEMPLATE_TOC -->\s*$\n?", "", cleaned)
+    cleaned = collapse_blank_lines(cleaned)
     return cleaned
 
 
@@ -400,6 +410,7 @@ def build_report_targets(
     figures_dir: Optional[Path] = None,
     include_general: bool = True,
     report_type: Optional[str] = None,
+    lab_cod: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     reports: List[Dict[str, Any]] = []
     # Only include the general report if requested and we have general data (i.e. --general-json was given)
@@ -437,6 +448,21 @@ def build_report_targets(
             f"No compatible individual lab JSON files were found in {labs_dir}. "
             "Expected files with top-level 'lab' and 'components' keys."
         )
+
+    if lab_cod:
+        target_id = sanitize_filename(lab_cod)
+        filtered = [
+            (path, payload)
+            for path, payload in lab_entries
+            if get_lab_identifier(payload, path.stem) == target_id
+        ]
+        if not filtered:
+            available = ", ".join(sorted(get_lab_identifier(p, path.stem) for path, p in lab_entries))
+            raise SystemExit(
+                f"No lab matching --lab_cod {lab_cod!r} was found in {labs_dir}. "
+                f"Available lab_cod values: {available}"
+            )
+        lab_entries = filtered
 
     for path, payload in lab_entries:
         lab_id = get_lab_identifier(payload, path.stem)
@@ -527,6 +553,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--lab_cod",
+        default=None,
+        help=(
+            "Optional: only render the individual lab report matching this lab_cod "
+            "(e.g. COD-2400). Requires --labs-dir. Files in --labs-dir are matched "
+            "regardless of any suffix after the lab_cod (e.g. COD-2400-MAD-CNM.json)."
+        ),
+    )
+    parser.add_argument(
         "--figures-dir",
         default=None,
         help=(
@@ -595,6 +630,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if general_json_path is None:
                 raise SystemExit("--general-json is required for report-type 'benchmarking'.")
             include_general = False
+    if args.lab_cod and labs_dir is None:
+        raise SystemExit("--lab_cod requires --labs-dir to be provided.")
     if labs_dir and not labs_dir.exists():
         raise SystemExit(f"Labs directory not found: {labs_dir}")
     if input_markdown_dir and not input_markdown_dir.exists():
@@ -618,6 +655,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             figures_dir=figures_dir,
             include_general=include_general,
             report_type=report_type,
+            lab_cod=args.lab_cod,
         )
         base_dir = template_path.parent
 
