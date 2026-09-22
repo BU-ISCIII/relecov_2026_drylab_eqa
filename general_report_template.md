@@ -124,19 +124,19 @@ Classification performance was consistently higher for lineage/type assignment t
 
 Metadata completeness and reporting remain major priorities for harmonisation. The median metadata completeness rate across participating laboratories was {{ pct(general.metadata_completeness.median_pct) }}, with values ranging from {{ pct(general.metadata_completeness.min_pct) }} to {{ pct(general.metadata_completeness.max_pct) }}. Although software names were reported for {{ pct(general.metadata_completeness.software_names_pct) }} of expected fields, only {{ pct(general.metadata_completeness.software_version_pct) }} of software-version fields, {{ pct(general.metadata_completeness.coverage_threshold_pct) }} of coverage thresholds, {{ pct(general.metadata_completeness.variant_calling_params_pct) }} of variant-calling parameter fields, and {{ pct(general.metadata_completeness.reference_genome_pct) }} of reference genome identifiers were completed. A total of {{ general.metadata_completeness.total_workflows }} distinct workflows were identified, together with diversity in consensus, variant calling, and classification software.
 
-Overall, the EQA demonstrates substantial analytical capability across the RELECOV network under the evaluated conditions, while also showing that interlaboratory comparability remains limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities of establishing minimum performance standards, strengthening metadata requirements, clarifying reporting rules for consensus and variants, and guiding component-aware recommendations for future harmonisation. A separate benchmarking deliverable document complements this report with a workflow-level comparison of analytical pipelines and software combinations.
+Overall, the EQA demonstrates substantial analytical capability across the participating RELECOV laboratories under the evaluated conditions, while also showing that interlaboratory comparability remains limited by heterogeneous thresholds, parameter reporting, reference selection, and uneven completion of metadata and QC fields. These findings support RELECOV 2.0 priorities of establishing minimum performance standards, strengthening metadata requirements, clarifying reporting rules for consensus and variants, and guiding component-aware recommendations for future harmonisation. A separate benchmarking deliverable document complements this report with a workflow-level comparison of analytical pipelines and software combinations.
 
 ## 1. Introduction
 
 The RELECOV Network aims to strengthen genomic surveillance of respiratory viruses by developing and harmonising analytical capacities across the participating laboratories. In this context, it was essential to **assess the consistency, reproducibility and maturity of the bioinformatic workflows implemented across the network**.
 
-To this end, an **Interlaboratory Comparison Exercise exercise in dry lab format** was conducted, based on the European Centre for Disease Prevention and Control (ECDC) 2024 dry-lab EQA. The exercise focused on the bioinformatic characterisation of respiratory viruses, covering key analytical tasks including viral genome reconstruction, variant identification, and lineage and clade assignment.
+To this end, an **Interlaboratory Comparison Exercise in dry lab format** was conducted, based on the European Centre for Disease Prevention and Control (ECDC) 2024 dry-lab EQA. The exercise focused on the bioinformatic characterisation of respiratory viruses, covering key analytical tasks including viral genome reconstruction, variant identification, and lineage and clade assignment.
 
 Beyond its role as an external quality assessment of laboratory performance, the exercise was also designed to support the methodological harmonisation objectives of RELECOV 2.0. A central component of this initiative was to characterise the diversity of analytical pipelines implemented across the RELECOV Network, evaluate their performance under the conditions of this exercise, and generate evidence to support future harmonisation activities within the network. This evaluation contributes directly to **Objective 2.1** of RELECOV 2.0, which focuses on _improving deep knowledge of the capacities and methodologies of the laboratories belonging to the network, as well as identifying a common methodology adapted to them and to the needs of the platform_. Furthermore, the exercise provides the practical evidence base required for **Task T6.1**, which aims to  _identify the most suitable bioinformatic analysis method for each sequencing platform, through an intercomparison exercise with simulated data for bioinformaticians_, in order to define the workflow that should be integrated into the RELECOV analytical platform.
 
 The exercise was also aligned with **Milestone M6.3**, which pertains to _define sequencing and analysis protocols for each of the sequencing platforms_. In addition, the exercise provided operational insights relevant to **Task T6.5**, which addresses _the adaptation and improvement of the analysis pipeline for the different sequencing platforms used by the laboratories of the network_. It also contributed to **Task T6.4**, related to _sequence metadata annotation with ontologies, schema generation, parsing and validation_, by highlighting practical issues affecting metadata completeness, controlled-vocabulary use, and the consistency of reported analytical parameters.
 
-The present report focuses on the interlaboratory assessment of analytical performance, reporting quality, and harmonisation needs. A separate benchmarking deliverable document complements this report with a workflow-level comparison of pipelines, software combinations, and parameter configurations.
+The present report focuses on the interlaboratory assessment of analytical performance, reporting quality, and harmonisation needs. A separate benchmarking deliverable document complements this report with a workflow-level comparison of analytical pipelines, software combinations, and parameter configurations.
 
 The overall objective of the exercise was to **assess the bioinformatic performance of the participating laboratories, identify areas for improvement, and promote the adoption of consistent and comparable analytical practices across the network**. The outcomes presented in this report are expected to strengthen RELECOV’s preparedness and response capacity for routine surveillance and public health emergencies, while supporting the harmonisation objectives defined within RELECOV 2.0.
 
@@ -302,7 +302,6 @@ The evaluation was structured into five independent analytical domains:
 - Variant detection accuracy
 - Lineage, Subtype and Clade Assignment
 - Metadata completeness and compliance
-- Pipeline Benchmarking and Comparative Performance
 
 Each domain was assessed using predefined quantitative metrics to allow cross-laboratory comparison and pipeline benchmarking. Participation metrics were calculated at both component and laboratory level.
 
@@ -566,7 +565,7 @@ Across components, many discrepancy categories had medians of zero, indicating t
 {% set figure_cfg.style = "max-width: 98%;" %}
 {{ render_figure(general.figures.consensus_summary, "Network-level consensus reconstruction performance summary.", has_panels=True ) }}
 
-**_Figure {{ fig_counter.value }}_. Consensus genome reconstruction performance across components**. Panel **A** shows the distribution of nucleotide discrepancies relative to the gold standard across components, and panel **B** shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers.
+**_Figure {{ fig_counter.value }}_. Consensus genome reconstruction performance across components**. Panel **A** shows the distribution of nucleotide discrepancies relative to the gold standard across components, and panel **B** shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes represent the interquartile range, whiskers denote the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. Asterisks, if present, indicate outliers exceeding the upper y-axis limit (truncated to preserve visualisation of the remaining observations). The corresponding outlier value is annotated below the asterisks.
 
 ### 5.3. Variant Detection Accuracy
 
@@ -577,8 +576,8 @@ For SARS-CoV-2 components (SARS1 and SARS2), variant detection accuracy was asse
 {% set fig_counter.value = fig_counter.value + 1 %}
 Variant detection performance differed across components (Figure {{ fig_counter.value }}). Contextual factors documented in the metadata that may contribute to these differences included:
 
-- Allele frequency thresholds used for incorporation into vcf files
-- Variant normalization practices (variant caller software and params)
+- Allele frequency thresholds used for incorporation into VCF files
+- Variant normalization practices (variant caller software and parameters)
 
 {% set figure_cfg.style = "max-width: 70%;" %}
 {{ render_figure(general.figures.variant_summary, "Network-level variant detection performance summary." ) }}
@@ -658,7 +657,7 @@ Across components, lineage/type concordance was consistently higher than clade c
 
 ### 5.5. Metadata completeness and compliance
 
-The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters.
+The evaluation of metadata focused on analytical transparency, reproducibility, and interoperability within the RELECOV network, including controlled vocabulary adherence, logical consistency, and reporting of analytical parameters. Metadata completeness represents the proportion of applicable recommended fields that were correctly populated for the submitted samples.
 
 #### Overall Completeness
 
@@ -774,9 +773,9 @@ Overall, {{ comp_code }} showed a median genome identity of {{ pct(comp_net.cons
 ) }}
 
 
-**Figure {{ fig_counter.value }}. Consensus reconstruction performance by sample for {{ comp_code }}.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. In Panel B, the y-axis is truncated to highlight differences among high-identity values.
+**Figure {{ fig_counter.value }}. Consensus reconstruction performance by sample for {{ comp_code }}.** Panel A shows the distribution of nucleotide discrepancies relative to the curated gold standard across participating laboratories for each sample, and Panel B shows the corresponding distribution of genome identity values. In both panels, the central line indicates the median, boxes denote the interquartile range, whiskers represent the full observed range, translucent points correspond to individual laboratory observations, and hollow circles beyond the whiskers indicate outliers. {% if comp_code != "SARS2" %} In Panel B, the y-axis is truncated to highlight differences among high-identity values.{% endif %}
 
-Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }}.
+Figure {{ fig_counter.value + 1 }} presents the distribution of nucleotide discrepancy types per sample across participating laboratories for {{ comp_code }} component.
 
 {% set fig_counter.value = fig_counter.value + 1 %}
 {% set figure_cfg.style = "max-width: 80%;" %}
@@ -822,7 +821,7 @@ Overall, {{ comp_code }} showed a median of {{ comp_net.variant.median_discrepan
 **Figure {{ fig_counter.value }}. Distribution of variant discrepancies per sample for {{ comp_code }}.** Stacked bars represent the number of nucleotide discrepancies and discrepancy types relative to the curated gold standard across participating laboratories for each sample.
 
 {% set table_counter.value = table_counter.value + 1 %}
-**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.**
+**Table {{ table_counter.value }}. Network-level SARS-CoV-2 variant reporting metrics per sample for {{ comp_code }}.** The "n" number in brackets indicates the number of laboratories that provided information for that column.
 
 | Sample ID | Expected hits | Median successful hits (n={{ comp_net.variant_metadata_reporting.successful_hits_reported_n_labs }}) | Median variants >=75% AF in metadata (n={{ comp_net.variant_metadata_reporting.reported_n_labs }}) | Median variants >=75% AF in VCF (n={{ comp_net.variant_metadata_reporting.variants_in_consensus_vcf_reported_n_labs }}) | Median variants with effect in metadata (n={{ comp_net.variant_metadata_reporting.variants_with_effect_reported_n_labs }}) | Median variants with effect in VCF (n={{ comp_net.variant_metadata_reporting.variants_with_effect_vcf_reported_n_labs }}) | Median discrepancies metadata vs VCF | Median effect discrepancies metadata vs VCF |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -857,7 +856,7 @@ Figure {{ fig_counter.value }} summarises the distribution of declared variant r
 
 **Figure {{ fig_counter.value }}. Variant reporting practices for {{ comp_code }}.** Bars represent the proportion of submitted sample outputs classified as high and low frequency reporting, high frequency only, or low frequency only, according to the metadata declarations associated with the variant outputs for this component.
 
-The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }}.  The full sample-level variant calling profile is provided in Appendix Table {{ appendix_variant_profile_table_num }}, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table {{ appendix_variant_type_table_num }} and Appendix Figure {{ appendix_variant_type_fig_num }}, respectively.
+The dominant discrepancy pattern observed in {{ comp_code }} was {{ discrepancy_label(comp_net.variant.dominant_discrepancy_pattern) }} (Figure {{ fig_counter.value - 1 }}).  The full sample-level variant calling profile is provided in Appendix Table {{ appendix_variant_profile_table_num }}, while the aggregated discrepancy composition by type and the corresponding category-wise boxplot can be found in Appendix Table {{ appendix_variant_type_table_num }} and Appendix Figure {{ appendix_variant_type_fig_num }}, respectively.
 
 {% else %}
 
