@@ -70,7 +70,7 @@
             "number_of_variants_in_consensus_vcf": 30,
             "number_of_variants_with_effect": 22,
             "discrepancies_in_reported_variants": 0,
-            "successful_hits": 38,
+            "successful_hits": 36,
             "number_of_variants_with_effect_vcf": 22,
             "discrepancies_in_reported_variants_effect": 0,
             "total_discrepancies": 0,
@@ -505,7 +505,7 @@
             "number_of_variants_in_consensus_vcf": 56,
             "number_of_variants_with_effect": 41,
             "discrepancies_in_reported_variants": 0,
-            "successful_hits": 67,
+            "successful_hits": 65,
             "number_of_variants_with_effect_vcf": 42,
             "discrepancies_in_reported_variants_effect": 1,
             "total_discrepancies": 0,
@@ -1419,16 +1419,16 @@
           ],
           "consensus": {
             "genome_identity_pct": null,
-            "total_discrepancies": 0,
+            "total_discrepancies": null,
             "consensus_genome_length": null,
             "discrepancy_breakdown": {
-              "wrong_nt": 0,
-              "ambiguity2nt": 0,
-              "nt2ambiguity": 0,
-              "ns2nt": 0,
-              "nt2ns": 0,
-              "insertions": 0,
-              "deletions": 0
+              "wrong_nt": null,
+              "ambiguity2nt": null,
+              "nt2ambiguity": null,
+              "ns2nt": null,
+              "nt2ns": null,
+              "insertions": null,
+              "deletions": null
             }
           },
           "variants": {
@@ -1609,16 +1609,16 @@
           ],
           "consensus": {
             "genome_identity_pct": 95.90525878308608,
-            "total_discrepancies": 30,
+            "total_discrepancies": 29,
             "consensus_genome_length": "13129",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
-              "ns2nt": 0,
+              "ns2nt": 1,
               "nt2ns": 14,
               "insertions": 0,
-              "deletions": 16
+              "deletions": 14
             }
           },
           "variants": {
@@ -1847,7 +1847,7 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 95.49861530215199,
+            "genome_identity_pct": 95.86193035089063,
             "total_discrepancies": 16,
             "consensus_genome_length": "13133",
             "discrepancy_breakdown": {
@@ -1951,10 +1951,10 @@
           ],
           "consensus": {
             "genome_identity_pct": 95.7726815177907,
-            "total_discrepancies": 19,
+            "total_discrepancies": 18,
             "consensus_genome_length": "13123",
             "discrepancy_breakdown": {
-              "wrong_nt": 1,
+              "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
@@ -2059,17 +2059,17 @@
             "Variant calling fields"
           ],
           "consensus": {
-            "genome_identity_pct": 95.4415143208335,
-            "total_discrepancies": 17,
+            "genome_identity_pct": 95.4719387755102,
+            "total_discrepancies": 15,
             "consensus_genome_length": "13069",
             "discrepancy_breakdown": {
               "wrong_nt": 0,
               "ambiguity2nt": 0,
               "nt2ambiguity": 0,
               "ns2nt": 0,
-              "nt2ns": 1,
+              "nt2ns": 0,
               "insertions": 0,
-              "deletions": 16
+              "deletions": 15
             }
           },
           "variants": {

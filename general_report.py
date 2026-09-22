@@ -52,11 +52,11 @@ COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS = {
     "SARS1": None,
     "SARS2": None,
     "FLU1": None,
-    "FLU2": 410.0,
+    "FLU2": 550.0,
 }
 
 COMPONENT_CONSENSUS_TYPE_BOXPLOT_Y_LIMITS = {
-    "FLU2": 400.0,
+    "FLU2": 550.0,
 }
 
 CONSENSUS_DISCREPANCY_TYPE_ORDER = [
@@ -428,6 +428,58 @@ def add_component_boxplot_points(
     align_boxplot_fliers(bp, data, jittered_positions)
 
 
+def remove_one_matching_value(values: List[float], target: Optional[float]) -> List[float]:
+    """Remove exactly one occurrence of target, preserving boxplot statistics elsewhere."""
+    if target is None:
+        return list(values)
+    result = list(values)
+    for idx, value in enumerate(result):
+        if value == target or np.isclose(value, target, rtol=0.0, atol=1e-9):
+            result.pop(idx)
+            break
+    return result
+
+
+def suppress_boxplot_fliers_for_values(
+    bp: Dict[str, Any],
+    data: List[List[float]],
+    excluded_values: List[Optional[float]],
+) -> None:
+    """Hide only the highlighted lab's flier(s), without changing boxplot statistics."""
+    for flier, values, excluded in zip(bp.get("fliers", []), data, excluded_values):
+        target = safe_number(excluded)
+        if target is None:
+            continue
+        y_data = list(flier.get_ydata())
+        x_data = list(flier.get_xdata())
+        if not y_data:
+            continue
+        remove_idx = None
+        for idx, y_value in enumerate(y_data):
+            if y_value == target or np.isclose(y_value, target, rtol=0.0, atol=1e-9):
+                remove_idx = idx
+                break
+        if remove_idx is not None:
+            y_data.pop(remove_idx)
+            if remove_idx < len(x_data):
+                x_data.pop(remove_idx)
+            flier.set_ydata(y_data)
+            flier.set_xdata(x_data)
+
+
+def statistical_outlier_values(values: Iterable[Any]) -> List[float]:
+    """Return matplotlib's Tukey boxplot fliers using the complete dataset."""
+    clean_values = [safe_number(value) for value in values]
+    clean_values = [float(value) for value in clean_values if value is not None]
+    if not clean_values:
+        return []
+    stats = boxplot_stats(clean_values)[0]
+    return sorted(
+        [float(value) for value in stats.get("fliers", [])],
+        reverse=True,
+    )
+
+
 def add_colored_boxplot_points(
     ax: Any,
     bp: Dict[str, Any],
@@ -506,17 +558,50 @@ def add_lab_result_diamond(
     positions: List[float],
     values: List[Optional[float]],
     y_upper: Optional[float] = None,
-) -> None:
+    y_lower: Optional[float] = None,
+    align_clip_to_axis_edge: bool = False,
+) -> List[tuple[float, float]]:
+    """Draw the highlighted lab's own value(s) as a diamond marker.
+
+    When a value falls outside [y_lower, y_upper], it's clipped to a
+    position near that edge and returned in clipped_annotations so the
+    caller can render an "Outlier: ..." label for it (see
+    annotate_outlier_caps).
+
+    If align_clip_to_axis_edge is True, the clipped position uses the EXACT
+    same formula as annotate_outlier_caps' star ("*") placement (based on
+    the axes' current, already-finalized y-limits), so the diamond lands
+    precisely on top of the star instead of a nearby-but-different offset.
+    This should only be used when the axis limits are already finalized
+    (via ax.set_ylim(...)) before this function is called - otherwise the
+    axis read here won't match what annotate_outlier_caps sees later.
+    """
     xs = []
     ys = []
     clipped_annotations: List[tuple[float, float]] = []
+    current_y_lower, current_y_upper = ax.get_ylim()
+    current_y_range = current_y_upper - current_y_lower
+
     for pos, value in zip(positions, values):
         numeric_value = safe_number(value)
         if numeric_value is None:
             continue
         plotted_value = numeric_value
         if y_upper is not None and numeric_value > y_upper:
-            plotted_value = y_upper * 0.97
+            if align_clip_to_axis_edge:
+                # Same formula as annotate_outlier_caps' high-direction
+                # star position (y_max - y_range * 0.05).
+                plotted_value = current_y_upper - current_y_range * 0.05
+            else:
+                plotted_value = y_upper - 0.03 * max(y_upper - (y_lower if y_lower is not None else current_y_lower), 1.0)
+            clipped_annotations.append((pos, numeric_value))
+        elif y_lower is not None and numeric_value < y_lower:
+            if align_clip_to_axis_edge:
+                # Same formula as annotate_outlier_caps' low-direction
+                # star position (y_min + y_range * 0.08).
+                plotted_value = current_y_lower + current_y_range * 0.08
+            else:
+                plotted_value = y_lower + 0.03 * max((y_upper if y_upper is not None else current_y_upper) - y_lower, 1.0)
             clipped_annotations.append((pos, numeric_value))
         xs.append(pos)
         ys.append(plotted_value)
@@ -1325,7 +1410,7 @@ def make_component_bioinformatics_protocol_metric_boxplots(
                     continue
 
                 plotted_data[idx] = plotted_values
-                outlier_annotations.append((idx + 1, outliers_above_limit[0]))
+                outlier_annotations.append((idx + 1, outliers_above_limit))
 
         use_broken_identity_axis = panel_idx == 0 and comp_code in {"SARS1", "FLU1", "FLU2"}
 
@@ -1722,7 +1807,7 @@ def make_component_benchmark_metric_boxplots(
                         continue
 
                     plotted_panel_data[idx] = plotted_values
-                    panel_outlier_annotations.append((idx + 1, outliers_below_limit[0]))
+                    panel_outlier_annotations.append((idx + 1, outliers_below_limit))
                 else:
                     outliers_above_limit = sorted([value for value in values if value > limit_max], reverse=True)
                     if not outliers_above_limit:
@@ -1733,7 +1818,7 @@ def make_component_benchmark_metric_boxplots(
                         continue
 
                     plotted_panel_data[idx] = plotted_values
-                    panel_outlier_annotations.append((idx + 1, outliers_above_limit[0]))
+                    panel_outlier_annotations.append((idx + 1, outliers_above_limit))
 
         if use_broken_identity_axis:
             bp = ax.boxplot(
@@ -2005,18 +2090,11 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
             if not outliers_above_limit:
                 continue
 
-            excluded_outlier = outliers_above_limit[0]
-            removed = False
-            filtered_values = []
-            for value in values:
-                if not removed and value == excluded_outlier:
-                    removed = True
-                    continue
-                filtered_values.append(value)
+            filtered_values = [value for value in values if value <= y_limit]
 
-            if removed and filtered_values:
+            if filtered_values:
                 plotted_discrepancy_data[idx] = filtered_values
-                outlier_annotations.append((idx + 1, excluded_outlier))
+                outlier_annotations.append((idx + 1, outliers_above_limit))
 
     valid_plotted_discrepancies = [values for values in plotted_discrepancy_data if values]
     y_upper = 1.0
@@ -2051,10 +2129,11 @@ def make_component_consensus_discrepancies_boxplot_by_sample(
             for x_pos, display_value in outlier_annotations:
                 y_marker = y_upper * 0.95
                 y_text = y_upper * 0.91
+                formatted_value = format_outlier_label(display_value)
                 outlier_label = (
-                    f"Outlier:\n{display_value:g}"
+                    formatted_value
                     if comp_code == "FLU2"
-                    else f"Outlier: {display_value:g}"
+                    else formatted_value.replace("\n", " ")
                 )
                 axes[0].text(
                     x_pos,
@@ -2308,6 +2387,7 @@ def make_component_consensus_discrepancy_type_boxplot(
         for x_pos, outliers in outlier_annotations:
             outlier_color = CONSENSUS_DISCREPANCY_TYPE_COLORS.get(used_keys[x_pos - 1], CBF_COLORS["outlier"])
             plot_x = positions[x_pos - 1]
+            outlier_label = format_outlier_label(outliers)
             plt.text(
                 plot_x,
                 y_limit * 0.95,
@@ -2321,7 +2401,7 @@ def make_component_consensus_discrepancy_type_boxplot(
             plt.text(
                 plot_x,
                 y_limit * 0.91,
-                f"Outlier: {outliers[0]:g}",
+                outlier_label,
                 ha="center",
                 va="top",
                 fontsize=9,
@@ -2632,9 +2712,9 @@ def style_boxplot_with_color(bp: Dict[str, Any], color: str, ax: Optional[Any] =
 
 def trim_boxplot_extreme_outliers(
     data: List[List[float]],
-) -> tuple[List[List[float]], List[tuple[int, float]]]:
+) -> tuple[List[List[float]], List[tuple[int, Any]]]:
     trimmed_data: List[List[float]] = []
-    outlier_annotations: List[tuple[int, float]] = []
+    outlier_annotations: List[tuple[int, Any]] = []
 
     for idx, values in enumerate(data, start=1):
         plotted_values = list(values)
@@ -2648,28 +2728,49 @@ def trim_boxplot_extreme_outliers(
                 and max_value > whisker_high * 2
             ):
                 candidate_values = [value for value in values if value <= whisker_high]
-                if candidate_values:
+                outlier_values = sorted([value for value in values if value > whisker_high], reverse=True)
+                if candidate_values and outlier_values:
                     plotted_values = candidate_values
-                    outlier_annotations.append((idx, max_value))
+                    outlier_annotations.append((idx, outlier_values))
 
         trimmed_data.append(plotted_values)
 
     return trimmed_data, outlier_annotations
 
 
+def normalize_outlier_values(value: Any) -> List[float]:
+    if isinstance(value, (list, tuple, set)):
+        values = [safe_number(item) for item in value]
+    else:
+        values = [safe_number(value)]
+    return sorted([item for item in values if item is not None], reverse=True)
+
+
+def format_outlier_label(value: Any) -> str:
+    values = normalize_outlier_values(value)
+    if len(values) > 1:
+        return "Outliers:\n" + ", ".join(f"{item:g}" for item in values)
+    if values:
+        return f"Outlier:\n{values[0]:g}"
+    return "Outlier"
+    return "Outlier"
+
+
 def restore_outliers_within_axis_range(
     trimmed_data: List[List[float]],
-    outlier_annotations: List[tuple[int, float]],
+    outlier_annotations: List[tuple[int, Any]],
     y_upper: float,
-) -> tuple[List[List[float]], List[tuple[int, float]]]:
+) -> tuple[List[List[float]], List[tuple[int, Any]]]:
     restored_data = [list(values) for values in trimmed_data]
-    remaining_annotations: List[tuple[int, float]] = []
+    remaining_annotations: List[tuple[int, Any]] = []
 
     for idx, value in outlier_annotations:
-        if value <= y_upper:
-            restored_data[idx - 1].append(value)
-        else:
-            remaining_annotations.append((idx, value))
+        values = normalize_outlier_values(value)
+        restored_values = [item for item in values if item <= y_upper]
+        remaining_values = [item for item in values if item > y_upper]
+        restored_data[idx - 1].extend(restored_values)
+        if remaining_values:
+            remaining_annotations.append((idx, remaining_values))
 
     return restored_data, remaining_annotations
 
@@ -2699,19 +2800,25 @@ def add_boxplot_points(
 
 def annotate_outlier_caps(
     ax: Any,
-    annotations: List[tuple[float, float]],
+    annotations: List[tuple[float, Any]],
     y_anchor: float,
     color: str,
     direction: str = "high",
 ) -> None:
     y_min, y_max = ax.get_ylim()
     y_range = y_max - y_min
+    grouped_annotations: Dict[float, List[float]] = defaultdict(list)
     for x_pos, display_value in annotations:
+        grouped_annotations[x_pos].extend(normalize_outlier_values(display_value))
+
+    for x_pos, values in grouped_annotations.items():
         if direction == "low":
+            values = sorted(values)
             y_star = y_min + y_range * 0.08
             y_text = y_min + y_range * 0.16
             va = "bottom"
         else:
+            values = sorted(values, reverse=True)
             y_star = y_max - y_range * 0.05
             y_text = y_max - y_range * 0.11
             va = "top"
@@ -2728,7 +2835,7 @@ def annotate_outlier_caps(
         ax.text(
             x_pos,
             y_text,
-            f"Outlier:\n{display_value:g}",
+            format_outlier_label(values),
             ha="center",
             va=va,
             fontsize=9,
@@ -3026,7 +3133,7 @@ def make_consensus_summary_plot(
     axes[0].tick_params(axis="x", rotation=0)
 
     for x_pos, outliers in outlier_annotations:
-        display_value = outliers[0]
+        outlier_label = format_outlier_label(outliers)
         y_marker = fixed_y_upper * 0.95
         y_text = fixed_y_upper * 0.91
         component_label = component_names[x_pos - 1]
@@ -3044,7 +3151,7 @@ def make_consensus_summary_plot(
         axes[0].text(
             x_pos,
             y_text,
-            f"Outlier: {display_value:g}",
+            outlier_label,
             ha="center",
             va="top",
             fontsize=9,
@@ -3154,7 +3261,7 @@ def make_variant_summary_plot(
     plt.xlim(0.5, len(component_names) + 0.5)
 
     for x_pos, outliers in outlier_annotations:
-        display_value = outliers[0]
+        outlier_label = format_outlier_label(outliers)
         y_marker = fixed_y_upper * 0.95
         y_text = fixed_y_upper * 0.91
         component_label = component_names[x_pos - 1]
@@ -3172,7 +3279,7 @@ def make_variant_summary_plot(
         plt.text(
             x_pos,
             y_text,
-            f"Outlier: {display_value:g}",
+            outlier_label,
             ha="center",
             va="top",
             fontsize=9,
@@ -3540,7 +3647,6 @@ def collect_lab_consensus_metric_distribution_data(
     network_data = []
     lab_values = []
     outlier_annotations: List[tuple[int, float]] = []
-    lab_outlier_annotations: List[tuple[int, float]] = []
 
     for sample_id in sample_order:
         sample_values = []
@@ -3559,13 +3665,10 @@ def collect_lab_consensus_metric_distribution_data(
             continue
 
         if y_limit is not None and sample_values:
-            outliers_above_limit = sorted([value for value in sample_values if value > y_limit], reverse=True)
-            plotted_values = [value for value in sample_values if value <= y_limit]
-            if outliers_above_limit and plotted_values:
-                sample_values = plotted_values
-                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
-        if y_limit is not None and lab_value is not None and lab_value > y_limit:
-            lab_outlier_annotations.append((len(sample_names) + 1, lab_value))
+            statistical_outliers = statistical_outlier_values(sample_values)
+            outside_axis = [value for value in statistical_outliers if value > y_limit]
+            if outside_axis:
+                outlier_annotations.append((len(sample_names) + 1, outside_axis))
 
         sample_names.append(sample_id)
         network_data.append(sample_values)
@@ -3576,7 +3679,6 @@ def collect_lab_consensus_metric_distribution_data(
         "network_data": network_data,
         "lab_values": lab_values,
         "outlier_annotations": outlier_annotations,
-        "lab_outlier_annotations": lab_outlier_annotations,
         "has_lab_values": any(value is not None for value in lab_values),
     }
 
@@ -3593,18 +3695,12 @@ def make_lab_consensus_distribution_panel_plot(
     output_path = output_dir / output_filename
 
     discrepancy_data = collect_lab_consensus_metric_distribution_data(
-        general_data=general_data,
-        labs=labs,
-        lab=lab,
-        comp_code=comp_code,
+        general_data=general_data, labs=labs, lab=lab, comp_code=comp_code,
         metric_key="total_discrepancies",
         y_limit=COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code),
     )
     identity_data = collect_lab_consensus_metric_distribution_data(
-        general_data=general_data,
-        labs=labs,
-        lab=lab,
-        comp_code=comp_code,
+        general_data=general_data, labs=labs, lab=lab, comp_code=comp_code,
         metric_key="genome_identity_pct",
     )
 
@@ -3614,29 +3710,11 @@ def make_lab_consensus_distribution_panel_plot(
     ):
         return str(output_path)
 
-    max_samples = max(
-        len(discrepancy_data["sample_names"]),
-        len(identity_data["sample_names"]),
-        1,
-    )
+    max_samples = max(len(discrepancy_data["sample_names"]), len(identity_data["sample_names"]), 1)
     fig, axes = plt.subplots(1, 2, figsize=(max(12, max_samples * 2.0), 6))
     panel_specs = [
-        (
-            axes[0],
-            "A. Consensus discrepancies",
-            "Consensus discrepancies",
-            discrepancy_data,
-            COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code),
-            False,
-        ),
-        (
-            axes[1],
-            "B. Genome identity",
-            "Genome identity (%)",
-            identity_data,
-            None,
-            True,
-        ),
+        (axes[0], "A. Consensus discrepancies", "Consensus discrepancies", discrepancy_data, COMPONENT_CONSENSUS_SAMPLE_Y_LIMITS.get(comp_code), False),
+        (axes[1], "B. Genome identity", "Genome identity (%)", identity_data, None, True),
     ]
 
     for ax, title, ylabel, panel_data, y_limit, percent_axis in panel_specs:
@@ -3647,25 +3725,18 @@ def make_lab_consensus_distribution_panel_plot(
 
         network_data = panel_data["network_data"]
         lab_values = panel_data["lab_values"]
-        bp = ax.boxplot(
-            network_data,
-            labels=sample_names,
-            showfliers=True,
-            patch_artist=True,
-        )
+        display_data = [
+            remove_one_matching_value(list(values), lab_value)
+            for values, lab_value in zip(network_data, lab_values)
+        ]
+        bp = ax.boxplot(network_data, labels=sample_names, showfliers=True, patch_artist=True)
         style_boxplot(bp, [comp_code] * len(sample_names), ax=ax)
+        suppress_boxplot_fliers_for_values(bp, network_data, lab_values)
         add_component_boxplot_points(
-            ax,
-            bp,
-            network_data,
-            list(range(1, len(sample_names) + 1)),
-            [comp_code] * len(sample_names),
+            ax, bp, display_data, list(range(1, len(sample_names) + 1)), [comp_code] * len(sample_names)
         )
         add_lab_result_diamond(
-            ax,
-            list(range(1, len(sample_names) + 1)),
-            lab_values,
-            y_upper=y_limit,
+            ax, list(range(1, len(sample_names) + 1)), lab_values, y_upper=y_limit
         )
 
         ax.set_title(title)
@@ -3674,31 +3745,22 @@ def make_lab_consensus_distribution_panel_plot(
 
         if percent_axis:
             if comp_code in {"SARS1", "FLU1"}:
-                truncated_values = list(lab_values)
-                for sample_values in network_data:
-                    truncated_values.extend(sample_values)
-                style_truncated_percent_boxplot_axis(ax, truncated_values)
+                all_values = [value for values in network_data for value in values]
+                style_truncated_percent_boxplot_axis(ax, all_values + [v for v in lab_values if v is not None])
             else:
                 style_percent_boxplot_axis(ax)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
-            combined_annotations = list(panel_data["outlier_annotations"])
-            for annotation in panel_data.get("lab_outlier_annotations", []):
-                if annotation not in combined_annotations:
-                    combined_annotations.append(annotation)
-            annotate_outlier_caps(
-                ax,
-                combined_annotations,
-                y_limit,
-                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
-            )
+            if panel_data["outlier_annotations"]:
+                annotate_outlier_caps(
+                    ax, panel_data["outlier_annotations"], y_limit,
+                    COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"])
+                )
 
     fig.tight_layout()
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
-
     return str(output_path)
-
 
 def make_lab_consensus_discrepancy_breakdown_plot(
     lab: Dict[str, Any],
@@ -4082,6 +4144,7 @@ def make_lab_workflow_positioning_boxplot(
         high_outlier_annotations: List[tuple[float, float]] = []
         lab_value_for_plot = metric_data["lab_value"]
         custom_y_upper: Optional[float] = None
+        lab_identity_is_outlier = False
 
         if ylabel == "Genome identity (%)" and comp_code == "FLU2":
             combined_identity_values = [
@@ -4099,10 +4162,23 @@ def make_lab_workflow_positioning_boxplot(
                 iqr = q3 - q1
                 low_outlier_threshold = q1 - 1.5 * iqr
 
+                # Skip at most one occurrence matching the highlighted lab's
+                # own value: that point is represented by the diamond marker
+                # (added below, after axis limits are set), not by a
+                # separate network-side annotation. Otherwise the same value
+                # gets counted twice (once here, once for the lab).
+                skipped_self = False
                 filtered_network_values = []
                 for value in plotted_network_values:
                     numeric_value = safe_number(value)
                     if numeric_value is not None and numeric_value < low_outlier_threshold:
+                        if (
+                            not skipped_self
+                            and lab_identity_value is not None
+                            and np.isclose(numeric_value, lab_identity_value, rtol=0.0, atol=1e-9)
+                        ):
+                            skipped_self = True
+                            continue
                         low_outlier_annotations.append((1, float(numeric_value)))
                     else:
                         filtered_network_values.append(value)
@@ -4110,9 +4186,14 @@ def make_lab_workflow_positioning_boxplot(
                 if filtered_network_values:
                     plotted_network_values = filtered_network_values
 
-                if lab_identity_value is not None and lab_identity_value < low_outlier_threshold:
-                    low_outlier_annotations.append((0.84, float(lab_identity_value)))
-                    lab_value_for_plot = None
+                lab_identity_is_outlier = (
+                    lab_identity_value is not None and lab_identity_value < low_outlier_threshold
+                )
+                # Note: lab_value_for_plot is intentionally left as-is (not
+                # nulled) even when it's below low_outlier_threshold. The
+                # add_lab_result_diamond() call below clips it to the bottom
+                # of the axis and still draws the diamond marker, instead of
+                # hiding it and only showing text.
 
         if ylabel == "Total discrepancies" and comp_code == "FLU2":
             combined_discrepancy_values = [
@@ -4130,10 +4211,20 @@ def make_lab_workflow_positioning_boxplot(
                 iqr = q3 - q1
                 high_outlier_threshold = q3 + 1.5 * iqr
 
+                # Same de-duplication as above: don't double-count the
+                # highlighted lab's own value as a separate network outlier.
+                skipped_self = False
                 filtered_network_values = []
                 for value in plotted_network_values:
                     numeric_value = safe_number(value)
                     if numeric_value is not None and numeric_value > high_outlier_threshold:
+                        if (
+                            not skipped_self
+                            and lab_discrepancy_value is not None
+                            and np.isclose(numeric_value, lab_discrepancy_value, rtol=0.0, atol=1e-9)
+                        ):
+                            skipped_self = True
+                            continue
                         high_outlier_annotations.append((1, float(numeric_value)))
                     else:
                         filtered_network_values.append(value)
@@ -4143,11 +4234,16 @@ def make_lab_workflow_positioning_boxplot(
                     filtered_max = max(float(v) for v in plotted_network_values if safe_number(v) is not None)
                     custom_y_upper = max(1500.0, filtered_max * 1.15 if filtered_max > 0 else 1.0)
 
-                if lab_discrepancy_value is not None and lab_discrepancy_value > high_outlier_threshold:
-                    high_outlier_annotations.append((0.84, float(lab_discrepancy_value)))
-                    lab_value_for_plot = None
+                # Note: lab_value_for_plot is intentionally left as-is here
+                # too, for the same reason as the identity branch above.
 
         data = [plotted_network_values]
+        # A display-only copy with the highlighted lab's own value removed
+        # once, so it isn't drawn twice (once as a regular network point,
+        # once as the diamond). The boxplot itself still uses the full
+        # `data` (self included) so whiskers/quartiles stay consistent
+        # across every lab's report.
+        display_data = [remove_one_matching_value(list(plotted_network_values), lab_value_for_plot)]
         bp = ax.boxplot(
             data,
             patch_artist=True,
@@ -4172,18 +4268,17 @@ def make_lab_workflow_positioning_boxplot(
             flier.set_markersize(5)
         style_boxplot_axes(ax)
 
+        # Hide the matplotlib-auto-detected flier matching the lab's own
+        # value (if any), without altering the statistics it was computed
+        # from, so the diamond doesn't overlap a duplicate hollow circle.
+        suppress_boxplot_fliers_for_values(bp, data, [lab_value_for_plot])
+
         add_colored_boxplot_points(
             ax,
             bp,
-            data,
+            display_data,
             [1],
             [component_color],
-        )
-        add_lab_result_diamond(
-            ax=ax,
-            positions=[0.84],
-            values=[lab_value_for_plot],
-            y_upper=y_limits[1] if y_limits is not None else custom_y_upper,
         )
 
         ax.set_xticks([1])
@@ -4193,33 +4288,61 @@ def make_lab_workflow_positioning_boxplot(
         if y_limits is not None:
             if ylabel == "Genome identity (%)":
                 truncated_values = list(plotted_network_values)
-                if safe_number(lab_value_for_plot) is not None:
+                if safe_number(lab_value_for_plot) is not None and not lab_identity_is_outlier:
                     truncated_values.append(lab_value_for_plot)
                 style_truncated_percent_boxplot_axis(ax, truncated_values)
                 if comp_code == "FLU2":
                     _, y_max = ax.get_ylim()
                     ax.set_ylim(93, y_max)
-                if low_outlier_annotations:
-                    annotate_outlier_caps(
-                        ax,
-                        low_outlier_annotations,
-                        0,
-                        COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
-                        direction="low",
-                    )
             elif ylabel.endswith("(%)"):
                 style_percent_boxplot_axis(ax)
             else:
                 ax.set_ylim(*y_limits)
         elif custom_y_upper is not None:
             ax.set_ylim(0, custom_y_upper)
-            if high_outlier_annotations:
-                annotate_outlier_caps(
-                    ax,
-                    high_outlier_annotations,
-                    custom_y_upper,
-                    COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
-                )
+
+        # Draw the lab diamond AFTER the axis limits are finalized above, so
+        # we can read back the exact bounds that are now visible and pass
+        # them explicitly. (add_lab_result_diamond does NOT fall back to
+        # the axes' current limits on its own when y_upper/y_lower are
+        # omitted - it simply skips clipping - so they must be passed here.)
+        diamond_y_upper = y_limits[1] if y_limits is not None else custom_y_upper
+        diamond_y_lower = None
+        if y_limits is not None and ylabel == "Genome identity (%)" and comp_code == "FLU2":
+            # Axis was just pinned to (93, y_max) above for FLU2; use those
+            # exact bounds so the diamond clips to the same visible range
+            # the "Outlier: ..." text is anchored to.
+            diamond_y_lower, diamond_y_upper = ax.get_ylim()
+
+        diamond_clipped_annotations = add_lab_result_diamond(
+            ax=ax,
+            positions=[0.84],
+            values=[lab_value_for_plot],
+            y_upper=diamond_y_upper,
+            y_lower=diamond_y_lower,
+            align_clip_to_axis_edge=True,
+        )
+        if diamond_clipped_annotations:
+            if ylabel == "Genome identity (%)" and comp_code == "FLU2":
+                low_outlier_annotations.extend(diamond_clipped_annotations)
+            elif ylabel == "Total discrepancies" and comp_code == "FLU2":
+                high_outlier_annotations.extend(diamond_clipped_annotations)
+
+        if y_limits is not None and ylabel == "Genome identity (%)" and low_outlier_annotations:
+            annotate_outlier_caps(
+                ax,
+                low_outlier_annotations,
+                0,
+                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+                direction="low",
+            )
+        elif custom_y_upper is not None and high_outlier_annotations:
+            annotate_outlier_caps(
+                ax,
+                high_outlier_annotations,
+                custom_y_upper,
+                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
+            )
 
     for ax in axes[len(panel_data_specs):]:
         ax.set_visible(False)
@@ -4489,7 +4612,6 @@ def collect_lab_variant_metric_distribution_data(
     network_data = []
     lab_values = []
     outlier_annotations: List[tuple[int, float]] = []
-    lab_outlier_annotations: List[tuple[int, float]] = []
 
     for sample_id in sample_order:
         sample_values = []
@@ -4508,13 +4630,10 @@ def collect_lab_variant_metric_distribution_data(
             continue
 
         if y_limit is not None and sample_values:
-            outliers_above_limit = sorted([value for value in sample_values if value > y_limit], reverse=True)
-            plotted_values = [value for value in sample_values if value <= y_limit]
-            if outliers_above_limit and plotted_values:
-                sample_values = plotted_values
-                outlier_annotations.append((len(sample_names) + 1, outliers_above_limit[0]))
-        if y_limit is not None and lab_value is not None and lab_value > y_limit:
-            lab_outlier_annotations.append((len(sample_names) + 1, lab_value))
+            statistical_outliers = statistical_outlier_values(sample_values)
+            outside_axis = [value for value in statistical_outliers if value > y_limit]
+            if outside_axis:
+                outlier_annotations.append((len(sample_names) + 1, outside_axis))
 
         sample_names.append(sample_id)
         network_data.append(sample_values)
@@ -4525,10 +4644,8 @@ def collect_lab_variant_metric_distribution_data(
         "network_data": network_data,
         "lab_values": lab_values,
         "outlier_annotations": outlier_annotations,
-        "lab_outlier_annotations": lab_outlier_annotations,
         "has_lab_values": any(value is not None for value in lab_values),
     }
-
 
 def make_lab_variant_boxplot_panel_figure(
     labs: List[Dict[str, Any]],
@@ -4546,15 +4663,9 @@ def make_lab_variant_boxplot_panel_figure(
     max_samples = 1
     for title, ylabel, extractor, y_limit, percent_axis in panel_specs:
         panel_data = collect_lab_variant_metric_distribution_data(
-            labs=labs,
-            lab=lab,
-            comp_code=comp_code,
-            extractor=extractor,
-            y_limit=y_limit,
+            labs=labs, lab=lab, comp_code=comp_code, extractor=extractor, y_limit=y_limit
         )
-        if panel_data["sample_names"]:
-            if not panel_data["has_lab_values"]:
-                continue
+        if panel_data["sample_names"] and panel_data["has_lab_values"]:
             max_samples = max(max_samples, len(panel_data["sample_names"]))
             panel_data_specs.append((title, ylabel, panel_data, y_limit, percent_axis))
 
@@ -4571,39 +4682,19 @@ def make_lab_variant_boxplot_panel_figure(
         sample_names = panel_data["sample_names"]
         network_data = panel_data["network_data"]
         lab_values = panel_data["lab_values"]
-        plotted_network_data = [list(values) for values in network_data]
-        custom_outlier_annotations: List[tuple[float, float]] = []
-        custom_y_upper: Optional[float] = None
+        display_data = [
+            remove_one_matching_value(list(values), lab_value)
+            for values, lab_value in zip(network_data, lab_values)
+        ]
 
-        if title == "E. Total variants in VCF":
-            plotted_network_data, trimmed_outliers = trim_boxplot_extreme_outliers(network_data)
-            custom_outlier_annotations = [
-                (idx, value) for idx, value in trimmed_outliers
-            ]
-            valid_trimmed_values = [values for values in plotted_network_data if values]
-            if valid_trimmed_values:
-                panel_max = max(max(values) for values in valid_trimmed_values)
-                custom_y_upper = panel_max * 1.18 if panel_max > 0 else 1.0
-
-        bp = ax.boxplot(
-            plotted_network_data,
-            labels=sample_names,
-            showfliers=True,
-            patch_artist=True,
-        )
+        bp = ax.boxplot(network_data, labels=sample_names, showfliers=True, patch_artist=True)
         style_boxplot(bp, [comp_code] * len(sample_names), ax=ax)
+        suppress_boxplot_fliers_for_values(bp, network_data, lab_values)
         add_component_boxplot_points(
-            ax,
-            bp,
-            plotted_network_data,
-            list(range(1, len(sample_names) + 1)),
-            [comp_code] * len(sample_names),
+            ax, bp, display_data, list(range(1, len(sample_names) + 1)), [comp_code] * len(sample_names)
         )
         add_lab_result_diamond(
-            ax,
-            list(range(1, len(sample_names) + 1)),
-            lab_values,
-            y_upper=y_limit if y_limit is not None else custom_y_upper,
+            ax, list(range(1, len(sample_names) + 1)), lab_values, y_upper=y_limit
         )
 
         ax.set_title(title)
@@ -4614,24 +4705,11 @@ def make_lab_variant_boxplot_panel_figure(
             style_percent_boxplot_axis(ax)
         elif y_limit is not None:
             ax.set_ylim(0, y_limit)
-            combined_annotations = list(panel_data["outlier_annotations"])
-            for annotation in panel_data.get("lab_outlier_annotations", []):
-                if annotation not in combined_annotations:
-                    combined_annotations.append(annotation)
-            annotate_outlier_caps(
-                ax,
-                combined_annotations,
-                y_limit,
-                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
-            )
-        elif custom_y_upper is not None:
-            ax.set_ylim(0, custom_y_upper)
-            annotate_outlier_caps(
-                ax,
-                custom_outlier_annotations,
-                custom_y_upper,
-                COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"]),
-            )
+            if panel_data["outlier_annotations"]:
+                annotate_outlier_caps(
+                    ax, panel_data["outlier_annotations"], y_limit,
+                    COMPONENT_BOX_COLORS.get(comp_code, CBF_COLORS["outlier"])
+                )
 
     for ax in axes[len(panel_data_specs):]:
         ax.set_visible(False)
@@ -4639,9 +4717,7 @@ def make_lab_variant_boxplot_panel_figure(
     fig.tight_layout()
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
-
     return str(output_path)
-
 
 def make_lab_variant_metrics_distribution_plot(
     labs: List[Dict[str, Any]],
@@ -6862,6 +6938,7 @@ def main() -> None:
 
     dump_json(general, args.output)
     print(f"Generated {args.output}")
+
 
 if __name__ == "__main__":
     main()
